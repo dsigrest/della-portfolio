@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Della Sigrest — Senior Product Designer</title>
+<meta name="description" content="Senior Product Designer specializing in engagement systems, growth infrastructure, and AI-forward product design. Previously Reddit.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-name">Della Sigrest</a>
+    <div class="nav-links">
+      <a href="index.html" class="active">Work</a>
+      <a href="about.html">About</a>
+      <a href="#">Resume</a>
+      <a href="mailto:dsigrest@gmail.com">Contact</a>
+    </div>
+    <button class="nav-toggle" aria-label="Menu">
+      <span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">
+    <span class="eyebrow-line"></span>
+    Senior Product Designer
+  </div>
+  <h1>Engagement systems, growth infrastructure, AI&#8209;forward product&nbsp;design.</h1>
+  <p class="hero-sub">4+ years at Reddit designing the surfaces no one had touched — inbox, notifications, push, sharing. Five consecutive teams, each built from zero. Currently exploring AI&#8209;native design workflows.</p>
+  <a href="#work" class="hero-cta">View selected work <span class="cta-arrow">&darr;</span></a>
+</section>
+
+<!-- PILLARS -->
+<section class="pillars">
+  <div class="pillar">
+    <h3>Build from Zero</h3>
+    <p>First designer on 5 consecutive teams. Built vision, strategy, and scalable foundations from scratch every time.</p>
+  </div>
+  <div class="pillar">
+    <h3>Define Vision</h3>
+    <p>Cohort-segmented strategies and multi-pillar frameworks that shaped team roadmaps quarters out.</p>
+  </div>
+  <div class="pillar">
+    <h3>Simplify Complexity</h3>
+    <p>Cross-functional alignment through artifacts and strategic framing. Systems that outlast individual tenure.</p>
+  </div>
+  <div class="pillar">
+    <h3>Unlock Growth</h3>
+    <p>Experiments that move core metrics. Growth loops, engagement flywheels, and activation patterns.</p>
+  </div>
+</section>
+
+<!-- WORK -->
+<section class="work" id="work">
+  <div class="section-header">
+    <h2>Selected Work</h2>
+  </div>
+
+  <div class="cases">
+    <a class="case-card" href="case-notifications.html">
+      <div class="case-img">
+        <span class="case-num">01</span>
+      </div>
+      <div class="case-content">
+        <div class="case-meta">
+          <span class="case-tag">Systems Thinking</span>
+          <span class="case-year">2022 – 2024</span>
+        </div>
+        <h3 class="case-title">Notifications & Inbox</h3>
+        <p class="case-outcome">Modernized Reddit's inbox after 6 years without design investment. Built a 5-cohort, 3-pillar strategy that shaped the 2026 roadmap. +1.4% new user DAU, +6.4% push notification clicks.</p>
+        <span class="case-link">Read case study &rarr;</span>
+      </div>
+    </a>
+
+    <a class="case-card" href="case-ai.html">
+      <div class="case-img">
+        <span class="case-num">02</span>
+      </div>
+      <div class="case-content">
+        <div class="case-meta">
+          <span class="case-tag">AI Product Design</span>
+          <span class="case-year">2024</span>
+        </div>
+        <h3 class="case-title">Keyword Landing Pages / AI</h3>
+        <p class="case-outcome">Designed Reddit's first LLM-powered product. Established 3-layer AI content governance and a prompt design workflow adopted by subsequent teams.</p>
+        <span class="case-link">Read case study &rarr;</span>
+      </div>
+    </a>
+
+    <a class="case-card" href="case-sharing.html">
+      <div class="case-img">
+        <span class="case-num">03</span>
+      </div>
+      <div class="case-content">
+        <div class="case-meta">
+          <span class="case-tag">Growth Loops</span>
+          <span class="case-year">2023</span>
+        </div>
+        <h3 class="case-title">Sharing & Embeds</h3>
+        <p class="case-outcome">Designed a 3-stage sharing flywheel — streamlined sharing, improved embeds, introduced privacy controls as a growth lever.</p>
+        <span class="case-link">Read case study &rarr;</span>
+      </div>
+    </a>
+
+    <a class="case-card" href="case-subreddit.html">
+      <div class="case-img">
+        <span class="case-num">04</span>
+      </div>
+      <div class="case-content">
+        <div class="case-meta">
+          <span class="case-tag">0&rarr;1 Leadership</span>
+          <span class="case-year">2021 – 2022</span>
+        </div>
+        <h3 class="case-title">Subreddit Success</h3>
+        <p class="case-outcome">First designer on a net-new team. Synthesized cross-org research, defined the community lifecycle framework, secured org investment.</p>
+        <span class="case-link">Read case study &rarr;</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-left">
+      <p class="footer-name">Della Sigrest</p>
+      <p class="footer-note">This site was designed collaboratively with AI — <a href="#">read how</a></p>
+    </div>
+    <div class="footer-right">
+      <a href="mailto:dsigrest@gmail.com">Email</a>
+      <a href="https://linkedin.com/in/dellasigrest" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Mobile nav toggle
+  const toggle = document.querySelector('.nav-toggle');
+  const links = document.querySelector('.nav-links');
+  toggle?.addEventListener('click', () => {
+    links.classList.toggle('open');
+    toggle.classList.toggle('open');
+  });
+
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  // Fade-in on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.case-card, .pillar').forEach(el => {
+    el.classList.add('fade-in');
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>

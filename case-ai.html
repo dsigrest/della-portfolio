@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keyword Landing Pages / AI — Della Sigrest</title>
+<meta name="description" content="How I designed Reddit's first LLM-powered product and established AI content governance.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-name">Della Sigrest</a>
+    <div class="nav-links">
+      <a href="index.html" class="active">Work</a>
+      <a href="about.html">About</a>
+      <a href="#">Resume</a>
+      <a href="mailto:dsigrest@gmail.com">Contact</a>
+    </div>
+    <button class="nav-toggle" aria-label="Menu"><span></span><span></span></button>
+  </div>
+</nav>
+
+<section class="case-hero">
+  <div class="case-hero-eyebrow">Case Study 02 &mdash; AI Product Design</div>
+  <h1>Keyword Landing Pages / AI</h1>
+  <p class="case-hero-sub">Designed Reddit's first LLM-powered product &mdash; consolidating thousands of competing SEO links into AI-summarized pages. Established a 3-layer content governance model and a cross-functional prompt design workflow that became the template for subsequent AI teams.</p>
+
+  <div class="case-meta-grid">
+    <div class="meta-item">
+      <label>Role</label>
+      <span>Senior Product Designer</span>
+    </div>
+    <div class="meta-item">
+      <label>Team</label>
+      <span>SEO &amp; Discovery</span>
+    </div>
+    <div class="meta-item">
+      <label>Timeline</label>
+      <span>2024</span>
+    </div>
+    <div class="meta-item">
+      <label>Platform</label>
+      <span>Web (SEO surfaces)</span>
+    </div>
+  </div>
+</section>
+
+<section class="case-body">
+
+  <h2>Context</h2>
+  <p>Reddit had thousands of competing SEO links for the same topics &mdash; fragmenting traffic across duplicate and near-duplicate pages. The organization wanted to use large language models to consolidate these into unified summary pages that would serve both search engines and users arriving from Google.</p>
+  <p>The catch: Reddit had no precedent for AI-generated content in its product. There were no guidelines for how LLM output should look, sound, be attributed, or be governed. This wasn't a design system problem &mdash; it was a trust problem.</p>
+
+  <div class="case-img-full">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <img src="img/klp-ui-1.png" alt="Keyword Landing Page — AI-summarized content on Reddit" loading="lazy" style="width:100%;height:auto;border-radius:14px;">
+      <img src="img/klp-ui-2.png" alt="KLP search result page with AI-generated summaries" loading="lazy" style="width:100%;height:auto;border-radius:14px;">
+    </div>
+  </div>
+
+  <h2>Insight</h2>
+  <p><strong>The design challenge wasn't "make a summary page." It was "establish trust in non-deterministic content."</strong> Every design decision had to account for the fact that the output couldn't be fully controlled. Unlike traditional product surfaces where the designer specifies exact content, LLM-powered pages meant designing for a range of possible outputs &mdash; some accurate, some not, all unpredictable.</p>
+  <p>This reframe shifted the work from visual design to systems design: building the governance, evaluation, and presentation layers that would make AI content trustworthy at scale.</p>
+
+  <h2>System</h2>
+  <p>I designed a <strong>3-layer governance model</strong> for AI-generated content:</p>
+  <ul>
+    <li><strong>Visual identification</strong> &mdash; Clear, consistent signals that content was AI-generated. Not buried in fine print, but woven into the surface design so users always understood what they were reading</li>
+    <li><strong>Tone and voice</strong> &mdash; Guidelines for how AI-summarized content should sound when representing Reddit's communities. Partnered with content design to ensure the voice was informative without being authoritative about subjective topics</li>
+    <li><strong>Prompt design workflow</strong> &mdash; A novel cross-functional review process bringing together content design, AI engineering, and product design to evaluate and iterate on prompts before they reached production</li>
+  </ul>
+
+  <div class="case-img-full">
+    <img src="img/diagram-ai-governance.svg" alt="3-layer AI content governance model — Visual Identification, Tone and Voice, Prompt Design Workflow" loading="lazy" style="width:100%;height:auto;border-radius:14px;">
+  </div>
+
+  <h2>The prompt design workflow</h2>
+  <p>This was the most novel contribution and the one that had the most lasting organizational impact. Before this project, prompt design at Reddit was an engineering concern &mdash; product and design teams reviewed outputs but had no structured role in shaping inputs.</p>
+  <p>I piloted a <strong>cross-functional prompt design review</strong> where content designers, AI engineers, and product designers collaboratively evaluated prompts against criteria including: accuracy, tone alignment, edge case handling, and trust signals. This process formalized design's role in AI product development and was adopted by subsequent AI teams at Reddit as their default workflow.</p>
+
+  <div class="case-img-full">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <img src="img/klp-slide-1.png" alt="KLP strategy presentation — prompt design workflow" loading="lazy" style="width:100%;height:auto;border-radius:14px;">
+      <img src="img/klp-slide-2.png" alt="KLP strategy presentation — cross-functional review process" loading="lazy" style="width:100%;height:auto;border-radius:14px;">
+    </div>
+  </div>
+  <div class="case-img-full" style="margin-top:1.5rem;">
+    <img src="img/klp-ui-3.png" alt="Final KLP product UI showing AI content with trust signals" loading="lazy" style="width:100%;height:auto;border-radius:14px;">
+  </div>
+
+  <h2>Trust as a design problem</h2>
+  <p>Designing for non-deterministic output required treating trust as a first-class design problem, not an afterthought. Key decisions included:</p>
+  <ul>
+    <li>How prominently to signal AI authorship (balancing transparency with cognitive load)</li>
+    <li>When to show source links vs. inline citations vs. no attribution</li>
+    <li>How to handle cases where the AI summary contradicts the source threads</li>
+    <li>What the failure state should look like when content quality falls below threshold</li>
+  </ul>
+  <p>These weren't aesthetic decisions &mdash; they were policy decisions expressed through interface design. Each one required cross-functional alignment between legal, policy, engineering, and design.</p>
+
+  <h2>Outcome</h2>
+  <p>Reddit's first shipped LLM-powered product. The keyword landing pages consolidated fragmented SEO traffic into unified, AI-summarized experiences. More importantly, the governance model and prompt design workflow established organizational infrastructure for AI product development that outlasted the specific project.</p>
+  <p>The prompt design review process became the template used by subsequent AI teams, including the team that built Reddit Answers. The trust framework &mdash; visual identification, tone guidelines, evaluation criteria &mdash; became the starting point for Reddit's broader approach to AI-generated content.</p>
+
+  <h2>Reflection</h2>
+  <p>This project convinced me that the most valuable design skill in AI product development isn't prompt engineering or interface design &mdash; it's the ability to design the processes and governance structures that make AI trustworthy. The prompt design review workflow was a process invention, not a product invention, and it had more organizational impact than any individual screen.</p>
+
+</section>
+
+<div class="case-next">
+  <a href="case-sharing.html">Next: Sharing & Embeds &rarr;</a>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-left">
+      <p class="footer-name">Della Sigrest</p>
+      <p class="footer-note">This site was designed collaboratively with AI &mdash; <a href="#">read how</a></p>
+    </div>
+    <div class="footer-right">
+      <a href="mailto:dsigrest@gmail.com">Email</a>
+      <a href="https://linkedin.com/in/dellasigrest" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const toggle = document.querySelector('.nav-toggle');
+  const links = document.querySelector('.nav-links');
+  toggle?.addEventListener('click', () => { links.classList.toggle('open'); toggle.classList.toggle('open'); });
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.metric, .case-img-full').forEach(el => { el.classList.add('fade-in'); observer.observe(el); });
+</script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sharing & Embeds — Della Sigrest</title>
+<meta name="description" content="How I designed a 3-stage sharing flywheel to increase Reddit's off-platform reach.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-name">Della Sigrest</a>
+    <div class="nav-links">
+      <a href="index.html" class="active">Work</a>
+      <a href="about.html">About</a>
+      <a href="#">Resume</a>
+      <a href="mailto:dsigrest@gmail.com">Contact</a>
+    </div>
+    <button class="nav-toggle" aria-label="Menu"><span></span><span></span></button>
+  </div>
+</nav>
+
+<section class="case-hero">
+  <div class="case-hero-eyebrow">Case Study 03 &mdash; Growth Loops</div>
+  <h1>Sharing & Embeds</h1>
+  <p class="case-hero-sub">Designed a 3-stage sharing flywheel to increase Reddit's off-platform reach &mdash; streamlining the share sheet, redesigning link previews and embeds, and introducing privacy controls as a growth lever rather than a constraint.</p>
+
+  <div class="case-meta-grid">
+    <div class="meta-item">
+      <label>Role</label>
+      <span>Senior Product Designer</span>
+    </div>
+    <div class="meta-item">
+      <label>Team</label>
+      <span>Growth</span>
+    </div>
+    <div class="meta-item">
+      <label>Timeline</label>
+      <span>2023</span>
+    </div>
+    <div class="meta-item">
+      <label>Platform</label>
+      <span>iOS, Android, Web</span>
+    </div>
+  </div>
+</section>
+
+<section class="case-body">
+
+  <h2>Context</h2>
+  <p>Reddit content was hard to share and looked bad when shared. Link previews were inconsistent across platforms, the share sheet offered limited options, and there was no coherent model for how sharing should interact with Reddit's privacy norms. Each share represented a potential acquisition event, but the infrastructure wasn't designed to capitalize on that.</p>
+
+  <h2>Insight</h2>
+  <p><strong>Sharing isn't a feature &mdash; it's a flywheel.</strong> Every share is simultaneously a distribution event (content reaches new audiences), an acquisition event (new users encounter Reddit), and a re-engagement event (the sharer returns to see responses). The design challenge wasn't "add more share buttons" &mdash; it was designing each stage of this loop to maximize throughput while respecting Reddit's community-first privacy culture.</p>
+
+  <div class="case-img-full">
+    <img src="img/diagram-sharing-flywheel.svg" alt="Sharing flywheel diagram — Share, Preview, Visit, Engage cycle with 3-stage intervention points" loading="lazy" style="width:100%;height:auto;border-radius:14px;">
+  </div>
+  <div class="case-img-full" style="margin-top:1.5rem;">
+    <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:1rem;">
+      <img src="img/share-ui-1.png" alt="Reddit share sheet — streamlined sharing interface" loading="lazy" style="width:100%;height:auto;border-radius:14px;">
+      <img src="img/share-ui-2.png" alt="Reddit share flow — channel selection" loading="lazy" style="width:100%;height:auto;border-radius:14px;">
+      <img src="img/share-ui-3.png" alt="Reddit share preview — link embed appearance" loading="lazy" style="width:100%;height:auto;border-radius:14px;">
+    </div>
+  </div>
+  <div class="case-img-full" style="margin-top:1.5rem;">
+    <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:1rem;">
+      <img src="img/share-ui-4.png" alt="Reddit share UI — privacy controls" loading="lazy" style="width:100%;height:auto;border-radius:14px;">
+      <img src="img/share-ui-5.png" alt="Reddit share UI — embed customization" loading="lazy" style="width:100%;height:auto;border-radius:14px;">
+      <img src="img/share-ui-6.png" alt="Reddit share UI — cross-platform preview" loading="lazy" style="width:100%;height:auto;border-radius:14px;">
+    </div>
+  </div>
+
+  <h2>System</h2>
+  <p>I designed a <strong>3-stage approach</strong>, each stage building on the one before:</p>
+  <ul>
+    <li><strong>Stage 1: Streamline &amp; expand</strong> &mdash; Redesigned the share sheet to reduce friction and added new sharing channels. Focused on making the most common sharing paths (messaging apps, social media) as fast as possible</li>
+    <li><strong>Stage 2: Improve the preview</strong> &mdash; Redesigned link previews and embeds so that shared Reddit content actually looked good on the receiving end. Consistent metadata, rich previews, and proper Open Graph implementation across platforms</li>
+    <li><strong>Stage 3: Privacy as a lever</strong> &mdash; Introduced privacy controls that let users share with confidence. Instead of treating privacy as a constraint on sharing, we reframed it as an enabler &mdash; users share more when they trust the system</li>
+  </ul>
+
+  <h2>Privacy as a growth lever</h2>
+  <p>This was the counterintuitive insight that changed how the team thought about the sharing problem. The conventional growth playbook treats privacy controls as friction &mdash; something that reduces sharing volume. But Reddit's community culture meant that many users were <em>not sharing at all</em> because they couldn't control what was visible.</p>
+  <p>By giving users granular control over what was shared and how, we unlocked sharing from users who had previously opted out entirely. The net effect was positive: privacy controls increased total sharing volume because the pool of willing sharers grew more than the per-share friction reduced it.</p>
+
+  <h2>Outcome</h2>
+  <p>The 3-stage flywheel increased off-platform reach, expanded the number of sharing channels available to users, and established reusable components for the share sheet and embed system that other teams could build on. The privacy-as-growth-lever framework influenced how subsequent growth initiatives approached the tension between user control and distribution.</p>
+
+  <h2>Reflection</h2>
+  <p>This project was a lesson in reframing. The share sheet redesign was the obvious, expected work. The insight that made the project valuable was the flywheel framing &mdash; seeing sharing as a system with multiple intervention points rather than a single feature. And the privacy-as-growth-lever reframe turned what the team initially saw as a blocker into the project's most interesting design decision.</p>
+
+</section>
+
+<div class="case-next">
+  <a href="case-subreddit.html">Next: Subreddit Success &rarr;</a>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-left">
+      <p class="footer-name">Della Sigrest</p>
+      <p class="footer-note">This site was designed collaboratively with AI &mdash; <a href="#">read how</a></p>
+    </div>
+    <div class="footer-right">
+      <a href="mailto:dsigrest@gmail.com">Email</a>
+      <a href="https://linkedin.com/in/dellasigrest" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const toggle = document.querySelector('.nav-toggle');
+  const links = document.querySelector('.nav-links');
+  toggle?.addEventListener('click', () => { links.classList.toggle('open'); toggle.classList.toggle('open'); });
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.metric, .case-img-full').forEach(el => { el.classList.add('fade-in'); observer.observe(el); });
+</script>
+</body>
+</html>

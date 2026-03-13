@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" font-family="Inter, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="tealGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2dd4bf;stop-opacity:0.15"/>
+      <stop offset="100%" style="stop-color:#2dd4bf;stop-opacity:0.05"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="520" rx="12" fill="#131313"/>
+  <rect x="1" y="1" width="898" height="518" rx="11" fill="none" stroke="#1e1e1e" stroke-width="1"/>
+
+  <!-- Title -->
+  <text x="40" y="44" fill="#e8e8e8" font-size="16" font-weight="700" letter-spacing="-0.01em">Inbox 2.0 Strategy Framework</text>
+  <text x="40" y="66" fill="#555" font-size="12" font-weight="500">3 pillars mapped to 5 user cohorts</text>
+
+  <!-- Column headers (pillars) -->
+  <rect x="220" y="90" width="200" height="44" rx="8" fill="url(#tealGrad)" stroke="#2dd4bf" stroke-width="1" stroke-opacity="0.3"/>
+  <text x="320" y="117" fill="#2dd4bf" font-size="13" font-weight="600" text-anchor="middle">Build Habits</text>
+
+  <rect x="440" y="90" width="200" height="44" rx="8" fill="url(#tealGrad)" stroke="#2dd4bf" stroke-width="1" stroke-opacity="0.3"/>
+  <text x="540" y="117" fill="#2dd4bf" font-size="13" font-weight="600" text-anchor="middle">Enable Curation</text>
+
+  <rect x="660" y="90" width="200" height="44" rx="8" fill="url(#tealGrad)" stroke="#2dd4bf" stroke-width="1" stroke-opacity="0.3"/>
+  <text x="760" y="117" fill="#2dd4bf" font-size="13" font-weight="600" text-anchor="middle">Create Focus</text>
+
+  <!-- Row headers (cohorts) -->
+  <text x="40" y="170" fill="#e8e8e8" font-size="13" font-weight="600">New Users</text>
+  <text x="40" y="185" fill="#555" font-size="11">First 7 days</text>
+
+  <text x="40" y="240" fill="#e8e8e8" font-size="13" font-weight="600">Casual Browsers</text>
+  <text x="40" y="255" fill="#555" font-size="11">Weekly visitors</text>
+
+  <text x="40" y="310" fill="#e8e8e8" font-size="13" font-weight="600">Active Contributors</text>
+  <text x="40" y="325" fill="#555" font-size="11">Daily posters</text>
+
+  <text x="40" y="380" fill="#e8e8e8" font-size="13" font-weight="600">Resurrected</text>
+  <text x="40" y="395" fill="#555" font-size="11">Re-engaged lapsed</text>
+
+  <text x="40" y="450" fill="#e8e8e8" font-size="13" font-weight="600">Power / Mod</text>
+  <text x="40" y="465" fill="#555" font-size="11">Heavy daily use</text>
+
+  <!-- Grid cells — intensity indicates priority -->
+  <!-- Row 1: New Users -->
+  <rect x="220" y="152" width="200" height="52" rx="6" fill="#2dd4bf" fill-opacity="0.18" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="320" y="182" fill="#888" font-size="11" text-anchor="middle">Welcome sequences</text>
+
+  <rect x="440" y="152" width="200" height="52" rx="6" fill="#2dd4bf" fill-opacity="0.05" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="540" y="182" fill="#555" font-size="11" text-anchor="middle">Not yet relevant</text>
+
+  <rect x="660" y="152" width="200" height="52" rx="6" fill="#2dd4bf" fill-opacity="0.05" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="760" y="182" fill="#555" font-size="11" text-anchor="middle">Not yet relevant</text>
+
+  <!-- Row 2: Casual -->
+  <rect x="220" y="222" width="200" height="52" rx="6" fill="#2dd4bf" fill-opacity="0.14" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="320" y="252" fill="#888" font-size="11" text-anchor="middle">Trending + digests</text>
+
+  <rect x="440" y="222" width="200" height="52" rx="6" fill="#2dd4bf" fill-opacity="0.10" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="540" y="252" fill="#888" font-size="11" text-anchor="middle">Topic preferences</text>
+
+  <rect x="660" y="222" width="200" height="52" rx="6" fill="#2dd4bf" fill-opacity="0.05" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="760" y="252" fill="#555" font-size="11" text-anchor="middle">Low priority</text>
+
+  <!-- Row 3: Active -->
+  <rect x="220" y="292" width="200" height="52" rx="6" fill="#2dd4bf" fill-opacity="0.10" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="320" y="322" fill="#888" font-size="11" text-anchor="middle">Reply + mention alerts</text>
+
+  <rect x="440" y="292" width="200" height="52" rx="6" fill="#2dd4bf" fill-opacity="0.18" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="540" y="322" fill="#888" font-size="11" text-anchor="middle">Channel controls</text>
+
+  <rect x="660" y="292" width="200" height="52" rx="6" fill="#2dd4bf" fill-opacity="0.10" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="760" y="322" fill="#888" font-size="11" text-anchor="middle">Grouping + filtering</text>
+
+  <!-- Row 4: Resurrected -->
+  <rect x="220" y="362" width="200" height="52" rx="6" fill="#2dd4bf" fill-opacity="0.18" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="320" y="392" fill="#888" font-size="11" text-anchor="middle">Re-engagement hooks</text>
+
+  <rect x="440" y="362" width="200" height="52" rx="6" fill="#2dd4bf" fill-opacity="0.10" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="540" y="392" fill="#888" font-size="11" text-anchor="middle">Refreshed prefs</text>
+
+  <rect x="660" y="362" width="200" height="52" rx="6" fill="#2dd4bf" fill-opacity="0.05" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="760" y="392" fill="#555" font-size="11" text-anchor="middle">Low priority</text>
+
+  <!-- Row 5: Power / Mod -->
+  <rect x="220" y="432" width="200" height="52" rx="6" fill="#2dd4bf" fill-opacity="0.05" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="320" y="462" fill="#555" font-size="11" text-anchor="middle">Already habituated</text>
+
+  <rect x="440" y="432" width="200" height="52" rx="6" fill="#2dd4bf" fill-opacity="0.14" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="540" y="462" fill="#888" font-size="11" text-anchor="middle">Advanced filters</text>
+
+  <rect x="660" y="432" width="200" height="52" rx="6" fill="#2dd4bf" fill-opacity="0.22" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="760" y="462" fill="#888" font-size="11" text-anchor="middle">Unified inbox</text>
+
+  <!-- Legend -->
+  <rect x="40" y="496" width="12" height="12" rx="2" fill="#2dd4bf" fill-opacity="0.22"/>
+  <text x="58" y="507" fill="#555" font-size="10">High priority</text>
+  <rect x="140" y="496" width="12" height="12" rx="2" fill="#2dd4bf" fill-opacity="0.10"/>
+  <text x="158" y="507" fill="#555" font-size="10">Medium</text>
+  <rect x="220" y="496" width="12" height="12" rx="2" fill="#2dd4bf" fill-opacity="0.05"/>
+  <text x="238" y="507" fill="#555" font-size="10">Low / future</text>
+</svg>

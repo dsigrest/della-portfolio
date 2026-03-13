@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notifications & Inbox — Della Sigrest</title>
+<meta name="description" content="How I modernized Reddit's inbox and notification system after 6 years without design investment.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-name">Della Sigrest</a>
+    <div class="nav-links">
+      <a href="index.html" class="active">Work</a>
+      <a href="about.html">About</a>
+      <a href="#">Resume</a>
+      <a href="mailto:dsigrest@gmail.com">Contact</a>
+    </div>
+    <button class="nav-toggle" aria-label="Menu">
+      <span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<section class="case-hero">
+  <div class="case-hero-eyebrow">Case Study 01 &mdash; Systems Thinking</div>
+  <h1>Notifications & Inbox</h1>
+  <p class="case-hero-sub">Modernized Reddit's inbox after 6 years without dedicated design investment. Built a cohort-segmented engagement strategy that shaped the team's multi-quarter roadmap and freed critical navigation real estate for the platform redesign.</p>
+
+  <div class="case-meta-grid">
+    <div class="meta-item">
+      <label>Role</label>
+      <span>Senior Product Designer (Lead)</span>
+    </div>
+    <div class="meta-item">
+      <label>Team</label>
+      <span>Notifications</span>
+    </div>
+    <div class="meta-item">
+      <label>Timeline</label>
+      <span>2022 &ndash; 2024</span>
+    </div>
+    <div class="meta-item">
+      <label>Platform</label>
+      <span>iOS, Android, Web</span>
+    </div>
+  </div>
+</section>
+
+<section class="case-body">
+
+  <h2>Context</h2>
+  <p>Reddit's inbox and notification systems hadn't had dedicated design investment in approximately six years. I was the first designer assigned to the Notifications team in that span. The surfaces &mdash; push notifications, email digests, the in-app inbox, and chat &mdash; were all managed independently with no unified strategy, no cohort segmentation, and no systematic approach to engagement.</p>
+  <p>This wasn't a visual refresh project. The challenge was to build the strategic foundation for how Reddit communicates with its users &mdash; from scratch, with no existing design vision to inherit.</p>
+
+  <div class="case-img-full">
+    <img src="img/notif-wireframe.png" alt="Reddit inbox wireframe exploration showing notification channel architecture" loading="lazy" style="width:100%;height:auto;border-radius:14px;">
+  </div>
+  <div class="case-img-full" style="margin-top:1.5rem;">
+    <img src="img/notif-figma-base.png" alt="Figma exploration of notification design variants" loading="lazy" style="width:100%;height:auto;border-radius:14px;">
+  </div>
+
+  <h2>Insight</h2>
+  <p>Early in my exploration, I realized that <strong>the inbox wasn't one problem &mdash; it was five different problems for five different user cohorts.</strong> A casual lurker who visits Reddit once a week has fundamentally different notification needs than a power moderator managing 12 communities. A monolithic redesign would fail because it couldn't serve these competing needs simultaneously.</p>
+  <p>This reframe became the strategic backbone: instead of designing one inbox, I designed a segmented engagement system with different strategies for different user types.</p>
+
+  <h2>System</h2>
+  <p>I developed the <strong>Inbox 2.0 strategy</strong> built on three pillars, each mapped to specific user cohort needs:</p>
+  <ul>
+    <li><strong>Build Habits</strong> &mdash; For new and returning users: create consistent, valuable notification patterns that establish Reddit as a daily touchpoint</li>
+    <li><strong>Enable Curation</strong> &mdash; For active users: give people meaningful control over what reaches them and how, reducing noise without reducing engagement</li>
+    <li><strong>Create Focus</strong> &mdash; For power users and moderators: consolidate signal across channels so high-volume users can act efficiently</li>
+  </ul>
+
+  <div class="case-img-full">
+    <img src="img/diagram-inbox-framework.svg" alt="Inbox 2.0 strategy framework — 3 pillars mapped to 5 user cohorts with priority heat map" loading="lazy" style="width:100%;height:auto;border-radius:14px;">
+  </div>
+
+  <p>Simultaneously, I led the <strong>Unified Inbox</strong> initiative — merging notifications and chat into a single tab. This wasn't just a UX improvement; it freed a navigation slot that was critical for Reddit 2.0, the platform's broader redesign. The business case required cross-team negotiation with competing ownership interests across notifications, chat, and the platform team.</p>
+
+  <h2>Experiments</h2>
+  <p>With the strategic framework in place, I ran a series of focused experiments across push notifications, in-app inbox, and notification relevance:</p>
+
+  <p><strong>Push notification optimization.</strong> Redesigned push notification content, timing, and targeting for new users. Tested variations in copy framing, send cadence, and deep-link destinations to find the right balance between engagement lift and notification fatigue.</p>
+
+  <div class="metrics-row">
+    <div class="metric">
+      <div class="metric-num">+1.4%</div>
+      <div class="metric-label">New user DAU</div>
+    </div>
+    <div class="metric">
+      <div class="metric-num">+6.4%</div>
+      <div class="metric-label">PN click-through rate</div>
+    </div>
+    <div class="metric">
+      <div class="metric-num">+5.4%</div>
+      <div class="metric-label">PN good visits</div>
+    </div>
+  </div>
+
+  <p><strong>Subscription notification improvements.</strong> Optimized how subscription-based notifications reached users, improving both click rates and the quality of downstream visits.</p>
+
+  <div class="metrics-row">
+    <div class="metric">
+      <div class="metric-num">+1%</div>
+      <div class="metric-label">PN good visits</div>
+    </div>
+    <div class="metric">
+      <div class="metric-num">+2–3%</div>
+      <div class="metric-label">Subscription good visits</div>
+    </div>
+  </div>
+
+  <p><strong>Inbox modernization.</strong> Redesigned the in-app inbox surface with updated visual hierarchy, clearer notification grouping, and improved action affordances. This work established the component patterns that the Design Systems team later adopted into the shared library.</p>
+
+  <div class="case-img-full">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <img src="img/notif-figma-variant2.png" alt="Notification design variant — grouped layout" loading="lazy" style="width:100%;height:auto;border-radius:14px;">
+      <img src="img/notif-figma-variant3.png" alt="Notification design variant — action-oriented layout" loading="lazy" style="width:100%;height:auto;border-radius:14px;">
+    </div>
+  </div>
+  <div class="case-img-full" style="margin-top:1.5rem;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <img src="img/notif-ui-live.png" alt="Live notification UI in Reddit app" loading="lazy" style="width:100%;height:auto;border-radius:14px;">
+      <img src="img/notif-analytics.png" alt="Notification analytics dashboard showing engagement metrics" loading="lazy" style="width:100%;height:auto;border-radius:14px;">
+    </div>
+  </div>
+
+  <h2>Outcome</h2>
+  <p>The Inbox 2.0 strategy and its three-pillar framework were adopted as the team's multi-quarter roadmap, giving the Notifications team a coherent vision for the first time. The Unified Inbox work freed a critical navigation slot for the Reddit 2.0 platform redesign. And the push notification experiments delivered measurable engagement lifts across multiple surfaces.</p>
+  <p>Beyond the metrics, the patterns I established &mdash; the cohort segmentation framework, the pillar-based strategy structure, the component library contributions &mdash; continued to guide the team's work after I transitioned to my next rotation.</p>
+
+  <h2>Reflection</h2>
+  <p>This project reinforced something I keep coming back to: the most impactful design work is often not about the interface. It's about building the strategic frame that makes good interface decisions possible. The cohort segmentation work &mdash; which produced no visible UI &mdash; was arguably the most valuable contribution, because it gave the team a shared language for making tradeoffs.</p>
+
+</section>
+
+<div class="case-next">
+  <a href="case-ai.html">Next: Keyword Landing Pages / AI &rarr;</a>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-left">
+      <p class="footer-name">Della Sigrest</p>
+      <p class="footer-note">This site was designed collaboratively with AI &mdash; <a href="#">read how</a></p>
+    </div>
+    <div class="footer-right">
+      <a href="mailto:dsigrest@gmail.com">Email</a>
+      <a href="https://linkedin.com/in/dellasigrest" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const toggle = document.querySelector('.nav-toggle');
+  const links = document.querySelector('.nav-links');
+  toggle?.addEventListener('click', () => {
+    links.classList.toggle('open');
+    toggle.classList.toggle('open');
+  });
+
+  // Fade-in on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.metric, .case-img-full').forEach(el => {
+    el.classList.add('fade-in');
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>
