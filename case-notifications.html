@@ -56,10 +56,10 @@
   <p>This wasn't a visual refresh project. The challenge was to build the strategic foundation for how Reddit communicates with its users &mdash; from scratch, with no existing design vision to inherit.</p>
 
   <div class="case-img-full">
-    <img src="img/notif-wireframe.png" alt="Reddit inbox wireframe exploration showing notification channel architecture" loading="lazy" style="width:100%;height:auto;border-radius:14px;">
+    <div class="img-placeholder">Inbox wireframe exploration — pending review</div>
   </div>
   <div class="case-img-full" style="margin-top:1.5rem;">
-    <img src="img/notif-figma-base.png" alt="Figma exploration of notification design variants" loading="lazy" style="width:100%;height:auto;border-radius:14px;">
+    <div class="img-placeholder">Figma notification design variants — pending review</div>
   </div>
 
   <h2>Insight</h2>
@@ -75,7 +75,7 @@
   </ul>
 
   <div class="case-img-full">
-    <img src="img/diagram-inbox-framework.svg" alt="Inbox 2.0 strategy framework — 3 pillars mapped to 5 user cohorts with priority heat map" loading="lazy" style="width:100%;height:auto;border-radius:14px;">
+    <div class="img-placeholder">Inbox 2.0 strategy framework diagram — pending review</div>
   </div>
 
   <p>Simultaneously, I led the <strong>Unified Inbox</strong> initiative — merging notifications and chat into a single tab. This wasn't just a UX improvement; it freed a navigation slot that was critical for Reddit 2.0, the platform's broader redesign. The business case required cross-team negotiation with competing ownership interests across notifications, chat, and the platform team.</p>
@@ -116,15 +116,15 @@
   <p><strong>Inbox modernization.</strong> Redesigned the in-app inbox surface with updated visual hierarchy, clearer notification grouping, and improved action affordances. This work established the component patterns that the Design Systems team later adopted into the shared library.</p>
 
   <div class="case-img-full">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-      <img src="img/notif-figma-variant2.png" alt="Notification design variant — grouped layout" loading="lazy" style="width:100%;height:auto;border-radius:14px;">
-      <img src="img/notif-figma-variant3.png" alt="Notification design variant — action-oriented layout" loading="lazy" style="width:100%;height:auto;border-radius:14px;">
+    <div class="img-placeholder-grid cols-2">
+      <div class="img-placeholder">Notification variant — grouped layout</div>
+      <div class="img-placeholder">Notification variant — action-oriented layout</div>
     </div>
   </div>
   <div class="case-img-full" style="margin-top:1.5rem;">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-      <img src="img/notif-ui-live.png" alt="Live notification UI in Reddit app" loading="lazy" style="width:100%;height:auto;border-radius:14px;">
-      <img src="img/notif-analytics.png" alt="Notification analytics dashboard showing engagement metrics" loading="lazy" style="width:100%;height:auto;border-radius:14px;">
+    <div class="img-placeholder-grid cols-2">
+      <div class="img-placeholder">Live notification UI</div>
+      <div class="img-placeholder">Analytics dashboard</div>
     </div>
   </div>
 
@@ -161,8 +161,6 @@
     links.classList.toggle('open');
     toggle.classList.toggle('open');
   });
-
-  // Fade-in on scroll
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
