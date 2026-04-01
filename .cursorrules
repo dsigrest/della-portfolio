@@ -1,0 +1,290 @@
+# Cursor Rules — Della Sigrest Portfolio
+
+## Project Overview
+- **Type:** Static portfolio site (HTML/CSS/JS, no build step)
+- **Framework:** Vanilla HTML5, CSS3, ES6+ JavaScript
+- **Deployment:** Vercel (della-portfolio.vercel.app)
+- **Purpose:** Product designer portfolio showcasing 6 case studies
+
+---
+
+## Design System Reference
+
+### Architecture
+All design tokens are in `styles.css` using CSS custom properties (`:root {}`):
+- **Colors:** Backgrounds, surfaces, text, borders, accent (teal #2dd4bf)
+- **Typography:** Inter font, 4 weight levels, semantic scale
+- **Spacing:** Responsive padding (clamp functions), consistent gaps
+- **Motion:** 0.25s easing, scroll animations, hover transitions
+- **Shadows:** Minimal hierarchy (subtle → elevated)
+
+### Key Files
+- `DESIGN.md` — Complete design token documentation (consult before changes)
+- `styles.css` — Single source of truth for all visual rules
+- `index.html` — Homepage structure
+- `case-[name].html` — 6 case study pages
+- `about.html` — About page
+
+---
+
+## Code Style & Constraints
+
+### CSS Guidelines
+1. **Use CSS variables exclusively** — Never hardcode colors/sizes
+   ```css
+   /* Good */
+   color: var(--text-primary);
+   transition: all var(--transition);
+   
+   /* Avoid */
+   color: #e8e8e8;
+   transition: all 0.25s;
+   ```
+
+2. **Maintain selector specificity** — Keep selectors as simple as possible
+   ```css
+   /* Good: Direct element + single class */
+   .case-card:hover { }
+   
+   /* Avoid: Deep nesting or combinators */
+   .cases > .case-card .case-content .case-title:hover { }
+   ```
+
+3. **Responsive design** — Use clamp() for fluid typography; mobile-first media queries
+   ```css
+   font-size: clamp(14px, 2vw, 16px);
+   
+   @media (max-width: 768px) {
+     /* Changes for tablet */
+   }
+   ```
+
+4. **Animations** — Always include fallback for prefers-reduced-motion
+   ```css
+   @media (prefers-reduced-motion: reduce) {
+     * { animation-duration: 0.01ms !important; }
+   }
+   ```
+
+5. **Accessibility** — Maintain WCAG AA contrast ratios, no color-only information
+   ```css
+   color-contrast: 4.5:1 minimum for body text
+   ```
+
+### HTML Guidelines
+1. **Semantic markup** — Use HTML5 elements correctly (`<nav>`, `<main>`, `<article>`, `<footer>`)
+2. **Class naming** — BEM-inspired, single class per element when possible
+   ```html
+   <!-- Good -->
+   <div class="case-card">
+     <div class="case-img">...</div>
+     <div class="case-content">...</div>
+   </div>
+   
+   <!-- Avoid -->
+   <div class="card card-large card-dark">...</div>
+   ```
+
+3. **Data attributes** — For JavaScript hooks (separate from styling)
+   ```html
+   <button data-action="expand">Show More</button>
+   ```
+
+4. **Accessibility attributes** — aria-labels, role attributes where needed
+
+### JavaScript Guidelines
+1. **Vanilla JS only** — No frameworks or bundlers
+2. **Event delegation** — Attach listeners to parent when managing multiple elements
+3. **Performance** — Debounce scroll/resize handlers
+4. **Mobile menu** — Toggle `.open` class on `.nav-links` and `.nav-toggle`
+
+---
+
+## Dark Mode & Brand Identity
+
+### Color Palette (Dark Mode Only)
+- **Primary background:** `#0b0b0b` (--bg)
+- **Surface:** `#131313` (--surface), hover to `#191919`
+- **Text:** `#e8e8e8` primary, `#888` secondary, `#555` tertiary
+- **Accent:** `#2dd4bf` teal — use for CTAs, highlights, interactive feedback
+- **Borders:** `#1e1e1e` default, `#2a2a2a` hover
+
+### Typography
+- **Font:** Inter (no fallback needed, already loaded)
+- **Hero H1:** clamp(34px, 4.5vw, 52px), weight 700, line-height 1.12
+- **Body:** 16px, weight 400, line-height 1.8, color --text-secondary
+- **Metadata:** 11-13px, weight 600 or 500, uppercase when semantic
+
+### Motion & Interactions
+- **Transitions:** 0.25s cubic-bezier(0.4, 0, 0.2, 1) standard
+- **Hover states:** Change color, add subtle transform, elevate shadow
+- **Scroll animations:** Fade-in + slideY(16px) on entry
+- **No autoplay media:** Respect user preferences
+
+---
+
+## Page Structure
+
+### Index (Homepage)
+1. **Navigation** — Fixed top nav with links (Home, Work, About)
+2. **Hero** — Full-height intro with eyebrow, h1, subtitle, CTA
+3. **Pillars** — 2-column grid of skill/approach summaries
+4. **Cases** — 6 case cards stacked vertically, hover reveals accent colors
+5. **Footer** — Copyright, social links, contact
+
+### Case Study Pages
+1. **Hero** — Page-level h1, eyebrow (accent color), subtitle
+2. **Meta Grid** — Horizontal display of Role, Timeline, Team, Tools
+3. **Body** — Long-form narrative with h2s, p, ul, blockquotes, images
+4. **Metrics** — Grid of key numbers (if applicable)
+5. **Images** — Full-width or grid layouts with proper aspect ratios
+6. **Next Case** — Link to related case study at bottom
+
+### About Page
+1. **Hero** — About h1, subtitle
+2. **Body** — Paragraphs with optional h2 breaks
+3. **Links** — Resume, GitHub, LinkedIn, etc.
+
+---
+
+## Common Tasks
+
+### Change Accent Color (Currently Teal)
+1. Open `styles.css`
+2. In `:root {}`, update `--accent: #2dd4bf` to new hex
+3. Also update:
+   - `--accent-dim: rgba(...)`
+   - `--accent-hover: rgba(...)`
+   - `--accent-muted: rgba(...)`
+4. Test contrast against backgrounds (WCAG AA minimum 4.5:1)
+
+### Adjust Spacing
+1. **Large sections:** Modify bottom margins (e.g., `margin-bottom: 80px`)
+2. **Component padding:** Change `.pillar`, `.case-content`, `.case-body`
+3. **Gaps:** Update `gap` values in grid definitions
+4. Reference `DESIGN.md` for current values before changing
+
+### Add New Case Study
+1. Create `case-[name].html` from existing case study template
+2. Update navigation links in `index.html`
+3. Follow existing `.case-hero`, `.case-body` structure
+4. Ensure all images use proper paths (`img/[name].png`)
+5. Link from index.html case cards
+
+### Optimize Images
+1. Export from design tool at 2x resolution for retina
+2. Compress with TinyPNG or similar (target < 300KB per image)
+3. Use PNG for diagrams/icons, JPEG for photos
+4. Update paths in HTML (always use relative paths: `img/file.png`)
+
+### Update Typography
+1. Change sizes in `.case-body h2`, `.hero h1`, etc.
+2. Use clamp() for responsive scaling
+3. Test readability at mobile (375px) and desktop (1400px)
+4. Update DESIGN.md with new values
+
+### Add Animation
+1. Define `@keyframes` at bottom of relevant section
+2. Apply with `animation: name duration easing`
+3. Include `@media (prefers-reduced-motion: reduce)` fallback
+4. Test with actual user preference setting in OS
+
+### Deploy to Vercel
+```bash
+# Changes auto-deploy on push to main
+git add .
+git commit -m "Clear description of changes"
+git push origin main
+```
+
+---
+
+## Integration with Stitch & Claude
+
+### Stitch Workflow
+1. Export `DESIGN.md` to Stitch (copy/paste content into Stitch canvas)
+2. Stitch generates moodboards, component variations, layout explorations
+3. Export updated tokens back to `DESIGN.md`
+4. Claude reads updated `DESIGN.md` and implements changes in Cursor
+
+### Claude Code Workflow
+1. Claude reads `DESIGN.md` for all token values
+2. Claude uses Visual Editor to drag/drop HTML elements
+3. CSS updates flow to `styles.css` automatically
+4. Claude tests with prefers-reduced-motion, mobile breakpoints, color contrast
+
+### File Handoff
+- **From Stitch to Claude:** Updated `DESIGN.md`
+- **From Claude to you:** Ready-to-deploy changes in `styles.css`
+- **Keep in sync:** Never edit `DESIGN.md` manually; always export from Stitch or document changes
+
+---
+
+## Accessibility & Performance
+
+### WCAG AA Compliance
+- Text contrast: 4.5:1 minimum (primary on background)
+- Interactive elements: 44×44px minimum touch target
+- Color not sole indicator (use text, icons, borders)
+- Keyboard navigation functional on all links/buttons
+- Focus states visible (use `:focus-visible`)
+
+### Performance Targets
+- Page load: < 2s (Vercel CDN optimized)
+- Lighthouse: 90+ (Performance, Accessibility, Best Practices)
+- Images: Responsive and optimized
+- No unused CSS (monolithic styles.css is intentional)
+- No JavaScript dependencies (vanilla only)
+
+### Mobile Optimization
+- Responsive typography (clamp functions)
+- Touch-friendly spacing and targets
+- Full-width sections scale to viewport
+- Hamburger menu on < 768px
+- Test on actual devices (not just browser DevTools)
+
+---
+
+## Quick Reference: Key Token Values
+
+```css
+/* Colors */
+--accent: #2dd4bf (teal brand color)
+--text-primary: #e8e8e8
+--text-secondary: #888
+--surface: #131313
+
+/* Typography */
+Hero H1: clamp(34px, 4.5vw, 52px), weight 700
+Body: 16px, weight 400, line-height 1.8
+
+/* Spacing */
+--nav-h: 64px
+--max-w: 1120px
+--side-pad: clamp(24px, 5vw, 64px)
+Section bottom margin: 80px or 120px
+
+/* Motion */
+--transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1)
+--transition-fast: 0.15s ease
+
+/* Layout */
+Pillars: 2-column grid (768px breaks to 1)
+Cases: Single-column stack with 200px image column
+Responsive breakpoints: 768px (tablet), 480px (mobile)
+```
+
+---
+
+## When in Doubt
+1. Check `DESIGN.md` for token values and patterns
+2. Look at existing similar components in `styles.css`
+3. Test in Cursor's Visual Editor before finalizing
+4. Verify mobile responsiveness (use Chrome DevTools)
+5. Run through accessibility checklist (contrast, focus, keyboard nav)
+
+---
+
+**Document Version:** 1.0  
+**Last Updated:** April 2026  
+**Maintainer:** Design system managed via Stitch + Claude

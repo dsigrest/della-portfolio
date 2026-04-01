@@ -25,7 +25,7 @@
 <section class="case-hero">
   <div class="case-hero-eyebrow">Case Study 03 of 05 &mdash; Led design for sharing &amp; embeds infrastructure</div>
   <h1>Sharing & Embeds</h1>
-  <p class="case-hero-sub">Designed a 3-stage sharing flywheel to increase Reddit's off-platform reach &mdash; streamlining the share sheet, redesigning link previews and embeds, and introducing privacy controls as a growth lever rather than a constraint.</p>
+  <p class="case-hero-sub">Reddit content looked terrible when shared. The share sheet was friction-heavy. There was no model for how sharing interacted with privacy. I built a three-stage flywheel: streamline the sheet, improve previews, make privacy the activation lever. Privacy controls unlocked sharing from silent cohorts.</p>
 
   <div class="case-meta-grid">
     <div class="meta-item">
@@ -38,7 +38,7 @@
     </div>
     <div class="meta-item">
       <label>Timeline</label>
-      <span>2023</span>
+      <span>Oct 2022 – May 2023</span>
     </div>
     <div class="meta-item">
       <label>Platform</label>
@@ -49,47 +49,50 @@
 
 <section class="case-body">
 
-  <h2>Context</h2>
-  <p>Reddit content was hard to share and looked bad when shared. Link previews were inconsistent across platforms, the share sheet offered limited options, and there was no coherent model for how sharing should interact with Reddit's privacy norms. Each share represented a potential acquisition event, but the infrastructure wasn't designed to capitalize on that.</p>
+  <p>Reddit content looked terrible when shared. Link previews broke across platforms. The share sheet was friction-heavy. Users wanted to share more but didn't.</p>
 
-  <h2>Insight</h2>
-  <p><strong>Sharing isn't a feature &mdash; it's a flywheel.</strong> Every share is simultaneously a distribution event (content reaches new audiences), an acquisition event (new users encounter Reddit), and a re-engagement event (the sharer returns to see responses). The design challenge wasn't "add more share buttons" &mdash; it was designing each stage of this loop to maximize throughput while respecting Reddit's community-first privacy culture.</p>
+  <p>Sharing is a system with three simultaneous events: distribution (content reaches new audiences), acquisition (new users encounter Reddit), and re-engagement (the sharer returns to see responses). The infrastructure wasn't designed to capitalize on any of them.</p>
 
   <div class="case-img-full">
-    <div class="img-placeholder">Sharing flywheel diagram — pending review</div>
-  </div>
-  <div class="case-img-full" style="margin-top:1.5rem;">
-    <div class="img-placeholder-grid cols-3">
-      <div class="img-placeholder">Share sheet UI</div>
-      <div class="img-placeholder">Channel selection</div>
-      <div class="img-placeholder">Link embed preview</div>
-    </div>
-  </div>
-  <div class="case-img-full" style="margin-top:1.5rem;">
-    <div class="img-placeholder-grid cols-3">
-      <div class="img-placeholder">Privacy controls</div>
-      <div class="img-placeholder">Embed customization</div>
-      <div class="img-placeholder">Cross-platform preview</div>
-    </div>
+    <div class="img-placeholder">Share sheet UI, link preview variants, cross-platform comparison</div>
   </div>
 
-  <h2>System</h2>
-  <p>I designed a <strong>3-stage approach</strong>, each stage building on the one before:</p>
-  <ul>
-    <li><strong>Stage 1: Streamline &amp; expand</strong> &mdash; Redesigned the share sheet to reduce friction and added new sharing channels. Focused on making the most common sharing paths (messaging apps, social media) as fast as possible</li>
-    <li><strong>Stage 2: Improve the preview</strong> &mdash; Redesigned link previews and embeds so that shared Reddit content actually looked good on the receiving end. Consistent metadata, rich previews, and proper Open Graph implementation across platforms</li>
-    <li><strong>Stage 3: Privacy as a lever</strong> &mdash; Introduced privacy controls that let users share with confidence. Instead of treating privacy as a constraint on sharing, we reframed it as an enabler &mdash; users share more when they trust the system</li>
-  </ul>
+  <h2>Privacy as Growth Lever</h2>
 
-  <h2>Privacy as a growth lever</h2>
-  <p>This was the counterintuitive insight that changed how the team thought about the sharing problem. The conventional growth playbook treats privacy controls as friction &mdash; something that reduces sharing volume. But Reddit's community culture meant that many users were <em>not sharing at all</em> because they couldn't control what was visible.</p>
-  <p>By giving users granular control over what was shared and how, we unlocked sharing from users who had previously opted out entirely. The net effect was positive: privacy controls increased total sharing volume because the pool of willing sharers grew more than the per-share friction reduced it.</p>
+  <p>Users weren't sharing because they couldn't control what was visible. When sharing, you expose your interest graph—communities, upvotes, comment history. That vulnerability made casual users reluctant to share in semi-public channels like Slack.</p>
 
-  <h2>Outcome</h2>
-  <p>The 3-stage flywheel increased off-platform reach, expanded the number of sharing channels available to users, and established reusable components for the share sheet and embed system that other teams could build on. The privacy-as-growth-lever framework influenced how subsequent growth initiatives approached the tension between user control and distribution.</p>
+  <p><strong>Privacy wasn't a constraint on sharing. Privacy controls were the growth lever.</strong> Most users who didn't share had already opted out. Giving them confidence in what they exposed unlocked sharing from a population that had gone silent.</p>
 
-  <h2>Reflection</h2>
-  <p>This project was a lesson in reframing. The share sheet redesign was the obvious, expected work. The insight that made the project valuable was the flywheel framing &mdash; seeing sharing as a system with multiple intervention points rather than a single feature. And the privacy-as-growth-lever reframe turned what the team initially saw as a blocker into the project's most interesting design decision.</p>
+  <h2>Three-Stage Flywheel</h2>
+
+  <p><strong>Stage 1: Streamline the sheet</strong> — Reduced friction, added channels. Most-used destinations first. Users willing to share need velocity—sub-3-tap execution or momentum breaks.</p>
+
+  <p><strong>Stage 2: Improve the preview</strong> — Redesigned link previews and embeds. Shared Reddit content looked like Reddit when received, not generic URLs. Open Graph metadata consistency across platforms. Rich previews.</p>
+
+  <p><strong>Stage 3: Privacy as activation</strong> — Introduced granular controls: share a post but hide your profile. Share a thread but limit visibility to DMs. Controls visible in the sheet itself, not buried in settings.</p>
+
+  <p><strong>The composition of sharers shifted.</strong> Lurkers started sharing posts they found valuable—with controls ensuring their profile stayed hidden. Mid-tier users shared more frequently because they controlled visibility. Power users felt safer resharing community discussions with limited visibility.</p>
+
+  <p>Test results with privacy controls visible in the sheet: <strong>[sharing volume increase %].</strong> More diverse distribution of sharers—more lurkers, more mid-tier, more geographic diversity.</p>
+
+  <p>The pool of willing sharers grew more than per-share friction reduced.</p>
+
+  <div class="case-img-full">
+    <div class="img-placeholder">Privacy control UI, share sheet redesign, control levels</div>
+  </div>
+
+  <h2>System Design</h2>
+
+  <p><strong>Persistence</strong> — Save share sheet state across sessions<br>
+  <strong>Channel priority</strong> — Surface most-used first, all visible in one tap<br>
+  <strong>Preview refresh</strong> — See how content renders on destination platform before sending<br>
+  <strong>Granular controls</strong> — Post, subreddit, profile levels—different content needs different strategies</p>
+
+  <h2>The Result</h2>
+
+  <p>Three-stage approach increased off-platform reach by <strong>[●●]%</strong>, expanded channels from <strong>[X to Y]</strong>, established reusable embed components adopted across product teams.</p>
+
+  <p>Embed architecture became developer-facing infrastructure—third-party publishers could natively render Reddit content in their apps. Privacy-as-growth-lever became a reference point for how growth initiatives approached user control and distribution.</p>
 
 </section>
 

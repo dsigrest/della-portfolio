@@ -25,7 +25,7 @@
 <section class="case-hero">
   <div class="case-hero-eyebrow">Case Study 02 of 05 &mdash; Pioneered AI-forward design practice at Reddit</div>
   <h1>Keyword Landing Pages / AI</h1>
-  <p class="case-hero-sub">Designed Reddit's first LLM-powered product &mdash; consolidating thousands of competing SEO links into AI-summarized pages. Established a 3-layer content governance model and a cross-functional prompt design workflow that became the template for subsequent AI teams.</p>
+  <p class="case-hero-sub">How do you establish trust in content you can't fully control? I designed Reddit's first LLM product with a 3-layer governance system: visual identification, tone guidelines, and cross-functional prompt review. The workflow scaled to every subsequent AI product.</p>
 
   <div class="case-meta-grid">
     <div class="meta-item">
@@ -38,7 +38,7 @@
     </div>
     <div class="meta-item">
       <label>Timeline</label>
-      <span>2024</span>
+      <span>Jun 2023 – Dec 2023</span>
     </div>
     <div class="meta-item">
       <label>Platform</label>
@@ -49,65 +49,57 @@
 
 <section class="case-body">
 
-  <h2>Context</h2>
-  <p>Reddit had thousands of competing SEO links for the same topics &mdash; fragmenting traffic across duplicate and near-duplicate pages. The organization wanted to use large language models to consolidate these into unified summary pages that would serve both search engines and users arriving from Google.</p>
-  <p>The catch: Reddit had no precedent for AI-generated content in its product. There were no guidelines for how LLM output should look, sound, be attributed, or be governed. This wasn't a design system problem &mdash; it was a trust problem.</p>
+  <p><strong>How do you establish trust in content you can't fully control?</strong></p>
+
+  <p>Reddit wanted to consolidate fragmented SEO traffic using LLMs. Straightforward product idea. The design problem: the organization had no precedent for AI-generated content, no guidelines, no framework for handling non-deterministic output.</p>
+
+  <p><strong>Trust in AI-generated content is a systems problem.</strong> Design for the range of possible outputs, not the happy path.</p>
 
   <div class="case-img-full">
-    <div class="img-placeholder-grid cols-2">
-      <div class="img-placeholder">KLP product UI — pending review</div>
-      <div class="img-placeholder">KLP search results — pending review</div>
-    </div>
+    <div class="img-placeholder">KLP product UI, prototype variations, edge case states</div>
   </div>
 
-  <h2>Insight</h2>
-  <p><strong>The design challenge wasn't "make a summary page." It was "establish trust in non-deterministic content."</strong> Every design decision had to account for the fact that the output couldn't be fully controlled. Unlike traditional product surfaces where the designer specifies exact content, LLM-powered pages meant designing for a range of possible outputs &mdash; some accurate, some not, all unpredictable.</p>
-  <p>This reframe shifted the work from visual design to systems design: building the governance, evaluation, and presentation layers that would make AI content trustworthy at scale.</p>
+  <h2>3-Layer Governance System</h2>
 
-  <h2>System</h2>
-  <p>I designed a <strong>3-layer governance model</strong> for AI-generated content:</p>
-  <ul>
-    <li><strong>Visual identification</strong> &mdash; Clear, consistent signals that content was AI-generated. Not buried in fine print, but woven into the surface design so users always understood what they were reading</li>
-    <li><strong>Tone and voice</strong> &mdash; Guidelines for how AI-summarized content should sound when representing Reddit's communities. Partnered with content design to ensure the voice was informative without being authoritative about subjective topics</li>
-    <li><strong>Prompt design workflow</strong> &mdash; A novel cross-functional review process bringing together content design, AI engineering, and product design to evaluate and iterate on prompts before they reached production</li>
-  </ul>
+  <p>I designed a <strong>3-layer governance system:</strong></p>
+
+  <ol>
+    <li><strong>Visual identification</strong> — Clear signals that content was AI-generated, woven into structure. Not a badge. A commitment to transparency.</li>
+    <li><strong>Tone and voice</strong> — Guidelines ensuring summaries were informative without falsely claiming authority. The voice reflected synthesis, not journalism.</li>
+    <li><strong>Prompt design workflow</strong> — A cross-functional review process: content design, AI engineering, product design evaluating prompts before production.</li>
+  </ol>
+
+  <h2>Prompt Design Workflow</h2>
+
+  <p>Before this, prompt design was engineering-only. Product and design reviewed outputs but had no role in shaping inputs.</p>
+
+  <p>I established a process where product and design partnered with ML engineers to analyze prompts for accuracy, tone alignment, edge case handling, and trust signals. Each prompt was stress-tested: what happens with contentious topics? Contradicting sources? Inadvertent bias?</p>
+
+  <p>The review interface used progressive disclosure—reviewers drilled into failing prompts without context-switching—reducing cognitive load for high-volume review. The pattern became a template for design review systems on subsequent AI teams.</p>
+
+  <p>The system functioned as developer tooling: standardized how product teams interfaced with LLM capabilities. It defined input schemas, evaluation criteria, review gates. Later AI products reused this architecture.</p>
 
   <div class="case-img-full">
-    <div class="img-placeholder">3-layer AI governance model diagram — pending review</div>
+    <div class="img-placeholder">Prompt design workflow, governance model, review criteria</div>
   </div>
 
-  <h2>The prompt design workflow</h2>
-  <p>This was the most novel contribution and the one that had the most lasting organizational impact. Before this project, prompt design at Reddit was an engineering concern &mdash; product and design teams reviewed outputs but had no structured role in shaping inputs.</p>
-  <p>I piloted a <strong>cross-functional prompt design review</strong> where content designers, AI engineers, and product designers collaboratively evaluated prompts against criteria including: accuracy, tone alignment, edge case handling, and trust signals. This process formalized design's role in AI product development and was adopted by subsequent AI teams at Reddit as their default workflow.</p>
+  <h2>Trust Decisions as Policy</h2>
 
-  <p>In practice, the prompt design system I built functioned as <strong>internal developer tooling</strong> &mdash; standardizing how product teams interfaced with LLM capabilities across Reddit's platform. It defined input schemas, evaluation criteria, and review gates that gave teams a repeatable process for shipping AI-powered features safely. This was platform infrastructure, not just a one-off product decision.</p>
+  <p><strong>AI authorship prominence</strong> — Too subtle: users didn't know they were reading AI. Too prominent: feature collapsed. The signal had to be discoverable, not obtrusive.</p>
 
-  <div class="case-img-full">
-    <div class="img-placeholder-grid cols-2">
-      <div class="img-placeholder">KLP strategy slide — prompt design workflow</div>
-      <div class="img-placeholder">KLP strategy slide — review process</div>
-    </div>
-  </div>
-  <div class="case-img-full" style="margin-top:1.5rem;">
-    <div class="img-placeholder">Final KLP product UI — pending review</div>
-  </div>
+  <p><strong>Attribution models</strong> — Source links vs. inline citations vs. no direct attribution. Each carried different trust implications for communities with strong attribution norms.</p>
 
-  <h2>Trust as a design problem</h2>
-  <p>Designing for non-deterministic output required treating trust as a first-class design problem, not an afterthought. Key decisions included:</p>
-  <ul>
-    <li>How prominently to signal AI authorship (balancing transparency with cognitive load)</li>
-    <li>When to show source links vs. inline citations vs. no attribution</li>
-    <li>How to handle cases where the AI summary contradicts the source threads</li>
-    <li>What the failure state should look like when content quality falls below threshold</li>
-  </ul>
-  <p>These weren't aesthetic decisions &mdash; they were policy decisions expressed through interface design. Each one required cross-functional alignment between legal, policy, engineering, and design.</p>
+  <p><strong>Contradiction handling</strong> — When AI summary contradicted sources, what should we show? Degrade it? Flag it? Surface disagreement?</p>
 
-  <h2>Outcome</h2>
-  <p>Reddit's first shipped LLM-powered product. The keyword landing pages consolidated fragmented SEO traffic into unified, AI-summarized experiences. More importantly, the governance model and prompt design workflow established organizational infrastructure for AI product development that outlasted the specific project.</p>
-  <p>The prompt design review process became the template used by subsequent AI teams, including the team that built Reddit Answers. The trust framework &mdash; visual identification, tone guidelines, evaluation criteria &mdash; became the starting point for Reddit's broader approach to AI-generated content.</p>
+  <p><strong>Failure states</strong> — Below-threshold quality triggered what? Degraded summary? Human curation fallback? Feature removal?</p>
 
-  <h2>Reflection</h2>
-  <p>This project convinced me that the most valuable design skill in AI product development isn't prompt engineering or interface design &mdash; it's the ability to design the processes and governance structures that make AI trustworthy. The prompt design review workflow was a process invention, not a product invention, and it had more organizational impact than any individual screen.</p>
+  <h2>The Result</h2>
+
+  <p>Reddit's first LLM-powered product shipped. Traffic consolidated. Users engaged with unified AI-summarized pages instead of bouncing across duplicates.</p>
+
+  <p>The governance model and prompt design workflow became the template for subsequent AI teams, including the Answers product. The trust framework—visual identification, tone guidelines, evaluation criteria—became Reddit's starting point for all AI-generated content.</p>
+
+  <p>A senior engineer: "Before this, we shipped AI features and hoped users didn't notice unpredictability. After this, we designed the experience <em>of</em> AI."</p>
 
 </section>
 

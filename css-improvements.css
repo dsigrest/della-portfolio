@@ -1,0 +1,305 @@
+/**
+ * CSS IMPROVEMENTS: TIER 1 + TIER 2
+ * Portfolio Site - Della Sigrest
+ * 
+ * OVERVIEW:
+ * This file contains high-impact CSS improvements extracted from the UI recommendation.
+ * Tier 1 improvements (highest impact, 1-2 hours): accent prominence, padding, contrast
+ * Tier 2 improvements (visual polish, 2-3 hours): shadows, typography, spacing
+ * 
+ * IMPLEMENTATION:
+ * 1. Review each section below
+ * 2. Copy relevant CSS rules to styles.css (update :root and component selectors)
+ * 3. Use Cursor's Visual Editor to preview changes in real-time
+ * 4. Test on mobile (480px, 768px breakpoints)
+ * 5. Update DESIGN.md once changes are locked in
+ * 
+ * FILES TO MODIFY: styles.css (only modify, don't create new files)
+ * WORKFLOW: Cursor Visual Editor → drag/drop changes → see CSS updates live
+ */
+
+/* ============================================================================
+   TIER 1: IMMEDIATE HIGH-IMPACT IMPROVEMENTS (1-2 hours)
+   ============================================================================ */
+
+/* ----- 1. ENHANCE COLOR CONTRAST (Accessibility + Visual Clarity) ----- */
+
+:root {
+  /* Update secondary text colors for better readability on dark backgrounds */
+  /* CHANGE FROM: #888 TO: #a0a0a0 (brighten secondary text) */
+  /* CHANGE FROM: #555 TO: #666 (brighten tertiary text) */
+  --text-secondary: #a0a0a0;  /* was #888 — improves contrast on dark bg */
+  --text-tertiary:  #666;      /* was #555 — more visible for metadata */
+  
+  /* Add new surface variants for micro-contrast layers */
+  --surface-alt:    #0f0f0f;   /* NEW: darker alternate surface for depth */
+  --surface-bright: #1a1a1a;   /* NEW: brighter surface for highlighted content */
+}
+
+/* ----- 2. STRENGTHEN ACCENT COLOR PRESENCE (CTA & Tags) ----- */
+
+/* Make CTAs more prominent with accent color border + transparent background */
+.hero-cta {
+  background: transparent;        /* was: no background (inherited) */
+  border: 1.5px solid var(--accent);  /* upgrade from border-hover state */
+  color: var(--accent);           /* was: text-primary — now emphasizes brand */
+  font-weight: 700;               /* was: 600 — stronger visual weight */
+  transition: all var(--transition);
+}
+
+.hero-cta:hover {
+  background: rgba(45, 212, 191, 0.08);  /* subtle teal wash on hover */
+  border-color: var(--accent);
+  transform: translateY(-2px);    /* micro lift on interaction */
+}
+
+/* Enhance case tags with accent color + border */
+.case-tag {
+  color: var(--accent);
+  background: var(--accent-dim);  /* keep existing dimmed background */
+  border: 1px solid rgba(45, 212, 191, 0.2);  /* NEW: subtle teal border */
+  font-weight: 700;               /* was: 600 — stronger emphasis */
+  transition: all var(--transition);
+}
+
+.case-tag:hover {
+  border-color: rgba(45, 212, 191, 0.4);
+  background: rgba(45, 212, 191, 0.15);
+}
+
+/* ----- 3. INCREASE PADDING FOR DARK MODE BREATHING ROOM ----- */
+
+/* Dark mode requires 20-30% more whitespace than light mode */
+/* Cards and sections should feel less cramped */
+
+.case-content {
+  /* was: padding 28px 32px */
+  padding: 36px 40px;  /* +28% increase for breathing room */
+}
+
+.case-card {
+  /* Slightly increase padding for visual breathing */
+  padding: 0;  /* card maintains border-based structure */
+}
+
+.pillar {
+  /* was: padding 40px 36px */
+  padding: 48px 44px;  /* +20% increase for better visual hierarchy */
+}
+
+/* Increase body section padding for better visual separation */
+.case-body {
+  /* was: padding 60px var(--side-pad) 120px */
+  padding: 80px var(--side-pad) 140px;  /* +33% top/bottom increase */
+}
+
+.nav-links {
+  /* Slight increase for mobile nav comfort */
+  padding: 16px 0;
+}
+
+/* ============================================================================
+   TIER 2: VISUAL POLISH & REFINEMENT (2-3 hours)
+   ============================================================================ */
+
+/* ----- 4. ENHANCED SHADOW HIERARCHY FOR DEPTH ----- */
+
+:root {
+  /* Add shadow hierarchy for layered visual depth */
+  /* These complement existing shadows and provide variation */
+  --shadow-sm:  0 2px 4px rgba(0,0,0,0.1);    /* subtle: hover states */
+  --shadow-md:  0 8px 16px rgba(0,0,0,0.15);  /* medium: active cards */
+  --shadow-lg:  0 16px 32px rgba(0,0,0,0.2);  /* large: emphasized state */
+  --shadow-xl:  0 24px 48px rgba(0,0,0,0.25); /* extra large: maximum elevation */
+}
+
+.case-card {
+  /* was: box-shadow: 0 4px 12px rgba(0,0,0,0.2); */
+  box-shadow: var(--shadow-sm);  /* start subtle */
+  transition: all var(--transition);
+}
+
+.case-card:hover {
+  /* was: box-shadow: 0 8px 24px rgba(0,0,0,0.3); */
+  box-shadow: var(--shadow-lg);  /* elevate on hover */
+  transform: translateY(-4px);   /* lift card for tactile feel */
+}
+
+/* Subtle shadows on interactive elements */
+a, button {
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+
+a:hover, button:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+/* ----- 5. STRONGER HERO TYPOGRAPHY HIERARCHY ----- */
+
+.hero h1 {
+  /* was: font-size clamp(34px, 4.5vw, 52px) */
+  font-size: clamp(38px, 5vw, 56px);  /* larger max size for stronger presence */
+  font-weight: 700;
+  letter-spacing: -0.04em;  /* tighter spacing for impact */
+  line-height: 1.1;  /* tighter line-height for heading presence */
+}
+
+.hero-subtitle {
+  /* was: font-size 17px, line-height 1.75 */
+  font-size: 18px;     /* slightly larger for better hierarchy */
+  line-height: 1.8;    /* more breathing room for readability */
+  color: var(--text-secondary);
+  margin-bottom: 32px; /* was 28px — slightly more space before CTA */
+}
+
+.hero h2 {
+  /* secondary headings slightly more prominent */
+  font-size: clamp(24px, 3.5vw, 36px);
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+/* ----- 6. REFINED SPACING BETWEEN TEXT BLOCKS ----- */
+
+.case-body h2 {
+  /* was: margin-top 64px, margin-bottom 20px */
+  margin-top: 72px;      /* +12% increase for visual breathing */
+  margin-bottom: 24px;   /* was 20px — more space before body text */
+  letter-spacing: -0.025em;  /* refined letter spacing */
+  font-weight: 700;
+}
+
+.case-body h3 {
+  margin-top: 56px;
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+
+.case-body p {
+  /* was: margin-bottom 20px, line-height 1.8 */
+  margin-bottom: 24px;   /* more breathing room between paragraphs */
+  line-height: 1.85;     /* slightly more generous line-height */
+  color: var(--text-primary);
+}
+
+.case-body p + p {
+  margin-top: 16px;  /* explicit spacing between consecutive paragraphs */
+}
+
+.pillar h3 {
+  /* was: margin-bottom 8px, font-weight 600 */
+  margin-bottom: 12px;   /* more space between heading and content */
+  font-weight: 700;      /* upgrade from 600 for stronger hierarchy */
+}
+
+.pillar p {
+  line-height: 1.8;      /* improve readability in pillar sections */
+  margin-bottom: 12px;   /* consistent spacing in pillars */
+}
+
+/* ----- 7. REFINED BORDER & DIVIDER STRATEGY ----- */
+
+:root {
+  /* Vary border opacity based on hierarchy */
+  /* These replace uniform #1e1e1e borders */
+  --border-soft:    rgba(255, 255, 255, 0.04);  /* NEW: subtle dividers */
+  --border:         rgba(255, 255, 255, 0.08);  /* was #1e1e1e — softer weight */
+  --border-hover:   rgba(255, 255, 255, 0.12);  /* NEW: border on hover */
+}
+
+.case-card {
+  /* was: border 1px solid #1e1e1e */
+  border: 1px solid var(--border);  /* softer border weight */
+}
+
+.case-meta-grid {
+  /* was: border-top/bottom 1px solid #1e1e1e */
+  border-top: 1px solid var(--border-soft);      /* use soft variant */
+  border-bottom: 1px solid var(--border-soft);   /* less visual weight */
+}
+
+hr, .divider {
+  border: none;
+  border-top: 1px solid var(--border-soft);
+}
+
+/* Subtle hover state for borders on interactive elements */
+.case-card:hover {
+  border-color: var(--border-hover);  /* subtle border enhancement */
+}
+
+/* ============================================================================
+   IMPLEMENTATION NOTES FOR DELLA
+   ============================================================================ */
+
+/*
+ * HOW TO APPLY THESE CHANGES:
+ * 
+ * 1. COPY :root VARIABLES
+ *    - Copy all new :root variables (--text-secondary, --text-tertiary, etc.)
+ *    - Paste into your styles.css :root section
+ *    - Replace existing values where indicated
+ * 
+ * 2. UPDATE COMPONENT SELECTORS
+ *    - Find each selector in styles.css (e.g., .hero-cta, .case-card)
+ *    - Replace the relevant CSS rules with ones from this file
+ *    - Keep any other properties unchanged
+ * 
+ * 3. USE CURSOR VISUAL EDITOR
+ *    - Open styles.css in Cursor
+ *    - Click "Visual Editor" tab
+ *    - Use color picker, shadow tools, padding sliders to refine values
+ *    - See changes live in browser preview
+ * 
+ * 4. TEST RESPONSIVENESS
+ *    - Resize browser to 480px (mobile), 768px (tablet), 1200px (desktop)
+ *    - Check that padding increases don't cause layout overflow
+ *    - Verify typography clamp() functions work at all breakpoints
+ * 
+ * 5. VERIFY ACCESSIBILITY
+ *    - Use browser DevTools → Accessibility → check contrast ratios
+ *    - Ensure --text-secondary (#a0a0a0 on #0b0b0b) meets WCAG AA (4.5:1)
+ *    - Test keyboard navigation still works with enhanced shadows
+ * 
+ * 6. UPDATE DESIGN.md
+ *    - Once changes are locked in, update DESIGN.md with new token values
+ *    - Document why each change was made
+ *    - This becomes your source of truth for future iterations
+ * 
+ * 7. DEPLOY
+ *    - Commit changes to git
+ *    - Push to GitHub (auto-deploys to Vercel)
+ *    - Preview deployed version to verify rendering
+ * 
+ * COMMON ISSUES & SOLUTIONS:
+ * 
+ * Issue: Padding increase breaks layout on mobile
+ * Solution: Add media query @media (max-width: 480px) to reduce padding
+ * 
+ * Issue: Text-secondary color still too dark
+ * Solution: Try #b0b0b0 or #c0c0c0 if #a0a0a0 doesn't feel right
+ * 
+ * Issue: Shadows look too heavy
+ * Solution: Reduce box-shadow blur/spread values by 25% (e.g., 32px → 24px)
+ * 
+ * Issue: Hero typography feels too large
+ * Solution: Adjust clamp() max value (e.g., 56px → 52px) or base size (5vw → 4.75vw)
+ * 
+ * WORKFLOW CHECKLIST:
+ * ☐ Copy :root variables to styles.css
+ * ☐ Update .hero-cta, .case-card, .pillar selectors
+ * ☐ Test on mobile (480px) — check spacing, no overflow
+ * ☐ Test on tablet (768px) — check typography scale
+ * ☐ Test on desktop (1200px) — check full layout
+ * ☐ Verify contrast ratios (use DevTools Accessibility panel)
+ * ☐ Test keyboard navigation with Tab key
+ * ☐ Review in Cursor Visual Editor — drag/drop test
+ * ☐ Deploy to Vercel and verify live version
+ * ☐ Update DESIGN.md with finalized values
+ * 
+ * NEXT STEPS (if continuing):
+ * - TIER 3 improvements: scroll animations, border refinement
+ * - Use Stitch 2.0 to explore larger layout changes
+ * - Use Cursor Visual Editor for fine-tuning
+ * - Deploy updated version to Vercel
+ */
