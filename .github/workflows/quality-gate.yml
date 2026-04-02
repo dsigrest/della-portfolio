@@ -1,0 +1,113 @@
+# Portfolio Site Quality Gate Workflow
+#
+# This workflow ensures Della's portfolio maintains high quality standards.
+# It runs automatically whenever code is pushed to main or a PR is created.
+#
+# WHAT IT DOES:
+# 1. Code Quality Check: Runs Python linting and validation (checks file sizes, formats, etc.)
+# 2. Lighthouse Performance Audit: Tests the deployed site for performance, accessibility, and SEO
+# 3. Image Size Warnings: Flags any images larger than 500KB that should be optimized
+#
+# WHERE TO FIND RESULTS:
+# - GitHub > Actions tab: See the full workflow run details
+# - Pull Requests: Check comments and status for quick feedback
+# - Artifacts section: Download the Lighthouse report HTML file to review detailed metrics
+#
+# PERFORMANCE TARGETS (Lighthouse):
+# - Performance: 90+ (how fast the site loads)
+# - Accessibility: 95+ (usable for everyone)
+# - Best Practices: 95+ (web standards compliance)
+# - SEO: 95+ (search engine friendliness)
+
+name: Quality Gate
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # JOB 1: Code Quality Checks
+  # Runs Python validation script to catch common issues
+  quality-check:
+    runs-on: ubuntu-latest
+    name: Code Quality Checks
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Run quality checks
+        run: python3 quality-check.py
+        # If this fails, the entire workflow fails (quality-check.py exits with code 1)
+
+
+  # JOB 2: Lighthouse Performance Audit
+  # Tests the deployed Vercel site for performance, accessibility, SEO, and best practices
+  lighthouse:
+    runs-on: ubuntu-latest
+    name: Lighthouse Performance Audit
+    # Don't block the workflow if quality-check fails, but run it regardless
+    if: always()
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v11
+        with:
+          # The deployed Vercel URL to audit
+          urls: |
+            https://della-portfolio.vercel.app
+          # Minimum score thresholds
+          lighthouseArgs: >
+            --chrome-flags="--headless"
+          # Configuration for scoring
+          configPath: './.github/lighthouse-config.json'
+        continue-on-error: true
+        # Even if Lighthouse scores don't meet thresholds, continue (don't block workflow)
+
+      - name: Upload Lighthouse report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report
+          path: ./lighthouse
+          retention-days: 30
+        continue-on-error: true
+        # Keep artifacts even if upload has issues
+
+
+  # JOB 3: Image Size Warnings
+  # Checks for oversized images that should be optimized
+  image-check:
+    runs-on: ubuntu-latest
+    name: Image Size Check
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Find oversized images
+        run: |
+          echo "🔍 Scanning for images larger than 500KB..."
+          LARGE_IMAGES=$(find ./img -type f \( -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" -o -name "*.gif" -o -name "*.webp" \) -size +500k)
+          
+          if [ -z "$LARGE_IMAGES" ]; then
+            echo "✅ All images are under 500KB!"
+          else
+            echo "⚠️  Found oversized images that should be optimized:"
+            echo "$LARGE_IMAGES" | while read img; do
+              SIZE=$(du -h "$img" | cut -f1)
+              echo "  - $img ($SIZE)"
+            done
+          fi
+        continue-on-error: true
+        # Warn but don't fail the workflow if images are oversized
