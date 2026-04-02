@@ -4,20 +4,21 @@
 # It runs automatically whenever code is pushed to main or a PR is created.
 #
 # WHAT IT DOES:
-# 1. Code Quality Check: Runs Python linting and validation (checks file sizes, formats, etc.)
-# 2. Lighthouse Performance Audit: Tests the deployed site for performance, accessibility, and SEO
-# 3. Image Size Warnings: Flags any images larger than 500KB that should be optimized
+# 1. Code Quality Check: HTML validation, link integrity, accessibility, file sizes
+# 2. Voice Consistency: Checks all content against Della's voice rules
+# 3. Lighthouse Audit: Tests live site for performance, accessibility, SEO
+# 4. Image Size Check: Flags oversized images
 #
 # WHERE TO FIND RESULTS:
 # - GitHub > Actions tab: See the full workflow run details
-# - Pull Requests: Check comments and status for quick feedback
-# - Artifacts section: Download the Lighthouse report HTML file to review detailed metrics
+# - Pull Requests: Status checks block merge if quality/voice fail
+# - Artifacts section: Download Lighthouse report for detailed metrics
 #
-# PERFORMANCE TARGETS (Lighthouse):
-# - Performance: 90+ (how fast the site loads)
-# - Accessibility: 95+ (usable for everyone)
-# - Best Practices: 95+ (web standards compliance)
-# - SEO: 95+ (search engine friendliness)
+# THRESHOLDS:
+# - Quality check: must pass (exit 0) or merge is blocked
+# - Voice check: must pass (exit 0) or merge is blocked
+# - Lighthouse: Performance ≥90, Accessibility ≥95, Best Practices ≥95, SEO ≥95
+# - Images: warn on >500KB (doesn't block)
 
 name: Quality Gate
 
@@ -28,11 +29,10 @@ on:
     branches: [ main ]
 
 jobs:
-  # JOB 1: Code Quality Checks
-  # Runs Python validation script to catch common issues
+  # JOB 1: Code Quality Checks — BLOCKS MERGE ON FAILURE
   quality-check:
     runs-on: ubuntu-latest
-    name: Code Quality Checks
+    name: Code Quality
 
     steps:
       - name: Check out repository
@@ -45,16 +45,31 @@ jobs:
 
       - name: Run quality checks
         run: python3 quality-check.py
-        # If this fails, the entire workflow fails (quality-check.py exits with code 1)
 
 
-  # JOB 2: Lighthouse Performance Audit
-  # Tests the deployed Vercel site for performance, accessibility, SEO, and best practices
+  # JOB 2: Voice Consistency — BLOCKS MERGE ON FAILURE
+  voice-check:
+    runs-on: ubuntu-latest
+    name: Voice Consistency
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Run voice consistency check
+        run: python3 voice-check.py
+
+
+  # JOB 3: Lighthouse Performance Audit — BLOCKS MERGE ON FAILURE
   lighthouse:
     runs-on: ubuntu-latest
-    name: Lighthouse Performance Audit
-    # Don't block the workflow if quality-check fails, but run it regardless
-    if: always()
+    name: Lighthouse Audit
+    needs: [quality-check, voice-check]
 
     steps:
       - name: Check out repository
@@ -63,16 +78,11 @@ jobs:
       - name: Run Lighthouse CI
         uses: treosh/lighthouse-ci-action@v11
         with:
-          # The deployed Vercel URL to audit
           urls: |
             https://della-portfolio.vercel.app
-          # Minimum score thresholds
           lighthouseArgs: >
             --chrome-flags="--headless"
-          # Configuration for scoring
           configPath: './.github/lighthouse-config.json'
-        continue-on-error: true
-        # Even if Lighthouse scores don't meet thresholds, continue (don't block workflow)
 
       - name: Upload Lighthouse report
         if: always()
@@ -81,12 +91,9 @@ jobs:
           name: lighthouse-report
           path: ./lighthouse
           retention-days: 30
-        continue-on-error: true
-        # Keep artifacts even if upload has issues
 
 
-  # JOB 3: Image Size Warnings
-  # Checks for oversized images that should be optimized
+  # JOB 4: Image Size Warnings — does NOT block merge
   image-check:
     runs-on: ubuntu-latest
     name: Image Size Check
@@ -97,17 +104,16 @@ jobs:
 
       - name: Find oversized images
         run: |
-          echo "🔍 Scanning for images larger than 500KB..."
+          echo "Scanning for images larger than 500KB..."
           LARGE_IMAGES=$(find ./img -type f \( -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" -o -name "*.gif" -o -name "*.webp" \) -size +500k)
-          
+
           if [ -z "$LARGE_IMAGES" ]; then
-            echo "✅ All images are under 500KB!"
+            echo "All images are under 500KB!"
           else
-            echo "⚠️  Found oversized images that should be optimized:"
+            echo "Found oversized images that should be optimized:"
             echo "$LARGE_IMAGES" | while read img; do
               SIZE=$(du -h "$img" | cut -f1)
               echo "  - $img ($SIZE)"
             done
           fi
         continue-on-error: true
-        # Warn but don't fail the workflow if images are oversized
