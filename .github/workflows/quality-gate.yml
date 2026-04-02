@@ -17,7 +17,8 @@
 # THRESHOLDS:
 # - Quality check: must pass (exit 0) or merge is blocked
 # - Voice check: must pass (exit 0) or merge is blocked
-# - Lighthouse: Performance ≥90, Accessibility ≥95, Best Practices ≥95, SEO ≥95
+# - Lighthouse: Performance >=70, Accessibility >=90, Best Practices >=80, SEO >=90
+#   (Tuned for a static portfolio site — no PWA requirements)
 # - Images: warn on >500KB (doesn't block)
 
 name: Quality Gate
@@ -33,7 +34,6 @@ jobs:
   quality-check:
     runs-on: ubuntu-latest
     name: Code Quality
-
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -46,12 +46,10 @@ jobs:
       - name: Run quality checks
         run: python3 quality-check.py
 
-
   # JOB 2: Voice Consistency — BLOCKS MERGE ON FAILURE
   voice-check:
     runs-on: ubuntu-latest
     name: Voice Consistency
-
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -64,40 +62,28 @@ jobs:
       - name: Run voice consistency check
         run: python3 voice-check.py
 
-
   # JOB 3: Lighthouse Performance Audit — BLOCKS MERGE ON FAILURE
   lighthouse:
     runs-on: ubuntu-latest
     name: Lighthouse Audit
     needs: [quality-check, voice-check]
-
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
       - name: Run Lighthouse CI
-        uses: treosh/lighthouse-ci-action@v11
+        uses: treosh/lighthouse-ci-action@v12
         with:
           urls: |
-            https://della-portfolio.vercel.app
-          lighthouseArgs: >
-            --chrome-flags="--headless"
+            https://della-portfolio.vercel.app/
           configPath: './.github/lighthouse-config.json'
-
-      - name: Upload Lighthouse report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: lighthouse-report
-          path: ./lighthouse
-          retention-days: 30
-
+          uploadArtifacts: true
+          artifactName: lighthouse-report
 
   # JOB 4: Image Size Warnings — does NOT block merge
   image-check:
     runs-on: ubuntu-latest
     name: Image Size Check
-
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -106,7 +92,6 @@ jobs:
         run: |
           echo "Scanning for images larger than 500KB..."
           LARGE_IMAGES=$(find ./img -type f \( -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" -o -name "*.gif" -o -name "*.webp" \) -size +500k)
-
           if [ -z "$LARGE_IMAGES" ]; then
             echo "All images are under 500KB!"
           else

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume — Della Sigrest</title>
+  <meta name="description" content="Resume for Della Sigrest — Senior Product Designer specializing in engagement systems, growth infrastructure, and AI-forward product design.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-name">Della Sigrest</a>
+    <div class="nav-links">
+      <a href="index.html">Work</a>
+      <a href="about.html">About</a>
+      <a href="resume.html" class="active">Resume</a>
+      <a href="mailto:dsigrest@gmail.com">Contact</a>
+    </div>
+    <button class="nav-toggle" aria-label="Menu">
+      <span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<main>
+
+<section class="about-hero">
+  <h1>Resume</h1>
+  <p class="subtitle">Senior Product Designer &mdash; Engagement Systems, Growth, AI</p>
+</section>
+
+<section class="about-body">
+  <p>Four years at Reddit designing engagement systems across five consecutive team rotations &mdash; inbox, notifications, push, sharing, and community. Promoted from L2 to Senior (L4) in two years. Built strategic foundations from zero each time, shipped measurable outcomes, and left scalable systems behind.</p>
+
+  <p>Currently exploring Senior and Staff Product Design roles at companies building AI-forward products, developer tools, or platform infrastructure &mdash; environments where designers own strategy, not just execution.</p>
+
+  <div class="about-links" style="justify-content: center; border-top: none; padding-top: 0; margin-top: 48px;">
+    <a href="resume.pdf" target="_blank" rel="noopener" aria-label="Download resume as PDF" style="display: inline-flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 600; color: var(--text-primary); padding: 16px 32px; border: 1.5px solid var(--border-hover); border-radius: var(--radius-sm); transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border-hover)';this.style.color='var(--text-primary)'">Download Resume (PDF) &darr;</a>
+  </div>
+
+  <div class="about-links" style="margin-top: 48px;">
+    <a href="mailto:dsigrest@gmail.com">Email &rarr;</a>
+    <a href="https://linkedin.com/in/dellasigrest" target="_blank" rel="noopener">LinkedIn &rarr;</a>
+    <a href="index.html">View work &rarr;</a>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-left">
+      <p class="footer-name">Della Sigrest</p>
+      <p class="footer-note">This site was designed collaboratively with AI &mdash; <a href="case-building-portfolio.html">read how</a></p>
+    </div>
+    <div class="footer-right">
+      <a href="mailto:dsigrest@gmail.com">Email</a>
+      <a href="https://linkedin.com/in/dellasigrest" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const toggle = document.querySelector('.nav-toggle');
+  const links = document.querySelector('.nav-links');
+  toggle?.addEventListener('click', () => {
+    links.classList.toggle('open');
+    toggle.classList.toggle('open');
+  });
+</script>
+
+</body>
+</html>
