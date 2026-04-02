@@ -1,0 +1,183 @@
+# Banned Patterns — Della Sigrest Voice Rules
+# Single source of truth for both voice-check.py (git) and Claude self-check (Cowork)
+#
+# To add a new pattern: add an entry below with pattern, category, severity, and replacement.
+# Both enforcement layers pick it up immediately — no code changes needed.
+#
+# Categories: ai-marker, hedging, jargon, reddit-internal, structural, tone
+# Severity: error (blocks deploy), warning (flags but allows)
+
+patterns:
+
+  # === AI WRITING MARKERS ===
+  # Patterns Claude tends to produce that don't match Della's voice
+
+  - pattern: "organizational infrastructure"
+    category: ai-marker
+    severity: error
+    replacement: "Name the specific system that was built"
+
+  - pattern: "Most lasting:"
+    category: ai-marker
+    severity: error
+    replacement: "Remove — lead with the proof point directly"
+
+  - pattern: "The Insight:"
+    category: ai-marker
+    severity: error
+    replacement: "Use a descriptive section header instead"
+
+  - pattern: "These weren't .+—they were"
+    category: ai-marker
+    severity: error
+    replacement: "Remove false dichotomy framing — state what they were directly"
+
+  - pattern: "Systems over surfaces"
+    category: ai-marker
+    severity: error
+    replacement: "Remove meta-commentary — show systems thinking through the work"
+
+  - pattern: "The shift from .+ to"
+    category: ai-marker
+    severity: error
+    replacement: "Remove — describe the outcome directly"
+
+  - pattern: "In today's (digital |)landscape"
+    category: ai-marker
+    severity: error
+    replacement: "Remove throat-clearing — start with the point"
+
+  - pattern: "This case study (explores|examines|demonstrates)"
+    category: ai-marker
+    severity: error
+    replacement: "Remove meta-narration — the case study should show, not announce"
+
+  - pattern: "What started as .+ became"
+    category: ai-marker
+    severity: warning
+    replacement: "Consider starting with what it became, not what it started as"
+
+  - pattern: "It's worth noting"
+    category: ai-marker
+    severity: error
+    replacement: "If it's worth noting, just note it"
+
+  - pattern: "At its core"
+    category: ai-marker
+    severity: error
+    replacement: "Remove — state the point directly"
+
+  - pattern: "designed to be"
+    category: ai-marker
+    severity: warning
+    replacement: "Consider 'I designed it to' or just describe what it does"
+
+  # === HEDGING ===
+
+  - pattern: "passionate about"
+    category: hedging
+    severity: error
+    replacement: "Remove — show passion through specific work, not declaration"
+
+  - pattern: "driven by"
+    category: hedging
+    severity: error
+    replacement: "Remove — show motivation through actions"
+
+  - pattern: "\\barguably\\b"
+    category: hedging
+    severity: error
+    replacement: "State the position directly"
+
+  - pattern: "\\bperhaps\\b"
+    category: hedging
+    severity: warning
+    replacement: "State it or don't — avoid hedging"
+
+  - pattern: "I (believe|think|feel) that"
+    category: hedging
+    severity: warning
+    replacement: "State the position directly"
+
+  # === CORPORATE JARGON ===
+
+  - pattern: "\\bleverage\\b"
+    category: jargon
+    severity: error
+    replacement: "use, apply, build on"
+
+  - pattern: "\\bsynergy\\b"
+    category: jargon
+    severity: error
+    replacement: "collaboration, alignment, connection"
+
+  - pattern: "\\bstakeholders\\b"
+    category: jargon
+    severity: error
+    replacement: "Name the actual people or teams"
+
+  - pattern: "circle back"
+    category: jargon
+    severity: error
+    replacement: "follow up, revisit"
+
+  - pattern: "move the needle"
+    category: jargon
+    severity: error
+    replacement: "State the specific metric that changed"
+
+  - pattern: "\\bholistic\\b"
+    category: jargon
+    severity: warning
+    replacement: "complete, full, end-to-end"
+
+  - pattern: "\\brobust\\b"
+    category: jargon
+    severity: warning
+    replacement: "strong, thorough, reliable"
+
+  - pattern: "deep dive"
+    category: jargon
+    severity: warning
+    replacement: "analysis, investigation, close look"
+
+  # === REDDIT INTERNAL ===
+
+  - pattern: "\\bRPL\\b"
+    category: reddit-internal
+    severity: error
+    replacement: "Spell out or describe the feature"
+
+  - pattern: "PN good visits"
+    category: reddit-internal
+    severity: error
+    replacement: "push notification quality visits"
+
+  # === STRUCTURAL ===
+
+  - pattern: "\\bneglected\\b"
+    category: structural
+    severity: error
+    replacement: "underinvested, high-potential, net-new"
+
+  - pattern: "\\babandoned\\b"
+    category: structural
+    severity: error
+    replacement: "underinvested, deprioritized"
+
+  - pattern: "\\bignored\\b"
+    category: structural
+    severity: warning
+    replacement: "underinvested, overlooked"
+
+  # === TONE ===
+
+  - pattern: "Experienced designer who"
+    category: tone
+    severity: error
+    replacement: "Use first person: 'I designed...'"
+
+  - pattern: "^Designed "
+    category: tone
+    severity: warning
+    replacement: "Use first person: 'I designed...'"
