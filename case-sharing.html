@@ -29,7 +29,7 @@
 <section class="case-hero">
   <div class="case-hero-eyebrow">Case Study 03 of 05 &mdash; Led design for sharing &amp; embeds infrastructure</div>
   <h1>Sharing & Embeds</h1>
-  <p class="case-hero-sub">Reddit content looked terrible when shared. The share sheet was friction-heavy. There was no model for how sharing interacted with privacy. I built a three-stage flywheel: streamline the sheet, improve previews, make privacy the activation lever. Privacy controls unlocked sharing from silent cohorts.</p>
+  <p class="case-hero-sub">Reddit had no sharing infrastructure&mdash;just the default iOS share sheet and unrecognizable URL strings. I framed sharing as a three-event system, owned the design strategy across all three stages, and discovered that on a pseudo-anonymous platform, privacy isn&rsquo;t a non-issue&mdash;it&rsquo;s the core issue. Serving 100M+ daily active users.</p>
 
   <div class="case-meta-grid">
     <div class="meta-item">
@@ -53,50 +53,59 @@
 
 <section class="case-body">
 
-  <p>Reddit content looked terrible when shared. Link previews broke across platforms. The share sheet was friction-heavy. Users wanted to share more but didn't.</p>
+  <p>Reddit had no sharing infrastructure. The platform defaulted to iOS&rsquo;s native share sheet&mdash;an unsorted list users scrolled through blindly&mdash;and shared links were long, unrecognizable URL strings with no preview. Recipients didn&rsquo;t know what they&rsquo;d get, so they didn&rsquo;t click.</p>
 
-  <p>Sharing is a system with three simultaneous events: distribution (content reaches new audiences), acquisition (new users encounter Reddit), and re-engagement (the sharer returns to see responses). The infrastructure wasn't designed to capitalize on any of them.</p>
-
-  <div class="case-img-full">
-    <div class="img-placeholder">Share sheet UI, link preview variants, cross-platform comparison</div>
-  </div>
-
-  <h2>Privacy as Growth Lever</h2>
-
-  <p>Users weren't sharing because they couldn't control what was visible. When sharing, you expose your interest graph—communities, upvotes, comment history. That vulnerability made casual users reluctant to share in semi-public channels like Slack.</p>
-
-  <p><strong>Privacy wasn't a constraint on sharing. Privacy controls were the growth lever.</strong> Most users who didn't share had already opted out. Giving them confidence in what they exposed unlocked sharing from a population that had gone silent.</p>
-
-  <h2>Three-Stage Flywheel</h2>
-
-  <p><strong>Stage 1: Streamline the sheet</strong> — Reduced friction, added channels. Most-used destinations first. Users willing to share need velocity—sub-3-tap execution or momentum breaks.</p>
-
-  <p><strong>Stage 2: Improve the preview</strong> — Redesigned link previews and embeds. Shared Reddit content looked like Reddit when received, not generic URLs. Open Graph metadata consistency across platforms. Rich previews.</p>
-
-  <p><strong>Stage 3: Privacy as activation</strong> — Introduced granular controls: share a post but hide your profile. Share a thread but limit visibility to DMs. Controls visible in the sheet itself, not buried in settings.</p>
-
-  <p><strong>The composition of sharers shifted.</strong> Lurkers started sharing posts they found valuable—with controls ensuring their profile stayed hidden. Mid-tier users shared more frequently because they controlled visibility. Power users felt safer resharing community discussions with limited visibility.</p>
-
-  <p>Test results with privacy controls visible in the sheet: <strong>[sharing volume increase %].</strong> More diverse distribution of sharers—more lurkers, more mid-tier, more geographic diversity.</p>
-
-  <p>The pool of willing sharers grew more than per-share friction reduced.</p>
+  <p><strong>I framed sharing as a three-event system</strong>&mdash;distribution, engagement, and re-engagement&mdash;and owned the design strategy across all three stages. At the time, Reddit was approaching 100M daily active users. None of that scale was being captured off-platform.</p>
 
   <div class="case-img-full">
-    <div class="img-placeholder">Privacy control UI, share sheet redesign, control levels</div>
+    <div class="img-placeholder">Before/after comparison: iOS default share sheet (long unsorted list) next to the custom Reddit share sheet (visual grid with app icons, prioritized by user history). Show both on iPhone frames side by side.</div>
   </div>
 
-  <h2>System Design</h2>
+  <h2>Make It Easy to Share</h2>
 
-  <p><strong>Persistence</strong> — Save share sheet state across sessions<br>
-  <strong>Channel priority</strong> — Surface most-used first, all visible in one tap<br>
-  <strong>Preview refresh</strong> — See how content renders on destination platform before sending<br>
-  <strong>Granular controls</strong> — Post, subreddit, profile levels—different content needs different strategies</p>
+  <p>I designed a <strong>custom share sheet</strong> to replace the iOS default&mdash;a visual grid that prioritized channels based on each user&rsquo;s sharing history. WhatsApp-heavy sharers saw WhatsApp first. One tap, no scrolling, no reading through pages.</p>
+
+  <p>The first version shipped without a preview, and users still hesitated. They didn&rsquo;t trust what their friends would see. So I added a <strong>live preview directly into the sheet</strong>&mdash;exactly what the recipient would get, with an explicit line confirming the share wouldn&rsquo;t expose the sender&rsquo;s profile. That preview was the trust mechanism. Users could confirm it didn&rsquo;t look like spam before they hit send.</p>
+
+  <div class="case-img-full">
+    <div class="img-placeholder">Share sheet with live preview visible: show the share sheet open with a Reddit post preview at top (headline, thumbnail, upvote count), channel grid below, and the privacy disclaimer line ("Your profile will not be shared") highlighted.</div>
+  </div>
+
+  <p><strong>Earning surface placement was its own project.</strong> Feed, the post detail page, the overflow menu&mdash;these were contested surfaces mid-redesign, and every team wanted an on-ramp. I built the case for sharing as a top-of-funnel growth channel with data showing it drove both new user acquisition and brand awareness upstream&mdash;trust-building before someone ever landed on Reddit.</p>
+
+  <h2>Make Shared Content Easy to Engage With</h2>
+
+  <p>I led the design of a <strong>cross-platform preview component library</strong>&mdash;how Reddit content renders on iMessage, WhatsApp, Instagram, Twitter, LinkedIn, and in publisher embeds. I partnered with content design on copy, OrangeRed branding on visual identity, and Reddit Product Language on component architecture.</p>
+
+  <p>The design constraint: <strong>enough context to build trust, not enough to satisfy curiosity.</strong> A preview that showed the full post killed click-through. A bare URL killed trust. I landed on a format that surfaced the headline, a content thumbnail, and social proof&mdash;upvote count, comment count&mdash;with Reddit branding anchoring recognition for first-time viewers. Same principle I&rsquo;d applied in notifications: show what&rsquo;s behind the door, make users want to open it.</p>
+
+  <div class="case-img-full">
+    <div class="img-placeholder">Cross-platform preview grid: show the same Reddit post rendered as a link preview on 4-6 different platforms (iMessage bubble, WhatsApp card, Twitter card, LinkedIn embed, publisher article embed). Each should show headline + thumbnail + social proof with Reddit branding. Demonstrate visual consistency across different platform constraints.</div>
+  </div>
+
+  <p>I designed these as a <strong>fixed component system rather than custom layouts per channel</strong>&mdash;each component rendered consistently across six-plus platforms with different display constraints. That architectural decision paid off twice: first in scaling to new channels without redesign, and later when the platform team used the same component library as the foundation for developer-facing embed tools&mdash;a public API that let third-party publishers natively render Reddit content in their own apps.</p>
+
+  <h2>Help Users Feel Safe Sharing</h2>
+
+  <p>Stages one and two shipped. Sharing got easier and looked better&mdash;but volume wasn&rsquo;t moving the way we expected. I pushed for a research sprint, and what came back reframed the entire project.</p>
+
+  <p><strong>Growth teams default to friction removal. The insight here was the inverse: friction was a symptom, not the problem.</strong> Reddit users maintain segmented identities across communities. Sharing a profile to someone who knows you in real life creates context collapse&mdash;your interest graph, your communities, your comment history all become visible. On a pseudo-anonymous platform, privacy isn&rsquo;t a non-issue. It&rsquo;s the core issue.</p>
+
+  <div class="case-img-full">
+    <div class="img-placeholder">Context collapse diagram: show a Reddit user's profile with multiple community memberships (subreddits) visible, with an arrow pointing to a real-life contact receiving a shared link. Illustrate how sharing exposes the full interest graph. Could be a simple flow diagram or annotated UI showing what becomes visible.</div>
+  </div>
+
+  <p>I led the privacy integration in the share sheet&mdash;controls surfaced at the moment of sharing, not buried in settings. I collaborated with the profile team to redesign <strong>privacy visibility on the profile itself</strong>&mdash;at a glance, users could see what others could see and update it. In post creation, I designed <strong>&ldquo;who am I posting as&rdquo;</strong> flows and prototyped anonymous posting&mdash;experiments the creation team picked up and tested later that year.</p>
+
+  <div class="case-img-full">
+    <div class="img-placeholder">Privacy controls across surfaces: 2-3 screens showing (1) privacy toggle in the share sheet, (2) profile visibility settings ("what others can see" view), and (3) "who am I posting as" selector in the post creation flow. Show these as a connected system, not isolated features.</div>
+  </div>
+
+  <p>Once privacy was addressed at the source&mdash;on the profile, in creation, and in the share sheet&mdash;previously silent cohorts started sharing.</p>
 
   <h2>The Result</h2>
 
-  <p>Three-stage approach increased off-platform reach by <strong>[●●]%</strong>, expanded channels from <strong>[X to Y]</strong>, established reusable embed components adopted across product teams.</p>
-
-  <p>Embed architecture became developer-facing infrastructure—third-party publishers could natively render Reddit content in their apps. Privacy-as-growth-lever became a reference point for how growth initiatives approached user control and distribution.</p>
+  <p>Reddit went from zero custom sharing infrastructure to <strong>branded, trustworthy previews on every major channel</strong> serving 100M+ daily active users. The component library I designed became the reference architecture for developer-facing embed tools&mdash;a public API now used by third-party publishers. The privacy-as-growth-lever framework&mdash;my team&rsquo;s core contribution&mdash;shaped how subsequent growth initiatives across Reddit approached user control as a distribution strategy, not a constraint.</p>
 
 </section>
 
