@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Keyword Landing Pages / AI — Della Sigrest</title>
-<meta name="description" content="How I designed Reddit's first LLM-powered product and established AI content governance.">
+<meta name="description" content="I designed Reddit's first LLM product and the governance model that became the foundation for Reddit Answers.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="styles.css">
@@ -29,7 +29,7 @@
 <section class="case-hero">
   <div class="case-hero-eyebrow">Case Study 02 of 05 &mdash; Pioneered AI-forward design practice at Reddit</div>
   <h1>Keyword Landing Pages / AI</h1>
-  <p class="case-hero-sub">How do you establish trust in content you can't fully control? I designed Reddit's first LLM product with a 3-layer governance system: visual identification, tone guidelines, and cross-functional prompt review. The workflow scaled to every subsequent AI product.</p>
+  <p class="case-hero-sub">I designed Reddit's first LLM product &mdash; and the governance model, component library, and prompt workflow that became the foundation for Reddit Answers.</p>
 
   <div class="case-meta-grid">
     <div class="meta-item">
@@ -53,57 +53,59 @@
 
 <section class="case-body">
 
-  <p><strong>How do you establish trust in content you can't fully control?</strong></p>
+  <p>Reddit wanted to consolidate fragmented SEO traffic using LLMs. Straightforward product idea &mdash; <strong>the organization had no precedent for AI-generated content.</strong> No identity system, no evaluation criteria, no framework for non-deterministic output. I led the design of a governance model that defined how LLMs would appear, sound, and behave across the platform &mdash; shipped iteratively over six months.</p>
 
-  <p>Reddit wanted to consolidate fragmented SEO traffic using LLMs. Straightforward product idea. The design problem: the organization had no precedent for AI-generated content, no guidelines, no framework for handling non-deterministic output.</p>
+  <h2>Visual Identification</h2>
 
-  <p><strong>Trust in AI-generated content is a systems problem.</strong> Design for the range of possible outputs, not the happy path.</p>
+  <p>Before touching UI, I partnered with OrangeRed (brand), legal, and design systems to define what AI-generated content would <em>be</em> at Reddit &mdash; not just how it would look, but what identity it carried and what legal implications followed.</p>
+
+  <p><strong>Transparency was the design constraint.</strong> User research confirmed people valued knowing content was AI-generated, but this was peak AI backlash &mdash; the signal had to build trust without feeling like a trend.</p>
+
+  <p>Working with the design systems and brand teams, I explored the full spectrum of identification patterns &mdash; and tested them across surfaces well beyond the initial product.</p>
 
   <div class="case-img-full">
-    <div class="img-placeholder">KLP product UI, prototype variations, edge case states</div>
+    <div class="img-placeholder">Exploration range &mdash; identification patterns from heavily branded to near-invisible, tested across SEO landing pages, composer, comment threads, profiles</div>
   </div>
 
-  <h2>3-Layer Governance System</h2>
+  <p>The component library, LLM identification patterns, and user feedback UI shipped as <strong>reusable system components</strong> &mdash; designed from the start to scale to wherever AI content appeared next.</p>
 
-  <p>I designed a <strong>3-layer governance system:</strong></p>
+  <h2>Tone &amp; Voice</h2>
 
-  <ol>
-    <li><strong>Visual identification</strong> — Clear signals that content was AI-generated, woven into structure. Not a badge. A commitment to transparency.</li>
-    <li><strong>Tone and voice</strong> — Guidelines ensuring summaries were informative without falsely claiming authority. The voice reflected synthesis, not journalism.</li>
-    <li><strong>Prompt design workflow</strong> — A cross-functional review process: content design, AI engineering, product design evaluating prompts before production.</li>
-  </ol>
+  <p><strong>The closer summaries stayed to original posts, the more users trusted them.</strong> Broad generalizations &mdash; a consistent failure mode in early outputs &mdash; killed trust immediately. Every summary needed direct attribution and links so users could go deeper instead of guessing from a search page.</p>
+
+  <p>I drove the team through the harder question: how to synthesize across communities without losing the source. The model&rsquo;s range was narrow &mdash; too little context produced empty platitudes, too much produced verbatim quotes with zero synthesis.</p>
+
+  <div class="case-img-full">
+    <div class="img-placeholder">Summary display explorations &mdash; length variants, source attribution placement (inline vs. post bank), expand/collapse patterns</div>
+  </div>
+
+  <p>The synthesis display patterns and truncation logic we landed on became reusable across later products.</p>
 
   <h2>Prompt Design Workflow</h2>
 
-  <p>Before this, prompt design was engineering-only. Product and design reviewed outputs but had no role in shaping inputs.</p>
+  <p>Previously, prompt iteration was <strong>one engineer, vibes-based.</strong> I introduced a structured evaluation matrix &mdash; multiple prompts tested simultaneously against live data from Reddit&rsquo;s highest-traffic SEO verticals, scored on defined parameters: summary quality, source relevance, synthesis depth, transparency, community diversity, post engagement.</p>
 
-  <p>I established a process where product and design partnered with ML engineers to analyze prompts for accuracy, tone alignment, edge case handling, and trust signals. Each prompt was stress-tested: what happens with contentious topics? Contradicting sources? Inadvertent bias?</p>
-
-  <p>The review interface used progressive disclosure—reviewers drilled into failing prompts without context-switching—reducing cognitive load for high-volume review. The pattern became a template for design review systems on subsequent AI teams.</p>
-
-  <p>The system functioned as developer tooling: standardized how product teams interfaced with LLM capabilities. It defined input schemas, evaluation criteria, review gates. Later AI products reused this architecture.</p>
+  <p><strong>My core contribution was translating subjective design criteria into rubrics engineers could operate against</strong> &mdash; bridging &ldquo;this feels wrong&rdquo; and &ldquo;this scores below threshold on source attribution.&rdquo; The rubric evolved with each production cycle as we learned what benchmarks couldn&rsquo;t predict.</p>
 
   <div class="case-img-full">
-    <div class="img-placeholder">Prompt design workflow, governance model, review criteria</div>
+    <div class="img-placeholder">Prompt evaluation matrix &mdash; parameters, scoring criteria, iteration cycle from vibes-based to structured</div>
   </div>
 
-  <h2>Trust Decisions as Policy</h2>
+  <p>Post-processing stayed minimal. Heavy backend cleanup masked the nondeterministic behavior the system needed to handle honestly.</p>
 
-  <p><strong>AI authorship prominence</strong> — Too subtle: users didn't know they were reading AI. Too prominent: feature collapsed. The signal had to be discoverable, not obtrusive.</p>
+  <h2>Failure States &amp; User Control</h2>
 
-  <p><strong>Attribution models</strong> — Source links vs. inline citations vs. no direct attribution. Each carried different trust implications for communities with strong attribution norms.</p>
+  <p>Below-threshold quality triggered an empty state &mdash; not a bad summary. Users could flag responses, suggest improvements, or opt out entirely. These signals fed directly back into the quality loop.</p>
 
-  <p><strong>Contradiction handling</strong> — When AI summary contradicted sources, what should we show? Degrade it? Flag it? Surface disagreement?</p>
+  <h2>Results</h2>
 
-  <p><strong>Failure states</strong> — Below-threshold quality triggered what? Degraded summary? Human curation fallback? Feature removal?</p>
+  <p><strong>This project became the origin of Reddit Answers.</strong> The governance model, identity system, and prompt workflow I built were handed to a new team spun up to bring synthesis into search &mdash; where research had shown it belonged. Sending users from one search-like surface to another was the dead end that clarified the real opportunity.</p>
 
-  <h2>The Result</h2>
+  <div class="case-img-full">
+    <div class="img-placeholder">Before/after &mdash; KLP surface vs. synthesis in search (Reddit Answers)</div>
+  </div>
 
-  <p>Reddit's first LLM-powered product shipped. Traffic consolidated. Users engaged with unified AI-summarized pages instead of bouncing across duplicates.</p>
-
-  <p>The governance model and prompt design workflow became the template for subsequent AI teams, including the Answers product. The trust framework—visual identification, tone guidelines, evaluation criteria—became Reddit's starting point for all AI-generated content.</p>
-
-  <p>A senior engineer: "Before this, we shipped AI features and hoped users didn't notice unpredictability. After this, we designed the experience <em>of</em> AI."</p>
+  <p><strong>What scaled:</strong> the LLM identification component library, synthesis display patterns, user feedback UI, prompt evaluation rubric, and governance framework. Reddit Answers inherited these artifacts directly and shipped on top of them.</p>
 
 </section>
 
@@ -135,5 +137,6 @@
   }, { threshold: 0.1 });
   document.querySelectorAll('.metric, .case-img-full').forEach(el => { el.classList.add('fade-in'); observer.observe(el); });
 </script>
+<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
