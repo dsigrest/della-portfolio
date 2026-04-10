@@ -29,7 +29,7 @@
 <section class="case-hero">
   <div class="case-hero-eyebrow">Case Study 02 of 05 &mdash; Pioneered AI-forward design practice at Reddit</div>
   <h1>Keyword Landing Pages / AI</h1>
-  <p class="case-hero-sub">I designed Reddit's first LLM product &mdash; and the governance model, component library, and prompt workflow that became the foundation for Reddit Answers.</p>
+  <p class="case-hero-sub">I designed Reddit&rsquo;s first LLM product &mdash; and the governance model, component library, and prompt workflow that became the foundation for Reddit Answers.</p>
 
   <div class="case-meta-grid">
     <div class="meta-item">
@@ -85,6 +85,8 @@
 
   <p>Previously, prompt iteration was <strong>one engineer, vibes-based.</strong> I introduced a structured evaluation matrix &mdash; multiple prompts tested simultaneously against live data from Reddit&rsquo;s highest-traffic SEO verticals, scored on defined parameters: summary quality, source relevance, synthesis depth, transparency, community diversity, post engagement.</p>
 
+  <p><strong>The persistent tension was SEO optimization versus user value.</strong> Search ranking rewarded keyword density and repetition &mdash; exactly the patterns that made summaries feel mechanical to readers. I worked with the engineer to separate those concerns: keywords were embedded in structured page elements outside the summary itself, so the synthesis could stay natural while the page still ranked. That separation became a core principle the team carried forward.</p>
+
   <p><strong>My core contribution was translating subjective design criteria into rubrics engineers could operate against</strong> &mdash; bridging &ldquo;this feels wrong&rdquo; and &ldquo;this scores below threshold on source attribution.&rdquo; The rubric evolved with each production cycle as we learned what benchmarks couldn&rsquo;t predict.</p>
 
   <div class="case-img-full">
@@ -95,17 +97,15 @@
 
   <h2>Failure States &amp; User Control</h2>
 
-  <p>Below-threshold quality triggered an empty state &mdash; not a bad summary. Users could flag responses, suggest improvements, or opt out entirely. These signals fed directly back into the quality loop.</p>
+  <p>Below-threshold quality meant the summary didn&rsquo;t appear &mdash; rather than showing users something unreliable. Users could flag responses, suggest improvements, or collapse the summary entirely.</p>
+
+  <p><strong>Those signals fed directly back into model iteration.</strong> We started with the verticals that had the strongest source coverage &mdash; enough data to test and refine against &mdash; and used user feedback alongside our content team to adjust the rubric over time. The system improved through real usage, not guesswork: flagged outputs surfaced where the model was weakest, and the rubric evolved to reflect what users actually valued versus what we&rsquo;d assumed.</p>
 
   <h2>Results</h2>
 
-  <p><strong>This project became the origin of Reddit Answers.</strong> The governance model, identity system, and prompt workflow I built were handed to a new team spun up to bring synthesis into search &mdash; where research had shown it belonged. Sending users from one search-like surface to another was the dead end that clarified the real opportunity.</p>
+  <p><strong>This project shipped to every user reaching Reddit through Google search for targeted verticals</strong> &mdash; a surface handling hundreds of millions of monthly visits during this period. The governance model, identity system, and prompt workflow I built were handed to a new team spun up to bring synthesis into search &mdash; where research had shown it belonged. Sending users from one search-like surface to another was the dead end that clarified the real opportunity.</p>
 
-  <div class="case-img-full">
-    <div class="img-placeholder">Before/after &mdash; KLP surface vs. synthesis in search (Reddit Answers)</div>
-  </div>
-
-  <p><strong>What scaled:</strong> the LLM identification component library, synthesis display patterns, user feedback UI, prompt evaluation rubric, and governance framework. Reddit Answers inherited these artifacts directly and shipped on top of them.</p>
+  <p><strong>That team launched Reddit Answers, which reached 15 million weekly active users within its first year.</strong> The LLM identification component library, synthesis display patterns, user feedback UI, prompt evaluation rubric, and governance framework I built were inherited directly &mdash; Reddit Answers shipped on top of them.</p>
 
 </section>
 
