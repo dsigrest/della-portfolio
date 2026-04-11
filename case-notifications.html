@@ -1,157 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Notifications & Inbox — Della Sigrest</title>
-<meta name="description" content="How I modernized Reddit's inbox and notification system after 6 years without design investment.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifications &amp; Inbox — Della Sigrest</title>
+  <meta name="description" content="How I modernized Reddit's inbox and notification system after 6 years without design investment.">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+  <div class="progress-bar"></div>
 
-<nav>
-  <div class="nav-inner">
-    <a href="index.html" class="nav-name">Della Sigrest</a>
-    <div class="nav-links">
-      <a href="index.html" class="active">Work</a>
-      <a href="about.html">About</a>
-      <a href="resume.pdf" target="_blank" aria-label="Download my resume (PDF)">Resume</a>
-      <a href="mailto:dsigrest@gmail.com">Contact</a>
+  <nav>
+    <div class="nav-content">
+      <div class="nav-brand">Della Sigrest</div>
+      <ul class="nav-links">
+        <li><a href="index.html" class="active">Work</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="resume.pdf" target="_blank">Resume</a></li>
+        <li><a href="mailto:dsigrest@gmail.com">Contact</a></li>
+      </ul>
     </div>
-    <button class="nav-toggle" aria-label="Menu">
-      <span></span><span></span>
-    </button>
-  </div>
-</nav>
+  </nav>
 
-<main>
+  <main id="main">
+    <section class="case-hero">
+      <div class="case-hero-eyebrow">Case Study 01 of 05 &mdash; Built notification framework serving 185M daily sends</div>
+      <h1>Notifications &amp; Inbox</h1>
+      <p class="case-hero-sub">Reddit sends 185 million push notifications daily. The inbox serves 7.5 million daily users. I built the segmentation framework, defined the inbox vision, and led the evolution from five disconnected surfaces into a unified system. +1.3M incremental DAU. +2.7M daily good visits.</p>
+      <div class="case-meta-grid">
+        <div class="meta-item">
+          <label>Role</label>
+          <span>Senior Product Designer (Lead)</span>
+        </div>
+        <div class="meta-item">
+          <label>Team</label>
+          <span>Notifications</span>
+        </div>
+        <div class="meta-item">
+          <label>Timeline</label>
+          <span>Sep 2024 – Feb 2026</span>
+        </div>
+        <div class="meta-item">
+          <label>Platform</label>
+          <span>iOS, Android, Web</span>
+        </div>
+      </div>
+    </section>
 
-<section class="case-hero">
-  <div class="case-hero-eyebrow">Case Study 01 of 05</div>
-  <h1>Notifications & Inbox</h1>
-  <p class="case-hero-sub">Reddit sends 185 million push notifications daily. The inbox serves 7.5 million daily users. I built the segmentation framework, defined the inbox vision, and led the evolution from five disconnected surfaces into a unified system. +1.3M incremental DAU. +2.7M daily good visits.</p>
+    <section class="case-body">
+      <p>Reddit sends 185 million push notifications daily across hundreds of millions of users&mdash;comment replies, trending posts, subreddit updates. The inbox serves 7.5 million daily users, but when I joined the notifications team, no designer owned this surface. Five notification types operated independently with no shared strategy, and engagement was declining&mdash;viewer-to-clicker conversion had dropped 5% despite 20% year-over-year traffic growth.</p>
 
-  <div class="case-meta-grid">
-    <div class="meta-item">
-      <label>Role</label>
-      <span>Senior Product Designer (Lead)</span>
+      <p>I built the segmentation framework, defined the inbox vision, and led the evolution from five disconnected surfaces into a unified system.</p>
+
+      <div class="case-img-full">
+        <img src="img/notif-before-after.png" alt="Before and after — legacy inbox compared to the three-tab unified inbox with signal hierarchy" loading="lazy">
+      </div>
+
+      <h2>The Framework</h2>
+
+      <p>I developed a <strong>three-tier model based on signal strength</strong>: direct activity, explicit opt-ins, and recommendations. This resolved a core tension&mdash;recommendation notifications performed well by engagement metrics but drew user complaints. The framework showed when each type belonged: high-activity users with abundant direct notifications don't need discovery; new users without activity history do.</p>
+
+      <p>The inbox drives 2% of all comments on Reddit&mdash;a figure that shifted leadership investment and directly shaped how we targeted the strategy across cohorts.</p>
+
+      <div class="case-img-full">
+        <img src="img/notif-infographic.png" alt="Three-pillar notification strategy — build habits, enable curation, create focus — mapped to user cohorts" loading="lazy">
+      </div>
+
+      <h2>The Evolution</h2>
+
+      <p><strong>Modernize</strong> &mdash; I migrated the inbox to the platform design system and standardized copy across all notification types. Contextualized copy&mdash;showing <em>why</em> users received a notification&mdash;doubled click-through compared to generic framing.</p>
+
+      <div class="case-img-full">
+        <img src="img/notif-figma-base.png" alt="Design system migration — modernized inbox with contextualized notification copy" loading="lazy">
+      </div>
+
+      <p><strong>Deliver on expectations</strong> &mdash; Recommendations tangled with direct notification delivery, so subscriptions couldn't arrive reliably. I influenced the engineering roadmap to separate these pipelines, expanding inventory with breaking news and contextualized recommendations. I redesigned subreddit notification behavior to match how users actually think about subscriptions&mdash;push good visits climbed <strong>+1%</strong> across 15 million daily receives.</p>
+
+      <div class="case-img-full">
+        <img src="img/notif-data-charts.png" alt="Pipeline architecture — separated recommendation and direct delivery paths with engagement data" loading="lazy">
+      </div>
+
+      <p><strong>Handle volume</strong> &mdash; Accurate delivery created a new problem: high-activity communities flooded the inbox. The core principle became the inbox as a scannable launchpad&mdash;just enough context to know what happened, then a direct path there. I removed the overflow menu on notification line items and replaced it with gestural access&mdash;swipe actions and long press&mdash;reducing visual clutter while keeping expected utilities accessible. Engagement held steady, which meant the pattern worked. I designed push landing experiences that surfaced related content at the moment users typically bounced after opening a notification.</p>
+
+      <div class="case-img-full">
+        <img src="img/notif-push-landing.png" alt="Push landing experience — Discovery, Following, and Conversation volume levels showing notification context" loading="lazy">
+      </div>
+
+      <p><strong>Unify</strong> &mdash; I consolidated notifications and chat into a single inbox&mdash;a surface that hadn't existed before, requiring product, engineering, and design alignment across four teams. Chat had migrated into the inbox, and private messages&mdash;deeply baked into foundational internal systems&mdash;required a lengthy deprecation effort from engineering before the consolidation was possible. Each team had different definitions of what &ldquo;inbox&rdquo; meant. I built fully operable prototypes and put them in front of real users, which shifted internal conversations from opinion to evidence.</p>
+
+      <div class="case-img-full">
+        <img src="img/notif-unified-inbox.png" alt="Unified inbox evolution — four-panel progression from separated surfaces to consolidated notifications and chat" loading="lazy">
+      </div>
+
+      <h2>The Results</h2>
+
+      <p>I surfaced <em>why</em> each recommendation appeared to new users. Behavior changed first&mdash;DAU for that cohort lifted <strong>+1.4%</strong>, push click-through rose <strong>+6.4%</strong> across the 7.5M daily inbox user base.</p>
+
+      <p>I redesigned push landing experiences to prevent the dead-end bounce after opening a notification. Users found related content at the moment they&rsquo;d typically leave&mdash;subscription good visits shifted <strong>+2-3%</strong> on 15 million subreddit update receives.</p>
+
+      <p>The notifications team shipped <strong>+1.3M incremental DAU</strong> and <strong>+2.7M daily good visits</strong> year-to-date, exceeding targets by 75%. The three-tier framework and cohort segmentation became the foundation for notification design across Reddit.</p>
+
+      <div class="metrics-callout">
+          <div class="metric">
+              <span class="metric-value">+1.3M</span>
+              <span class="metric-label">Incremental DAU</span>
+          </div>
+          <div class="metric">
+              <span class="metric-value">+2.7M</span>
+              <span class="metric-label">Daily good visits</span>
+          </div>
+          <div class="metric">
+              <span class="metric-value">+6.4%</span>
+              <span class="metric-label">Push click-through</span>
+          </div>
+          <div class="metric">
+              <span class="metric-value">75%</span>
+              <span class="metric-label">Above target</span>
+          </div>
+      </div>
+
+      <div class="case-img-full">
+        <img src="img/notif-analytics.png" alt="Experiment results — DAU lift, click-through improvements, and good visits impact across notification cohorts" loading="lazy">
+      </div>
+    </section>
+
+    <div class="case-next">
+      <span class="case-next-label">Next Case Study</span>
+      <a href="case-ai.html" class="case-next-link">
+        <span class="case-next-title">Keyword Landing Pages / AI</span>
+        <span class="case-next-arrow">&rarr;</span>
+      </a>
     </div>
-    <div class="meta-item">
-      <label>Team</label>
-      <span>Notifications</span>
+
+    <div class="case-nav-grid">
+        <span class="case-nav-grid-label">All Case Studies</span>
+        <div class="case-nav-items">
+            <span class="case-nav-item current">
+                <span class="case-nav-number">01</span>
+                <span class="case-nav-name">Notifications</span>
+            </span>
+            <a href="case-ai.html" class="case-nav-item">
+                <span class="case-nav-number">02</span>
+                <span class="case-nav-name">AI</span>
+            </a>
+            <a href="case-sharing.html" class="case-nav-item">
+                <span class="case-nav-number">03</span>
+                <span class="case-nav-name">Sharing</span>
+            </a>
+            <a href="case-subreddit.html" class="case-nav-item">
+                <span class="case-nav-number">04</span>
+                <span class="case-nav-name">Subreddit</span>
+            </a>
+            <a href="case-building-portfolio.html" class="case-nav-item">
+                <span class="case-nav-number">05</span>
+                <span class="case-nav-name">Portfolio</span>
+            </a>
+        </div>
     </div>
-    <div class="meta-item">
-      <label>Timeline</label>
-      <span>Sep 2024 &ndash; Feb 2026</span>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <div>
+        <p style="color: var(--text-secondary); margin-bottom: 8px;">Let's talk product, systems, or design.</p>
+      </div>
+      <ul class="footer-links">
+        <li><a href="https://linkedin.com/in/dellasigrest" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+        <li><a href="mailto:dsigrest@gmail.com">Email</a></li>
+      </ul>
     </div>
-    <div class="meta-item">
-      <label>Platform</label>
-      <span>iOS, Android, Web</span>
+    <div style="text-align: center; margin-top: var(--spacing-xl); padding-top: var(--spacing-xl); border-top: 1px solid var(--border-subtle);">
+      <p class="footer-credit">This site was designed collaboratively with AI — <a href="case-building-portfolio.html" style="color: var(--text-tertiary); text-decoration: underline; text-underline-offset: 2px;">read how</a></p>
     </div>
-  </div>
-</section>
+  </footer>
 
-<section class="case-body">
+  <script>
+    // Progress bar
+    const progressBar = document.querySelector('.progress-bar');
+    window.addEventListener('scroll', () => {
+      const windowHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrolled = (window.scrollY / windowHeight) * 100;
+      progressBar.style.width = scrolled + '%';
+    });
 
-  <p>Reddit sends 185 million push notifications daily across hundreds of millions of users&mdash;comment replies, trending posts, subreddit updates. The inbox serves 7.5 million daily users, but when I joined the notifications team, no designer owned this surface. Five notification types operated independently with no shared strategy, and engagement was declining&mdash;viewer-to-clicker conversion had dropped 5% despite 20% year-over-year traffic growth.</p>
-
-  <p>I built the segmentation framework, defined the inbox vision, and led the evolution from five disconnected surfaces into a unified system.</p>
-
-  <div class="case-img-full">
-    <div class="img-placeholder">Inbox signal hierarchy&mdash;direct activity (replies, mentions), subscriptions (followed posts, subreddit updates), discovery (trending, breaking news)</div>
-  </div>
-
-  <h2>The Framework</h2>
-
-  <p>I developed a <strong>three-tier model based on signal strength</strong>: direct activity, explicit opt-ins, and recommendations. This resolved a core tension&mdash;recommendation notifications performed well by engagement metrics but drew user complaints. The framework showed when each type belonged: high-activity users with abundant direct notifications don't need discovery; new users without activity history do.</p>
-
-  <p>The inbox drives 2% of all comments on Reddit&mdash;a figure that shifted leadership investment and directly shaped how we targeted the strategy across cohorts.</p>
-
-  <div class="case-img-full">
-    <div class="img-placeholder">Strategy framework&mdash;three pillars (Build habits, Enable curation, Create focus) mapped to user cohorts with signal/intent matrix</div>
-  </div>
-
-  <h2>The Evolution</h2>
-
-  <p><strong>Modernize</strong> &mdash; I migrated the inbox to the platform design system and standardized copy across all notification types. Contextualized copy&mdash;showing <em>why</em> users received a notification&mdash;doubled click-through compared to generic framing.</p>
-
-  <div class="case-img-full">
-    <div class="img-placeholder">Before/after&mdash;legacy inbox vs. design system migration with contextualized copy examples</div>
-  </div>
-
-  <p><strong>Deliver on expectations</strong> &mdash; Recommendations tangled with direct notification delivery, so subscriptions couldn't arrive reliably. I influenced the engineering roadmap to separate these pipelines, expanding inventory with breaking news and contextualized recommendations. I redesigned subreddit notification behavior to match how users actually think about subscriptions&mdash;push good visits climbed <strong>+1%</strong> across 15 million daily receives.</p>
-
-  <div class="case-img-full">
-    <div class="img-placeholder">Pipeline separation&mdash;recommendation and direct delivery paths, with subreddit notification redesign</div>
-  </div>
-
-  <p><strong>Handle volume</strong> &mdash; Accurate delivery created a new problem: high-activity communities flooded the inbox. The core principle became the inbox as a scannable launchpad&mdash;just enough context to know what happened, then a direct path there. I removed the overflow menu on notification line items and replaced it with gestural access&mdash;swipe actions and long press&mdash;reducing visual clutter while keeping expected utilities accessible. Engagement held steady, which meant the pattern worked. I designed push landing experiences that surfaced related content at the moment users typically bounced after opening a notification.</p>
-
-  <div class="case-img-full">
-    <div class="img-placeholder">Push landing experience&mdash;notification open, related content surface, re-engagement path</div>
-  </div>
-
-  <p><strong>Unify</strong> &mdash; I consolidated notifications and chat into a single inbox&mdash;a surface that hadn't existed before, requiring product, engineering, and design alignment across four teams. Chat had migrated into the inbox, and private messages&mdash;deeply baked into foundational internal systems&mdash;required a lengthy deprecation effort from engineering before the consolidation was possible. Each team had different definitions of what &ldquo;inbox&rdquo; meant. I built fully operable prototypes and put them in front of real users, which shifted internal conversations from opinion to evidence.</p>
-
-  <div class="case-img-full">
-    <div class="img-placeholder">Unified inbox&mdash;notifications and chat consolidated, with prototype iterations</div>
-  </div>
-
-  <h2>The Results</h2>
-
-  <p>I surfaced <em>why</em> each recommendation appeared to new users. Behavior changed first&mdash;DAU for that cohort lifted <strong>+1.4%</strong>, push click-through rose <strong>+6.4%</strong> across the 7.5M daily inbox user base.</p>
-
-  <p>I redesigned push landing experiences to prevent the dead-end bounce after opening a notification. Users found related content at the moment they'd typically leave&mdash;subscription good visits shifted <strong>+2-3%</strong> on 15 million subreddit update receives.</p>
-
-  <p>The notifications team shipped <strong>+1.3M incremental DAU</strong> and <strong>+2.7M daily good visits</strong> year-to-date, exceeding targets by 75%. The three-tier framework and cohort segmentation became the foundation for notification design across Reddit.</p>
-
-  <div class="case-img-full">
-    <div class="img-placeholder">Key metrics&mdash;experiment results with scale context, team-level DAU and good visits impact</div>
-  </div>
-
-</section>
-
-<div class="case-next">
-  <a href="case-ai.html">Next: Keyword Landing Pages / AI &rarr;</a>
-</div>
-
-</main>
-
-<footer>
-  <div class="footer-inner">
-    <div class="footer-left">
-      <p class="footer-name">Della Sigrest</p>
-      <p class="footer-note">This site was designed collaboratively with AI &mdash; <a href="case-building-portfolio.html">read how</a></p>
-    </div>
-    <div class="footer-right">
-      <a href="mailto:dsigrest@gmail.com">Email</a>
-      <a href="https://linkedin.com/in/dellasigrest" target="_blank" rel="noopener">LinkedIn</a>
-    </div>
-  </div>
-</footer>
-
-<script>
-  const toggle = document.querySelector('.nav-toggle');
-  const links = document.querySelector('.nav-links');
-  toggle?.addEventListener('click', () => {
-    links.classList.toggle('open');
-    toggle.classList.toggle('open');
-  });
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
+    // Nav scroll state
+    const nav = document.querySelector('nav');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
       }
     });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.metric, .case-img-full').forEach(el => {
-    el.classList.add('fade-in');
-    observer.observe(el);
-  });
-</script>
 
+    // IntersectionObserver for images and headings
+    const imageElements = document.querySelectorAll('.case-img-full');
+    const headingElements = document.querySelectorAll('.case-body h2');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.1
+    });
+
+    imageElements.forEach(el => observer.observe(el));
+    headingElements.forEach(el => observer.observe(el));
+  </script>
 </body>
 </html>
