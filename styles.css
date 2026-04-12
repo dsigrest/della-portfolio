@@ -128,6 +128,12 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .nav-brand:hover {
+      color: var(--accent);
     }
 
     .nav-links {
@@ -145,7 +151,7 @@
     }
 
     .nav-links a:hover {
-      color: var(--text-primary);
+      color: var(--accent);
     }
 
     .nav-links a.active {
@@ -179,7 +185,7 @@
     }
 
     .case-hero {
-      padding: 140px var(--spacing-lg) 60px;
+      padding: 140px var(--spacing-lg) 80px;
       max-width: 800px;
       margin: 0 auto;
       animation: fadeInUp 0.8s ease 0.1s backwards;
@@ -278,20 +284,25 @@
         grid-template-columns: repeat(4, 1fr);
         gap: var(--spacing-lg);
         margin: var(--spacing-xl) 0;
-        padding: var(--spacing-xl);
+        padding: var(--spacing-lg);
         background: var(--surface-1);
         border: 1px solid var(--border-subtle);
         border-radius: 8px;
+        width: 100%;
     }
     .metric {
         text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
     }
     .metric-value {
         display: block;
         font-size: 32px;
         font-weight: 700;
         letter-spacing: -0.02em;
-        color: var(--text-primary);
+        color: var(--accent);
         line-height: 1.2;
         margin-bottom: var(--spacing-xs);
     }

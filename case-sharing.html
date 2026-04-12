@@ -15,9 +15,9 @@
 
     <nav>
         <div class="nav-content">
-            <div class="nav-brand">Della Sigrest</div>
+            <a href="index.html" class="nav-brand">Della Sigrest</a>
             <ul class="nav-links">
-                <li><a href="index.html" class="active">Work</a></li>
+                <li><a href="index.html#work">Work</a></li>
                 <li><a href="about.html">About</a></li>
                 <li><a href="resume.pdf" target="_blank">Resume</a></li>
                 <li><a href="mailto:dsigrest@gmail.com">Contact</a></li>
@@ -30,21 +30,21 @@
             <section class="case-hero">
                 <div class="case-hero-eyebrow">Case Study 03 of 05 &mdash; Led design for sharing &amp; embeds infrastructure</div>
                 <h1>Sharing &amp; Embeds</h1>
-                <p class="case-hero-subtitle">Reddit had no sharing infrastructure&mdash;just the default iOS share sheet and unrecognizable URL strings. I framed sharing as a three-event system, owned the design strategy across all three stages, and discovered that on a pseudo-anonymous platform, privacy isn&rsquo;t a non-issue&mdash;it&rsquo;s the core issue. Serving 100M+ daily active users.</p>
-                <div class="case-meta">
-                    <div class="case-meta-item">
+                <p class="case-hero-sub">Reddit had no sharing infrastructure&mdash;just the default iOS share sheet and unrecognizable URL strings. I framed sharing as a three-event system, owned the design strategy across all three stages, and discovered that on a pseudo-anonymous platform, privacy isn&rsquo;t a non-issue&mdash;it&rsquo;s the core issue. Serving 100M+ daily active users.</p>
+                <div class="case-meta-grid">
+                    <div class="meta-item">
                         <label>Role</label>
                         <span>Senior Product Designer</span>
                     </div>
-                    <div class="case-meta-item">
+                    <div class="meta-item">
                         <label>Team</label>
                         <span>Growth</span>
                     </div>
-                    <div class="case-meta-item">
+                    <div class="meta-item">
                         <label>Timeline</label>
                         <span>Oct 2022 – May 2023</span>
                     </div>
-                    <div class="case-meta-item">
+                    <div class="meta-item">
                         <label>Platform</label>
                         <span>iOS, Android, Web</span>
                     </div>
@@ -57,8 +57,328 @@
                 <p><strong>I framed sharing as a three-event system</strong>&mdash;distribution, engagement, and re-engagement&mdash;and owned the design strategy across all three stages. At the time, Reddit was approaching 100M daily active users. None of that scale was being captured off-platform.</p>
 
                 <div class="case-img-full">
-                    <img src="img/sharing-before-after.png" alt="Before and after — iOS default share sheet compared to custom Reddit share sheet with visual grid" loading="lazy">
+                    <img src="img/sharing-before-after-v2.png" alt="Before and after — iOS default share sheet compared to custom Reddit share sheet with visual grid" loading="lazy">
                 </div>
+
+                <!-- ── SHARING FLYWHEEL DIAGRAM ── -->
+                <div class="flywheel-wrap case-img-full" id="flywheel">
+                  <style>
+                    /* ── Flywheel component (scoped via .flywheel-wrap) ──
+                       Design reference: homepage hero h1 glow
+                       radial-gradient(#7aa4bc → #a0beb4 → #d0ccc4 → #c4b898)
+                       with blur(40px) pseudo-element.
+                       The ring recreates that same atmospheric warmth. */
+                    .flywheel-wrap {
+                      position: relative;
+                      max-width: 620px;
+                      margin: var(--spacing-3xl) auto;
+                      padding: var(--spacing-2xl) var(--spacing-xl);
+                    }
+
+                    /* No header — component embeds directly in prose */
+
+                    /* ── Core layout ── */
+                    .flywheel-wrap .fw-core {
+                      position: relative;
+                      width: 100%;
+                      max-width: 520px;
+                      aspect-ratio: 1 / 1.08;
+                      margin: 0 auto;
+                    }
+
+                    /* ── SVG layer ── */
+                    .flywheel-wrap .fw-svg {
+                      position: absolute;
+                      top: 10%;
+                      left: 8%;
+                      width: 84%;
+                      height: 78%;
+                      overflow: visible;
+                    }
+                    /* Ring — clean stroke, same gradient as hero h1 text,
+                       weight matched to Inter 700 letterforms */
+                    .flywheel-wrap .glow-haze {
+                      fill: none;
+                      stroke: url(#fwRingGrad);
+                      stroke-width: 8;
+                      stroke-linecap: round;
+                      opacity: 0;
+                    }
+                    /* Structural ring — hidden, ring IS the gradient stroke */
+                    .flywheel-wrap .orbit-ring {
+                      fill: none;
+                      stroke: none;
+                    }
+                    /* Fairy bloom — warm radial glow like the cursor on hero h1,
+                       travels the ring the way the cursor travels the text */
+                    .flywheel-wrap .fw-fairy {
+                      opacity: 0;
+                      filter: url(#fwFairyGlow);
+                      transition: opacity 0.8s ease-out;
+                    }
+
+                    /* ── Node cards ── */
+                    .flywheel-wrap .fw-card {
+                      position: absolute;
+                      background: var(--surface-1);
+                      border: 1px solid var(--border-subtle);
+                      border-radius: 8px;
+                      padding: 14px 14px;
+                      width: 164px;
+                      min-height: 72px;
+                      display: flex;
+                      flex-direction: column;
+                      justify-content: center;
+                      opacity: 0;
+                      scale: 0.92;
+                      z-index: 2;
+                    }
+                    .flywheel-wrap .fw-card__head {
+                      display: flex;
+                      align-items: baseline;
+                      gap: 6px;
+                      margin-bottom: 4px;
+                    }
+                    .flywheel-wrap .fw-card__num {
+                      font-size: 11px;
+                      font-weight: 600;
+                      color: var(--text-tertiary);
+                      font-variant-numeric: tabular-nums;
+                    }
+                    .flywheel-wrap .fw-card__name {
+                      font-size: 16px;
+                      font-weight: 700;
+                      letter-spacing: -0.02em;
+                      color: var(--text-primary);
+                    }
+                    .flywheel-wrap .fw-card__desc {
+                      font-size: 12px;
+                      font-weight: 400;
+                      color: var(--text-secondary);
+                      line-height: 1.5;
+                      margin: 0;
+                    }
+
+                    /* Card positions:
+                       Share: pulled DOWN so bottom edge hides a ring segment
+                       Preview/Trust: inward enough that inner edge overlaps ring */
+                    .flywheel-wrap .fw-card--share {
+                      top: 8%;
+                      left: 50%;
+                      transform: translateX(-50%);
+                    }
+                    .flywheel-wrap .fw-card--preview {
+                      top: 57%;
+                      left: 63%;
+                    }
+                    .flywheel-wrap .fw-card--trust {
+                      top: 57%;
+                      right: 63%;
+                      left: auto;
+                    }
+
+                    /* ── Arc transition labels ── */
+                    .flywheel-wrap .fw-arc-label {
+                      position: absolute;
+                      font-size: 10px;
+                      font-weight: 500;
+                      letter-spacing: 0.04em;
+                      text-transform: uppercase;
+                      color: var(--text-tertiary);
+                      white-space: nowrap;
+                      opacity: 0;
+                      z-index: 1;
+                    }
+                    /* Clear breathing room — pushed out to maintain gap with thicker ring */
+                    .flywheel-wrap .fw-arc-label--sp {
+                      top: 38%;
+                      left: 83%;
+                    }
+                    .flywheel-wrap .fw-arc-label--pt {
+                      top: 93%;
+                      left: 50%;
+                      transform: translateX(-50%);
+                    }
+                    .flywheel-wrap .fw-arc-label--ts {
+                      top: 38%;
+                      right: 83%;
+                      text-align: right;
+                    }
+
+                    /* ── Animation states ── */
+                    .flywheel-wrap.is-active .fw-card {
+                      animation: fwCardIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+                    }
+                    .flywheel-wrap.is-active .fw-card--share   { animation-delay: 0ms; }
+                    .flywheel-wrap.is-active .fw-card--preview { animation-delay: 140ms; }
+                    .flywheel-wrap.is-active .fw-card--trust   { animation-delay: 280ms; }
+
+                    .flywheel-wrap.is-active .glow-haze {
+                      opacity: 0.9;
+                      transition: opacity 1s ease-out 300ms;
+                    }
+                    .flywheel-wrap.is-active .fw-fairy {
+                      opacity: 1;
+                      transition-delay: 500ms;
+                    }
+
+                    .flywheel-wrap.is-active .fw-arc-label {
+                      animation: fwFadeIn 0.4s ease-out forwards;
+                    }
+                    .flywheel-wrap.is-active .fw-arc-label--sp { animation-delay: 600ms; }
+                    .flywheel-wrap.is-active .fw-arc-label--pt { animation-delay: 750ms; }
+                    .flywheel-wrap.is-active .fw-arc-label--ts { animation-delay: 900ms; }
+
+                    @keyframes fwCardIn {
+                      from { opacity: 0; scale: 0.92; }
+                      to   { opacity: 1; scale: 1; }
+                    }
+                    @keyframes fwFadeIn {
+                      from { opacity: 0; }
+                      to   { opacity: 1; }
+                    }
+
+                    @media (prefers-reduced-motion: reduce) {
+                      .flywheel-wrap .fw-card,
+                      .flywheel-wrap .fw-arc-label {
+                        animation: none !important;
+                        opacity: 1 !important;
+                        scale: 1 !important;
+                      }
+                      .flywheel-wrap .glow-haze { opacity: 0.9 !important; }
+                      .flywheel-wrap .fw-fairy { opacity: 0 !important; }
+                    }
+
+                    @media (max-width: 640px) {
+                      .flywheel-wrap { padding: var(--spacing-lg) var(--spacing-md); }
+                      .flywheel-wrap .fw-card { width: 136px; padding: 10px 12px; min-height: 64px; }
+                      .flywheel-wrap .fw-card__name { font-size: 14px; }
+                      .flywheel-wrap .fw-card__desc { font-size: 11px; }
+                      .flywheel-wrap .fw-card--preview { left: 60%; }
+                      .flywheel-wrap .fw-card--trust   { right: 60%; }
+                      .flywheel-wrap .fw-arc-label--sp { left: 80%; }
+                      .flywheel-wrap .fw-arc-label--ts { right: 80%; }
+                    }
+                    @media (max-width: 480px) {
+                      .flywheel-wrap .fw-arc-label { display: none; }
+                      .flywheel-wrap .fw-svg { left: 3%; width: 94%; }
+                      .flywheel-wrap .fw-card--preview { left: 57%; }
+                      .flywheel-wrap .fw-card--trust   { right: 57%; }
+                    }
+                  </style>
+
+                  <div class="fw-core">
+                    <svg class="fw-svg" viewBox="0 0 520 520">
+                      <defs>
+                        <!-- Ring gradient: exact hero h1 text palette -->
+                        <linearGradient id="fwRingGrad" gradientTransform="rotate(135)">
+                          <stop offset="0%" stop-color="#7aa4bc"/>
+                          <stop offset="35%" stop-color="#a0beb4"/>
+                          <stop offset="65%" stop-color="#d0ccc4"/>
+                          <stop offset="100%" stop-color="#c4b898"/>
+                        </linearGradient>
+
+                        <!-- Fairy glow: matches hero h1::before cursor glow
+                             rgba(127,181,176) with blur(40px) → stdDeviation≈14 -->
+                        <radialGradient id="fwFairyFill">
+                          <stop offset="0%" stop-color="rgba(127,181,176,0.09)"/>
+                          <stop offset="100%" stop-color="rgba(127,181,176,0)"/>
+                        </radialGradient>
+                        <filter id="fwFairyGlow" x="-300%" y="-300%" width="700%" height="700%">
+                          <feGaussianBlur in="SourceGraphic" stdDeviation="10"/>
+                        </filter>
+                      </defs>
+
+                      <!-- Atmospheric haze ring — thick, blurred, warm gradient -->
+                      <circle class="glow-haze" cx="260" cy="260" r="160"/>
+
+                      <!-- Thin structural ring for definition -->
+                      <circle class="orbit-ring" cx="260" cy="260" r="160"/>
+
+                      <!-- Hidden path for fairy-light orbit calculation -->
+                      <path id="fwOrbitPath" d="M 260 100 A 160 160 0 0 1 399 340 A 160 160 0 0 1 121 340 A 160 160 0 0 1 260 100" fill="none" stroke="none"/>
+
+                      <!-- Fairy bloom: warm glow like hero cursor, orbits clockwise -->
+                      <circle class="fw-fairy" cx="260" cy="100" r="24" fill="url(#fwFairyFill)"/>
+                    </svg>
+
+                    <!-- Node cards -->
+                    <div class="fw-card fw-card--share">
+                      <div class="fw-card__head">
+                        <span class="fw-card__num">1</span>
+                        <span class="fw-card__name">Share</span>
+                      </div>
+                      <p class="fw-card__desc">Streamlined channel selection with one-tap&nbsp;send</p>
+                    </div>
+
+                    <div class="fw-card fw-card--preview">
+                      <div class="fw-card__head">
+                        <span class="fw-card__num">2</span>
+                        <span class="fw-card__name">Preview</span>
+                      </div>
+                      <p class="fw-card__desc">Platform-native cards that set recipient&nbsp;expectations</p>
+                    </div>
+
+                    <div class="fw-card fw-card--trust">
+                      <div class="fw-card__head">
+                        <span class="fw-card__num">3</span>
+                        <span class="fw-card__name">Trust</span>
+                      </div>
+                      <p class="fw-card__desc">Privacy status surfaced before the user hits&nbsp;send</p>
+                    </div>
+
+                    <!-- Arc transition labels — well outside the ring -->
+                    <span class="fw-arc-label fw-arc-label--sp">Recipients click</span>
+                    <span class="fw-arc-label fw-arc-label--pt">Users engage</span>
+                    <span class="fw-arc-label fw-arc-label--ts">Trust compounds</span>
+                  </div>
+                </div>
+
+                <script>
+                (function() {
+                  var wrap = document.getElementById('flywheel');
+                  var orbitPath = document.getElementById('fwOrbitPath');
+                  var fairy = wrap.querySelector('.fw-fairy');
+                  var ringGrad = document.getElementById('fwRingGrad');
+                  var pathLen = orbitPath.getTotalLength();
+                  var duration = 10000; // 10s per orbit — slow, ambient
+                  var startTime = null;
+                  var animating = false;
+
+                  function animateLoop(timestamp) {
+                    if (!startTime) startTime = timestamp;
+                    var elapsed = (timestamp - startTime) % duration;
+                    var progress = elapsed / duration;
+
+                    // Fairy position along orbit path
+                    var point = orbitPath.getPointAtLength(progress * pathLen);
+                    fairy.setAttribute('cx', point.x);
+                    fairy.setAttribute('cy', point.y);
+
+                    // Rotate ring gradient so oatmeal highlight orbits clockwise
+                    var angle = progress * 360;
+                    ringGrad.setAttribute('gradientTransform', 'rotate(' + angle + ' 0.5 0.5)');
+
+                    if (animating) requestAnimationFrame(animateLoop);
+                  }
+
+                  var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+                  var io = new IntersectionObserver(function(entries) {
+                    if (!entries[0].isIntersecting) return;
+                    wrap.classList.add('is-active');
+                    if (!prefersReduced) {
+                      setTimeout(function() {
+                        animating = true;
+                        requestAnimationFrame(animateLoop);
+                      }, 500);
+                    }
+                    io.disconnect();
+                  }, { threshold: 0.25 });
+                  io.observe(wrap);
+                })();
+                </script>
+                <!-- ── END FLYWHEEL ── -->
 
                 <h2>Make It Easy to Share</h2>
 

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reddit Answers (AI) Case Study — Della Sigrest</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <nav class="case-nav">
+        <a href="../index.html">← back to work</a>
+    </nav>
+
+    <section class="case-hero">
+        <h1>Reddit Answers MVP</h1>
+        <p>Led design for AI-generated answer summaries. Shipped to 50k+ subreddits in 8 weeks.</p>
+        <div class="img-placeholder">[Mock: AI-generated answer card on a Reddit post]</div>
+    </section>
+
+    <section class="case-body">
+        <h2>Context</h2>
+        <p>Reddit began exploring generative AI to surface answers on posts in real time. No precedent at Reddit for AI-generated public content. Engineering faced hard constraints: 4k token context window, but posts + comments often exceeded that. How do you synthesize meaningful content in a context window designed for something else?</p>
+        <div class="img-placeholder">[Diagram: context window constraint vs. data needed]</div>
+
+        <h2>The Design</h2>
+        <p>I proposed separating SEO-optimized summaries (the "answer" experience) from synthesis (how we get there). This reframe gave engineering space to iterate on the prompt and context selection without shipping wrong content to users.</p>
+        <p>We started with a component library approach:</p>
+        <ul>
+            <li>Answer card (visual treatment, consistent metadata slots)</li>
+            <li>LLM identification patterns (how to know if a comment is a legit answer)</li>
+            <li>Escalation rules (when to surface AI vs. human answers)</li>
+        </ul>
+        <div class="img-placeholder">[Answer card component in multiple states]</div>
+
+        <h2>What Worked</h2>
+        <p>The separation of concerns worked. Design shipped quickly; engineering iterated on the prompt and data pipeline without rework. We launched MVP at 50k+ subreddits in 8 weeks—faster than expected because design didn't block on perfect synthesis.</p>
+
+        <h2>The Failure & Iteration</h2>
+        <p>Early prompts were "vibes-based"—engineering tried different phrasings, hoping one would work. It didn't. Summaries were inaccurate or hallucinated. I pushed for structured evaluation: build a rubric, score outputs by human raters, iterate on the scoring signal instead of guessing. That pivot took 3 weeks but saved months of flailing. The constraint (context window) became the insight: we couldn't synthesize arbitrary length, so design had to tighten the definition of "answer" instead.</p>
+
+        <h2>What I Learned</h2>
+        <p>AI design is iterative in a way traditional design isn't. You can't control the output—you can only control the input, the rubric, and the feedback loop. The best move was to box the problem, define success metrics, and iterate on the measurement.</p>
+    </section>
+</body>
+</html>

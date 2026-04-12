@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keyword Landing Pages / AI — Della Sigrest</title>
+<meta name="description" content="I designed Reddit's first LLM product and the governance model that became the foundation for Reddit Answers.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-name">Della Sigrest</a>
+    <div class="nav-links">
+      <a href="index.html" class="active">Work</a>
+      <a href="about.html">About</a>
+      <a href="resume.pdf" target="_blank" aria-label="Download my resume (PDF)">Resume</a>
+      <a href="mailto:dsigrest@gmail.com">Contact</a>
+    </div>
+    <button class="nav-toggle" aria-label="Menu"><span></span><span></span></button>
+  </div>
+</nav>
+
+<main>
+
+<section class="case-hero">
+  <div class="case-hero-eyebrow">Case Study 02 of 05 &mdash; Pioneered AI-forward design practice at Reddit</div>
+  <h1>Keyword Landing Pages / AI</h1>
+  <p class="case-hero-sub">I designed Reddit&rsquo;s first LLM product &mdash; and the governance model, component library, and prompt workflow that became the foundation for Reddit Answers.</p>
+
+  <div class="case-meta-grid">
+    <div class="meta-item">
+      <label>Role</label>
+      <span>Senior Product Designer</span>
+    </div>
+    <div class="meta-item">
+      <label>Team</label>
+      <span>SEO &amp; Discovery</span>
+    </div>
+    <div class="meta-item">
+      <label>Timeline</label>
+      <span>Jun 2023 – Dec 2023</span>
+    </div>
+    <div class="meta-item">
+      <label>Platform</label>
+      <span>Web (SEO surfaces)</span>
+    </div>
+  </div>
+</section>
+
+<section class="case-body">
+
+  <p>Reddit wanted to consolidate fragmented SEO traffic using LLMs. Straightforward product idea &mdash; <strong>the organization had no precedent for AI-generated content.</strong> No identity system, no evaluation criteria, no framework for non-deterministic output. I led the design of a governance model that defined how LLMs would appear, sound, and behave across the platform &mdash; shipped iteratively over six months.</p>
+
+  <h2>Visual Identification</h2>
+
+  <p>Before touching UI, I partnered with OrangeRed (brand), legal, and design systems to define what AI-generated content would <em>be</em> at Reddit &mdash; not just how it would look, but what identity it carried and what legal implications followed.</p>
+
+  <p><strong>Transparency was the design constraint.</strong> User research confirmed people valued knowing content was AI-generated, but this was peak AI backlash &mdash; the signal had to build trust without feeling like a trend.</p>
+
+  <p>Working with the design systems and brand teams, I explored the full spectrum of identification patterns &mdash; and tested them across surfaces well beyond the initial product.</p>
+
+  <div class="case-img-full">
+    <div class="img-placeholder">Exploration range &mdash; identification patterns from heavily branded to near-invisible, tested across SEO landing pages, composer, comment threads, profiles</div>
+  </div>
+
+  <p>The component library, LLM identification patterns, and user feedback UI shipped as <strong>reusable system components</strong> &mdash; designed from the start to scale to wherever AI content appeared next.</p>
+
+  <h2>Tone &amp; Voice</h2>
+
+  <p><strong>The closer summaries stayed to original posts, the more users trusted them.</strong> Broad generalizations &mdash; a consistent failure mode in early outputs &mdash; killed trust immediately. Every summary needed direct attribution and links so users could go deeper instead of guessing from a search page.</p>
+
+  <p>I drove the team through the harder question: how to synthesize across communities without losing the source. The model&rsquo;s range was narrow &mdash; too little context produced empty platitudes, too much produced verbatim quotes with zero synthesis.</p>
+
+  <div class="case-img-full">
+    <div class="img-placeholder">Summary display explorations &mdash; length variants, source attribution placement (inline vs. post bank), expand/collapse patterns</div>
+  </div>
+
+  <p>The synthesis display patterns and truncation logic we landed on became reusable across later products.</p>
+
+  <h2>Prompt Design Workflow</h2>
+
+  <p>Previously, prompt iteration was <strong>one engineer, vibes-based.</strong> I introduced a structured evaluation matrix &mdash; multiple prompts tested simultaneously against live data from Reddit&rsquo;s highest-traffic SEO verticals, scored on defined parameters: summary quality, source relevance, synthesis depth, transparency, community diversity, post engagement.</p>
+
+  <p><strong>The persistent tension was SEO optimization versus user value.</strong> Search ranking rewarded keyword density and repetition &mdash; exactly the patterns that made summaries feel mechanical to readers. I worked with the engineer to separate those concerns: keywords were embedded in structured page elements outside the summary itself, so the synthesis could stay natural while the page still ranked. That separation became a core principle the team carried forward.</p>
+
+  <p><strong>My core contribution was translating subjective design criteria into rubrics engineers could operate against.</strong> I partnered with content design to define the evaluation dimensions, then facilitated scoring sessions where our cross-functional team&mdash;design, engineering, product&mdash;rated outputs against the rubric directly. No external raters; we were the evaluators, which meant the rubric had to be precise enough for non-designers to apply consistently. It evolved with each production cycle as we learned what benchmarks couldn&rsquo;t predict.</p>
+
+  <div class="case-img-full">
+    <div class="img-placeholder">Prompt evaluation matrix &mdash; parameters, scoring criteria, iteration cycle from vibes-based to structured</div>
+  </div>
+
+  <p>Post-processing stayed minimal. Heavy backend cleanup masked the nondeterministic behavior the system needed to handle honestly.</p>
+
+  <h2>Failure States &amp; User Control</h2>
+
+  <p>Below-threshold quality meant the summary didn&rsquo;t appear &mdash; rather than showing users something unreliable. Users could flag responses, suggest improvements, or collapse the summary entirely.</p>
+
+  <p><strong>Those signals fed directly back into model iteration.</strong> We started with the verticals that had the strongest source coverage &mdash; enough data to test and refine against &mdash; and used user feedback alongside our content team to adjust the rubric over time. The system improved through real usage, not guesswork: flagged outputs surfaced where the model was weakest, and the rubric evolved to reflect what users actually valued versus what we&rsquo;d assumed.</p>
+
+  <h2>Results</h2>
+
+  <p><strong>This project shipped to every user reaching Reddit through Google search for targeted verticals</strong> &mdash; a surface handling hundreds of millions of monthly visits during this period. The governance model, identity system, and prompt workflow I built were handed to a new team spun up to bring synthesis into search &mdash; where research had shown it belonged. Sending users from one search-like surface to another was the dead end that clarified the real opportunity.</p>
+
+  <p><strong>That team launched Reddit Answers, which reached 15 million weekly active users within its first year.</strong> The LLM identification component library, synthesis display patterns, user feedback UI, prompt evaluation rubric, and governance framework I built were inherited directly &mdash; Reddit Answers shipped on top of them.</p>
+
+</section>
+
+<div class="case-next">
+  <a href="case-sharing.html">Next: Sharing & Embeds &rarr;</a>
+</div>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-left">
+      <p class="footer-name">Della Sigrest</p>
+      <p class="footer-note">This site was designed collaboratively with AI &mdash; <a href="case-building-portfolio.html">read how</a></p>
+    </div>
+    <div class="footer-right">
+      <a href="mailto:dsigrest@gmail.com">Email</a>
+      <a href="https://linkedin.com/in/dellasigrest" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const toggle = document.querySelector('.nav-toggle');
+  const links = document.querySelector('.nav-links');
+  toggle?.addEventListener('click', () => { links.classList.toggle('open'); toggle.classList.toggle('open'); });
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.metric, .case-img-full').forEach(el => { el.classList.add('fade-in'); observer.observe(el); });
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

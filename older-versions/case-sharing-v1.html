@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Share Sheets Case Study — Della Sigrest</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <nav class="case-nav">
+        <a href="../index.html">← back to work</a>
+    </nav>
+
+    <section class="case-hero">
+        <h1>Share Sheets</h1>
+        <p>Shipped unified sharing UI across Reddit's platforms. +12% share volume within 3 months.</p>
+        <div class="img-placeholder">[Share button and menu on a Reddit post]</div>
+    </section>
+
+    <section class="case-body">
+        <h2>Context</h2>
+        <p>Reddit's share experience was fragmented: web, mobile, modtools each had different menus, copy, and affordances. Sharing volume was flat year-over-year. User research showed that users weren't finding the share button, and when they did, the menu didn't match their mental model of "share."</p>
+
+        <h2>The Design</h2>
+        <p>I unified the share experience across platforms. Single sheet component, consistent button placement, cross-platform parity in channels and options. The insight came from privacy research: users hesitate to share because they're uncertain about privacy. I reframed the menu from "where can I share this?" to "who am I sharing this with and what privacy applies?"</p>
+        <ul>
+            <li>Share sheet component (mobile + web variants)</li>
+            <li>Privacy callouts next to each channel (not as a modal)</li>
+            <li>Unified channel metadata (followers count, audience size)</li>
+        </ul>
+        <div class="img-placeholder">[Share sheet component with privacy indicators]</div>
+
+        <h2>What Worked</h2>
+        <p>Shipping design across all platforms simultaneously meant the team had to align on a single source of truth. We designed once, shipped everywhere. Volume increased +12% in three months.</p>
+
+        <h2>The Constraint</h2>
+        <p>But adoption plateaued. Volume stayed flat after month 3, despite surface-level increases in button clicks. Telemetry showed users opened the menu but didn't share. The real blocker wasn't the UI—it was privacy uncertainty. Users clicked the button, saw the menu, but hesitated because the privacy implications weren't clear enough. Adding explicit privacy callouts solved it.</p>
+
+        <h2>What I Learned</h2>
+        <p>Unification solves consistency problems, not adoption problems. The blocker was deeper than UI; it was decision anxiety. Privacy was the frame that mattered.</p>
+    </section>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications Case Study — Della Sigrest</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <nav class="case-nav">
+        <a href="../index.html">← back to work</a>
+    </nav>
+
+    <section class="case-hero">
+        <h1>Unified Inbox</h1>
+        <p>Shipped unified notifications architecture. +1.4% DAU, +6.4% CTR on suggested actions.</p>
+        <div class="img-placeholder">[Architecture diagram: how unified inbox integrates across Reddit surfaces]</div>
+    </section>
+
+    <section class="case-body">
+        <h2>Context</h2>
+        <p>Users received notifications across 5+ surfaces: inbox, modqueue, mod alerts, home timeline, and on-page badges. Each surface owned its notification format and state machine. Notifications were inconsistent in tone, latency, action surface, and delivery rules.</p>
+        <p>The team hypothesis: surface consistency and a unified action layer would increase action rate and DAU.</p>
+        <div class="img-placeholder">[Before: fragmented notification surfaces across Reddit]</div>
+
+        <h2>The Design</h2>
+        <p>I architected a unified inbox system that separated concerns across three layers:</p>
+        <ul>
+            <li><strong>Data layer:</strong> Unified event schema and notification generation pipeline (owned by backend)</li>
+            <li><strong>Storage & state:</strong> Single source of truth for notification read/dismiss state, with optimistic updates</li>
+            <li><strong>UI layer:</strong> Reusable notification card component with flexible metadata slots</li>
+        </ul>
+        <p>This allowed us to ship consistent UX while teams moved at their own pace to adopt the new feed.</p>
+        <div class="img-placeholder">[Notification card component variants and states]</div>
+
+        <h2>What Worked</h2>
+        <p>The architecture scaled. Over 18 months, 8 surfaces migrated to unified inbox without backend redesign. Adoption was gradual and low-risk—teams used the new component but kept their existing data sources at first.</p>
+        <p>Metrics: +1.4% DAU, +6.4% CTR on suggested actions. Action surface unification was the main driver; users were more likely to act when suggestions appeared in a consistent, familiar format.</p>
+
+        <h2>The Failure</h2>
+        <p>Launch required an extra click to see action buttons (icon → expand → button). Early adoption was low. Telemetry showed users never expanded. I reframed: instead of hiding buttons, I made action buttons visible by default and used copy to drive the behavior change. CTR on actions doubled. The constraint wasn't the feature—it was the action surface.</p>
+
+        <h2>What I Learned</h2>
+        <p>Architecture decisions compound over time. Early investment in separating concerns—schema, state, UI—meant downstream teams could move fast. Constraints often point to real user friction, not design polish.</p>
+    </section>
+</body>
+</html>

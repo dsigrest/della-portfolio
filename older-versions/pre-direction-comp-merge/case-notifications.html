@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notifications & Inbox — Della Sigrest</title>
+<meta name="description" content="How I modernized Reddit's inbox and notification system after 6 years without design investment.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-name">Della Sigrest</a>
+    <div class="nav-links">
+      <a href="index.html" class="active">Work</a>
+      <a href="about.html">About</a>
+      <a href="resume.pdf" target="_blank" aria-label="Download my resume (PDF)">Resume</a>
+      <a href="mailto:dsigrest@gmail.com">Contact</a>
+    </div>
+    <button class="nav-toggle" aria-label="Menu">
+      <span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<main>
+
+<section class="case-hero">
+  <div class="case-hero-eyebrow">Case Study 01 of 05</div>
+  <h1>Notifications & Inbox</h1>
+  <p class="case-hero-sub">Reddit sends 185 million push notifications daily. The inbox serves 7.5 million daily users. I built the segmentation framework, defined the inbox vision, and led the evolution from five disconnected surfaces into a unified system. +1.3M incremental DAU. +2.7M daily good visits.</p>
+
+  <div class="case-meta-grid">
+    <div class="meta-item">
+      <label>Role</label>
+      <span>Senior Product Designer (Lead)</span>
+    </div>
+    <div class="meta-item">
+      <label>Team</label>
+      <span>Notifications</span>
+    </div>
+    <div class="meta-item">
+      <label>Timeline</label>
+      <span>Sep 2024 &ndash; Feb 2026</span>
+    </div>
+    <div class="meta-item">
+      <label>Platform</label>
+      <span>iOS, Android, Web</span>
+    </div>
+  </div>
+</section>
+
+<section class="case-body">
+
+  <p>Reddit sends 185 million push notifications daily across hundreds of millions of users&mdash;comment replies, trending posts, subreddit updates. The inbox serves 7.5 million daily users, but when I joined the notifications team, no designer owned this surface. Five notification types operated independently with no shared strategy, and engagement was declining&mdash;viewer-to-clicker conversion had dropped 5% despite 20% year-over-year traffic growth.</p>
+
+  <p>I built the segmentation framework, defined the inbox vision, and led the evolution from five disconnected surfaces into a unified system.</p>
+
+  <div class="case-img-full">
+    <div class="img-placeholder">Inbox signal hierarchy&mdash;direct activity (replies, mentions), subscriptions (followed posts, subreddit updates), discovery (trending, breaking news)</div>
+  </div>
+
+  <h2>The Framework</h2>
+
+  <p>I developed a <strong>three-tier model based on signal strength</strong>: direct activity, explicit opt-ins, and recommendations. This resolved a core tension&mdash;recommendation notifications performed well by engagement metrics but drew user complaints. The framework showed when each type belonged: high-activity users with abundant direct notifications don't need discovery; new users without activity history do.</p>
+
+  <p>The inbox drives 2% of all comments on Reddit&mdash;a figure that shifted leadership investment and directly shaped how we targeted the strategy across cohorts.</p>
+
+  <div class="case-img-full">
+    <div class="img-placeholder">Strategy framework&mdash;three pillars (Build habits, Enable curation, Create focus) mapped to user cohorts with signal/intent matrix</div>
+  </div>
+
+  <h2>The Evolution</h2>
+
+  <p><strong>Modernize</strong> &mdash; I migrated the inbox to the platform design system and standardized copy across all notification types. Contextualized copy&mdash;showing <em>why</em> users received a notification&mdash;doubled click-through compared to generic framing.</p>
+
+  <div class="case-img-full">
+    <img src="img/notif-before-after.png" alt="Before and after comparison of Reddit's inbox — legacy design on the left, unified design system migration on the right" loading="lazy">
+  </div>
+
+  <p><strong>Deliver on expectations</strong> &mdash; Recommendations tangled with direct notification delivery, so subscriptions couldn't arrive reliably. I influenced the engineering roadmap to separate these pipelines, expanding inventory with breaking news and contextualized recommendations. I redesigned subreddit notification behavior to match how users actually think about subscriptions&mdash;push good visits climbed <strong>+1%</strong> across 15 million daily receives.</p>
+
+  <div class="case-img-full">
+    <div class="img-placeholder">Pipeline separation&mdash;recommendation and direct delivery paths, with subreddit notification redesign</div>
+  </div>
+
+  <p><strong>Handle volume</strong> &mdash; Accurate delivery created a new problem: high-activity communities flooded the inbox. The core principle became the inbox as a scannable launchpad&mdash;just enough context to know what happened, then a direct path there. I removed the overflow menu on notification line items and replaced it with gestural access&mdash;swipe actions and long press&mdash;reducing visual clutter while keeping expected utilities accessible. Engagement held steady, which meant the pattern worked. I designed push landing experiences that surfaced related content at the moment users typically bounced after opening a notification.</p>
+
+  <div class="case-img-full">
+    <img src="img/notif-push-landing.png" alt="Push notification landing experience — lock screen notification, notification center, and content landing page showing the re-engagement path" loading="lazy">
+  </div>
+
+  <p><strong>Unify</strong> &mdash; I consolidated notifications and chat into a single inbox&mdash;a surface that hadn't existed before, requiring product, engineering, and design alignment across four teams. Chat had migrated into the inbox, and private messages&mdash;deeply baked into foundational internal systems&mdash;required a lengthy deprecation effort from engineering before the consolidation was possible. Each team had different definitions of what &ldquo;inbox&rdquo; meant. I built fully operable prototypes and put them in front of real users, which shifted internal conversations from opinion to evidence.</p>
+
+  <div class="case-img-full">
+    <img src="img/notif-unified-inbox.png" alt="Three iterations of the unified inbox consolidating notifications and chat — showing the design evolution across prototypes" loading="lazy">
+  </div>
+
+  <h2>The Results</h2>
+
+  <p>I surfaced <em>why</em> each recommendation appeared to new users. Behavior changed first&mdash;DAU for that cohort lifted <strong>+1.4%</strong>, push click-through rose <strong>+6.4%</strong> across the 7.5M daily inbox user base.</p>
+
+  <p>I redesigned push landing experiences to prevent the dead-end bounce after opening a notification. Users found related content at the moment they'd typically leave&mdash;subscription good visits shifted <strong>+2-3%</strong> on 15 million subreddit update receives.</p>
+
+  <p>The notifications team shipped <strong>+1.3M incremental DAU</strong> and <strong>+2.7M daily good visits</strong> year-to-date, exceeding targets by 75%. The three-tier framework and cohort segmentation became the foundation for notification design across Reddit.</p>
+
+  <div class="case-img-full">
+    <div class="img-placeholder">Key metrics&mdash;experiment results with scale context, team-level DAU and good visits impact</div>
+  </div>
+
+</section>
+
+<div class="case-next">
+  <a href="case-ai.html">Next: Keyword Landing Pages / AI &rarr;</a>
+</div>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-left">
+      <p class="footer-name">Della Sigrest</p>
+      <p class="footer-note">This site was designed collaboratively with AI &mdash; <a href="case-building-portfolio.html">read how</a></p>
+    </div>
+    <div class="footer-right">
+      <a href="mailto:dsigrest@gmail.com">Email</a>
+      <a href="https://linkedin.com/in/dellasigrest" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const toggle = document.querySelector('.nav-toggle');
+  const links = document.querySelector('.nav-links');
+  toggle?.addEventListener('click', () => {
+    links.classList.toggle('open');
+    toggle.classList.toggle('open');
+  });
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.metric, .case-img-full').forEach(el => {
+    el.classList.add('fade-in');
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — Della Sigrest</title>
+<meta name="description" content="About Della Sigrest — Senior Product Designer specializing in engagement systems and growth infrastructure.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-name">Della Sigrest</a>
+    <div class="nav-links">
+      <a href="index.html">Work</a>
+      <a href="about.html" class="active">About</a>
+      <a href="resume.pdf" target="_blank" aria-label="Download my resume (PDF)">Resume</a>
+      <a href="mailto:dsigrest@gmail.com">Contact</a>
+    </div>
+    <button class="nav-toggle" aria-label="Menu">
+      <span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<main>
+
+<section class="about-hero">
+  <h1>About</h1>
+  <p class="subtitle">Senior Product Designer &mdash; Engagement Systems, Growth, AI</p>
+</section>
+
+<section class="about-body">
+  <div class="photo-placeholder">
+    <!-- Della's photo will go here -->
+  </div>
+
+  <p>Five years at Reddit, five team rotations — inbox, notifications, push, email, chat. Each time, the first designer to touch the space. <strong>L2 to Senior (L4) in two years.</strong> I build the strategic foundation — problem framing, scalable systems, cross-functional process — then ship and move to somewhere harder.</p>
+
+  <p>The work spans <strong>growth experimentation</strong>, <strong>platform foundations</strong>, and <strong>AI-forward product design</strong>. I prototype in Figma and code. I think in systems, not surfaces.</p>
+</section>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-left">
+      <p class="footer-name">Della Sigrest</p>
+      <p class="footer-note">This site was designed collaboratively with AI &mdash; <a href="case-building-portfolio.html">read how</a></p>
+    </div>
+    <div class="footer-right">
+      <a href="mailto:dsigrest@gmail.com">Email</a>
+      <a href="https://linkedin.com/in/dellasigrest" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const toggle = document.querySelector('.nav-toggle');
+  const links = document.querySelector('.nav-links');
+  toggle?.addEventListener('click', () => {
+    links.classList.toggle('open');
+    toggle.classList.toggle('open');
+  });
+</script>
+
+</body>
+</html>

@@ -2,15 +2,27 @@
 """
 Voice Consistency Checker — Della Sigrest Portfolio
 
-Checks HTML files against banned-patterns.yaml to enforce voice consistency.
+Checks HTML and Markdown files against banned-patterns.yaml and Register 3
+rules to enforce voice consistency.
 No external dependencies — uses only Python stdlib.
 
 Usage:
     python3 voice-check.py                  # Check all HTML files
     python3 voice-check.py case-ai.html     # Check specific file
+    python3 voice-check.py file.md          # Check markdown file
     python3 voice-check.py --strict         # Treat warnings as errors
 
 Exit codes: 0 = pass, 1 = violations found
+
+Checks:
+  1. Banned patterns (from banned-patterns.yaml)
+  2. Passive voice ratio
+  3. First-person voice (case studies)
+  4. Sentence length
+  5. Register 3: paragraph length (case studies, max 3 sentences)
+  6. Verbal transcription detection (direct quotes in case studies)
+  7. Meta-narration patterns (case studies)
+  8. Stat duplication (case studies)
 """
 
 import re
@@ -59,8 +71,8 @@ def parse_banned_patterns(filepath):
 
     return patterns
 
-# --- HTML Text Extractor ---
-def extract_visible_text(html_content):
+# --- Text Extractors ---
+def extract_visible_text_html(html_content):
     """Extract visible text from HTML, skipping script/style tags."""
     # Remove script and style blocks
     text = re.sub(r"<script[^>]*>.*?</script>", "", html_content, flags=re.DOTALL | re.IGNORECASE)
@@ -77,6 +89,34 @@ def extract_visible_text(html_content):
     # Collapse whitespace
     text = re.sub(r"\s+", " ", text).strip()
     return text
+
+
+def extract_visible_text_md(md_content):
+    """Extract visible text from Markdown, stripping formatting."""
+    text = md_content
+    # Remove image placeholders
+    text = re.sub(r"\[IMAGE PLACEHOLDER:[^\]]*\]", "", text)
+    # Remove markdown headers (but keep the text)
+    text = re.sub(r"^#{1,6}\s+", "", text, flags=re.MULTILINE)
+    # Remove bold/italic markers
+    text = re.sub(r"\*\*([^*]+)\*\*", r"\1", text)
+    text = re.sub(r"\*([^*]+)\*", r"\1", text)
+    # Remove horizontal rules
+    text = re.sub(r"^---+\s*$", "", text, flags=re.MULTILINE)
+    # Remove markdown link syntax
+    text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)
+    # Collapse whitespace but preserve paragraph breaks (double newline)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    # For non-paragraph checks, collapse to single spaces
+    return text.strip()
+
+
+def extract_visible_text(content, filepath):
+    """Route to the correct extractor based on file type."""
+    if filepath.endswith(".md"):
+        return extract_visible_text_md(content)
+    else:
+        return extract_visible_text_html(content)
 
 # --- Passive Voice Detector ---
 PASSIVE_PATTERN = re.compile(
@@ -155,6 +195,113 @@ def check_sentence_length(text):
             long_sentences.append(f"({len(words)} words) {preview}")
     return long_sentences
 
+
+# --- Register 3 Checks (case studies only) ---
+
+MAX_SENTENCES_PER_PARAGRAPH = 3
+
+def check_paragraph_length(text, filename):
+    """Flag paragraphs exceeding Register 3 max (3 sentences) in case study files."""
+    is_case_study = any(filename.startswith(prefix) for prefix in CASE_STUDY_PREFIXES)
+    if not is_case_study:
+        return []
+
+    issues = []
+    # For markdown: split on double-newline (natural paragraph breaks)
+    # For HTML-extracted text: paragraphs separated by multiple spaces (from <p> tags)
+    if filename.endswith(".md"):
+        paragraphs = re.split(r"\n\n+", text)
+    else:
+        paragraphs = re.split(r"\s{3,}", text)
+    for para in paragraphs:
+        para = para.strip()
+        if len(para) < 20:
+            continue
+        # Count sentences (split on . ! ? followed by space or end)
+        sentences = [s.strip() for s in re.split(r"(?<=[.!?])\s+", para) if len(s.strip()) > 10]
+        if len(sentences) > MAX_SENTENCES_PER_PARAGRAPH:
+            preview = " ".join(para.split()[:15]) + "..."
+            issues.append(f"Paragraph has {len(sentences)} sentences (max {MAX_SENTENCES_PER_PARAGRAPH} for Register 3): {preview}")
+    return issues
+
+
+def check_direct_quotes(text, filename):
+    """Detect verbal transcription leaking into case study prose as direct quotes."""
+    is_case_study = any(filename.startswith(prefix) for prefix in CASE_STUDY_PREFIXES)
+    if not is_case_study:
+        return []
+
+    issues = []
+    # Find quoted phrases — these often indicate verbal input pasted directly
+    # Match "quoted text" and 'quoted text' (but not single apostrophes in contractions)
+    double_quotes = re.findall(r'"([^"]{5,})"', text)
+    # Curly quotes
+    curly_quotes = re.findall(r'\u201c([^\u201d]{5,})\u201d', text)
+    # Straight single quotes used as speech markers (not contractions)
+    # Only match if preceded by space/start and followed by space/end
+    single_quotes = re.findall(r"(?:^|\s)'([^']{10,})'(?:\s|$|[.,;])", text)
+
+    all_quotes = double_quotes + curly_quotes + single_quotes
+    for q in all_quotes:
+        # Skip image placeholder descriptions and technical terms
+        if q.startswith("IMAGE PLACEHOLDER") or len(q.split()) <= 2:
+            continue
+        preview = q[:60] + "..." if len(q) > 60 else q
+        issues.append(f"Direct quote found (verbal transcription?): \"{preview}\"")
+    return issues
+
+
+# Meta-narration patterns — phrases that narrate the story rather than showing it
+META_NARRATION_PATTERNS = [
+    (r"\bMy first job was\b", "My first job was"),
+    (r"\bWhat we built was\b", "What we built was"),
+    (r"\bWhat I learned was\b", "What I learned was"),
+    (r"\bThe lesson here is\b", "The lesson here is"),
+    (r"\bThis is where I\b", "This is where I"),
+    (r"\bThis taught me\b", "This taught me"),
+    (r"\bI realized that\b", "I realized that"),
+    (r"\bThe takeaway is\b", "The takeaway is"),
+    (r"\bLet me explain\b", "Let me explain"),
+    (r"\bHere's what happened\b", "Here's what happened"),
+    (r"\bThe story is\b", "The story is"),
+    (r"\bTo put it simply\b", "To put it simply"),
+    (r"\bIn other words\b", "In other words"),
+    (r"\bThe point is\b", "The point is"),
+]
+
+def check_meta_narration(text, filename):
+    """Flag meta-narration patterns that tell rather than show."""
+    is_case_study = any(filename.startswith(prefix) for prefix in CASE_STUDY_PREFIXES)
+    if not is_case_study:
+        return []
+
+    issues = []
+    for pattern, label in META_NARRATION_PATTERNS:
+        if re.search(pattern, text, re.IGNORECASE):
+            issues.append(f"Meta-narration detected: \"{label}\" — show, don't narrate")
+    return issues
+
+
+def check_stat_duplication(text, filename):
+    """Flag numbers/stats that appear more than once in body text."""
+    is_case_study = any(filename.startswith(prefix) for prefix in CASE_STUDY_PREFIXES)
+    if not is_case_study:
+        return []
+
+    issues = []
+    # Find significant numbers (with context like %, pp, M, K, or day/week references)
+    stats = re.findall(r"\b(\d+(?:\.\d+)?)\s*(%|pp|percentage points?|M\b|K\b)", text)
+    # Also match patterns like "day 7", "~10", "90%"
+    stats += re.findall(r"[~≈]?(\d+(?:\.\d+)?)\s*(%|pp|percentage points?)", text)
+
+    # Count occurrences of each stat+unit pair
+    from collections import Counter
+    stat_counts = Counter(stats)
+    for (num, unit), count in stat_counts.items():
+        if count > 1:
+            issues.append(f"Stat appears {count}x: {num}{unit} — each stat should appear once in Register 3")
+    return issues
+
 # --- Main Check ---
 def check_file(filepath, patterns, strict=False):
     """Run all checks on a single HTML file. Returns (errors, warnings)."""
@@ -164,7 +311,7 @@ def check_file(filepath, patterns, strict=False):
     with open(filepath, "r", encoding="utf-8") as f:
         content = f.read()
 
-    text = extract_visible_text(content)
+    text = extract_visible_text(content, filepath)
     filename = os.path.basename(filepath)
 
     # 1. Banned patterns
@@ -202,6 +349,26 @@ def check_file(filepath, patterns, strict=False):
     for l in long:
         warnings.append(f"Long sentence: {l}")
 
+    # 5. Register 3: Paragraph length (case studies)
+    para_issues = check_paragraph_length(text, filename)
+    for p in para_issues:
+        warnings.append(f"Register 3: {p}")
+
+    # 6. Direct quote / verbal transcription detection (case studies)
+    quote_issues = check_direct_quotes(text, filename)
+    for q in quote_issues:
+        errors.append(f"Verbal transcription: {q}")
+
+    # 7. Meta-narration patterns (case studies)
+    meta_issues = check_meta_narration(text, filename)
+    for m in meta_issues:
+        errors.append(f"Register 3: {m}")
+
+    # 8. Stat duplication (case studies)
+    stat_issues = check_stat_duplication(text, filename)
+    for s in stat_issues:
+        warnings.append(f"Register 3: {s}")
+
     return errors, warnings
 
 def main():
@@ -219,7 +386,7 @@ def main():
         files = sorted(glob.glob("*.html"))
 
     if not files:
-        print("No HTML files found to check.")
+        print("No HTML or Markdown files found to check.")
         sys.exit(0)
 
     total_errors = 0
