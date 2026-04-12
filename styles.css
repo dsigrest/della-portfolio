@@ -326,6 +326,36 @@
       transform: translateY(0);
     }
 
+    .case-img-full img {
+      max-width: 75%;
+      display: block;
+      margin: 0 auto;
+      border-radius: 12px;
+    }
+
+    /* First image in a case study gets hero treatment */
+    .case-body .case-img-full:first-of-type img {
+      max-width: 85%;
+    }
+
+    @media (max-width: 1200px) {
+      .case-img-full img {
+        max-width: 85%;
+      }
+      .case-body .case-img-full:first-of-type img {
+        max-width: 90%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .case-img-full img {
+        max-width: 95%;
+      }
+      .case-body .case-img-full:first-of-type img {
+        max-width: 100%;
+      }
+    }
+
     .img-placeholder {
       background: var(--surface-1);
       border: 1px solid var(--border-subtle);
