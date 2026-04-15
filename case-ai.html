@@ -3,11 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Keyword Landing Pages / AI — Della Sigrest</title>
-  <meta name="description" content="I designed Reddit's first LLM product and the governance model that became the foundation for Reddit Answers.">
+  <title>Reddit Answers MVP — Della Sigrest</title>
+  <meta name="description" content="I designed Reddit's first LLM product — the governance model, component library, and prompt workflow that became the foundation for Reddit Answers.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .case-body h3 {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-top: var(--spacing-xl);
+      margin-bottom: var(--spacing-md);
+      color: var(--text-secondary);
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .case-body h3.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to main content</a>
@@ -26,9 +43,8 @@
 
   <main id="main">
     <section class="case-hero">
-      <div class="case-hero-eyebrow">Case Study 02 of 05 &mdash; Pioneered AI-forward design practice at Reddit</div>
-      <h1>Keyword Landing Pages / AI</h1>
-      <p class="case-hero-sub">I designed Reddit&rsquo;s first LLM product &mdash; and the governance model, component library, and prompt workflow that became the foundation for Reddit Answers.</p>
+      <div class="case-hero-eyebrow">Case Study 02 of 05</div>
+      <h1>Reddit Answers MVP</h1>
       <div class="case-meta-grid">
         <div class="meta-item">
           <label>Role</label>
@@ -50,68 +66,247 @@
     </section>
 
     <section class="case-body">
-      <p>Reddit wanted to consolidate fragmented SEO traffic using LLMs. Straightforward product idea &mdash; <strong>the organization had no precedent for AI-generated content.</strong> No identity system, no evaluation criteria, no framework for non-deterministic output. I led the design of a governance model that defined how LLMs would appear, sound, and behave across the platform &mdash; shipped iteratively over six months.</p>
 
-      <h2>Visual Identification</h2>
+      <!-- ============================================
+           CHALLENGE
+           ============================================ -->
 
-      <p>Before touching UI, I partnered with OrangeRed (brand), legal, and design systems to define what AI-generated content would <em>be</em> at Reddit &mdash; not just how it would look, but what identity it carried and what legal implications followed.</p>
+      <h2>Challenge</h2>
 
-      <p><strong>Transparency was the design constraint.</strong> User research confirmed people valued knowing content was AI-generated, but this was peak AI backlash &mdash; the signal had to build trust without feeling like a trend.</p>
-
-      <p>Working with the design systems and brand teams, I explored the full spectrum of identification patterns &mdash; and tested them across surfaces well beyond the initial product.</p>
-
-      <div class="case-img-full">
-        <img src="img/klp-flow-v2.png" alt="KLP flow showing search results with AI-generated summary, expanded summary view, and detail view" loading="lazy">
-      </div>
-
-      <p>The component library, LLM identification patterns, and user feedback UI shipped as <strong>reusable system components</strong> &mdash; designed from the start to scale to wherever AI content appeared next.</p>
-
-      <h2>Tone &amp; Voice</h2>
-
-      <p><strong>The closer summaries stayed to original posts, the more users trusted them.</strong> Broad generalizations &mdash; a consistent failure mode in early outputs &mdash; killed trust immediately. Every summary needed direct attribution and links so users could go deeper instead of guessing from a search page.</p>
-
-      <p>I drove the team through the harder question: how to synthesize across communities without losing the source. The model&rsquo;s range was narrow &mdash; too little context produced empty platitudes, too much produced verbatim quotes with zero synthesis.</p>
+      <p><strong>Reddit content was scattered</strong> across posts and communities. Users arriving from Google had no way to piece answers together — most bounced. SEO was the primary entry point and the primary exit.</p>
 
       <div class="case-img-full">
-        <div class="img-placeholder">Summary display explorations &mdash; length variants, source attribution placement (inline vs. post bank), expand/collapse patterns</div>
+        <div class="img-placeholder">Diagram — user query hits Google → lands on Reddit → scattered partial answers across communities → bounce</div>
       </div>
 
-      <p>The synthesis display patterns and truncation logic we landed on became reusable across later products.</p>
+      <h3>Proving the Concept</h3>
 
-      <h2>Prompt Design Workflow</h2>
-
-      <p>Previously, prompt iteration was <strong>one engineer, vibes-based.</strong> I introduced a structured evaluation matrix &mdash; multiple prompts tested simultaneously against live data from Reddit&rsquo;s highest-traffic SEO verticals, scored on defined parameters: summary quality, source relevance, synthesis depth, transparency, community diversity, post engagement.</p>
-
-      <p><strong>The persistent tension was SEO optimization versus user value.</strong> Search ranking rewarded keyword density and repetition &mdash; exactly the patterns that made summaries feel mechanical to readers. I worked with the engineer to separate those concerns: keywords were embedded in structured page elements outside the summary itself, so the synthesis could stay natural while the page still ranked. That separation became a core principle the team carried forward.</p>
-
-      <p><strong>My core contribution was translating subjective design criteria into rubrics engineers could operate against.</strong> I partnered with content design to define the evaluation dimensions, then facilitated scoring sessions where our cross-functional team&mdash;design, engineering, product&mdash;rated outputs against the rubric directly. No external raters; we were the evaluators, which meant the rubric had to be precise enough for non-designers to apply consistently. It evolved with each production cycle as we learned what benchmarks couldn&rsquo;t predict.</p>
+      <p>To get the resources for dynamic generation, we had to <strong>prove the idea first.</strong> Chicken-and-egg: the team needed proof of concept before investing in infrastructure, but building proof of concept required building the product.</p>
 
       <div class="case-img-full">
-        <div class="img-placeholder">Prompt evaluation matrix &mdash; parameters, scoring criteria, iteration cycle from vibes-based to structured</div>
+        <div class="img-placeholder">MVP strategy — static pages, periodic refresh, strongest verticals selected for coverage and traffic</div>
       </div>
 
-      <p>Post-processing stayed minimal. Heavy backend cleanup masked the nondeterministic behavior the system needed to handle honestly.</p>
+      <p>We started with <strong>static pages refreshed periodically</strong>, targeting the verticals with the strongest source coverage and the largest audiences — maximum impact with the resources we had.</p>
 
-      <h2>Failure States &amp; User Control</h2>
+      <!-- ============================================
+           SOLUTION
+           ============================================ -->
 
-      <p>Below-threshold quality meant the summary didn&rsquo;t appear &mdash; rather than showing users something unreliable. Users could flag responses, suggest improvements, or collapse the summary entirely.</p>
+      <h2>Solution</h2>
 
-      <p><strong>Those signals fed directly back into model iteration.</strong> We started with the verticals that had the strongest source coverage &mdash; enough data to test and refine against &mdash; and used user feedback alongside our content team to adjust the rubric over time. The system improved through real usage, not guesswork: flagged outputs surfaced where the model was weakest, and the rubric evolved to reflect what users actually valued versus what we&rsquo;d assumed.</p>
+      <p>I designed an <strong>LLM-powered synthesis</strong> that consolidated content across posts and communities into a single entry point matched to the user's search intent — with source posts threaded below.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Page architecture — synthesis summary on top (standardized size, expandable), threaded source posts with comments below, links in both layers</div>
+      </div>
+
+      <p>The <strong>dual-layer layout</strong> was the core design decision. Synthesis on top gave users instant answers; source posts below let them verify and go deeper. Links across both layers created endless on-ramps into the platform — and Googlebot loved the link density. One page, both users served.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Flow — search query → synthesized summary + source posts → on-ramps deeper into Reddit (PDPs, search bar, community pages)</div>
+      </div>
+
+      <p>The long bet: shift the mental model from appending <em>reddit</em> to a Google search toward searching Reddit directly.</p>
+
+      <!-- ============================================
+           VALUE
+           ============================================ -->
+
+      <h2>Value</h2>
+
+      <p><strong>User value was foundational.</strong> We wanted to consolidate answers — not replicate another SEO page where users land on more links to click. The balance was three-way: what SEO needed to rank, what users needed to stay, and what Reddit needed to pull them deeper.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Three-way balance — SEO ranking signals, user engagement needs, platform depth goals</div>
+      </div>
+
+      <p>The page was also <strong>training users</strong> — showing them what a search result on Reddit could look like. Ideal behavior: click into a post for more detail, or search again from the bar at the top. Both paths pull deeper into the platform.</p>
+
+      <h3>Prompt Design Workflow</h3>
+
+      <p><strong>No evaluation criteria, no feedback loop, no shared language</strong> for how synthesis should work. Prompt iteration was one engineer, vibes-based. This team had started as a top-of-funnel SEO team and later specialized into ML — they'd <strong>never worked with a designer before.</strong> Kickoffs, iteration walkthroughs, design systems — all new.</p>
+
+      <p>I bridged engineering and content design to build a <strong>structured evaluation matrix.</strong> There was initial resistance — engineers wanted to move fast, but output wasn't improving. I made it concrete: pulled them into creating the rubric and evaluating outputs against it. <strong>Involvement drove buy-in.</strong></p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Evaluation matrix — parameters scored across multiple prompts tested against live Reddit data</div>
+      </div>
+
+      <p>Parameters: <strong>sentence structure</strong> variation, <strong>accuracy to source</strong> (sliding scale — reference where useful, don't replicate the post), <strong>novel synthesized info</strong> across posts, <strong>length adherence</strong>, <strong>tone</strong> (not mechanical, not cold — like a friend), content design guidelines (remember the human, be direct, consider i18n), and <strong>SEO signals</strong> (keywords, connected links).</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Scoring session — cross-functional team rating outputs against the rubric, parameter definitions visible</div>
+      </div>
+
+      <p>I partnered with content design to define <strong>evaluation dimensions</strong>, then facilitated <strong>scoring sessions</strong> where our cross-functional team rated outputs against the rubric. It had to be precise enough for non-designers to apply consistently.</p>
+
+      <h3>Quality Control</h3>
+
+      <p>Two users with competing needs: <strong>Googlebot and humans.</strong> Underlinking and underusing keywords hurt SEO. Overusing keywords hurt humans. I didn't know what Googlebot needed; engineers weren't familiar with Reddit's users or the SEO cohort. A healthy back-and-forth led to capturing both full sets of needs.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Page anatomy — elements visible to humans vs. elements optimized for Googlebot, separated by design</div>
+      </div>
+
+      <p><strong>Framing Googlebot as a user was the breakthrough.</strong> When I told designers we needed something for SEO, they pushed back — that's not a user need. But anthropomorphizing it as a competing set of needs instead of a technical constraint opened doors across the team.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Dual-user framework — Googlebot needs vs. human needs, where they align and where they compete</div>
+      </div>
+
+      <p>I pushed back on <strong>resurfacing the query multiple times on the page.</strong> SEO loved keyword repetition; it did nothing for users. The compromise: pre-populate the search bar with the user's query, as if they'd already searched Reddit. SEO got the keyword on the page; the design <strong>reinforced the mental model</strong> that users should be searching on Reddit directly.</p>
+
+      <p>Keywords were embedded in <strong>structured page elements outside the summary</strong> — synthesis stayed natural while the page still ranked.</p>
+
+      <h3>Failure States</h3>
+
+      <p><strong>Below-threshold summaries didn't appear.</strong> Instead, the page surfaced the aggregated source posts — still valuable, still pulling users deeper into the platform.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Failure state — suppressed synthesis, source posts displayed with threaded comments as fallback</div>
+      </div>
+
+      <h3>User Feedback Loops</h3>
+
+      <p>Flagged outputs surfaced where the model was weakest. The rubric <strong>evolved based on what users actually valued</strong> versus what we'd assumed.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Feedback loop — user flags → rubric updates → model improvement → better outputs</div>
+      </div>
+
+      <p>The <strong>feedback UI was a cross-org effort</strong>: three teams (KLPs, search, i18n) were independently building feedback patterns. I worked across pillars to define one recognizable component — users see it and know where to give their opinion. Another pattern built for this project, adopted org-wide.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Unified feedback component — single pattern adopted across KLPs, search, and i18n teams</div>
+      </div>
+
+      <!-- ============================================
+           TRANSPARENCY
+           ============================================ -->
+
+      <h2>Transparency</h2>
+
+      <p>We needed to define the <strong>first precedent for AI-generated content at Reddit</strong> — across the entire platform. I partnered with brand, legal, and design systems to establish what AI content would be, how it would identify itself, and how it would attribute its sources.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Transparency framework — identification, scalability, and attribution as the three pillars defined with brand, legal, and design systems</div>
+      </div>
+
+      <h3>Identification (UI)</h3>
+
+      <p>The question was bigger than visual design: <strong>what's a scalable, instantly recognizable, but unobtrusive signal</strong> that content was AI-generated? User research confirmed people valued knowing — but this was peak AI backlash. The signal had to build trust without feeling like a trend.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Identification explorations — icons, tags at end of text, containers (stroke and fill), disclaimer text, talking Snoo head, text treatments (font, color, size variations)</div>
+      </div>
+
+      <p>We explored icons, tags, containers, disclaimers, a talking Snoo, and text treatments. The <strong>sparkle icon got negative reactions</strong> — users saw it as a cliché. Like Sharing &amp; Embeds, this crossed beyond design systems into identity.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Sparkle icon user reactions — negative sentiment data, comparison with other identification approaches</div>
+      </div>
+
+      <p>We landed on <strong>a system, not a single solution.</strong> It scaled across surfaces depending on context, with persistent elements: same color, same name, always visually separated from other content. Flexible by surface, consistent in identity.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Final identification system — persistent elements (color, name, separation) applied across multiple Reddit surfaces</div>
+      </div>
+
+      <h3>Scalability</h3>
+
+      <p>The component library, identification patterns, and feedback UI shipped as <strong>reusable system components</strong> — built to scale to wherever AI content appeared next.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Component library — AI badge, attribution block, feedback controls deployed across surfaces beyond KLPs</div>
+      </div>
+
+      <h3>Content Attribution</h3>
+
+      <p>A <strong>deep exercise with content design and UXR</strong> to ensure users understood the posts below were sources for the summary above. We tested three attribution patterns.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Three attribution patterns tested — inline hyperlinks, bottom pills, collapsible list inside summary</div>
+      </div>
+
+      <p><strong>Inline hyperlinks won</strong> — established in UI, universally understood, and kept attribution next to the content being sourced. Pills at the bottom caused visual noise and moved attribution away from the source. Collapsible lists duplicated the source posts below and disappeared when collapsed.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Attribution comparison — hyperlinks (trustworthy, inline) vs. pills (noisy, displaced) vs. collapsible (duplicative, hidden when collapsed)</div>
+      </div>
+
+      <p>The study results also informed <strong>how source content should be sorted</strong> (by time, popularity, or order in synthesis) and what <strong>page utilities to prioritize</strong> (sort controls, collapsible summary).</p>
+
+      <h3>Threaded Source Posts</h3>
+
+      <p>User research kept surfacing the same question: <strong>where is this coming from?</strong> The source posts below the synthesis were the answer — and displaying them required a new UI pattern. Posts appeared in a threaded structure with comments for the first time at Reddit.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Threaded post pattern — source posts with comments, first instance of this UI at Reddit</div>
+      </div>
+
+      <p>I worked with data science on <strong>comment truncation</strong>: the vast majority of comments fit 1–2 lines, with severe diminishing returns after that. We landed on <strong>two comments per post</strong> — enough to show a conversation without overwhelming the unit.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Comment length distribution — data-driven truncation threshold, 1–2 line sweet spot, diminishing returns visualized</div>
+      </div>
+
+      <p>The text truncation system <strong>reused a pattern I'd built for Sharing &amp; Embeds</strong> — already defined and validated, which made this work go faster.</p>
+
+      <!-- ============================================
+           VOICE
+           ============================================ -->
+
+      <h2>Voice</h2>
+
+      <p>Defining what the LLM produced was as much a design problem as defining how it looked. I led the decisions around <strong>tone, clarity, and the model's relationship to Reddit.</strong></p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Voice framework — tone, clarity, and LLM identity as the three dimensions</div>
+      </div>
+
+      <h3>Tone</h3>
+
+      <p><strong>Closeness to source posts drove trust.</strong> Broad generalizations — a consistent failure mode in early outputs — killed it immediately. Synthesizing across communities without losing the source voice was the harder question.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Comparison — high-trust output (close to source, attributed) vs. low-trust output (vague generalization, no attribution)</div>
+      </div>
+
+      <h3>Clarity</h3>
+
+      <p>Too little context produced <strong>empty platitudes</strong>; too much produced verbatim quotes with zero synthesis. The model's range was narrow — the evaluation rubric was how we found the edges.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Clarity spectrum — platitudes on one end, verbatim quotes on the other, synthesis sweet spot in the middle</div>
+      </div>
+
+      <p>Display patterns and truncation logic became <strong>reusable across later products.</strong></p>
+
+      <h3>The LLM as Narrator</h3>
+
+      <p>The team debated: is the LLM <strong>Reddit, the Snoo, a character, a tool, or omnipresent?</strong> We explored each. Giving the synthesis a product identity conflicted with how people expected results in search — is it "Answers" or is it search?</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">LLM identity explorations — character (Snoo/Clippy-style), tool, omnipresent narrator, no identity</div>
+      </div>
+
+      <p>We landed on <strong>omnipresent narrator without a character.</strong> It preserves scalability, smooths integration, and resolves the core tension: the synthesis isn't a separate product. It's part of the product. It is the product.</p>
+
+      <!-- ============================================
+           RESULTS
+           ============================================ -->
 
       <h2>Results</h2>
 
-      <p><strong>This project shipped to every user reaching Reddit through Google search for targeted verticals</strong> &mdash; a surface handling hundreds of millions of monthly visits during this period. The governance model, identity system, and prompt workflow I built were handed to a new team spun up to bring synthesis into search &mdash; where research had shown it belonged. Sending users from one search-like surface to another was the dead end that clarified the real opportunity.</p>
+      <p>The dual-layer layout kept users on pages they used to bounce from. The evaluation rubric turned vibes-based prompting into a repeatable quality system. The identification framework gave Reddit a scalable precedent for AI content. But the biggest impact was strategic: <strong>the MVP's performance proved synthesis belonged inside search</strong>, not as a standalone SEO product. Sending users from one search-like surface to another was the dead end that clarified the real opportunity.</p>
 
-      <p><strong>That team launched Reddit Answers, which reached 15 million weekly active users within its first year.</strong> The LLM identification component library, synthesis display patterns, user feedback UI, prompt evaluation rubric, and governance framework I built were inherited directly &mdash; Reddit Answers shipped on top of them.</p>
+      <p>I handed off the framework and foundation to the next designer, and the systems I built — identification library, synthesis patterns, feedback UI, evaluation rubric, governance framework — were <strong>inherited directly</strong> by a new team that shipped them as Reddit Answers.</p>
 
       <div class="metrics-callout">
         <div class="metric">
           <span class="metric-value">15M</span>
-          <span class="metric-label">Weekly active users (Reddit Answers)</span>
-        </div>
-        <div class="metric">
-          <span class="metric-value">100s of M</span>
-          <span class="metric-label">Monthly SEO visits served</span>
+          <span class="metric-label">Weekly active users (Reddit Answers, year one)</span>
         </div>
       </div>
 
@@ -165,7 +360,6 @@
   </footer>
 
   <script>
-    // Progress bar scroll handler
     const progressBar = document.querySelector('.progress-bar');
     window.addEventListener('scroll', () => {
       const scrollTop = window.scrollY;
@@ -174,7 +368,6 @@
       progressBar.style.width = scrollPercent + '%';
     });
 
-    // Nav scroll state
     const nav = document.querySelector('nav');
     window.addEventListener('scroll', () => {
       if (window.scrollY > 50) {
@@ -184,7 +377,6 @@
       }
     });
 
-    // IntersectionObserver for case images and h2 headings
     const imageObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -198,7 +390,7 @@
       imageObserver.observe(img);
     });
 
-    document.querySelectorAll('.case-body h2').forEach(heading => {
+    document.querySelectorAll('.case-body h2, .case-body h3').forEach(heading => {
       imageObserver.observe(heading);
     });
   </script>
