@@ -91,7 +91,7 @@
 
       <h3>Design system migration</h3>
 
-      <p>The inbox wasn&rsquo;t on Reddit&rsquo;s design system. Every component was a <strong>one-off engineer build</strong>&mdash;growing technical debt, no quality assurance, and each new feature built from scratch. I designed the inbox row component as a scalable, reusable unit intended for distributed messaging surfaces across the platform, then migrated the full surface to the design system.</p>
+      <p>The inbox wasn&rsquo;t on Reddit&rsquo;s design system. Every component was a <strong>one-off engineer build</strong>&mdash;growing technical debt, no quality assurance, and each new feature built from scratch. I designed the inbox row component as a scalable, reusable unit intended for distributed messaging surfaces across the platform, then migrated the full surface to the design system. Every project ran through a <strong>technical kickoff with the eng IC</strong> picking up the work&mdash;pressure-testing edge cases, building buy-in, and aligning on decisions before a line of code was written.</p>
 
       <div class="case-img-full">
         <div class="img-placeholder">Inbox row unit&mdash;before and after, showing legacy one-off notification row vs. new reusable component with contextual copy and visual hierarchy</div>
@@ -149,7 +149,7 @@
 
       <h3>Pipeline separation</h3>
 
-      <p>Subreddit subscriptions were <strong>entangled with recommendations</strong> on the back end. The system weighted a recommended notification the same as a subscribed update&mdash;prioritizing engagement metrics (post performance, CTR) over what users had explicitly asked for. A user subscribing to r/all updates would get a viral r/PlayStation recommendation instead. I worked with engineering to rearchitect the pipeline so <strong>user signal wins over algorithmic signal</strong>.</p>
+      <p>Subreddit subscriptions were <strong>entangled with recommendations</strong> on the back end. The system weighted a recommended notification the same as a subscribed update&mdash;prioritizing engagement metrics (post performance, CTR) over what users had explicitly asked for. A user subscribing to r/all updates would get a viral r/PlayStation recommendation instead. I worked with the <strong>ML team to untangle the pipeline</strong>&mdash;they ran experiments on signal weighting while I redesigned the preference model, each side&rsquo;s findings reshaping the other&rsquo;s direction until <strong>user signal won over algorithmic signal</strong>.</p>
 
       <div class="case-img-full">
         <img src="img/notif-pipeline-separation.png" alt="Pipeline separation — push notification recommendations on lock screen alongside community alert preferences for direct subscription management" loading="lazy">
@@ -157,7 +157,7 @@
 
       <h3>Preference architecture</h3>
 
-      <p>The back end couldn&rsquo;t define what updates a user could receive from a subreddit. Options were <strong>off, low, and frequent</strong>&mdash;even internally, the team couldn&rsquo;t explain what those meant because they were wrapped in algorithmic metrics. I influenced the engineering roadmap to rearchitect preferences: <strong>no updates, popular posts, all posts</strong>. Clearer signal from users, deliverable expectations, and a trust contract both sides could hold up.</p>
+      <p>The back end couldn&rsquo;t define what updates a user could receive from a subreddit. Options were <strong>off, low, and frequent</strong>&mdash;even internally, the team couldn&rsquo;t explain what those meant because they were wrapped in algorithmic metrics. I worked with the engineering lead through <strong>weekly syncs on capacity and feasibility</strong> to rearchitect preferences: <strong>no updates, popular posts, all posts</strong>. Eng held deep knowledge of system behavior and limitations&mdash;every conversation surfaced another constraint, but each one guided us toward a more precise model.</p>
 
       <div class="case-img-full">
         <div class="img-placeholder">Preference architecture&mdash;before (off/low/frequent with undefined behavior) vs. after (no updates/popular posts/all posts with concrete delivery expectations)</div>
@@ -175,7 +175,7 @@
 
       <h3>Feedback loops</h3>
 
-      <p>I shipped <strong>decay logic</strong> for breaking news, recommendations, and subreddit updates: if a user doesn&rsquo;t open a notification type after a threshold, the system asks whether to turn it off. Direct user input and inferred behavior both shaped frequency&mdash;the system met expectations without creating extra work.</p>
+      <p>I shipped <strong>decay logic</strong> for breaking news, recommendations, and subreddit updates: if a user doesn&rsquo;t open a notification type after a threshold, the system asks whether to turn it off. The ML team ran parallel experiments on signal thresholds while I defined the user-facing behavior&mdash;a <strong>continuous dialogue</strong> between design and engineering, each side&rsquo;s findings reshaping the other&rsquo;s approach.</p>
 
       <div class="case-img-full">
         <div class="img-placeholder">Decay logic&mdash;notification frequency adjustment based on user engagement, showing threshold-based prompt to turn off unused notification types</div>
@@ -193,7 +193,7 @@
 
       <h3>Surface consolidation</h3>
 
-      <p>I consolidated <strong>four messaging systems into a single inbox</strong>. This required deprecating one internal system, migrating another, and navigating multiple intermediate states&mdash;each shipped as a fully functional experience, not a waypoint.</p>
+      <p>I consolidated <strong>four messaging systems into a single inbox</strong>. This required deprecating one internal system, migrating another, and navigating multiple intermediate states&mdash;each shipped as a fully functional experience, not a waypoint. Eng on this team were <strong>precise and construction-oriented</strong>&mdash;they caught edge cases I hadn&rsquo;t, which made the late-stage design reviews a critical part of my process for making designs airtight before handoff.</p>
 
       <div class="case-img-full">
         <img src="img/notif-unified-inbox.png" alt="Unified inbox evolution — four-panel progression from separated surfaces to consolidated notifications and chat" loading="lazy">
