@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOT-04 — Unread Hierarchy: Progressive Disclosure</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16; --card: #10121C; --elevated: #151722;
+    --text-pri: #E0DFE4; --text-sec: rgba(224,223,228,0.6); --text-ter: rgba(224,223,228,0.4); --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0; --accent-dim: rgba(127,181,176,0.12);
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --lvl1: #7FB5B0; --lvl2: #8A9EC4; --lvl3: #C4B078;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F; display: flex; justify-content: center; padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px; background: var(--canvas); border-radius: 16px;
+    overflow: hidden; position: relative;
+  }
+
+  /* Title */
+  .title-area { padding: 48px 48px 0; }
+  .label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); opacity: 0.8; margin-bottom: 8px; }
+  h1 { font-size: 32px; font-weight: 700; color: var(--text-pri); letter-spacing: -0.025em; margin-bottom: 8px; line-height: 1.15; }
+  .subtitle { font-size: 14px; color: var(--text-sec); line-height: 1.55; max-width: 580px; }
+
+  /* Hover hint */
+  .hover-hint {
+    text-align: center; padding: 14px 48px 0;
+    font-size: 10px; color: var(--text-dim);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+
+  /* Levels flow */
+  .levels-flow { padding: 28px 48px 0; position: relative; }
+  .levels-flow::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 400px 250px at 50% 50%, rgba(127,181,176,0.03) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Level labels with numbers */
+  .level-labels {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px; margin-bottom: 10px; position: relative; z-index: 1;
+  }
+  .level-label {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .level-num {
+    font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 400;
+    opacity: 0.2;
+  }
+  .level-num.l1 { color: var(--lvl1); }
+  .level-num.l2 { color: var(--lvl2); }
+  .level-num.l3 { color: var(--lvl3); }
+  .level-name {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-ter);
+  }
+
+  /* Level cards grid */
+  .levels-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px; position: relative; z-index: 1;
+  }
+
+  .level-card {
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    border-radius: 12px; position: relative; overflow: visible;
+    transition: border-color 0.3s ease, transform 0.35s var(--spring);
+    cursor: default;
+  }
+  .level-card::before {
+    content: ''; position: absolute; inset: 0;
+    box-shadow: var(--glass-highlight); border-radius: 12px;
+    pointer-events: none; z-index: 2;
+  }
+  .level-card:hover { transform: translateY(-2px); }
+  .level-card.l1:hover { border-color: rgba(127,181,176,0.22); }
+  .level-card.l2:hover { border-color: rgba(138,158,196,0.22); }
+  .level-card.l3:hover { border-color: rgba(196,176,120,0.22); }
+
+  /* Ambient glow per card */
+  .level-card.l1::after {
+    content: ''; position: absolute; width: 80px; height: 80px; border-radius: 50%;
+    top: -20px; right: -20px;
+    background: radial-gradient(circle, rgba(127,181,176,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .level-card.l2::after {
+    content: ''; position: absolute; width: 80px; height: 80px; border-radius: 50%;
+    top: -20px; right: -20px;
+    background: radial-gradient(circle, rgba(138,158,196,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .level-card.l3::after {
+    content: ''; position: absolute; width: 80px; height: 80px; border-radius: 50%;
+    top: -20px; right: -20px;
+    background: radial-gradient(circle, rgba(196,176,120,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Illustration area */
+  .illustration {
+    padding: 24px 20px 16px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    min-height: 130px; position: relative; z-index: 1;
+  }
+
+  /* Card description */
+  .card-desc {
+    padding: 0 16px 14px; font-size: 10px; color: var(--text-ter);
+    line-height: 1.5; text-align: center;
+  }
+  .card-desc strong { font-weight: 600; }
+  .card-desc .mono {
+    font-family: 'JetBrains Mono', monospace; font-size: 9px;
+    padding: 1px 5px; border-radius: 3px;
+    background: rgba(224,223,228,0.04); border: 1px solid rgba(224,223,228,0.06);
+  }
+
+  /* Callouts */
+  .callout {
+    position: absolute; padding: 5px 10px;
+    background: rgba(10,12,22,0.92);
+    border: 1px solid rgba(127,181,176,0.3);
+    border-radius: 6px;
+    font-size: 10px; font-weight: 500; color: var(--accent);
+    white-space: nowrap; pointer-events: none; z-index: 10;
+    opacity: 0; transform: translateY(4px);
+    transition: opacity 0.25s ease, transform 0.35s var(--spring);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .callout::before {
+    content: ''; position: absolute;
+    width: 6px; height: 6px;
+    background: rgba(10,12,22,0.92);
+    border-left: 1px solid rgba(127,181,176,0.3);
+    border-top: 1px solid rgba(127,181,176,0.3);
+  }
+  .callout.arrow-bottom::before { bottom: -4px; left: 50%; transform: translateX(-50%) rotate(-135deg); }
+  .callout.arrow-top::before { top: -4px; left: 50%; transform: translateX(-50%) rotate(45deg); }
+  .callout.arrow-left::before { left: -4px; top: 50%; transform: translateY(-50%) rotate(-45deg); }
+
+  .level-card:hover .callout { opacity: 1; transform: translateY(0); }
+  .level-card:hover .callout:nth-child(1) { transition-delay: 0ms; }
+  .level-card:hover .callout:nth-child(2) { transition-delay: 70ms; }
+  .level-card:hover .callout:nth-child(3) { transition-delay: 140ms; }
+
+  /* Level 1: Badge */
+  .badge-mock { display: flex; align-items: center; gap: 12px; }
+  .tab-icon-wrap {
+    width: 44px; height: 44px; background: var(--card);
+    border: 1px solid var(--border-normal); border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .badge-num {
+    position: absolute; top: -6px; right: -8px;
+    min-width: 20px; height: 20px;
+    background: var(--lvl1); border-radius: 10px;
+    font-size: 10px; font-weight: 700; color: var(--canvas);
+    display: flex; align-items: center; justify-content: center;
+    padding: 0 5px; box-shadow: 0 0 10px rgba(127,181,176,0.35);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  /* Badge pulse */
+  .badge-num::after {
+    content: ''; position: absolute; inset: -3px; border-radius: 13px;
+    border: 1px solid var(--lvl1); opacity: 0;
+    animation: badgePing 2.5s ease-out infinite;
+  }
+  @keyframes badgePing {
+    0% { opacity: 0.4; transform: scale(1); }
+    100% { opacity: 0; transform: scale(1.4); }
+  }
+  .badge-text {
+    font-size: 13px; font-weight: 500; color: var(--text-sec);
+  }
+
+  /* Level 2: Tabs */
+  .tabs-ill { display: flex; gap: 0; width: 100%; border-bottom: 1px solid var(--border-normal); }
+  .tab-ill {
+    flex: 1; padding: 10px 8px 8px; text-align: center;
+    font-size: 11px; font-weight: 500; color: var(--text-ter);
+    border-bottom: 2px solid transparent; position: relative;
+  }
+  .tab-ill.active-ill { color: var(--lvl2); border-bottom-color: var(--lvl2); }
+  .tab-dot-ill {
+    position: absolute; top: 5px; right: 8px;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--lvl2); box-shadow: 0 0 6px rgba(138,158,196,0.4);
+  }
+  /* Dot pulse */
+  .tab-dot-ill::after {
+    content: ''; position: absolute; inset: -2px; border-radius: 50%;
+    border: 1px solid var(--lvl2); opacity: 0;
+    animation: dotPing 3s ease-out 0.5s infinite;
+  }
+  @keyframes dotPing {
+    0% { opacity: 0.3; transform: scale(1); }
+    100% { opacity: 0; transform: scale(1.8); }
+  }
+
+  /* Level 3: Rows */
+  .rows-ill { width: 100%; }
+  .row-ill {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 0; border-bottom: 1px solid rgba(224,223,228,0.03);
+  }
+  .row-ill:last-child { border-bottom: none; }
+  .row-ill.unread-ill {
+    background: rgba(196,176,120,0.04);
+    border-radius: 5px; padding: 6px 8px;
+  }
+  .row-dot-ill { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+  .row-dot-ill.vis { background: var(--lvl3); box-shadow: 0 0 4px rgba(196,176,120,0.3); }
+  .row-dot-ill.invis { background: transparent; }
+  .row-avatar-ill {
+    width: 18px; height: 18px; border-radius: 50%;
+    background: rgba(196,176,120,0.1); flex-shrink: 0;
+  }
+  .row-text-ill {
+    font-size: 10px; flex: 1;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .row-ill.unread-ill .row-text-ill { font-weight: 600; color: var(--text-pri); }
+  .row-ill:not(.unread-ill) .row-text-ill { font-weight: 400; color: var(--text-ter); }
+  .row-time {
+    font-family: 'JetBrains Mono', monospace; font-size: 8px;
+    color: var(--text-dim); flex-shrink: 0;
+  }
+
+  /* Flow arrows */
+  .flow-arrows {
+    padding: 4px 48px 0; position: relative; z-index: 1;
+  }
+  .flow-arrows svg { display: block; width: 100%; }
+  .flow-path {
+    stroke: var(--accent); stroke-width: 1; stroke-dasharray: 4 3;
+    opacity: 0.25; fill: none;
+  }
+  .flow-head { fill: var(--accent); opacity: 0.25; }
+  /* Animated dash movement */
+  .flow-path { animation: dashFlow 2s linear infinite; }
+  @keyframes dashFlow {
+    to { stroke-dashoffset: -14; }
+  }
+
+  /* Disclosure strip — shows the progressive information density */
+  .disclosure-strip {
+    margin: 20px 48px 0; display: flex; gap: 0; border-radius: 8px; overflow: hidden;
+    border: 1px solid var(--glass-border);
+  }
+  .disc-seg {
+    flex: 1; padding: 10px 14px; position: relative;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .disc-seg:not(:last-child) { border-right: 1px solid var(--glass-border); }
+  .disc-seg.s1 { background: rgba(127,181,176,0.04); }
+  .disc-seg.s2 { background: rgba(138,158,196,0.04); }
+  .disc-seg.s3 { background: rgba(196,176,120,0.04); }
+  .disc-density {
+    display: flex; gap: 2px; align-items: flex-end; height: 16px;
+  }
+  .density-bar {
+    width: 3px; border-radius: 1.5px;
+    animation: barGrow 0.5s ease-out forwards; opacity: 0;
+  }
+  .s1 .density-bar { background: var(--lvl1); }
+  .s2 .density-bar { background: var(--lvl2); }
+  .s3 .density-bar { background: var(--lvl3); }
+  .disc-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 9px;
+    color: var(--text-dim); letter-spacing: 0.04em;
+  }
+  @keyframes barGrow {
+    from { height: 0; opacity: 0; } to { opacity: 0.5; }
+  }
+
+  /* 1:1 Principle bar */
+  .principle-bar {
+    margin: 16px 48px 0; padding: 14px 18px;
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    border-radius: 10px; display: flex; align-items: center; gap: 14px;
+    position: relative;
+  }
+  .principle-bar::before {
+    content: ''; position: absolute; inset: 0;
+    box-shadow: var(--glass-highlight); border-radius: 10px; pointer-events: none;
+  }
+  .principle-icon {
+    width: 36px; height: 36px; flex-shrink: 0;
+    background: var(--accent-dim); border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .principle-content { flex: 1; }
+  .principle-title { font-size: 12px; font-weight: 600; color: var(--text-pri); margin-bottom: 2px; }
+  .principle-desc { font-size: 11px; color: var(--text-sec); line-height: 1.5; }
+
+  /* Outcome bar */
+  .outcome-bar {
+    margin: 12px 48px 48px; padding: 14px 20px;
+    background: rgba(127,181,176,0.06); border: 1px solid rgba(127,181,176,0.12);
+    border-left: 3px solid rgba(127,181,176,0.4);
+    border-radius: 10px; display: flex; align-items: center; gap: 12px;
+  }
+  .outcome-icon { width: 24px; height: 24px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .outcome-text { font-size: 12px; color: var(--accent); line-height: 1.5; }
+  .outcome-text strong { font-weight: 600; }
+  .outcome-metric {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--accent); opacity: 0.8; margin-top: 3px; display: block;
+  }
+
+  /* Mount animations */
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .title-area { animation: fadeSlideIn 0.6s ease-out 0ms forwards; }
+  .levels-flow { animation: fadeSlideIn 0.5s ease-out 150ms forwards; opacity: 0; }
+  .level-card { animation: fadeSlideIn 0.5s ease-out calc(200ms + 100ms * var(--li, 0)) forwards; opacity: 0; }
+  .disclosure-strip { animation: fadeSlideIn 0.5s ease-out 550ms forwards; opacity: 0; }
+  .principle-bar { animation: fadeSlideIn 0.5s ease-out 650ms forwards; opacity: 0; }
+  .outcome-bar { animation: fadeSlideIn 0.5s ease-out 750ms forwards; opacity: 0; }
+  .impact-anchor { font-size: 11px; font-weight: 600; color: var(--accent); letter-spacing: 0.04em; margin-top: 12px; opacity: 0.85; }
+
+  /* Embed mode */
+  body.embedded { padding: 0; min-height: auto; display: block; background: transparent; overflow: hidden; }
+  body.embedded .diagram { border-radius: 0; }
+</style>
+</head>
+<body>
+<div class="diagram">
+
+  <div class="hover-hint">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7.5l2.5-5L7 7.5" stroke="var(--text-dim)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 7.5v3.5" stroke="var(--text-dim)" stroke-width="1.2" stroke-linecap="round"/><circle cx="7" cy="12.5" r="1" fill="var(--text-dim)"/></svg>
+    Hover each level to see callouts
+  </div>
+
+  <div class="levels-flow">
+    <!-- Level labels -->
+    <div class="level-labels">
+      <div class="level-label">
+        <span class="level-num l1">1</span>
+        <span class="level-name">Inbox</span>
+      </div>
+      <div class="level-label">
+        <span class="level-num l2">2</span>
+        <span class="level-name">Tab</span>
+      </div>
+      <div class="level-label">
+        <span class="level-num l3">3</span>
+        <span class="level-name">Row</span>
+      </div>
+    </div>
+
+    <!-- Level cards -->
+    <div class="levels-grid">
+      <!-- Level 1: Badge -->
+      <div class="level-card l1" style="--li:0">
+        <div class="illustration">
+          <div class="badge-mock">
+            <div class="tab-icon-wrap">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M3 5h14v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5z" stroke="var(--text-sec)" stroke-width="1.5" fill="none"/>
+                <path d="M3 8h14" stroke="var(--text-sec)" stroke-width="1" opacity="0.4"/>
+              </svg>
+              <span class="badge-num">3</span>
+            </div>
+            <span class="badge-text">Inbox</span>
+          </div>
+          <div class="callout arrow-bottom" style="top: 2px; left: 50%; transform: translateX(-50%) translateY(4px);">
+            Numeric = exact count
+          </div>
+          <div class="callout arrow-left" style="top: 50%; right: 6px; transform: translateY(-50%) translateY(4px);">
+            Single entry point
+          </div>
+        </div>
+        <p class="card-desc">Aggregate count. User sees <span class="mono">3</span> and knows exactly how many items wait inside.</p>
+      </div>
+
+      <!-- Level 2: Tab dot -->
+      <div class="level-card l2" style="--li:1">
+        <div class="illustration">
+          <div class="tabs-ill">
+            <div class="tab-ill active-ill">
+              Notifications
+              <span class="tab-dot-ill"></span>
+            </div>
+            <div class="tab-ill">Messages</div>
+          </div>
+          <div class="callout arrow-bottom" style="top: 6px; right: 24px; transform: translateY(4px);">
+            Dot = new items exist
+          </div>
+          <div class="callout arrow-top" style="bottom: 10px; left: 16px; transform: translateY(4px);">
+            Active tab highlight
+          </div>
+        </div>
+        <p class="card-desc">Boolean signal. The dot says "something's new here" without specifying how many.</p>
+      </div>
+
+      <!-- Level 3: Row treatment -->
+      <div class="level-card l3" style="--li:2">
+        <div class="illustration">
+          <div class="rows-ill">
+            <div class="row-ill unread-ill">
+              <span class="row-dot-ill vis"></span>
+              <div class="row-avatar-ill"></div>
+              <span class="row-text-ill">u/user replied to you</span>
+              <span class="row-time">2m</span>
+            </div>
+            <div class="row-ill unread-ill">
+              <span class="row-dot-ill vis"></span>
+              <div class="row-avatar-ill"></div>
+              <span class="row-text-ill">Trending in r/design</span>
+              <span class="row-time">14m</span>
+            </div>
+            <div class="row-ill">
+              <span class="row-dot-ill invis"></span>
+              <div class="row-avatar-ill"></div>
+              <span class="row-text-ill">Post approved</span>
+              <span class="row-time">1h</span>
+            </div>
+          </div>
+          <div class="callout arrow-left" style="top: 12px; right: -8px; transform: translateY(4px);">
+            Bold + tint = unread
+          </div>
+          <div class="callout arrow-left" style="bottom: 10px; right: -8px; transform: translateY(4px);">
+            Light weight = read
+          </div>
+        </div>
+        <p class="card-desc">Typographic + color shift. Items distinguished by weight, background tint, and dot.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flow arrows -->
+  <div class="flow-arrows">
+    <svg height="20" viewBox="0 0 664 20" fill="none">
+      <path class="flow-path" d="M 120 4 L 120 10 L 270 10"/>
+      <polygon class="flow-head" points="270,7 277,10 270,13"/>
+      <path class="flow-path" d="M 385 10 L 510 10"/>
+      <polygon class="flow-head" points="510,7 517,10 510,13"/>
+    </svg>
+  </div>
+
+  <!-- Information density strip -->
+  <div class="disclosure-strip">
+    <div class="disc-seg s1">
+      <div class="disc-density">
+        <div class="density-bar" style="height:12px; animation-delay:0.6s;"></div>
+      </div>
+      <span class="disc-label">count</span>
+    </div>
+    <div class="disc-seg s2">
+      <div class="disc-density">
+        <div class="density-bar" style="height:8px; animation-delay:0.7s;"></div>
+        <div class="density-bar" style="height:12px; animation-delay:0.75s;"></div>
+      </div>
+      <span class="disc-label">presence</span>
+    </div>
+    <div class="disc-seg s3">
+      <div class="disc-density">
+        <div class="density-bar" style="height:6px; animation-delay:0.8s;"></div>
+        <div class="density-bar" style="height:10px; animation-delay:0.85s;"></div>
+        <div class="density-bar" style="height:14px; animation-delay:0.9s;"></div>
+        <div class="density-bar" style="height:8px; animation-delay:0.95s;"></div>
+      </div>
+      <span class="disc-label">identity</span>
+    </div>
+  </div>
+
+  <!-- 1:1 Principle -->
+  <div class="principle-bar">
+    <div class="principle-icon">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <text x="1" y="13" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="var(--accent)" opacity="0.8">1:1</text>
+      </svg>
+    </div>
+    <div class="principle-content">
+      <div class="principle-title">Every badge maps 1:1 to a visible item</div>
+      <div class="principle-desc">Users never had to do math. The badge count at the inbox level equals the number of unread rows inside — no phantom counts, no mismatches.</div>
+    </div>
+  </div>
+
+  <!-- Outcome bar --></div>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+</body>
+</html>

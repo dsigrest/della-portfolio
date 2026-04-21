@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOT-E2 — Strategy Flywheel</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16; --card: #10121C;
+    --text-pri: #E0DFE4; --text-sec: rgba(224,223,228,0.6); --text-ter: rgba(224,223,228,0.4); --text-dim: rgba(224,223,228,0.2);
+    --accent: #7FB5B0; --accent-dim: rgba(127,181,176,0.12);
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F; display: flex; justify-content: center; padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px; background: var(--canvas); border-radius: 16px; overflow: hidden; position: relative;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  }
+
+  /* ── Title ── */
+  .title-area {
+    padding: 48px 48px 0;
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+  }
+  .label {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); opacity: 0.8; margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 28px; font-weight: 700; color: var(--text-pri); letter-spacing: -0.025em;
+    margin-bottom: 8px; line-height: 1.15;
+  }
+  .subtitle {
+    font-size: 13px; color: var(--text-sec); line-height: 1.55; max-width: 580px;
+  }
+
+  /* ── Flywheel container ── */
+  .flywheel-area {
+    padding: 24px 0 48px; position: relative;
+    display: flex; justify-content: center;
+    opacity: 0; animation: mount 0.5s var(--spring) 0.15s forwards;
+  }
+  .flywheel {
+    position: relative; width: 560px; height: 520px;
+  }
+
+  /* ── Ring (SVG) ── */
+  .ring-svg {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+  }
+  .ring-circle {
+    fill: none; stroke: rgba(224,223,228,0.07); stroke-width: 2;
+  }
+  .ring-glow {
+    fill: none; stroke: rgba(127,181,176,0.06); stroke-width: 24;
+    filter: blur(12px);
+  }
+
+  /* ── Arc labels (positioned around ring) ── */
+  .arc-label {
+    position: absolute; font-size: 9px; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-dim); white-space: nowrap;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .arc-label.right { right: 8px; top: 218px; }
+  .arc-label.bottom { left: 50%; bottom: 34px; transform: translateX(-50%); }
+  .arc-label.left { left: 0px; top: 252px; }
+
+  /* ── Cards ── */
+  .flywheel-card {
+    position: absolute; width: 200px;
+    background: var(--canvas); border: 1px solid var(--glass-border);
+    border-radius: 12px; padding: 20px;
+    transition: transform 0.35s var(--spring), border-color 0.3s ease;
+    cursor: default;
+    z-index: 2;
+  }
+  .flywheel-card .card-inner {
+    position: relative; z-index: 1;
+  }
+  .flywheel-card::before {
+    content: ''; position: absolute; inset: 0;
+    box-shadow: var(--glass-highlight); border-radius: 12px; pointer-events: none;
+  }
+  .flywheel-card:hover {
+    transform: scale(1.04);
+    border-color: rgba(127,181,176,0.2);
+  }
+
+  /* Card positions: 3 points on circle */
+  .card-1 { top: 10px; left: 50%; transform: translateX(-50%); }  /* top center */
+  .card-2 { bottom: 50px; right: 24px; }  /* bottom right */
+  .card-3 { bottom: 50px; left: 24px; }   /* bottom left */
+  .card-1:hover { transform: translateX(-50%) scale(1.04); }
+
+  /* Card number */
+  .card-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 8px;
+    background: var(--accent-dim); color: var(--accent);
+    font-size: 14px; font-weight: 700;
+    margin-bottom: 10px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Card title */
+  .card-title {
+    font-size: 16px; font-weight: 700; color: var(--text-pri);
+    margin-bottom: 8px; letter-spacing: -0.01em;
+  }
+
+  /* Card items */
+  .card-items {
+    font-size: 12px; color: var(--text-sec); line-height: 1.6;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .card-item {
+    display: flex; align-items: baseline; gap: 6px;
+  }
+  .card-item::before {
+    content: ''; display: block;
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--accent); opacity: 0.4;
+    flex-shrink: 0; margin-top: 6px;
+  }
+
+  /* ── Stagger animations ── */
+  .card-1 { opacity: 0; animation: mountCard 0.5s var(--spring) 0.3s forwards; }
+  .card-2 { opacity: 0; animation: mountCard 0.5s var(--spring) 0.45s forwards; }
+  .card-3 { opacity: 0; animation: mountCard 0.5s var(--spring) 0.6s forwards; }
+
+  @keyframes mount {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes mountCard {
+    from { opacity: 0; transform: scale(0.92); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  /* Fix card-1 transform origin for centered position */
+  .card-1 {
+    animation: mountCard1 0.5s var(--spring) 0.3s forwards;
+  }
+  @keyframes mountCard1 {
+    from { opacity: 0; transform: translateX(-50%) scale(0.92); }
+    to { opacity: 1; transform: translateX(-50%) scale(1); }
+  }
+
+  /* Embed mode */
+  body.embedded { padding: 0; min-height: auto; display: block; background: transparent; overflow: hidden; }
+  body.embedded .diagram { border-radius: 0; }
+</style>
+</head>
+<body>
+<div class="diagram">
+
+  <div class="flywheel-area">
+    <div class="flywheel">
+
+      <!-- SVG Ring -->
+      <svg class="ring-svg" viewBox="0 0 560 520" fill="none">
+        <!-- Glow behind ring -->
+        <circle class="ring-glow" cx="280" cy="260" r="175"/>
+        <!-- Main ring -->
+        <circle class="ring-circle" cx="280" cy="260" r="175"/>
+
+        <!-- Directional chevrons on ring — tangent to circle, pointing clockwise -->
+        <!-- 3 chevrons evenly spaced at 0°, 120°, 240° from top -->
+        <!-- Chevron at ~330° (top-right, moving down-right) -->
+        <g>
+          <path d="M443,178 L453,188 L443,198" stroke="rgba(127,181,176,0.35)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <animateTransform attributeName="transform" type="rotate" from="0 280 260" to="360 280 260" dur="14s" repeatCount="indefinite"/>
+        </g>
+        <!-- Chevron at ~210° (bottom-left, moving up-left) -->
+        <g>
+          <path d="M443,178 L453,188 L443,198" stroke="rgba(127,181,176,0.35)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <animateTransform attributeName="transform" type="rotate" from="120 280 260" to="480 280 260" dur="14s" repeatCount="indefinite"/>
+        </g>
+        <!-- Chevron at ~90° (right, moving down) -->
+        <g>
+          <path d="M443,178 L453,188 L443,198" stroke="rgba(127,181,176,0.35)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <animateTransform attributeName="transform" type="rotate" from="240 280 260" to="600 280 260" dur="14s" repeatCount="indefinite"/>
+        </g>
+
+        <!-- Subtle ring gradient glow at center -->
+        <radialGradient id="centerGlow">
+          <stop offset="0%" stop-color="#7FB5B0" stop-opacity="0.06"/>
+          <stop offset="100%" stop-color="#7FB5B0" stop-opacity="0"/>
+        </radialGradient>
+        <circle cx="280" cy="260" r="120" fill="url(#centerGlow)"/>
+      </svg>
+
+      <!-- Arc labels -->
+      <div class="arc-label right">Signal feeds<br>value</div>
+      <div class="arc-label bottom">Value refines tuning</div>
+      <div class="arc-label left">Tuning strengthens<br>signal</div>
+
+      <!-- Card 1: Leverage Signal (top) -->
+      <div class="flywheel-card card-1">
+        <div class="card-num">1</div>
+        <div class="card-title">Leverage signal</div>
+        <div class="card-items">
+          <div class="card-item">Geo recs</div>
+          <div class="card-item">Search</div>
+          <div class="card-item">Good visits</div>
+          <div class="card-item">Post views</div>
+          <div class="card-item">Contribution</div>
+        </div>
+      </div>
+
+      <!-- Card 2: Deliver Value (bottom right) -->
+      <div class="flywheel-card card-2">
+        <div class="card-num">2</div>
+        <div class="card-title">Deliver value</div>
+        <div class="card-items">
+          <div class="card-item">User following</div>
+          <div class="card-item">Keyword following</div>
+          <div class="card-item">Post following</div>
+          <div class="card-item">Replies</div>
+          <div class="card-item">Activity insights</div>
+        </div>
+      </div>
+
+      <!-- Card 3: Tune Experience (bottom left) -->
+      <div class="flywheel-card card-3">
+        <div class="card-num">3</div>
+        <div class="card-title">Tune experience</div>
+        <div class="card-items">
+          <div class="card-item">App upsell</div>
+          <div class="card-item">Enable push</div>
+          <div class="card-item">Follow suggestions</div>
+          <div class="card-item">Event reminders</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+</body>
+</html>

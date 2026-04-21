@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOT-E4 — Signal × Intent Matrix</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16; --card: #10121C;
+    --text-pri: #E0DFE4; --text-sec: rgba(224,223,228,0.6); --text-ter: rgba(224,223,228,0.4); --text-dim: rgba(224,223,228,0.2);
+    --accent: #7FB5B0; --accent-dim: rgba(127,181,176,0.12);
+    --gold: #C4B078; --red: #C47878; --blue: #8A9EC4;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F; display: flex; justify-content: center; padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px; background: var(--canvas); border-radius: 16px; overflow: hidden; position: relative;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  }
+
+  .title-area {
+    padding: 48px 48px 0;
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+  }
+  .label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); opacity: 0.8; margin-bottom: 8px; }
+  h1 { font-size: 28px; font-weight: 700; color: var(--text-pri); letter-spacing: -0.025em; margin-bottom: 8px; line-height: 1.15; }
+  .subtitle { font-size: 13px; color: var(--text-sec); line-height: 1.55; max-width: 580px; }
+
+  /* ── Matrix ── */
+  .matrix-area {
+    padding: 32px 48px 48px; position: relative;
+    opacity: 0; animation: mount 0.5s var(--spring) 0.1s forwards;
+  }
+  .matrix-area::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 350px 280px at 50% 50%, rgba(127,181,176,0.03) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Column headers */
+  .col-headers {
+    display: flex; padding-left: 100px; margin-bottom: 12px; gap: 12px;
+  }
+  .col-header {
+    flex: 1; text-align: center;
+  }
+  .col-header-title {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text-ter);
+  }
+  .col-header-sub {
+    font-size: 10px; color: var(--text-dim); margin-top: 2px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Matrix body */
+  .matrix-body {
+    display: flex; gap: 0;
+  }
+
+  /* Y axis */
+  .y-axis {
+    width: 88px; flex-shrink: 0;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .y-label-cell {
+    flex: 1; display: flex; flex-direction: column; justify-content: center;
+    padding-right: 16px; text-align: right;
+  }
+  .y-label-title {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text-ter);
+  }
+  .y-label-sub {
+    font-size: 10px; color: var(--text-dim); margin-top: 2px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Grid */
+  .grid {
+    flex: 1; display: grid;
+    grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
+    gap: 12px;
+  }
+
+  /* Quadrant cards */
+  .quad {
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    border-radius: 12px; padding: 22px 20px;
+    backdrop-filter: blur(8px); position: relative; overflow: hidden;
+    transition: transform 0.35s var(--spring), border-color 0.3s ease;
+    cursor: default;
+  }
+  .quad::before {
+    content: ''; position: absolute; inset: 0;
+    box-shadow: var(--glass-highlight); border-radius: 12px; pointer-events: none;
+  }
+  .quad:hover {
+    transform: scale(1.02); border-color: rgba(224,223,228,0.14);
+  }
+
+  /* Colored top glow per quadrant */
+  .quad::after {
+    content: ''; position: absolute; width: 80px; height: 80px; border-radius: 50%;
+    top: -24px; left: 50%; transform: translateX(-50%);
+    pointer-events: none; opacity: 0.5;
+  }
+  .quad.subscriber::after { background: radial-gradient(circle, rgba(196,176,120,0.1) 0%, transparent 70%); }
+  .quad.superfan::after { background: radial-gradient(circle, rgba(127,181,176,0.12) 0%, transparent 70%); }
+  .quad.lurker::after { background: radial-gradient(circle, rgba(196,120,120,0.08) 0%, transparent 70%); }
+  .quad.contributor::after { background: radial-gradient(circle, rgba(138,158,196,0.1) 0%, transparent 70%); }
+
+  /* Persona header with icon */
+  .persona-header {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+  }
+  .persona-icon {
+    width: 28px; height: 28px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .subscriber .persona-icon { background: rgba(196,176,120,0.12); }
+  .superfan .persona-icon { background: rgba(127,181,176,0.12); }
+  .lurker .persona-icon { background: rgba(196,120,120,0.1); }
+  .contributor .persona-icon { background: rgba(138,158,196,0.12); }
+  .persona-icon svg { width: 16px; height: 16px; }
+
+  /* Quad persona label */
+  .persona {
+    font-size: 16px; font-weight: 700; color: var(--text-pri);
+    letter-spacing: -0.01em;
+  }
+  .subscriber .persona { color: var(--gold); }
+  .superfan .persona { color: var(--accent); }
+  .lurker .persona { color: var(--red); }
+  .contributor .persona { color: var(--blue); }
+
+  /* Strategy items */
+  .strategies {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .strategy {
+    font-size: 12px; color: var(--text-sec); line-height: 1.5;
+    display: flex; align-items: baseline; gap: 6px;
+  }
+  .strategy::before {
+    content: ''; display: block; width: 4px; height: 4px; border-radius: 50%;
+    flex-shrink: 0; margin-top: 6px; opacity: 0.5;
+  }
+  .subscriber .strategy::before { background: var(--gold); }
+  .superfan .strategy::before { background: var(--accent); }
+  .lurker .strategy::before { background: var(--red); }
+  .contributor .strategy::before { background: var(--blue); }
+
+  /* Stagger */
+  .quad:nth-child(1) { opacity: 0; animation: mountQ 0.5s var(--spring) 0.2s forwards; }
+  .quad:nth-child(2) { opacity: 0; animation: mountQ 0.5s var(--spring) 0.3s forwards; }
+  .quad:nth-child(3) { opacity: 0; animation: mountQ 0.5s var(--spring) 0.35s forwards; }
+  .quad:nth-child(4) { opacity: 0; animation: mountQ 0.5s var(--spring) 0.45s forwards; }
+
+  @keyframes mount { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes mountQ { from { opacity:0; transform:scale(0.94); } to { opacity:1; transform:scale(1); } }
+
+  /* Embed mode */
+  body.embedded { padding: 0; min-height: auto; display: block; background: transparent; overflow: hidden; }
+  body.embedded .diagram { border-radius: 0; }
+</style>
+</head>
+<body>
+<div class="diagram">
+
+  <div class="matrix-area">
+    <!-- Column headers -->
+    <div class="col-headers">
+      <div class="col-header">
+        <div class="col-header-title">Low Signal</div>
+        <div class="col-header-sub">Weak behavioral signals</div>
+      </div>
+      <div class="col-header">
+        <div class="col-header-title">High Signal</div>
+        <div class="col-header-sub">Strong behavioral signals</div>
+      </div>
+    </div>
+
+    <div class="matrix-body">
+      <!-- Y axis labels -->
+      <div class="y-axis">
+        <div class="y-label-cell">
+          <div class="y-label-title">High Intent</div>
+          <div class="y-label-sub">Active subscribers</div>
+        </div>
+        <div class="y-label-cell">
+          <div class="y-label-title">Low Intent</div>
+          <div class="y-label-sub">Passive browsers</div>
+        </div>
+      </div>
+
+      <!-- 2×2 Grid -->
+      <div class="grid">
+        <!-- Top-left: High intent, Low signal = Subscriber -->
+        <div class="quad subscriber">
+          <div class="persona-header">
+            <div class="persona-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2c-2.5 0-4.5 2-4.5 4.5v3L2 11v1h12v-1l-1.5-1.5v-3C12.5 4 10.5 2 8 2z" stroke="#C4B078" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 13a1.5 1.5 0 003 0" stroke="#C4B078" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+            <div class="persona">Subscriber</div>
+          </div>
+          <div class="strategies">
+            <div class="strategy">Build on geo</div>
+            <div class="strategy">Build on SEO</div>
+            <div class="strategy">Deliver content relevant to contribution style</div>
+          </div>
+        </div>
+
+        <!-- Top-right: High intent, High signal = Superfan -->
+        <div class="quad superfan">
+          <div class="persona-header">
+            <div class="persona-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M8 1.5l1.76 3.57 3.94.57-2.85 2.78.67 3.93L8 10.5l-3.52 1.85.67-3.93L2.3 5.64l3.94-.57L8 1.5z" stroke="#7FB5B0" stroke-width="1.2" stroke-linejoin="round"/></svg></div>
+            <div class="persona">Superfan</div>
+          </div>
+          <div class="strategies">
+            <div class="strategy">Trending in subscribed</div>
+            <div class="strategy">Keyword match alerts</div>
+            <div class="strategy">Follow activity digests</div>
+          </div>
+        </div>
+
+        <!-- Bottom-left: Low intent, Low signal = Lurker -->
+        <div class="quad lurker">
+          <div class="persona-header">
+            <div class="persona-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" stroke="#C47878" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="8" r="2" stroke="#C47878" stroke-width="1.2"/></svg></div>
+            <div class="persona">Lurker</div>
+          </div>
+          <div class="strategies">
+            <div class="strategy">Trending broad</div>
+            <div class="strategy">Community milestones</div>
+            <div class="strategy">Seasonal / event hooks</div>
+          </div>
+        </div>
+
+        <!-- Bottom-right: Low intent, High signal = Contributor -->
+        <div class="quad contributor">
+          <div class="persona-header">
+            <div class="persona-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M13.5 2.5l-9 9L2 14l2.5-2.5 9-9z" stroke="#8A9EC4" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 5l2-2" stroke="#8A9EC4" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+            <div class="persona">Contributor</div>
+          </div>
+          <div class="strategies">
+            <div class="strategy">Reply notifications</div>
+            <div class="strategy">Upvote milestones</div>
+            <div class="strategy">Thread follow-ups</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+</body>
+</html>
