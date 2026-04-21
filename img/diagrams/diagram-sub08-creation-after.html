@@ -19,27 +19,130 @@
       --accent: #7FB5B0;
       --accent-dim: rgba(127,181,176,0.12);
       --red: #C47878;
-      --resur: #C4B078;
       --warm: #D4A574;
+      --resur: #C4B078;
       --blue: #8A9EC4;
       --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
       --glass-border: rgba(224,223,228,0.08);
       --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
     }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
       background: #08090F;
       display: flex;
       justify-content: center;
-      padding: 40px;
-      font-family: 'Inter', sans-serif;
-      -webkit-font-smoothing: antialiased;
+      align-items: center;
       min-height: 100vh;
-      align-items: flex-start;
+      padding: 40px;
+      font-family: 'Inter', -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .diagram {
+      width: 760px;
+      background: var(--canvas);
+      border-radius: 16px;
+      overflow: hidden;
+      padding: 40px 32px;
     }
 
+    /* ── Flow Steps ── */
+    .flow-steps {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .step-line {
+      width: 120px;
+      height: 2px;
+      background: var(--accent);
+      border-radius: 1px;
+    }
+    .step-meta {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .step-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-ter);
+    }
+    .step-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-pri);
+    }
+    .step-arrow {
+      font-size: 14px;
+      color: var(--text-dim);
+      margin-top: 14px;
+    }
+
+    /* ── Annotation Cards ── */
+    .annotations {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .annotation-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-highlight);
+      border-radius: 12px;
+      padding: 20px;
+      opacity: 0;
+      transform: translateY(8px);
+      animation: fadeSlideIn 0.5s ease forwards;
+    }
+    .annotation-card:nth-child(1) { animation-delay: 0.1s; }
+    .annotation-card:nth-child(2) { animation-delay: 0.2s; }
+    .annotation-card:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes fadeSlideIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .annotation-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .annotation-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-pri);
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+    .annotation-desc {
+      font-size: 12px;
+      color: var(--text-sec);
+      line-height: 1.55;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 680px) {
+      body { padding: 16px; }
+      .diagram { width: 100%; padding: 24px 16px; }
+      .flow-steps { flex-wrap: wrap; }
+      .annotations { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .annotation-card { opacity: 1; transform: none; animation: none; }
+    }
+
+    /* Embed mode */
     body.embedded {
       padding: 0;
       min-height: auto;
@@ -48,551 +151,61 @@
       overflow: hidden;
       align-items: initial;
     }
-
-    .diagram {
-      width: 760px;
-      background: var(--canvas);
-      border-radius: 16px;
-      overflow: hidden;
-      position: relative;
-      padding: 36px 48px;
-    }
-
     body.embedded .diagram {
       width: 100%;
       border-radius: 0;
-    }
-
-    .diagram::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: radial-gradient(circle at 60% 40%, rgba(127,181,176,0.06) 0%, transparent 60%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .diagram > * {
-      position: relative;
-      z-index: 1;
-    }
-
-    .phones-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      margin-bottom: 32px;
-      padding-top: 32px;
-    }
-
-    .phone-column {
-      text-align: center;
-      opacity: 0;
-      animation: reveal-up 0.6s ease-out forwards;
-    }
-
-    .phone-column:nth-child(1) { animation-delay: 0.1s; }
-    .phone-column:nth-child(3) { animation-delay: 0.2s; }
-    .phone-column:nth-child(5) { animation-delay: 0.3s; }
-
-    .phone-mockup {
-      width: 180px;
-      background: var(--elevated);
-      border: 1px solid rgba(224,223,228,0.1);
-      border-radius: 16px;
-      overflow: hidden;
-      margin-bottom: 12px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-    }
-
-    .phone-status {
-      background: var(--elevated);
-      padding: 8px 16px;
-      font-size: 8px;
-      color: var(--text-ter);
-      font-weight: 600;
-      border-bottom: 1px solid rgba(224,223,228,0.05);
-    }
-
-    .phone-content {
-      padding: 16px;
-      font-size: 9px;
-      color: var(--text-sec);
-      min-height: 200px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* Phone 1: Identity */
-    .phone-1-content {
-      background: linear-gradient(180deg, rgba(127,181,176,0.02) 0%, rgba(0,0,0,0.1) 100%);
-    }
-
-    .phone-label {
-      font-weight: 600;
-      color: var(--text-pri);
-      font-size: 10px;
-      margin-bottom: 8px;
-      text-align: left;
-    }
-
-    .step-pips {
-      display: flex;
-      gap: 4px;
-      margin-bottom: 12px;
-      height: 3px;
-    }
-
-    .pip {
-      height: 3px;
-      background: rgba(224,223,228,0.1);
-      border-radius: 2px;
-      flex: 1;
-    }
-
-    .pip.active {
-      background: var(--accent);
-      width: 24px;
-      flex: 0 0 24px;
-    }
-
-    .input-field {
-      background: var(--elevated);
-      border: 1px solid rgba(224,223,228,0.08);
-      border-radius: 6px;
-      padding: 6px 8px;
-      font-size: 8px;
-      color: var(--text-sec);
-      margin-bottom: 12px;
-      font-family: 'JetBrains Mono', monospace;
-      line-height: 1.3;
-    }
-
-    .input-field span {
-      color: var(--text-dim);
-    }
-
-    .chip-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4px;
-      margin-bottom: 12px;
-    }
-
-    .chip {
-      background: transparent;
-      border: 1px solid rgba(224,223,228,0.1);
-      border-radius: 4px;
-      padding: 4px 6px;
-      font-size: 7px;
-      color: var(--text-ter);
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .chip.selected {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: var(--canvas);
-      font-weight: 600;
-    }
-
-    /* Phone 2: Visual */
-    .phone-2-content {
-      background: linear-gradient(180deg, rgba(212,165,116,0.02) 0%, rgba(0,0,0,0.1) 100%);
-    }
-
-    .banner-zone {
-      width: 100%;
-      height: 48px;
-      background: var(--elevated);
-      border: 1px solid rgba(224,223,228,0.08);
-      border-radius: 4px;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-dim);
-      font-size: 16px;
-    }
-
-    .avatar-section {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      margin-bottom: 12px;
-    }
-
-    .avatar {
-      width: 36px;
-      height: 36px;
-      background: var(--elevated);
-      border: 1px solid rgba(224,223,228,0.1);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-    }
-
-    .toolbar {
-      background: var(--elevated);
-      border: 1px solid rgba(224,223,228,0.08);
-      border-radius: 4px;
-      padding: 6px;
-      display: flex;
-      justify-content: space-around;
-      font-size: 7px;
-      color: var(--text-ter);
-    }
-
-    /* Phone 3: Preview */
-    .phone-3-content {
-      background: linear-gradient(180deg, rgba(138,158,196,0.02) 0%, rgba(0,0,0,0.1) 100%);
-    }
-
-    .live-badge {
-      background: rgba(127,181,176,0.15);
-      border: 1px solid var(--accent);
-      border-radius: 4px;
-      padding: 3px 6px;
-      font-size: 7px;
-      color: var(--accent);
-      font-weight: 600;
-      margin-bottom: 8px;
-      width: fit-content;
-      display: flex;
-      align-items: center;
-      gap: 3px;
-    }
-
-    .live-dot {
-      width: 3px;
-      height: 3px;
-      background: var(--accent);
-      border-radius: 50%;
-    }
-
-    .preview-card {
-      background: var(--elevated);
-      border: 1px solid rgba(224,223,228,0.08);
-      border-radius: 6px;
-      padding: 6px;
-      margin-bottom: 12px;
-      font-size: 8px;
-    }
-
-    .preview-banner {
-      width: 100%;
-      height: 20px;
-      background: var(--blue);
-      border-radius: 3px;
-      opacity: 0.2;
-      margin-bottom: 4px;
-    }
-
-    .preview-header {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      margin-bottom: 4px;
-    }
-
-    .preview-avatar {
-      width: 12px;
-      height: 12px;
-      background: var(--elevated);
-      border-radius: 50%;
-      border: 1px solid rgba(224,223,228,0.1);
-    }
-
-    .preview-title {
-      color: var(--text-pri);
-      font-weight: 500;
-    }
-
-    .preview-tag {
-      display: inline-block;
-      background: rgba(127,181,176,0.1);
-      color: var(--accent);
-      padding: 1px 3px;
-      border-radius: 2px;
-      font-size: 6px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .preview-lines {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .preview-line {
-      height: 2px;
-      background: rgba(224,223,228,0.1);
-      border-radius: 1px;
-    }
-
-    .preview-line.short {
-      width: 70%;
-    }
-
-    .launch-button {
-      width: 100%;
-      background: var(--accent);
-      color: var(--canvas);
-      border: none;
-      border-radius: 4px;
-      padding: 6px;
-      font-size: 8px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .arrow {
-      font-size: 20px;
-      color: var(--text-dim);
-      opacity: 0;
-      animation: reveal-left 0.6s ease-out forwards;
-    }
-
-    .arrow:nth-of-type(1) { animation-delay: 0.2s; }
-    .arrow:nth-of-type(2) { animation-delay: 0.3s; }
-
-    .phone-label-text {
-      font-size: 9px;
-      color: var(--text-ter);
-      font-weight: 500;
-      margin-top: 8px;
-    }
-
-    .annotation-cards {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      padding-top: 16px;
-      border-top: 1px solid rgba(224,223,228,0.05);
-    }
-
-    .annotation-card {
-      background: var(--glass-bg);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--glass-border);
-      box-shadow: var(--glass-highlight);
-      border-radius: 10px;
-      padding: 14px;
-      position: relative;
-      opacity: 0;
-      animation: reveal-up 0.6s ease-out forwards;
-    }
-
-    .annotation-card:nth-child(1) { animation-delay: 0.4s; }
-    .annotation-card:nth-child(2) { animation-delay: 0.5s; }
-    .annotation-card:nth-child(3) { animation-delay: 0.6s; }
-
-    .annotation-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 2px;
-      background: var(--accent);
-      border-radius: 10px 10px 0 0;
-      opacity: 0.7;
-    }
-
-    .annotation-number {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 9px;
-      font-weight: 700;
-      color: var(--accent);
-      opacity: 0.5;
-      margin-bottom: 4px;
-    }
-
-    .annotation-title {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-pri);
-      margin-bottom: 8px;
-    }
-
-    .annotation-desc {
-      font-size: 10px;
-      color: var(--text-sec);
-      line-height: 1.4;
-    }
-
-    @keyframes reveal-up {
-      from {
-        opacity: 0;
-        transform: translateY(12px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes reveal-left {
-      from {
-        opacity: 0;
-        transform: translateX(-8px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .phone-column, .arrow, .annotation-card {
-        animation: none;
-        opacity: 1;
-      }
     }
   </style>
 </head>
 <body>
   <div class="diagram">
-    <div class="phones-row">
-      <!-- Phone 1: Identity -->
-      <div class="phone-column">
-        <div class="phone-mockup">
-          <div class="phone-status">9:41</div>
-          <div class="phone-content phone-1-content">
-            <div class="step-pips">
-              <div class="pip active"></div>
-              <div class="pip"></div>
-              <div class="pip"></div>
-            </div>
-            <div class="phone-label">Name your community</div>
-            <div class="input-field"><span>r/</span>UrbanSketchers</div>
-            <div class="phone-label">Choose a category</div>
-            <div class="chip-grid">
-              <div class="chip">Gaming</div>
-              <div class="chip">Sports</div>
-              <div class="chip">Music</div>
-              <div class="chip">Food</div>
-              <div class="chip">Art</div>
-              <div class="chip selected">Art</div>
-              <div class="chip">Tech</div>
-              <div class="chip">Memes</div>
-            </div>
-          </div>
+    <!-- Flow Steps -->
+    <div class="flow-steps">
+      <div class="step">
+        <div class="step-line"></div>
+        <div class="step-meta">
+          <span class="step-num">01</span>
+          <span class="step-label">Identity</span>
         </div>
-        <div class="phone-label-text"><strong>01</strong> Identity</div>
       </div>
-
-      <!-- Arrow 1 -->
-      <div class="arrow">→</div>
-
-      <!-- Phone 2: Visual -->
-      <div class="phone-column">
-        <div class="phone-mockup">
-          <div class="phone-status">9:41</div>
-          <div class="phone-content phone-2-content">
-            <div class="step-pips">
-              <div class="pip"></div>
-              <div class="pip active"></div>
-              <div class="pip"></div>
-            </div>
-            <div class="phone-label">Visual identity</div>
-            <div class="banner-zone">📷</div>
-            <div style="font-size: 8px; color: var(--text-dim); margin-bottom: 8px;">Banner image</div>
-            <div class="avatar-section">
-              <div class="avatar">🎨</div>
-              <div style="font-size: 8px; color: var(--text-dim);">Community icon</div>
-            </div>
-            <div class="toolbar">
-              <span>Crop</span>
-              <span>Filter</span>
-              <span>Adjust</span>
-            </div>
-          </div>
+      <div class="step-arrow">→</div>
+      <div class="step">
+        <div class="step-line"></div>
+        <div class="step-meta">
+          <span class="step-num">02</span>
+          <span class="step-label">Visual</span>
         </div>
-        <div class="phone-label-text"><strong>02</strong> Visual</div>
       </div>
-
-      <!-- Arrow 2 -->
-      <div class="arrow">→</div>
-
-      <!-- Phone 3: Preview -->
-      <div class="phone-column">
-        <div class="phone-mockup">
-          <div class="phone-status">9:41</div>
-          <div class="phone-content phone-3-content">
-            <div class="step-pips">
-              <div class="pip"></div>
-              <div class="pip"></div>
-              <div class="pip active"></div>
-            </div>
-            <div class="live-badge">
-              <div class="live-dot"></div>
-              Live preview
-            </div>
-            <div class="preview-card">
-              <div class="preview-banner"></div>
-              <div class="preview-header">
-                <div class="preview-avatar"></div>
-                <div class="preview-title">r/UrbanSketchers</div>
-              </div>
-              <div class="preview-tag">Art</div>
-              <div class="preview-lines">
-                <div class="preview-line"></div>
-                <div class="preview-line short"></div>
-              </div>
-            </div>
-            <button class="launch-button">Launch Community</button>
-          </div>
+      <div class="step-arrow">→</div>
+      <div class="step">
+        <div class="step-line"></div>
+        <div class="step-meta">
+          <span class="step-num">03</span>
+          <span class="step-label">Preview</span>
         </div>
-        <div class="phone-label-text"><strong>03</strong> Preview</div>
       </div>
     </div>
 
-    <div class="annotation-cards">
+    <!-- Annotation Cards -->
+    <div class="annotations">
       <div class="annotation-card">
-        <div class="annotation-number">01</div>
+        <div class="annotation-num">01</div>
         <div class="annotation-title">Category selection</div>
         <div class="annotation-desc">Improves distribution and discoverability in crucial first days of subreddit creation</div>
       </div>
       <div class="annotation-card">
-        <div class="annotation-number">02</div>
+        <div class="annotation-num">02</div>
         <div class="annotation-title">Visual identity at creation</div>
         <div class="annotation-desc">Banner + icon upload moved into the creation flow instead of buried in settings.</div>
       </div>
       <div class="annotation-card">
-        <div class="annotation-number">03</div>
+        <div class="annotation-num">03</div>
         <div class="annotation-title">Preview before launch</div>
         <div class="annotation-desc">Live preview lets creators see their community as members will — reduces post-launch edits.</div>
       </div>
     </div>
   </div>
 
-  <script>
-    if (window !== window.parent) {
-      document.body.classList.add('embedded');
-    }
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.animationPlayState = 'running';
-        }
-      });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.phone-column, .arrow, .annotation-card').forEach(el => {
-      observer.observe(el);
-    });
-  </script>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
 </body>
 </html>

@@ -47,6 +47,15 @@
   }
 
   /* ── Survival curve card ── */
+  /* ── Section label ── */
+  .section-label {
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 6px;
+    color: var(--red);
+  }
+
   .curve-card {
     background: var(--glass-bg);
     backdrop-filter: blur(20px);
@@ -181,6 +190,10 @@
 </head>
 <body>
   <div class="diagram">
+    <div class="section-label">
+      <svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 1L11 10H1L6 1z" stroke="var(--red)" stroke-width="1.2" fill="rgba(196,120,120,0.15)"/></svg>
+      The data
+    </div>
     <div class="curve-card reveal">
       <div class="curve-header">
         <div class="curve-title">New Subreddit Survival</div>
