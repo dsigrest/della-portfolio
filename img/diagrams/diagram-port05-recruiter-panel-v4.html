@@ -36,6 +36,19 @@
       align-items: center;
       min-height: 100vh;
     }
+    /* Embed mode: strip body chrome when loaded in iframe */
+    body.embedded {
+      padding: 0;
+      min-height: auto;
+      display: block;
+      background: transparent;
+      overflow: hidden;
+      align-items: initial;
+    }
+    body.embedded .diagram {
+      width: 100%;
+      border-radius: 0;
+    }
 
     .diagram {
       width: 760px;
@@ -590,5 +603,6 @@
       }, 900);
     }
   </script>
+  <script>if(window!==window.parent)document.body.classList.add('embedded');</script>
 </body>
 </html>
