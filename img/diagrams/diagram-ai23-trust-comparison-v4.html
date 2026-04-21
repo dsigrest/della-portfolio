@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trust Spectrum</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --casual: #D4A574;
+    --resur: #C4B078;
+    --new-seg: #8A9EC4;
+    --red: #C47878;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .title-area { padding: 48px 48px 0; }
+  .label {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); opacity: 0.8; margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 36px; font-weight: 700;
+    color: var(--text-pri); letter-spacing: -0.025em;
+    margin-bottom: 8px; line-height: 1.15;
+  }
+  .subtitle {
+    font-size: 15px; color: var(--text-sec);
+    line-height: 1.55; max-width: 560px;
+  }
+
+  /* Spectrum area */
+  .spectrum-area {
+    padding: 40px 48px 32px;
+    position: relative;
+  }
+  .spectrum-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 250px 200px at 30% 50%, rgba(127,181,176,0.05) 0%, transparent 70%),
+      radial-gradient(ellipse 250px 200px at 70% 50%, rgba(196,120,120,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* The spectrum track */
+  .spectrum-track {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 16px;
+  }
+
+  .track-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .track-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .track-label.high { color: var(--accent); }
+  .track-label.low { color: var(--red); }
+
+  .track-bar {
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(to right, rgba(127,181,176,0.5), rgba(127,181,176,0.2) 40%, rgba(196,120,120,0.2) 60%, rgba(196,120,120,0.5));
+    position: relative;
+    margin-bottom: 24px;
+  }
+
+  /* Signal tags positioned on the spectrum */
+  .signal-tags {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .signal-row {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+
+  .signal-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.4;
+    position: absolute;
+    white-space: nowrap;
+  }
+
+  /* High trust tags — left side */
+  .signal-tag.high {
+    background: rgba(127,181,176,0.08);
+    border: 1px solid rgba(127,181,176,0.18);
+    color: var(--text-sec);
+  }
+  .signal-tag.high .tag-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: rgba(127,181,176,0.5);
+    flex-shrink: 0;
+  }
+
+  /* Medium trust tags — center */
+  .signal-tag.med {
+    background: rgba(196,176,120,0.06);
+    border: 1px solid rgba(196,176,120,0.15);
+    color: var(--text-sec);
+  }
+  .signal-tag.med .tag-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: rgba(196,176,120,0.5);
+    flex-shrink: 0;
+  }
+
+  /* Low trust tags — right side */
+  .signal-tag.low {
+    background: rgba(196,120,120,0.06);
+    border: 1px solid rgba(196,120,120,0.15);
+    color: var(--text-sec);
+  }
+  .signal-tag.low .tag-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: rgba(196,120,120,0.5);
+    flex-shrink: 0;
+  }
+
+  /* Position connector lines */
+  .connector-line {
+    position: absolute;
+    top: 50%;
+    height: 1px;
+    z-index: -1;
+  }
+
+  /* Tag positions using left % */
+  .row-1 .signal-tag { left: 2%; }
+  .row-2 .signal-tag { left: 8%; }
+  .row-3 .signal-tag { left: 35%; }
+  .row-4 .signal-tag { left: 42%; }
+  .row-5 .signal-tag { left: 65%; }
+  .row-6 .signal-tag { left: 72%; }
+
+  /* Vertical tick marks on the bar */
+  .tick-marks {
+    position: absolute;
+    top: -3px;
+    left: 0;
+    right: 0;
+    height: 14px;
+    pointer-events: none;
+  }
+  .tick {
+    position: absolute;
+    width: 1px;
+    height: 14px;
+    background: rgba(224,223,228,0.1);
+  }
+
+  /* Callout */
+  .callout {
+    margin: 16px 48px 16px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 14px 20px;
+    box-shadow: var(--glass-highlight);
+    position: relative;
+    z-index: 1;
+  }
+  .callout p {
+    font-size: 13px;
+    color: var(--text-sec);
+    line-height: 1.5;
+  }
+  .callout-emphasis {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* Outcome */
+  .outcome {
+    margin: 0 48px 48px;
+    background: var(--accent-dim);
+    border-radius: 10px;
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .outcome-arrow {
+    font-size: 16px; color: var(--accent);
+    opacity: 0.55; flex-shrink: 0;
+  }
+  .outcome p {
+    font-size: 13px; font-weight: 500;
+    color: var(--text-sec); line-height: 1.5;
+  }
+
+  /* SHR-05 ambient — subtle track glow */
+  .track-bar::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 8px;
+    background: radial-gradient(ellipse 200px 30px at 25% 50%, rgba(127,181,176,0.08) 0%, transparent 70%);
+    animation: track-ambient 5s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes track-ambient {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+  }
+
+  @media (max-width: 680px) {
+    .title-area, .spectrum-area, .callout, .outcome { padding-left: 24px; padding-right: 24px; }
+    body { padding: 16px; }
+    .signal-tag { font-size: 11px; padding: 6px 10px; }
+  }
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="title-area">
+      <div class="label">Voice — Tone</div>
+      <h1>Trust Spectrum</h1>
+      <p class="subtitle">Closeness to source posts drove trust. Broad generalizations killed it immediately.</p>
+    </div>
+
+    <div class="spectrum-area">
+      <div class="spectrum-track">
+        <div class="track-labels">
+          <span class="track-label high">High Trust</span>
+          <span class="track-label low">Low Trust</span>
+        </div>
+        <div class="track-bar">
+          <div class="tick-marks">
+            <div class="tick" style="left: 25%;"></div>
+            <div class="tick" style="left: 50%;"></div>
+            <div class="tick" style="left: 75%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Signal tags positioned along the spectrum -->
+      <div class="signal-tags">
+        <div class="signal-row row-1">
+          <div class="signal-tag high">
+            <span class="tag-dot"></span>
+            Specific attribution to source posts
+          </div>
+        </div>
+        <div class="signal-row row-2">
+          <div class="signal-tag high">
+            <span class="tag-dot"></span>
+            Community voice preserved in synthesis
+          </div>
+        </div>
+        <div class="signal-row row-3">
+          <div class="signal-tag med">
+            <span class="tag-dot"></span>
+            Accurate but decontextualized
+          </div>
+        </div>
+        <div class="signal-row row-4">
+          <div class="signal-tag med">
+            <span class="tag-dot"></span>
+            Correct facts, generic framing
+          </div>
+        </div>
+        <div class="signal-row row-5">
+          <div class="signal-tag low">
+            <span class="tag-dot"></span>
+            Broad claims without evidence
+          </div>
+        </div>
+        <div class="signal-row row-6">
+          <div class="signal-tag low">
+            <span class="tag-dot"></span>
+            No anchoring to real voices
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <p><span class="callout-emphasis">The drop-off was sharp</span> — even one level of abstraction away from source material produced measurably lower trust scores in user research</p>
+    </div>
+
+    <div class="outcome">
+      <span class="outcome-arrow">↳</span>
+      <p>Trust mapped directly to source proximity — design decisions kept synthesis as close to original posts as possible</p>
+    </div>
+  </div>
+</body>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</html>

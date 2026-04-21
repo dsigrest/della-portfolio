@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Identity Explorations</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --casual: #D4A574;
+    --resur: #C4B078;
+    --new-seg: #8A9EC4;
+    --red: #C47878;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .title-area { padding: 48px 48px 0; }
+  .label {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); opacity: 0.8; margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 36px; font-weight: 700;
+    color: var(--text-pri); letter-spacing: -0.025em;
+    margin-bottom: 8px; line-height: 1.15;
+  }
+  .subtitle {
+    font-size: 15px; color: var(--text-sec);
+    line-height: 1.55; max-width: 560px;
+  }
+
+  /* Grid area */
+  .grid-area {
+    padding: 36px 48px 24px;
+    position: relative;
+  }
+  .grid-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 200px 150px at 30% 30%, rgba(212,165,116,0.04) 0%, transparent 70%),
+      radial-gradient(ellipse 200px 150px at 70% 70%, rgba(127,181,176,0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .identities-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .identity-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: var(--glass-highlight);
+    border-left: 3px solid var(--border-normal);
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .identity-card.character { border-left-color: var(--casual); }
+  .identity-card.tool { border-left-color: var(--new-seg); }
+  .identity-card.omnipresent {
+    border-left-color: var(--accent);
+    border: 1.5px solid rgba(127,181,176,0.2);
+    border-left: 3px solid var(--accent);
+    background: linear-gradient(135deg, rgba(127,181,176,0.06) 0%, rgba(224,223,228,0.015) 100%);
+  }
+  .identity-card.none {
+    border-left-color: var(--text-dim);
+    opacity: 0.6;
+  }
+
+  /* Icon containers — visual illustrations */
+  .id-icon-area {
+    width: 56px; height: 56px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: rgba(224,223,228,0.02);
+    border: 1px solid rgba(224,223,228,0.05);
+  }
+  .identity-card.character .id-icon-area {
+    background: rgba(212,165,116,0.04);
+    border-color: rgba(212,165,116,0.1);
+  }
+  .identity-card.tool .id-icon-area {
+    background: rgba(138,158,196,0.04);
+    border-color: rgba(138,158,196,0.1);
+  }
+  .identity-card.omnipresent .id-icon-area {
+    background: rgba(127,181,176,0.06);
+    border-color: rgba(127,181,176,0.15);
+  }
+
+  .id-text {
+    flex: 1;
+  }
+
+  .identity-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-pri);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .winner-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--accent-dim);
+    border: 1px solid rgba(127,181,176,0.15);
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.03em;
+  }
+
+  .identity-desc {
+    font-size: 12px;
+    color: var(--text-sec);
+    line-height: 1.5;
+  }
+
+  .identity-detail {
+    font-size: 11px;
+    color: var(--text-ter);
+    line-height: 1.45;
+    margin-top: 4px;
+  }
+
+  /* Callout */
+  .callout {
+    margin: 8px 48px 16px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(127,181,176,0.15);
+    border-radius: 10px;
+    padding: 14px 20px;
+    box-shadow: var(--glass-highlight);
+    position: relative;
+    z-index: 1;
+  }
+  .callout p {
+    font-size: 13px;
+    color: var(--text-sec);
+    line-height: 1.5;
+  }
+  .callout-emphasis {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* Outcome */
+  .outcome {
+    margin: 0 48px 48px;
+    background: var(--accent-dim);
+    border-radius: 10px;
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .outcome-arrow {
+    font-size: 16px; color: var(--accent);
+    opacity: 0.55; flex-shrink: 0;
+  }
+  .outcome p {
+    font-size: 13px; font-weight: 500;
+    color: var(--text-sec); line-height: 1.5;
+  }
+
+  /* SHR-05 ambient on winner card */
+  .omnipresent-glow {
+    animation: omni-ambient 5s ease-in-out infinite;
+  }
+  @keyframes omni-ambient {
+    0%, 100% { box-shadow: var(--glass-highlight), 0 0 16px rgba(127,181,176,0.06); }
+    50% { box-shadow: var(--glass-highlight), 0 0 16px rgba(127,181,176,0.12); }
+  }
+
+  @media (max-width: 680px) {
+    .title-area, .grid-area, .callout, .outcome { padding-left: 24px; padding-right: 24px; }
+    body { padding: 16px; }
+    .identities-grid { grid-template-columns: 1fr; }
+  }
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="title-area">
+      <div class="label">Voice — LLM Identity</div>
+      <h1>Identity Explorations</h1>
+      <p class="subtitle">Is the LLM Reddit, a character, a tool, or omnipresent? We explored each approach.</p>
+    </div>
+
+    <div class="grid-area">
+      <div class="identities-grid">
+        <!-- Character -->
+        <div class="identity-card character">
+          <div class="id-icon-area">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+              <circle cx="14" cy="12" r="4" stroke="rgba(212,165,116,0.4)" stroke-width="1.2" fill="none"/>
+              <circle cx="12.5" cy="11" r="1" fill="rgba(212,165,116,0.35)"/>
+              <circle cx="15.5" cy="11" r="1" fill="rgba(212,165,116,0.35)"/>
+              <path d="M12.5 14C13 14.5 15 14.5 15.5 14" stroke="rgba(212,165,116,0.3)" stroke-width="0.8" stroke-linecap="round"/>
+              <path d="M10 18C10 16 11.5 14.5 14 14.5C16.5 14.5 18 16 18 18" stroke="rgba(212,165,116,0.35)" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+            </svg>
+          </div>
+          <div class="id-text">
+            <p class="identity-name">Character</p>
+            <p class="identity-desc">Snoo/Clippy-style personality</p>
+            <p class="identity-detail">Risk of novelty wearing off, scaling issues across surfaces</p>
+          </div>
+        </div>
+
+        <!-- Tool -->
+        <div class="identity-card tool">
+          <div class="id-icon-area">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+              <path d="M8 18L10 20L15 15" stroke="rgba(138,158,196,0.4)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M20 8L18 10L15 15" stroke="rgba(138,158,196,0.4)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="22" cy="6" r="2" stroke="rgba(138,158,196,0.3)" stroke-width="1" fill="none"/>
+              <circle cx="6" cy="22" r="2" stroke="rgba(138,158,196,0.3)" stroke-width="1" fill="none"/>
+            </svg>
+          </div>
+          <div class="id-text">
+            <p class="identity-name">Tool</p>
+            <p class="identity-desc">Utility without identity</p>
+            <p class="identity-detail">Too cold — stripped the product of warmth and community feel</p>
+          </div>
+        </div>
+
+        <!-- Omnipresent — Winner -->
+        <div class="identity-card omnipresent omnipresent-glow">
+          <div class="id-icon-area">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+              <circle cx="14" cy="14" r="8" stroke="rgba(127,181,176,0.4)" stroke-width="1.2" fill="none"/>
+              <circle cx="14" cy="14" r="5" stroke="rgba(127,181,176,0.3)" stroke-width="1" fill="none"/>
+              <circle cx="14" cy="14" r="2" fill="rgba(127,181,176,0.45)"/>
+              <path d="M14 7V5M20 14H22M14 21V23M8 14H6" stroke="rgba(127,181,176,0.3)" stroke-width="1" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="id-text">
+            <p class="identity-name">Omnipresent Narrator <span class="winner-badge">Winner</span></p>
+            <p class="identity-desc">Part of the product itself</p>
+            <p class="identity-detail">Preserves scalability — the synthesis isn't a separate product, it's Reddit</p>
+          </div>
+        </div>
+
+        <!-- No Identity -->
+        <div class="identity-card none">
+          <div class="id-icon-area">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+              <circle cx="14" cy="14" r="8" stroke="rgba(224,223,228,0.2)" stroke-width="1" fill="none"/>
+              <path d="M9 19L19 9" stroke="rgba(224,223,228,0.15)" stroke-width="1" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="id-text">
+            <p class="identity-name">No Identity</p>
+            <p class="identity-desc">Anonymous, invisible</p>
+            <p class="identity-detail">Users couldn't distinguish AI content from user content — trust failure</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <p><span class="callout-emphasis">Omnipresent narrator resolved the core tension</span> — the synthesis isn't a separate product. It's Reddit speaking in a unified voice, surfacing what the community already knows.</p>
+    </div>
+
+    <div class="outcome">
+      <span class="outcome-arrow">↳</span>
+      <p>Identity became infrastructure — the omnipresent pattern scaled to every surface without introducing a new "character" to maintain</p>
+    </div>
+  </div>
+</body>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</html>

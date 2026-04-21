@@ -1,633 +1,598 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SUB-08 — Guided Creation Flow</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --canvas: #0A0C16;
-    --elevated: #151722;
-    --highest: #1A1C28;
-    --text-pri: #E0DFE4;
-    --text-sec: rgba(224,223,228,0.6);
-    --text-ter: rgba(224,223,228,0.4);
-    --text-dim: rgba(224,223,228,0.2);
-    --border: rgba(224,223,228,0.07);
-    --accent: #7FB5B0;
-    --accent-dim: rgba(127,181,176,0.12);
-    --warm: #D4A574;
-    --resur: #C4B078;
-    --blue: #8A9EC4;
-    --red: #C47878;
-    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
-    --glass-border: rgba(224,223,228,0.08);
-    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
-  }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body {
-    background: #08090F;
-    display: flex; justify-content: center;
-    padding: 40px;
-    font-family: 'Inter', -apple-system, sans-serif;
-    -webkit-font-smoothing: antialiased;
-  }
-  .diagram {
-    width: 760px;
-    background: var(--canvas);
-    border-radius: 16px;
-    overflow: hidden;
-    position: relative;
-  }
-  .diagram::before {
-    content: '';
-    position: absolute; inset: 0;
-    background:
-      radial-gradient(ellipse 500px 400px at 50% 55%, rgba(127,181,176,0.04) 0%, transparent 70%),
-      radial-gradient(ellipse 200px 200px at 80% 40%, rgba(138,158,196,0.03) 0%, transparent 70%);
-    pointer-events: none;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SUB-08b — Creation After</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --canvas: #0A0C16;
+      --elevated: #151722;
+      --text-pri: #E0DFE4;
+      --text-sec: rgba(224,223,228,0.6);
+      --text-ter: rgba(224,223,228,0.4);
+      --text-dim: rgba(224,223,228,0.2);
+      --border: rgba(224,223,228,0.07);
+      --accent: #7FB5B0;
+      --accent-dim: rgba(127,181,176,0.12);
+      --red: #C47878;
+      --resur: #C4B078;
+      --warm: #D4A574;
+      --blue: #8A9EC4;
+      --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+      --glass-border: rgba(224,223,228,0.08);
+      --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    }
 
-  .title-area { padding: 48px 48px 0; position: relative; z-index: 1; }
-  .label {
-    font-size: 11px; font-weight: 600;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--accent); opacity: 0.8; margin-bottom: 8px;
-  }
-  h1 {
-    font-size: 36px; font-weight: 700;
-    color: var(--text-pri); letter-spacing: -0.025em;
-    margin-bottom: 8px; line-height: 1.15;
-  }
-  .subtitle {
-    font-size: 15px; color: var(--text-sec);
-    line-height: 1.55; max-width: 560px;
-  }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  /* Three-screen flow */
-  .flow-area {
-    padding: 36px 48px 0;
-    position: relative; z-index: 1;
-  }
-  .flow-row {
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 0;
-  }
+    body {
+      background: #08090F;
+      display: flex;
+      justify-content: center;
+      padding: 40px;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      align-items: flex-start;
+    }
 
-  /* Phone mock — NOT-03 pattern, smaller for 3-up */
-  .screen-group {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    flex-shrink: 0;
-  }
-  .phone {
-    width: 180px;
-    aspect-ratio: 9/16;
-    max-height: 340px;
-    border: 1px dashed rgba(224,223,228,0.12);
-    border-radius: 18px;
-    background: var(--elevated);
-    position: relative;
-    overflow: hidden;
-  }
-  .phone-status {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 6px 12px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 7px; color: var(--text-dim);
-  }
+    body.embedded {
+      padding: 0;
+      min-height: auto;
+      display: block;
+      background: transparent;
+      overflow: hidden;
+      align-items: initial;
+    }
 
-  /* Step indicator inside phone */
-  .phone-steps {
-    display: flex; gap: 3px;
-    padding: 0 14px 8px;
-  }
-  .step-pip {
-    flex: 1; height: 2px;
-    border-radius: 1px;
-    background: var(--text-dim);
-  }
-  .step-pip.done { background: rgba(127,181,176,0.4); }
-  .step-pip.active { background: var(--accent); }
+    .diagram {
+      width: 760px;
+      background: var(--canvas);
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      padding: 36px 48px;
+    }
 
-  .phone-content {
-    padding: 0 14px 14px;
-    display: flex; flex-direction: column;
-  }
-  .phone-title {
-    font-size: 10px; font-weight: 600;
-    color: var(--text-pri); margin-bottom: 10px;
-  }
+    body.embedded .diagram {
+      width: 100%;
+      border-radius: 0;
+    }
 
-  /* Form elements inside phones */
-  .field-group { margin-bottom: 8px; }
-  .field-label {
-    font-size: 7px; font-weight: 500;
-    color: var(--text-ter); margin-bottom: 3px;
-    letter-spacing: 0.03em;
-  }
-  .mock-input {
-    height: 26px;
-    background: var(--canvas);
-    border: 1px solid rgba(224,223,228,0.12);
-    border-radius: 4px;
-    display: flex; align-items: center;
-    padding: 0 8px;
-    font-size: 9px; color: var(--text-sec);
-  }
-  .input-prefix { color: var(--text-dim); margin-right: 2px; }
+    .diagram::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 60% 40%, rgba(127,181,176,0.06) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
 
-  /* Category chips */
-  .cat-row { display: flex; flex-wrap: wrap; gap: 3px; }
-  .cat-chip {
-    padding: 3px 7px; border-radius: 3px;
-    font-size: 7px; font-weight: 500;
-    background: var(--highest); border: 1px solid var(--border);
-    color: var(--text-ter);
-  }
-  .cat-chip.selected {
-    background: var(--accent-dim);
-    border-color: rgba(127,181,176,0.3);
-    color: var(--accent);
-  }
+    .diagram > * {
+      position: relative;
+      z-index: 1;
+    }
 
-  /* Upload zones */
-  .upload-pair { display: flex; gap: 6px; }
-  .upload-zone {
-    flex: 1; height: 44px;
-    border-radius: 6px;
-    border: 1px dashed rgba(127,181,176,0.2);
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: 2px;
-  }
-  .upload-zone.filled {
-    border-style: solid;
-    background: rgba(127,181,176,0.04);
-  }
-  .upload-label {
-    font-size: 6px; font-weight: 600;
-    letter-spacing: 0.04em; text-transform: uppercase;
-    color: var(--accent); opacity: 0.7;
-  }
+    .phones-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 32px;
+      padding-top: 32px;
+    }
 
-  /* Edit toolbar */
-  .edit-bar {
-    display: flex; gap: 2px;
-    padding: 3px 5px;
-    background: var(--highest);
-    border-radius: 4px; width: fit-content;
-    margin-top: 6px;
-  }
-  .edit-dot {
-    width: 16px; height: 16px; border-radius: 2px;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .edit-dot.active { background: var(--accent-dim); }
+    .phone-column {
+      text-align: center;
+      opacity: 0;
+      animation: reveal-up 0.6s ease-out forwards;
+    }
 
-  /* Preview card inside phone 3 */
-  .mini-preview {
-    background: var(--canvas);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    overflow: hidden;
-    margin-top: 4px;
-  }
-  .mini-banner {
-    height: 32px;
-    background: linear-gradient(135deg, rgba(127,181,176,0.15) 0%, rgba(138,158,196,0.1) 100%);
-    position: relative;
-  }
-  .mini-avatar {
-    width: 22px; height: 22px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent) 0%, var(--blue) 100%);
-    border: 2px solid var(--canvas);
-    position: absolute; bottom: -10px; left: 10px;
-  }
-  .mini-body {
-    padding: 14px 10px 8px;
-    display: flex; flex-direction: column; gap: 3px;
-  }
-  .mini-name {
-    font-size: 9px; font-weight: 600; color: var(--text-pri);
-  }
-  .mini-cat {
-    display: inline-flex; padding: 1px 5px;
-    border-radius: 2px; background: var(--accent-dim);
-    font-size: 6px; font-weight: 600; color: var(--accent);
-    width: fit-content;
-  }
-  .mini-lines {
-    display: flex; flex-direction: column; gap: 2px; margin-top: 3px;
-  }
-  .mini-line {
-    height: 3px; border-radius: 1.5px;
-    background: var(--text-dim);
-  }
+    .phone-column:nth-child(1) { animation-delay: 0.1s; }
+    .phone-column:nth-child(3) { animation-delay: 0.2s; }
+    .phone-column:nth-child(5) { animation-delay: 0.3s; }
 
-  .preview-badge {
-    display: flex; align-items: center; gap: 4px;
-    margin-bottom: 6px;
-  }
-  .live-dot {
-    width: 4px; height: 4px; border-radius: 50%;
-    background: var(--accent);
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
-  .preview-badge span {
-    font-size: 7px; font-weight: 600;
-    color: var(--accent); opacity: 0.7;
-    letter-spacing: 0.04em; text-transform: uppercase;
-  }
+    .phone-mockup {
+      width: 180px;
+      background: var(--elevated);
+      border: 1px solid rgba(224,223,228,0.1);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
 
-  /* Launch button */
-  .launch-btn {
-    margin-top: 8px; height: 24px;
-    background: rgba(127,181,176,0.15);
-    border: 1px solid rgba(127,181,176,0.3);
-    border-radius: 4px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 8px; font-weight: 600; color: var(--accent);
-  }
+    .phone-status {
+      background: var(--elevated);
+      padding: 8px 16px;
+      font-size: 8px;
+      color: var(--text-ter);
+      font-weight: 600;
+      border-bottom: 1px solid rgba(224,223,228,0.05);
+    }
 
-  /* Flow arrows between phones */
-  .flow-arrow {
-    display: flex; align-items: center;
-    padding: 0 8px;
-    height: 340px;
-  }
-  .arrow-line {
-    display: flex; flex-direction: column;
-    align-items: center; gap: 4px;
-  }
-  .arrow-line svg { opacity: 0.3; }
+    .phone-content {
+      padding: 16px;
+      font-size: 9px;
+      color: var(--text-sec);
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+    }
 
-  /* Screen labels */
-  .screen-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 9px; font-weight: 400;
-    color: var(--text-ter);
-  }
-  .screen-label strong {
-    color: var(--accent); font-weight: 400;
-  }
+    /* Phone 1: Identity */
+    .phone-1-content {
+      background: linear-gradient(180deg, rgba(127,181,176,0.02) 0%, rgba(0,0,0,0.1) 100%);
+    }
 
-  /* Annotation cards below flow */
-  .annotations {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    padding: 20px 48px 0;
-    position: relative; z-index: 1;
-  }
-  .annotation {
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-highlight);
-    border-radius: 8px;
-    padding: 12px;
-    position: relative; overflow: hidden;
-  }
-  .annotation::before {
-    content: ''; position: absolute;
-    top: 0; left: 0; width: 200px; height: 2px;
-    background: var(--accent);
-  }
-  .annotation-num {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 9px; color: var(--accent); opacity: 0.6;
-    margin-bottom: 3px;
-  }
-  .annotation-title {
-    font-size: 11px; font-weight: 600;
-    color: var(--text-pri); margin-bottom: 2px;
-  }
-  .annotation-desc {
-    font-size: 10px; color: var(--text-ter); line-height: 1.4;
-  }
+    .phone-label {
+      font-weight: 600;
+      color: var(--text-pri);
+      font-size: 10px;
+      margin-bottom: 8px;
+      text-align: left;
+    }
 
-  /* Tradeoff bar */
-  .tradeoff {
-    margin: 20px 48px 0;
-    padding: 14px 20px;
-    background: var(--elevated);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    display: flex; align-items: center; gap: 14px;
-    position: relative; z-index: 1;
-  }
-  .tradeoff-icon {
-    width: 36px; height: 36px; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    background: rgba(196,176,120,0.1); border-radius: 8px;
-  }
-  .tradeoff-text { display: flex; flex-direction: column; gap: 2px; }
-  .tradeoff-label {
-    font-size: 10px; font-weight: 600;
-    letter-spacing: 0.06em; text-transform: uppercase;
-    color: var(--resur); opacity: 0.7;
-  }
-  .tradeoff-desc {
-    font-size: 12px; color: var(--text-sec); line-height: 1.5;
-  }
+    .step-pips {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 12px;
+      height: 3px;
+    }
 
-  /* Outcome */
-  .outcome {
-    margin: 16px 48px 48px;
-    background: var(--accent-dim);
-    border-radius: 10px;
-    padding: 14px 20px;
-    display: flex; align-items: center; gap: 12px;
-    position: relative; z-index: 1;
-  }
-  .outcome-icon { flex-shrink: 0; }
-  .outcome p {
-    font-size: 13px; font-weight: 500;
-    color: var(--text-sec); line-height: 1.5;
-  }
+    .pip {
+      height: 3px;
+      background: rgba(224,223,228,0.1);
+      border-radius: 2px;
+      flex: 1;
+    }
 
-  /* Entrance animations */
-  .reveal {
-    opacity: 0; transform: translateY(12px);
-    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  .reveal.visible { opacity: 1; transform: translateY(0); }
-  .screen-group {
-    opacity: 0; transform: translateY(14px);
-    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  .screen-group.visible { opacity: 1; transform: translateY(0); }
-  .annotation {
-    opacity: 0; transform: translateY(10px);
-    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  .annotation.visible { opacity: 1; transform: translateY(0); }
+    .pip.active {
+      background: var(--accent);
+      width: 24px;
+      flex: 0 0 24px;
+    }
 
-  @media (prefers-reduced-motion: reduce) {
-    .reveal, .screen-group, .annotation { opacity: 1; transform: none; transition: none; }
-    .live-dot { animation: none; opacity: 0.7; }
-  }
-  @media (max-width: 680px) {
-    body { padding: 16px; }
-    .flow-row { flex-direction: column; align-items: center; }
-    .flow-arrow { height: auto; padding: 8px 0; transform: rotate(90deg); }
-    .annotations { grid-template-columns: 1fr; }
-  }
+    .input-field {
+      background: var(--elevated);
+      border: 1px solid rgba(224,223,228,0.08);
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: 8px;
+      color: var(--text-sec);
+      margin-bottom: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      line-height: 1.3;
+    }
 
-/* Embed mode: strip body chrome when loaded in iframe */
-body.embedded {
-  padding: 0;
-  min-height: auto;
-  display: block;
-  background: transparent;
-  overflow: hidden;
-  align-items: initial;
-}
-body.embedded .diagram {
-  width: 100%;
-  border-radius: 0;
-}
-</style>
+    .input-field span {
+      color: var(--text-dim);
+    }
+
+    .chip-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      margin-bottom: 12px;
+    }
+
+    .chip {
+      background: transparent;
+      border: 1px solid rgba(224,223,228,0.1);
+      border-radius: 4px;
+      padding: 4px 6px;
+      font-size: 7px;
+      color: var(--text-ter);
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .chip.selected {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--canvas);
+      font-weight: 600;
+    }
+
+    /* Phone 2: Visual */
+    .phone-2-content {
+      background: linear-gradient(180deg, rgba(212,165,116,0.02) 0%, rgba(0,0,0,0.1) 100%);
+    }
+
+    .banner-zone {
+      width: 100%;
+      height: 48px;
+      background: var(--elevated);
+      border: 1px solid rgba(224,223,228,0.08);
+      border-radius: 4px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-dim);
+      font-size: 16px;
+    }
+
+    .avatar-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 12px;
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      background: var(--elevated);
+      border: 1px solid rgba(224,223,228,0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+
+    .toolbar {
+      background: var(--elevated);
+      border: 1px solid rgba(224,223,228,0.08);
+      border-radius: 4px;
+      padding: 6px;
+      display: flex;
+      justify-content: space-around;
+      font-size: 7px;
+      color: var(--text-ter);
+    }
+
+    /* Phone 3: Preview */
+    .phone-3-content {
+      background: linear-gradient(180deg, rgba(138,158,196,0.02) 0%, rgba(0,0,0,0.1) 100%);
+    }
+
+    .live-badge {
+      background: rgba(127,181,176,0.15);
+      border: 1px solid var(--accent);
+      border-radius: 4px;
+      padding: 3px 6px;
+      font-size: 7px;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 8px;
+      width: fit-content;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .live-dot {
+      width: 3px;
+      height: 3px;
+      background: var(--accent);
+      border-radius: 50%;
+    }
+
+    .preview-card {
+      background: var(--elevated);
+      border: 1px solid rgba(224,223,228,0.08);
+      border-radius: 6px;
+      padding: 6px;
+      margin-bottom: 12px;
+      font-size: 8px;
+    }
+
+    .preview-banner {
+      width: 100%;
+      height: 20px;
+      background: var(--blue);
+      border-radius: 3px;
+      opacity: 0.2;
+      margin-bottom: 4px;
+    }
+
+    .preview-header {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 4px;
+    }
+
+    .preview-avatar {
+      width: 12px;
+      height: 12px;
+      background: var(--elevated);
+      border-radius: 50%;
+      border: 1px solid rgba(224,223,228,0.1);
+    }
+
+    .preview-title {
+      color: var(--text-pri);
+      font-weight: 500;
+    }
+
+    .preview-tag {
+      display: inline-block;
+      background: rgba(127,181,176,0.1);
+      color: var(--accent);
+      padding: 1px 3px;
+      border-radius: 2px;
+      font-size: 6px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .preview-lines {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .preview-line {
+      height: 2px;
+      background: rgba(224,223,228,0.1);
+      border-radius: 1px;
+    }
+
+    .preview-line.short {
+      width: 70%;
+    }
+
+    .launch-button {
+      width: 100%;
+      background: var(--accent);
+      color: var(--canvas);
+      border: none;
+      border-radius: 4px;
+      padding: 6px;
+      font-size: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .arrow {
+      font-size: 20px;
+      color: var(--text-dim);
+      opacity: 0;
+      animation: reveal-left 0.6s ease-out forwards;
+    }
+
+    .arrow:nth-of-type(1) { animation-delay: 0.2s; }
+    .arrow:nth-of-type(2) { animation-delay: 0.3s; }
+
+    .phone-label-text {
+      font-size: 9px;
+      color: var(--text-ter);
+      font-weight: 500;
+      margin-top: 8px;
+    }
+
+    .annotation-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(224,223,228,0.05);
+    }
+
+    .annotation-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-highlight);
+      border-radius: 10px;
+      padding: 14px;
+      position: relative;
+      opacity: 0;
+      animation: reveal-up 0.6s ease-out forwards;
+    }
+
+    .annotation-card:nth-child(1) { animation-delay: 0.4s; }
+    .annotation-card:nth-child(2) { animation-delay: 0.5s; }
+    .annotation-card:nth-child(3) { animation-delay: 0.6s; }
+
+    .annotation-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--accent);
+      border-radius: 10px 10px 0 0;
+      opacity: 0.7;
+    }
+
+    .annotation-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--accent);
+      opacity: 0.5;
+      margin-bottom: 4px;
+    }
+
+    .annotation-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-pri);
+      margin-bottom: 8px;
+    }
+
+    .annotation-desc {
+      font-size: 10px;
+      color: var(--text-sec);
+      line-height: 1.4;
+    }
+
+    @keyframes reveal-up {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes reveal-left {
+      from {
+        opacity: 0;
+        transform: translateX(-8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .phone-column, .arrow, .annotation-card {
+        animation: none;
+        opacity: 1;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="diagram">
-    <div class="title-area reveal">
-      <div class="label">After — Creation</div>
-      <h1>Guided Creation Flow</h1>
-      <p class="subtitle">Category, visual identity, and live preview — raising the creation floor so communities launched with identity, not emptiness.</p>
-    </div>
-
-    <div class="flow-area reveal" style="transition-delay: 80ms">
-      <div class="flow-row">
-        <!-- Screen 1: Name + Category -->
-        <div class="screen-group">
-          <div class="phone">
-            <div class="phone-status"><span>9:41</span><span>reddit</span></div>
-            <div class="phone-steps">
-              <div class="step-pip active"></div>
-              <div class="step-pip"></div>
-              <div class="step-pip"></div>
+    <div class="phones-row">
+      <!-- Phone 1: Identity -->
+      <div class="phone-column">
+        <div class="phone-mockup">
+          <div class="phone-status">9:41</div>
+          <div class="phone-content phone-1-content">
+            <div class="step-pips">
+              <div class="pip active"></div>
+              <div class="pip"></div>
+              <div class="pip"></div>
             </div>
-            <div class="phone-content">
-              <div class="phone-title">Create a Community</div>
-              <div class="field-group">
-                <div class="field-label">Name</div>
-                <div class="mock-input">
-                  <span class="input-prefix">r/</span>UrbanSketchers
-                </div>
-              </div>
-              <div class="field-group">
-                <div class="field-label">Category</div>
-                <div class="cat-row">
-                  <div class="cat-chip">Sports</div>
-                  <div class="cat-chip">Gaming</div>
-                  <div class="cat-chip selected">Art</div>
-                  <div class="cat-chip">Tech</div>
-                  <div class="cat-chip">Music</div>
-                </div>
-              </div>
+            <div class="phone-label">Name your community</div>
+            <div class="input-field"><span>r/</span>UrbanSketchers</div>
+            <div class="phone-label">Choose a category</div>
+            <div class="chip-grid">
+              <div class="chip">Gaming</div>
+              <div class="chip">Sports</div>
+              <div class="chip">Music</div>
+              <div class="chip">Food</div>
+              <div class="chip">Art</div>
+              <div class="chip selected">Art</div>
+              <div class="chip">Tech</div>
+              <div class="chip">Memes</div>
             </div>
           </div>
-          <div class="screen-label"><strong>01</strong> Identity</div>
         </div>
+        <div class="phone-label-text"><strong>01</strong> Identity</div>
+      </div>
 
-        <!-- Arrow -->
-        <div class="flow-arrow">
-          <div class="arrow-line">
-            <svg width="20" height="14" viewBox="0 0 20 14" fill="none">
-              <path d="M2 7h12M11 3l4 4-4 4" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-        </div>
+      <!-- Arrow 1 -->
+      <div class="arrow">→</div>
 
-        <!-- Screen 2: Visual Identity -->
-        <div class="screen-group">
-          <div class="phone">
-            <div class="phone-status"><span>9:41</span><span>reddit</span></div>
-            <div class="phone-steps">
-              <div class="step-pip done"></div>
-              <div class="step-pip active"></div>
-              <div class="step-pip"></div>
+      <!-- Phone 2: Visual -->
+      <div class="phone-column">
+        <div class="phone-mockup">
+          <div class="phone-status">9:41</div>
+          <div class="phone-content phone-2-content">
+            <div class="step-pips">
+              <div class="pip"></div>
+              <div class="pip active"></div>
+              <div class="pip"></div>
             </div>
-            <div class="phone-content">
-              <div class="phone-title">Visual Identity</div>
-              <div class="field-group">
-                <div class="field-label">Avatar &amp; Banner</div>
-                <div class="upload-pair">
-                  <div class="upload-zone filled">
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                      <circle cx="5" cy="5" r="3.5" stroke="var(--accent)" stroke-width="0.7" fill="none"/>
-                      <path d="M3.5 5l1 1L6.5 4" stroke="var(--accent)" stroke-width="0.7" stroke-linecap="round"/>
-                    </svg>
-                    <div class="upload-label">Avatar</div>
-                  </div>
-                  <div class="upload-zone filled">
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                      <rect x="1" y="2.5" width="8" height="5" rx="1" stroke="var(--accent)" stroke-width="0.7" fill="none"/>
-                      <path d="M3.5 5l1 1L6.5 4" stroke="var(--accent)" stroke-width="0.7" stroke-linecap="round"/>
-                    </svg>
-                    <div class="upload-label">Banner</div>
-                  </div>
-                </div>
-              </div>
-              <div class="field-group">
-                <div class="field-label">Inline Editing</div>
-                <div class="edit-bar">
-                  <div class="edit-dot active">
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                      <rect x="2" y="2" width="6" height="6" rx="1" stroke="var(--accent)" stroke-width="0.6"/>
-                    </svg>
-                  </div>
-                  <div class="edit-dot">
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                      <circle cx="5" cy="5" r="3" stroke="var(--text-ter)" stroke-width="0.6"/>
-                    </svg>
-                  </div>
-                  <div class="edit-dot">
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                      <path d="M2.5 8l2.5-5 2.5 5" stroke="var(--text-ter)" stroke-width="0.6" stroke-linecap="round"/>
-                    </svg>
-                  </div>
-                </div>
-              </div>
+            <div class="phone-label">Visual identity</div>
+            <div class="banner-zone">📷</div>
+            <div style="font-size: 8px; color: var(--text-dim); margin-bottom: 8px;">Banner image</div>
+            <div class="avatar-section">
+              <div class="avatar">🎨</div>
+              <div style="font-size: 8px; color: var(--text-dim);">Community icon</div>
+            </div>
+            <div class="toolbar">
+              <span>Crop</span>
+              <span>Filter</span>
+              <span>Adjust</span>
             </div>
           </div>
-          <div class="screen-label"><strong>02</strong> Visual</div>
         </div>
+        <div class="phone-label-text"><strong>02</strong> Visual</div>
+      </div>
 
-        <!-- Arrow -->
-        <div class="flow-arrow">
-          <div class="arrow-line">
-            <svg width="20" height="14" viewBox="0 0 20 14" fill="none">
-              <path d="M2 7h12M11 3l4 4-4 4" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+      <!-- Arrow 2 -->
+      <div class="arrow">→</div>
+
+      <!-- Phone 3: Preview -->
+      <div class="phone-column">
+        <div class="phone-mockup">
+          <div class="phone-status">9:41</div>
+          <div class="phone-content phone-3-content">
+            <div class="step-pips">
+              <div class="pip"></div>
+              <div class="pip"></div>
+              <div class="pip active"></div>
+            </div>
+            <div class="live-badge">
+              <div class="live-dot"></div>
+              Live preview
+            </div>
+            <div class="preview-card">
+              <div class="preview-banner"></div>
+              <div class="preview-header">
+                <div class="preview-avatar"></div>
+                <div class="preview-title">r/UrbanSketchers</div>
+              </div>
+              <div class="preview-tag">Art</div>
+              <div class="preview-lines">
+                <div class="preview-line"></div>
+                <div class="preview-line short"></div>
+              </div>
+            </div>
+            <button class="launch-button">Launch Community</button>
           </div>
         </div>
-
-        <!-- Screen 3: Preview + Launch -->
-        <div class="screen-group">
-          <div class="phone">
-            <div class="phone-status"><span>9:41</span><span>reddit</span></div>
-            <div class="phone-steps">
-              <div class="step-pip done"></div>
-              <div class="step-pip done"></div>
-              <div class="step-pip active"></div>
-            </div>
-            <div class="phone-content">
-              <div class="preview-badge">
-                <div class="live-dot"></div>
-                <span>Live Preview</span>
-              </div>
-              <div class="mini-preview">
-                <div class="mini-banner">
-                  <div class="mini-avatar"></div>
-                </div>
-                <div class="mini-body">
-                  <div class="mini-name">r/UrbanSketchers</div>
-                  <div class="mini-cat">Art</div>
-                  <div class="mini-lines">
-                    <div class="mini-line" style="width:85%"></div>
-                    <div class="mini-line" style="width:65%"></div>
-                    <div class="mini-line" style="width:45%"></div>
-                  </div>
-                </div>
-              </div>
-              <div class="launch-btn">Create Community</div>
-            </div>
-          </div>
-          <div class="screen-label"><strong>03</strong> Preview</div>
-        </div>
+        <div class="phone-label-text"><strong>03</strong> Preview</div>
       </div>
     </div>
 
-    <!-- Annotation cards for each screen -->
-    <div class="annotations">
-      <div class="annotation">
-        <div class="annotation-num">01</div>
+    <div class="annotation-cards">
+      <div class="annotation-card">
+        <div class="annotation-number">01</div>
         <div class="annotation-title">Category selection</div>
-        <div class="annotation-desc">Makes communities discoverable through recs engine from day one</div>
+        <div class="annotation-desc">Improves distribution and discoverability in crucial first days of subreddit creation</div>
       </div>
-      <div class="annotation">
-        <div class="annotation-num">02</div>
+      <div class="annotation-card">
+        <div class="annotation-number">02</div>
         <div class="annotation-title">Visual identity at creation</div>
-        <div class="annotation-desc">Avatar + banner with inline editing tools — reusable across settings</div>
+        <div class="annotation-desc">Banner + icon upload moved into the creation flow instead of buried in settings.</div>
       </div>
-      <div class="annotation">
-        <div class="annotation-num">03</div>
+      <div class="annotation-card">
+        <div class="annotation-number">03</div>
         <div class="annotation-title">Preview before launch</div>
-        <div class="annotation-desc">See what members see — no more blind launches into empty shells</div>
+        <div class="annotation-desc">Live preview lets creators see their community as members will — reduces post-launch edits.</div>
       </div>
-    </div>
-
-    <div class="tradeoff reveal" style="transition-delay: 280ms">
-      <div class="tradeoff-icon">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-          <path d="M4 14l5-10 5 10" stroke="var(--resur)" stroke-width="1" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-          <line x1="5.5" y1="11" x2="12.5" y2="11" stroke="var(--resur)" stroke-width="0.8" opacity="0.5"/>
-          <circle cx="9" cy="4" r="1" fill="var(--resur)" opacity="0.4"/>
-        </svg>
-      </div>
-      <div class="tradeoff-text">
-        <div class="tradeoff-label">Intentional tradeoff</div>
-        <div class="tradeoff-desc">Low-intent creators drop off — but we weren't losing future successes. We were preventing experiences set up to fail.</div>
-      </div>
-    </div>
-
-    <div class="outcome reveal" style="transition-delay: 360ms">
-      <div class="outcome-icon">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M4 8h8M8 4v8" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
-        </svg>
-      </div>
-      <p>Repeatable components — image editing, preview, multi-step architecture — that eng needed regardless of what the lifecycle framework revealed.</p>
     </div>
   </div>
 
-<script>
-  // Reveal observer
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
-    });
-  }, { threshold: 0.15 });
-  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+  <script>
+    if (window !== window.parent) {
+      document.body.classList.add('embedded');
+    }
 
-  // Stagger screen groups
-  const flowObs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        const screens = e.target.querySelectorAll('.screen-group');
-        screens.forEach((s, i) => {
-          setTimeout(() => s.classList.add('visible'), i * 150);
-        });
-        flowObs.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.15 });
-  flowObs.observe(document.querySelector('.flow-row'));
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animationPlayState = 'running';
+        }
+      });
+    }, { threshold: 0.1 });
 
-  // Stagger annotations
-  const annotObs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        const cards = e.target.querySelectorAll('.annotation');
-        cards.forEach((c, i) => {
-          setTimeout(() => c.classList.add('visible'), i * 100);
-        });
-        annotObs.unobserve(e.target);
-      }
+    document.querySelectorAll('.phone-column, .arrow, .annotation-card').forEach(el => {
+      observer.observe(el);
     });
-  }, { threshold: 0.15 });
-  annotObs.observe(document.querySelector('.annotations'));
-</script>
-<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+  </script>
 </body>
 </html>

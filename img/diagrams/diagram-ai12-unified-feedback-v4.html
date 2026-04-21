@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>One Pattern, Three Teams</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --casual: #D4A574;
+    --resur: #C4B078;
+    --new-seg: #8A9EC4;
+    --red: #C47878;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .title-area { padding: 48px 48px 0; }
+  .label {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); opacity: 0.8; margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 36px; font-weight: 700;
+    color: var(--text-pri); letter-spacing: -0.025em;
+    margin-bottom: 8px; line-height: 1.15;
+  }
+  .subtitle {
+    font-size: 15px; color: var(--text-sec);
+    line-height: 1.55; max-width: 560px;
+  }
+
+  /* Hub and spokes layout */
+  .hub-area {
+    padding: 40px 48px;
+    position: relative;
+  }
+  .hub-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 300px 250px at 50% 40%, rgba(127,181,176,0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Central component card */
+  .hub-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(127,181,176,0.18);
+    box-shadow: var(--glass-highlight), 0 0 30px rgba(127,181,176,0.04);
+    border-radius: 12px;
+    padding: 20px 24px;
+    max-width: 320px;
+    margin: 0 auto 12px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+  .hub-card-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .hub-card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-pri);
+    letter-spacing: -0.01em;
+    margin-bottom: 8px;
+  }
+
+  /* Feedback UI mockup inside hub */
+  .feedback-mock {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 10px 0 4px;
+  }
+  .fb-btn {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: rgba(224,223,228,0.03);
+    border: 1px solid var(--border-normal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .fb-label {
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 6px;
+  }
+
+  /* Connection lines from hub to spokes */
+  .connections {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 80px;
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 1;
+  }
+  .conn-line {
+    width: 1px;
+    height: 28px;
+    background: var(--border-normal);
+    position: relative;
+  }
+  .conn-line::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: -3px;
+    width: 0; height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 6px solid rgba(224,223,228,0.1);
+  }
+
+  /* Spoke cards — 3 teams */
+  .spokes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    padding: 0 48px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .spoke-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-highlight);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .spoke-icon {
+    width: 40px; height: 40px;
+    margin: 0 auto 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .spoke-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-pri);
+    margin-bottom: 4px;
+  }
+  .spoke-desc {
+    font-size: 11px;
+    color: var(--text-ter);
+    line-height: 1.4;
+  }
+
+  /* SHR-05 ambient on spoke icons */
+  .spoke-ring {
+    animation: spoke-ambient 4s ease-in-out infinite;
+  }
+  .spoke-card:nth-child(2) .spoke-ring { animation-delay: 0.4s; }
+  .spoke-card:nth-child(3) .spoke-ring { animation-delay: 0.8s; }
+  @keyframes spoke-ambient {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0.4; }
+  }
+
+  /* Outcome */
+  .outcome {
+    margin: 24px 48px 48px;
+    background: var(--accent-dim);
+    border-radius: 10px;
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .outcome-arrow {
+    font-size: 16px; color: var(--accent);
+    opacity: 0.55; flex-shrink: 0;
+  }
+  .outcome p {
+    font-size: 13px; font-weight: 500;
+    color: var(--text-sec); line-height: 1.5;
+  }
+
+  @media (max-width: 680px) {
+    .title-area, .hub-area, .spokes, .outcome { padding-left: 24px; padding-right: 24px; }
+    body { padding: 16px; }
+    .spokes { grid-template-columns: 1fr; }
+  }
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="title-area">
+      <div class="label">Cross-Org Impact</div>
+      <h1>One Pattern, Three Teams</h1>
+      <p class="subtitle">Three teams independently building feedback patterns — I worked across pillars to define one recognizable component</p>
+    </div>
+
+    <div class="hub-area">
+      <!-- Central hub: the unified component -->
+      <div class="hub-card">
+        <div class="hub-card-label">Shared Component</div>
+        <div class="hub-card-title">Unified Feedback Pattern</div>
+        <div class="feedback-mock">
+          <div class="fb-btn">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M4 7 L8 3 L12 7" stroke="rgba(127,181,176,0.5)" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <line x1="8" y1="3" x2="8" y2="13" stroke="rgba(127,181,176,0.3)" stroke-width="1.2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="fb-btn">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M4 9 L8 13 L12 9" stroke="rgba(224,223,228,0.3)" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <line x1="8" y1="13" x2="8" y2="3" stroke="rgba(224,223,228,0.2)" stroke-width="1.2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="fb-btn">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M4 4 L4 12 L8 10 L4 8" stroke="rgba(224,223,228,0.3)" stroke-width="1" fill="rgba(224,223,228,0.05)" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+        <div class="fb-label">Was this helpful?</div>
+      </div>
+
+      <!-- Connection lines -->
+      <div class="connections">
+        <div class="conn-line"></div>
+        <div class="conn-line"></div>
+        <div class="conn-line"></div>
+      </div>
+    </div>
+
+    <!-- Three team spokes -->
+    <div class="spokes">
+      <div class="spoke-card">
+        <div class="spoke-icon">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <circle class="spoke-ring" cx="20" cy="20" r="16" stroke="rgba(127,181,176,0.2)" stroke-width="1" fill="none"/>
+            <rect x="10" y="12" width="20" height="16" rx="3" stroke="rgba(127,181,176,0.35)" stroke-width="1" fill="rgba(127,181,176,0.04)"/>
+            <line x1="14" y1="18" x2="26" y2="18" stroke="rgba(127,181,176,0.25)" stroke-width="1" stroke-linecap="round"/>
+            <line x1="14" y1="22" x2="22" y2="22" stroke="rgba(127,181,176,0.18)" stroke-width="1" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="spoke-name">KLPs Team</div>
+        <div class="spoke-desc">AI-generated content pages</div>
+      </div>
+
+      <div class="spoke-card">
+        <div class="spoke-icon">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <circle class="spoke-ring" cx="20" cy="20" r="16" stroke="rgba(138,158,196,0.2)" stroke-width="1" fill="none"/>
+            <circle cx="18" cy="18" r="6" stroke="rgba(138,158,196,0.35)" stroke-width="1.2" fill="none"/>
+            <line x1="22.5" y1="22.5" x2="28" y2="28" stroke="rgba(138,158,196,0.35)" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="spoke-name">Search Team</div>
+        <div class="spoke-desc">Search result quality signals</div>
+      </div>
+
+      <div class="spoke-card">
+        <div class="spoke-icon">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <circle class="spoke-ring" cx="20" cy="20" r="16" stroke="rgba(212,165,116,0.2)" stroke-width="1" fill="none"/>
+            <circle cx="20" cy="20" r="8" stroke="rgba(212,165,116,0.3)" stroke-width="1" fill="none"/>
+            <ellipse cx="20" cy="20" rx="4" ry="8" stroke="rgba(212,165,116,0.2)" stroke-width="0.8" fill="none"/>
+            <line x1="12" y1="20" x2="28" y2="20" stroke="rgba(212,165,116,0.15)" stroke-width="0.6"/>
+          </svg>
+        </div>
+        <div class="spoke-name">i18n Team</div>
+        <div class="spoke-desc">Localized content quality</div>
+      </div>
+    </div>
+
+    <div class="outcome">
+      <span class="outcome-arrow">↳</span>
+      <p>One reusable component shipped to three surfaces — consistency for users, velocity for teams</p>
+    </div>
+  </div>
+</body>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</html>

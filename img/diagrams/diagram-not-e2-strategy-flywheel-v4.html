@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>NOT-E2 — Strategy Flywheel</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
 <style>
   :root {
     --canvas: #0A0C16; --card: #10121C;
@@ -173,94 +174,79 @@
 <body>
 <div class="diagram">
 
-  <div class="title-area">
-    <div class="label">Strategy Framework</div>
-    <h1>The Notification Flywheel</h1>
-    <p class="subtitle">Three interlocking stages create a self-reinforcing loop — each stage feeds the next, compounding value with every cycle.</p>
-  </div>
-
-  <div class="flywheel-area">
-    <div class="flywheel">
-
-      <!-- SVG Ring -->
-      <svg class="ring-svg" viewBox="0 0 560 520" fill="none">
-        <!-- Glow behind ring -->
-        <circle class="ring-glow" cx="280" cy="260" r="175"/>
-        <!-- Main ring -->
-        <circle class="ring-circle" cx="280" cy="260" r="175"/>
-
-        <!-- Directional chevrons on ring — tangent to circle, pointing clockwise -->
-        <!-- 3 chevrons evenly spaced at 0°, 120°, 240° from top -->
-        <!-- Chevron at ~330° (top-right, moving down-right) -->
-        <g>
-          <path d="M443,178 L453,188 L443,198" stroke="rgba(127,181,176,0.35)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-          <animateTransform attributeName="transform" type="rotate" from="0 280 260" to="360 280 260" dur="14s" repeatCount="indefinite"/>
-        </g>
-        <!-- Chevron at ~210° (bottom-left, moving up-left) -->
-        <g>
-          <path d="M443,178 L453,188 L443,198" stroke="rgba(127,181,176,0.35)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-          <animateTransform attributeName="transform" type="rotate" from="120 280 260" to="480 280 260" dur="14s" repeatCount="indefinite"/>
-        </g>
-        <!-- Chevron at ~90° (right, moving down) -->
-        <g>
-          <path d="M443,178 L453,188 L443,198" stroke="rgba(127,181,176,0.35)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-          <animateTransform attributeName="transform" type="rotate" from="240 280 260" to="600 280 260" dur="14s" repeatCount="indefinite"/>
-        </g>
-
-        <!-- Subtle ring gradient glow at center -->
-        <radialGradient id="centerGlow">
-          <stop offset="0%" stop-color="#7FB5B0" stop-opacity="0.06"/>
-          <stop offset="100%" stop-color="#7FB5B0" stop-opacity="0"/>
-        </radialGradient>
-        <circle cx="280" cy="260" r="120" fill="url(#centerGlow)"/>
-      </svg>
-
-      <!-- Arc labels -->
-      <div class="arc-label right">Signal feeds<br>value</div>
-      <div class="arc-label bottom">Value refines tuning</div>
-      <div class="arc-label left">Tuning strengthens<br>signal</div>
-
-      <!-- Card 1: Leverage Signal (top) -->
-      <div class="flywheel-card card-1">
-        <div class="card-num">1</div>
-        <div class="card-title">Leverage signal</div>
-        <div class="card-items">
-          <div class="card-item">Geo recs</div>
-          <div class="card-item">Search</div>
-          <div class="card-item">Good visits</div>
-          <div class="card-item">Post views</div>
-          <div class="card-item">Contribution</div>
-        </div>
-      </div>
-
-      <!-- Card 2: Deliver Value (bottom right) -->
-      <div class="flywheel-card card-2">
-        <div class="card-num">2</div>
-        <div class="card-title">Deliver value</div>
-        <div class="card-items">
-          <div class="card-item">User following</div>
-          <div class="card-item">Keyword following</div>
-          <div class="card-item">Post following</div>
-          <div class="card-item">Replies</div>
-          <div class="card-item">Activity insights</div>
-        </div>
-      </div>
-
-      <!-- Card 3: Tune Experience (bottom left) -->
-      <div class="flywheel-card card-3">
-        <div class="card-num">3</div>
-        <div class="card-title">Tune experience</div>
-        <div class="card-items">
-          <div class="card-item">App upsell</div>
-          <div class="card-item">Enable push</div>
-          <div class="card-item">Follow suggestions</div>
-          <div class="card-item">Event reminders</div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
+<div class="flywheel-area">
+<div class="flywheel">
+<!-- SVG Ring -->
+<svg class="ring-svg" fill="none" viewbox="0 0 560 520">
+<!-- Glow behind ring -->
+<circle class="ring-glow" cx="280" cy="260" r="175"></circle>
+<!-- Main ring -->
+<circle class="ring-circle" cx="280" cy="260" r="175"></circle>
+<!-- Directional chevrons on ring — tangent to circle, pointing clockwise -->
+<!-- 3 chevrons evenly spaced at 0°, 120°, 240° from top -->
+<!-- Chevron at ~330° (top-right, moving down-right) -->
+<g>
+<path d="M443,178 L453,188 L443,198" fill="none" stroke="rgba(127,181,176,0.35)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<animatetransform attributename="transform" dur="14s" from="0 280 260" repeatcount="indefinite" to="360 280 260" type="rotate"></animatetransform>
+</g>
+<!-- Chevron at ~210° (bottom-left, moving up-left) -->
+<g>
+<path d="M443,178 L453,188 L443,198" fill="none" stroke="rgba(127,181,176,0.35)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<animatetransform attributename="transform" dur="14s" from="120 280 260" repeatcount="indefinite" to="480 280 260" type="rotate"></animatetransform>
+</g>
+<!-- Chevron at ~90° (right, moving down) -->
+<g>
+<path d="M443,178 L453,188 L443,198" fill="none" stroke="rgba(127,181,176,0.35)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<animatetransform attributename="transform" dur="14s" from="240 280 260" repeatcount="indefinite" to="600 280 260" type="rotate"></animatetransform>
+</g>
+<!-- Subtle ring gradient glow at center -->
+<radialgradient id="centerGlow">
+<stop offset="0%" stop-color="#7FB5B0" stop-opacity="0.06"></stop>
+<stop offset="100%" stop-color="#7FB5B0" stop-opacity="0"></stop>
+</radialgradient>
+<circle cx="280" cy="260" fill="url(#centerGlow)" r="120"></circle>
+</svg>
+<!-- Arc labels -->
+<div class="arc-label right">Signal feeds<br/>value</div>
+<div class="arc-label bottom">Value refines tuning</div>
+<div class="arc-label left">Tuning strengthens<br/>signal</div>
+<!-- Card 1: Leverage Signal (top) -->
+<div class="flywheel-card card-1">
+<div class="card-num">1</div>
+<div class="card-title">Leverage signal</div>
+<div class="card-items">
+<div class="card-item">Geo recs</div>
+<div class="card-item">Search</div>
+<div class="card-item">Good visits</div>
+<div class="card-item">Post views</div>
+<div class="card-item">Contribution</div>
+</div>
+</div>
+<!-- Card 2: Deliver Value (bottom right) -->
+<div class="flywheel-card card-2">
+<div class="card-num">2</div>
+<div class="card-title">Deliver value</div>
+<div class="card-items">
+<div class="card-item">User following</div>
+<div class="card-item">Keyword following</div>
+<div class="card-item">Post following</div>
+<div class="card-item">Replies</div>
+<div class="card-item">Activity insights</div>
+</div>
+</div>
+<!-- Card 3: Tune Experience (bottom left) -->
+<div class="flywheel-card card-3">
+<div class="card-num">3</div>
+<div class="card-title">Tune experience</div>
+<div class="card-items">
+<div class="card-item">App upsell</div>
+<div class="card-item">Enable push</div>
+<div class="card-item">Follow suggestions</div>
+<div class="card-item">Event reminders</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <script>if(window!==window.parent)document.body.classList.add('embedded');</script>
 </body>

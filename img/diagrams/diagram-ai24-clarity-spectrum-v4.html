@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Clarity Spectrum</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --casual: #D4A574;
+    --resur: #C4B078;
+    --new-seg: #8A9EC4;
+    --red: #C47878;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .title-area { padding: 48px 48px 0; }
+  .label {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); opacity: 0.8; margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 36px; font-weight: 700;
+    color: var(--text-pri); letter-spacing: -0.025em;
+    margin-bottom: 8px; line-height: 1.15;
+  }
+  .subtitle {
+    font-size: 15px; color: var(--text-sec);
+    line-height: 1.55; max-width: 560px;
+  }
+
+  /* Spectrum area */
+  .spectrum-area {
+    padding: 40px 48px 32px;
+    position: relative;
+  }
+  .spectrum-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 250px 200px at 50% 40%, rgba(127,181,176,0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Visual spectrum */
+  .spectrum-visual {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Top labels */
+  .spectrum-top-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .spec-label-left, .spec-label-right {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--red);
+  }
+  .spec-label-center {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  /* The bar */
+  .spectrum-bar {
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(to right,
+      rgba(196,120,120,0.5) 0%,
+      rgba(196,120,120,0.15) 20%,
+      rgba(127,181,176,0.15) 35%,
+      rgba(127,181,176,0.5) 45%,
+      rgba(127,181,176,0.5) 55%,
+      rgba(127,181,176,0.15) 65%,
+      rgba(196,120,120,0.15) 80%,
+      rgba(196,120,120,0.5) 100%
+    );
+    position: relative;
+    margin-bottom: 28px;
+  }
+
+  /* Sweet spot marker */
+  .sweet-marker {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.7;
+    box-shadow: 0 0 12px rgba(127,181,176,0.4);
+  }
+
+  /* Sweet zone overlay */
+  .sweet-zone {
+    position: absolute;
+    left: 35%;
+    right: 35%;
+    top: -6px;
+    bottom: -6px;
+    border-radius: 8px;
+    border: 1px dashed rgba(127,181,176,0.25);
+    pointer-events: none;
+    animation: zone-ambient 5s ease-in-out infinite;
+  }
+  @keyframes zone-ambient {
+    0%, 100% { border-color: rgba(127,181,176,0.15); }
+    50% { border-color: rgba(127,181,176,0.35); }
+  }
+
+  /* Three example cards below the spectrum */
+  .examples-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr 1fr;
+    gap: 14px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .example-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 16px;
+    box-shadow: var(--glass-highlight);
+  }
+  .example-card.sweet {
+    border-color: rgba(127,181,176,0.2);
+    background: linear-gradient(135deg, rgba(127,181,176,0.06) 0%, rgba(224,223,228,0.015) 100%);
+  }
+
+  .example-icon {
+    margin-bottom: 10px;
+  }
+
+  .example-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .example-card:first-child .example-label { color: var(--red); }
+  .example-card.sweet .example-label { color: var(--accent); }
+  .example-card:last-child .example-label { color: var(--red); }
+
+  /* Mock text blocks showing each type */
+  .example-mock {
+    padding: 10px;
+    border-radius: 6px;
+    background: rgba(224,223,228,0.02);
+    border: 1px solid rgba(224,223,228,0.04);
+  }
+
+  /* Platitude mock — vague wavy lines */
+  .platitude-line {
+    height: 2px; border-radius: 1px;
+    background: rgba(196,120,120,0.15);
+    margin-bottom: 4px;
+  }
+  .platitude-line:last-child { margin-bottom: 0; }
+
+  /* Synthesis mock — text with inline links */
+  .synth-text {
+    font-size: 9px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+  .synth-link {
+    color: rgba(127,181,176,0.5);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  /* Verbatim mock — quote block */
+  .verbatim-block {
+    border-left: 2px solid rgba(196,120,120,0.3);
+    padding-left: 8px;
+  }
+  .verbatim-line {
+    height: 2px; border-radius: 1px;
+    background: rgba(224,223,228,0.08);
+    margin-bottom: 4px;
+  }
+  .verbatim-line:last-child { margin-bottom: 0; }
+  .verbatim-tag {
+    margin-top: 6px;
+    font-size: 7px;
+    color: var(--text-dim);
+    letter-spacing: 0.03em;
+    font-style: italic;
+  }
+
+  .example-desc {
+    font-size: 11px;
+    color: var(--text-ter);
+    line-height: 1.45;
+    margin-top: 10px;
+  }
+
+  /* Connector lines from bar to cards */
+  .connectors {
+    position: relative;
+    z-index: 1;
+    height: 24px;
+    margin-bottom: -4px;
+  }
+
+  /* Callout */
+  .callout {
+    margin: 16px 48px 16px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 14px 20px;
+    box-shadow: var(--glass-highlight);
+    position: relative;
+    z-index: 1;
+  }
+  .callout p {
+    font-size: 13px;
+    color: var(--text-sec);
+    line-height: 1.5;
+  }
+  .callout-emphasis {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* Outcome */
+  .outcome {
+    margin: 0 48px 48px;
+    background: var(--accent-dim);
+    border-radius: 10px;
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .outcome-arrow {
+    font-size: 16px; color: var(--accent);
+    opacity: 0.55; flex-shrink: 0;
+  }
+  .outcome p {
+    font-size: 13px; font-weight: 500;
+    color: var(--text-sec); line-height: 1.5;
+  }
+
+  @media (max-width: 680px) {
+    .title-area, .spectrum-area, .callout, .outcome { padding-left: 24px; padding-right: 24px; }
+    body { padding: 16px; }
+    .examples-grid { grid-template-columns: 1fr; }
+  }
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="title-area">
+      <div class="label">Voice — Clarity</div>
+      <h1>The Clarity Spectrum</h1>
+      <p class="subtitle">Too little context produced empty platitudes; too much produced verbatim quotes. The model's range was narrow.</p>
+    </div>
+
+    <div class="spectrum-area">
+      <div class="spectrum-visual">
+        <div class="spectrum-top-labels">
+          <span class="spec-label-left">Platitudes</span>
+          <span class="spec-label-center">Synthesis</span>
+          <span class="spec-label-right">Verbatim</span>
+        </div>
+        <div class="spectrum-bar">
+          <div class="sweet-zone"></div>
+          <div class="sweet-marker"></div>
+        </div>
+      </div>
+
+      <!-- Connector SVG -->
+      <div class="connectors">
+        <svg width="100%" height="24" viewBox="0 0 664 24" preserveAspectRatio="xMidYMid meet" fill="none">
+          <line x1="110" y1="0" x2="110" y2="24" stroke="rgba(196,120,120,0.15)" stroke-width="1"/>
+          <line x1="332" y1="0" x2="332" y2="24" stroke="rgba(127,181,176,0.2)" stroke-width="1"/>
+          <line x1="554" y1="0" x2="554" y2="24" stroke="rgba(196,120,120,0.15)" stroke-width="1"/>
+        </svg>
+      </div>
+
+      <div class="examples-grid">
+        <!-- Empty Platitudes -->
+        <div class="example-card">
+          <div class="example-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="8" stroke="rgba(196,120,120,0.35)" stroke-width="1.2" fill="none"/>
+              <path d="M9 12H15" stroke="rgba(196,120,120,0.35)" stroke-width="1.2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="example-label">Empty Platitudes</div>
+          <div class="example-mock">
+            <div class="platitude-line" style="width: 90%;"></div>
+            <div class="platitude-line" style="width: 75%;"></div>
+            <div class="platitude-line" style="width: 85%;"></div>
+            <div class="platitude-line" style="width: 60%;"></div>
+          </div>
+          <p class="example-desc">Generic statements stripped of context and community specificity</p>
+        </div>
+
+        <!-- Synthesis — sweet spot -->
+        <div class="example-card sweet">
+          <div class="example-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="8" stroke="rgba(127,181,176,0.4)" stroke-width="1.2" fill="none"/>
+              <polyline points="8,12 11,15 16,9" stroke="rgba(127,181,176,0.4)" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="example-label">Synthesis</div>
+          <div class="example-mock">
+            <div class="synth-text">
+              Based on community discussion, the best approach is to
+              <span class="synth-link">start simple</span>
+              before scaling. Users noted
+              <span class="synth-link">consistency matters</span>
+              most.
+            </div>
+          </div>
+          <p class="example-desc">Drawn from source discussions, reflecting specific concerns and consensus</p>
+        </div>
+
+        <!-- Verbatim Quotes -->
+        <div class="example-card">
+          <div class="example-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M7 8H10V13H7V11C7 9.3 7.7 8 7 8Z" stroke="rgba(196,120,120,0.35)" stroke-width="1.2" fill="none" stroke-linejoin="round"/>
+              <path d="M14 8H17V13H14V11C14 9.3 14.7 8 14 8Z" stroke="rgba(196,120,120,0.35)" stroke-width="1.2" fill="none" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="example-label">Verbatim Quotes</div>
+          <div class="example-mock">
+            <div class="verbatim-block">
+              <div class="verbatim-line" style="width: 85%;"></div>
+              <div class="verbatim-line" style="width: 70%;"></div>
+              <div class="verbatim-line" style="width: 78%;"></div>
+            </div>
+            <div class="verbatim-tag">— u/original_poster</div>
+          </div>
+          <p class="example-desc">Exact reproduction without synthesis — no added value over reading the original</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <p><span class="callout-emphasis">The model's range was narrow</span> — finding the sweet spot between unsubstantiated claims and copy-paste required careful prompt engineering and post-processing rules</p>
+    </div>
+
+    <div class="outcome">
+      <span class="outcome-arrow">↳</span>
+      <p>Clarity became a tunable dimension — each surface could dial between closeness to source and editorial synthesis</p>
+    </div>
+  </div>
+</body>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</html>

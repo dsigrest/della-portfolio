@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>NOT-01 — Segmentation Framework: Signal × Tenure</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
 <style>
   :root {
     --canvas: #0A0C16; --card: #10121C; --elevated: #151722;
@@ -309,155 +310,135 @@
 </head>
 <body>
 <div class="diagram">
-  <div class="title-area">
-    <div class="label">Framework</div>
-    <h1>Segmentation Framework</h1>
-    <p class="subtitle">The strategy sat on two axes — signal and tenure. By reading the signal Reddit has from a user and how long they've been on the platform, we could prioritize notification types accordingly.</p>
-    <div class="impact-anchor">Team exceeded targets by 75%</div>
-  </div>
 
-  <div class="matrix-wrap">
-    <!-- Axis row (X) -->
-    <div class="axis-row">
-      <span class="axis-end">New</span>
-      <div class="axis-line">
-        <span class="axis-center-label">Tenure</span>
-      </div>
-      <span class="axis-end">Established</span>
-    </div>
+<div class="matrix-wrap">
+<!-- Axis row (X) -->
+<div class="axis-row">
+<span class="axis-end">New</span>
+<div class="axis-line">
+<span class="axis-center-label">Tenure</span>
+</div>
+<span class="axis-end">Established</span>
+</div>
+<div class="matrix-body" style="position:relative;">
+<!-- Y axis -->
+<div class="y-axis">
+<span class="y-end">High</span>
+<div class="y-line">
+<span class="y-center-label">Intent</span>
+</div>
+<span class="y-end">Low</span>
+</div>
+<!-- Quadrant grid -->
+<div class="grid">
+<!-- Top-left: New + High signal -->
+<div class="quad q-new" style="--qi:0">
+<div class="illus-zone">
+<span class="growth-ring"></span>
+<span class="growth-ring"></span>
+<span class="growth-ring"></span>
+<span class="growth-dot"></span>
+</div>
+<div class="quad-header">
+<div class="quad-icon">
+<svg fill="none" height="16" viewbox="0 0 16 16" width="16">
+<circle cx="8" cy="5.5" fill="none" r="3" stroke="var(--new-seg)" stroke-width="1.3"></circle>
+<path d="M3 14c0-2.8 2.2-5 5-5s5 2.2 5 5" fill="none" stroke="var(--new-seg)" stroke-linecap="round" stroke-width="1.3"></path>
+<line stroke="var(--new-seg)" stroke-linecap="round" stroke-width="1.2" x1="13" x2="13" y1="2" y2="5"></line>
+<line stroke="var(--new-seg)" stroke-linecap="round" stroke-width="1.2" x1="11.5" x2="14.5" y1="3.5" y2="3.5"></line>
+</svg>
+</div>
+<span class="quad-name">New + Engaged</span>
+</div>
+<p class="quad-strategy">Build on early interest signals — subscriptions, upvotes, comments. Inbox as onboarding engine.</p>
+<div><span class="quad-metric">Surface recommendations</span><span class="priority-tag">Growth opportunity</span></div>
+</div>
+<!-- Top-right: Established + High signal -->
+<div class="quad q-core" style="--qi:1">
+<div class="illus-zone">
+<span class="core-bar"></span>
+<span class="core-bar"></span>
+<span class="core-bar"></span>
+<svg class="core-check" fill="none" height="20" viewbox="0 0 20 20" width="20">
+<circle cx="10" cy="10" fill="none" opacity="0.3" r="8" stroke="var(--accent)" stroke-width="1.2"></circle>
+<polyline fill="none" opacity="0.5" points="7,10 9.5,12.5 13.5,7.5" stroke="var(--accent)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></polyline>
+</svg>
+</div>
+<div class="quad-header">
+<div class="quad-icon">
+<svg fill="none" height="16" viewbox="0 0 16 16" width="16">
+<circle cx="8" cy="8" fill="none" r="6" stroke="var(--accent)" stroke-width="1.3"></circle>
+<polyline fill="none" points="5.5,8 7.5,10 10.5,6" stroke="var(--accent)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3"></polyline>
+</svg>
+</div>
+<span class="quad-name">Core Contributors</span>
+</div>
+<p class="quad-strategy">Deliver on existing signal precisely. Comment replies — highest-usage surface. Don't disrupt what works.</p>
+<div><span class="quad-metric">Replies → retention</span><span class="priority-tag">Protect &amp; refine</span></div>
+</div>
+<!-- Bottom-left: New + Low signal -->
+<div class="quad q-resur" style="--qi:2">
+<div class="illus-zone">
+<span class="drift-particle"></span>
+<span class="drift-particle"></span>
+<span class="drift-particle"></span>
+<svg class="drift-clock" fill="none" height="18" viewbox="0 0 18 18" width="18">
+<circle cx="9" cy="9" fill="none" opacity="0.35" r="6" stroke="var(--resur)" stroke-dasharray="3 2" stroke-width="1"></circle>
+<path d="M9 6v3.5l2.5 1.5" opacity="0.4" stroke="var(--resur)" stroke-linecap="round" stroke-width="1.2"></path>
+</svg>
+</div>
+<div class="quad-header">
+<div class="quad-icon">
+<svg fill="none" height="16" viewbox="0 0 16 16" width="16">
+<circle cx="8" cy="8" fill="none" r="6" stroke="var(--resur)" stroke-dasharray="3 2" stroke-width="1.3"></circle>
+<path d="M8 5v3.5l2 1.5" fill="none" stroke="var(--resur)" stroke-linecap="round" stroke-width="1.3"></path>
+</svg>
+</div>
+<span class="quad-name">Empty Inbox</span>
+</div>
+<p class="quad-strategy">Net-new growth — coverage where we had none. Geo-based and trending content. More assumptions, but upside was real.</p>
+<div><span class="quad-metric">Geo + trending</span><span class="priority-tag">Net-new coverage</span></div>
+</div>
+<!-- Bottom-right: Established + Low signal -->
+<div class="quad q-casual" style="--qi:3">
+<div class="illus-zone">
+<span class="scroll-line"></span>
+<span class="scroll-line"></span>
+<span class="scroll-line"></span>
+<svg class="scroll-icon" fill="none" height="18" viewbox="0 0 18 18" width="18">
+<rect fill="none" height="12" opacity="0.3" rx="2" stroke="var(--casual)" stroke-width="1" width="10" x="4" y="3"></rect>
+<line opacity="0.3" stroke="var(--casual)" stroke-width="0.8" x1="7" x2="11" y1="6" y2="6"></line>
+<line opacity="0.3" stroke="var(--casual)" stroke-width="0.8" x1="7" x2="11" y1="8.5" y2="8.5"></line>
+<line opacity="0.3" stroke="var(--casual)" stroke-width="0.8" x1="7" x2="9.5" y1="11" y2="11"></line>
+</svg>
+</div>
+<div class="quad-header">
+<div class="quad-icon">
+<svg fill="none" height="16" viewbox="0 0 16 16" width="16">
+<rect fill="none" height="7" rx="1.5" stroke="var(--casual)" stroke-width="1.3" width="10" x="3" y="4.5"></rect>
+<path d="M3 6.5l5 3 5-3" fill="none" stroke="var(--casual)" stroke-linecap="round" stroke-width="1.3"></path>
+</svg>
+</div>
+<span class="quad-name">Casual Scrollers</span>
+</div>
+<p class="quad-strategy">Subreddit discovery and re-engagement through personalized content. Build connection to retentive communities.</p>
+<div><span class="quad-metric">Discovery → habit</span><span class="priority-tag">Re-engage</span></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Insight -->
+<div class="insight-bar">
+<div class="insight-icon">
+<svg fill="none" height="14" viewbox="0 0 14 14" width="14">
+<path d="M7 1v1.5M7 11.5V13M1 7h1.5M11.5 7H13M2.8 2.8l1.1 1.1M10.1 10.1l1.1 1.1M2.8 11.2l1.1-1.1M10.1 3.9l1.1-1.1" stroke="var(--accent)" stroke-linecap="round" stroke-width="1.2"></path>
+<circle cx="7" cy="7" fill="none" r="2.5" stroke="var(--accent)" stroke-width="1.2"></circle>
+</svg>
+</div>
+<p class="insight-text"><strong>The first decision was where to start.</strong> Comment replies were the highest-usage surface — core users with strong opinions. The alternative: open net-new growth for users with empty inboxes. Less data, more assumptions, but upside was coverage where we had next to none.</p>
+</div>
+<!-- Outcome -->
 
-    <div class="matrix-body" style="position:relative;">
-      <!-- Y axis -->
-      <div class="y-axis">
-        <span class="y-end">High</span>
-        <div class="y-line">
-          <span class="y-center-label">Intent</span>
-        </div>
-        <span class="y-end">Low</span>
-      </div>
-
-      <!-- Quadrant grid -->
-      <div class="grid">
-        <!-- Top-left: New + High signal -->
-        <div class="quad q-new" style="--qi:0">
-          <div class="illus-zone">
-            <span class="growth-ring"></span>
-            <span class="growth-ring"></span>
-            <span class="growth-ring"></span>
-            <span class="growth-dot"></span>
-          </div>
-          <div class="quad-header">
-            <div class="quad-icon">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <circle cx="8" cy="5.5" r="3" stroke="var(--new-seg)" stroke-width="1.3" fill="none"/>
-                <path d="M3 14c0-2.8 2.2-5 5-5s5 2.2 5 5" stroke="var(--new-seg)" stroke-width="1.3" stroke-linecap="round" fill="none"/>
-                <line x1="13" y1="2" x2="13" y2="5" stroke="var(--new-seg)" stroke-width="1.2" stroke-linecap="round"/>
-                <line x1="11.5" y1="3.5" x2="14.5" y2="3.5" stroke="var(--new-seg)" stroke-width="1.2" stroke-linecap="round"/>
-              </svg>
-            </div>
-            <span class="quad-name">New + Engaged</span>
-          </div>
-          <p class="quad-strategy">Build on early interest signals — subscriptions, upvotes, comments. Inbox as onboarding engine.</p>
-          <div><span class="quad-metric">Surface recommendations</span><span class="priority-tag">Growth opportunity</span></div>
-        </div>
-
-        <!-- Top-right: Established + High signal -->
-        <div class="quad q-core" style="--qi:1">
-          <div class="illus-zone">
-            <span class="core-bar"></span>
-            <span class="core-bar"></span>
-            <span class="core-bar"></span>
-            <svg class="core-check" width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <circle cx="10" cy="10" r="8" stroke="var(--accent)" stroke-width="1.2" fill="none" opacity="0.3"/>
-              <polyline points="7,10 9.5,12.5 13.5,7.5" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.5"/>
-            </svg>
-          </div>
-          <div class="quad-header">
-            <div class="quad-icon">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <circle cx="8" cy="8" r="6" stroke="var(--accent)" stroke-width="1.3" fill="none"/>
-                <polyline points="5.5,8 7.5,10 10.5,6" stroke="var(--accent)" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-              </svg>
-            </div>
-            <span class="quad-name">Core Contributors</span>
-          </div>
-          <p class="quad-strategy">Deliver on existing signal precisely. Comment replies — highest-usage surface. Don't disrupt what works.</p>
-          <div><span class="quad-metric">Replies → retention</span><span class="priority-tag">Protect & refine</span></div>
-        </div>
-
-        <!-- Bottom-left: New + Low signal -->
-        <div class="quad q-resur" style="--qi:2">
-          <div class="illus-zone">
-            <span class="drift-particle"></span>
-            <span class="drift-particle"></span>
-            <span class="drift-particle"></span>
-            <svg class="drift-clock" width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <circle cx="9" cy="9" r="6" stroke="var(--resur)" stroke-width="1" fill="none" stroke-dasharray="3 2" opacity="0.35"/>
-              <path d="M9 6v3.5l2.5 1.5" stroke="var(--resur)" stroke-width="1.2" stroke-linecap="round" opacity="0.4"/>
-            </svg>
-          </div>
-          <div class="quad-header">
-            <div class="quad-icon">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <circle cx="8" cy="8" r="6" stroke="var(--resur)" stroke-width="1.3" fill="none" stroke-dasharray="3 2"/>
-                <path d="M8 5v3.5l2 1.5" stroke="var(--resur)" stroke-width="1.3" stroke-linecap="round" fill="none"/>
-              </svg>
-            </div>
-            <span class="quad-name">Empty Inbox</span>
-          </div>
-          <p class="quad-strategy">Net-new growth — coverage where we had none. Geo-based and trending content. More assumptions, but upside was real.</p>
-          <div><span class="quad-metric">Geo + trending</span><span class="priority-tag">Net-new coverage</span></div>
-        </div>
-
-        <!-- Bottom-right: Established + Low signal -->
-        <div class="quad q-casual" style="--qi:3">
-          <div class="illus-zone">
-            <span class="scroll-line"></span>
-            <span class="scroll-line"></span>
-            <span class="scroll-line"></span>
-            <svg class="scroll-icon" width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <rect x="4" y="3" width="10" height="12" rx="2" stroke="var(--casual)" stroke-width="1" fill="none" opacity="0.3"/>
-              <line x1="7" y1="6" x2="11" y2="6" stroke="var(--casual)" stroke-width="0.8" opacity="0.3"/>
-              <line x1="7" y1="8.5" x2="11" y2="8.5" stroke="var(--casual)" stroke-width="0.8" opacity="0.3"/>
-              <line x1="7" y1="11" x2="9.5" y2="11" stroke="var(--casual)" stroke-width="0.8" opacity="0.3"/>
-            </svg>
-          </div>
-          <div class="quad-header">
-            <div class="quad-icon">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <rect x="3" y="4.5" width="10" height="7" rx="1.5" stroke="var(--casual)" stroke-width="1.3" fill="none"/>
-                <path d="M3 6.5l5 3 5-3" stroke="var(--casual)" stroke-width="1.3" stroke-linecap="round" fill="none"/>
-              </svg>
-            </div>
-            <span class="quad-name">Casual Scrollers</span>
-          </div>
-          <p class="quad-strategy">Subreddit discovery and re-engagement through personalized content. Build connection to retentive communities.</p>
-          <div><span class="quad-metric">Discovery → habit</span><span class="priority-tag">Re-engage</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Insight -->
-  <div class="insight-bar">
-    <div class="insight-icon">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-        <path d="M7 1v1.5M7 11.5V13M1 7h1.5M11.5 7H13M2.8 2.8l1.1 1.1M10.1 10.1l1.1 1.1M2.8 11.2l1.1-1.1M10.1 3.9l1.1-1.1" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round"/>
-        <circle cx="7" cy="7" r="2.5" stroke="var(--accent)" stroke-width="1.2" fill="none"/>
-      </svg>
-    </div>
-    <p class="insight-text"><strong>The first decision was where to start.</strong> Comment replies were the highest-usage surface — core users with strong opinions. The alternative: open net-new growth for users with empty inboxes. Less data, more assumptions, but upside was coverage where we had next to none.</p>
-  </div>
-
-  <!-- Outcome -->
-  <div class="outcome-bar">
-    <div class="outcome-icon">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path d="M3 9l3.5 3.5 6.5-7" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </div>
-    <p class="outcome-text"><strong>The inbox drives 2% of all comments on Reddit</strong> — that figure shifted leadership investment across the board.</p>
-  </div>
 </div>
 <script>if(window!==window.parent)document.body.classList.add('embedded');</script>
 </body>

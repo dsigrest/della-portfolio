@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>First Precedent</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --casual: #D4A574;
+    --resur: #C4B078;
+    --new-seg: #8A9EC4;
+    --red: #C47878;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .title-area { padding: 48px 48px 0; }
+  .label {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); opacity: 0.8; margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 36px; font-weight: 700;
+    color: var(--text-pri); letter-spacing: -0.025em;
+    margin-bottom: 8px; line-height: 1.15;
+  }
+  .subtitle {
+    font-size: 15px; color: var(--text-sec);
+    line-height: 1.55; max-width: 560px;
+  }
+
+  /* Partners banner */
+  .partners-bar {
+    margin: 32px 48px 0;
+    padding: 10px 16px;
+    background: rgba(224,223,228,0.02);
+    border: 1px solid var(--border-normal);
+    border-radius: 8px;
+    font-size: 11px;
+    color: var(--text-ter);
+    text-align: center;
+  }
+  .partners-bar strong {
+    color: var(--text-sec);
+    font-weight: 500;
+  }
+
+  /* Pillars area */
+  .pillars-area {
+    padding: 32px 48px 40px;
+    position: relative;
+  }
+  .pillars-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 160px 200px at 17% 50%, rgba(196,120,120,0.04) 0%, transparent 70%),
+      radial-gradient(ellipse 160px 200px at 50% 50%, rgba(127,181,176,0.04) 0%, transparent 70%),
+      radial-gradient(ellipse 160px 200px at 83% 50%, rgba(138,158,196,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .pillar {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-highlight);
+    border-radius: 10px;
+    padding: 20px 16px;
+    text-align: center;
+    border-top: 3px solid transparent;
+  }
+  .pillar.p-red { border-top-color: rgba(196,120,120,0.5); }
+  .pillar.p-teal { border-top-color: rgba(127,181,176,0.5); }
+  .pillar.p-blue { border-top-color: rgba(138,158,196,0.5); }
+
+  .pillar-icon {
+    width: 56px; height: 56px;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pillar-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-pri);
+    margin-bottom: 6px;
+  }
+
+  .pillar-question {
+    font-size: 11px;
+    color: var(--text-ter);
+    line-height: 1.45;
+    margin-bottom: 12px;
+  }
+
+  .pillar-divider {
+    height: 1px;
+    background: var(--border-normal);
+    margin: 0 -4px 10px;
+  }
+
+  .pillar-explored {
+    font-size: 10px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+  .pillar-explored strong {
+    color: var(--text-ter);
+    font-weight: 500;
+  }
+
+  /* SHR-05 ambient animations */
+  .eye-scan {
+    animation: scan-ambient 5s ease-in-out infinite;
+  }
+  @keyframes scan-ambient {
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 0.5; }
+  }
+
+  .grid-lines line {
+    animation: grid-dance 3.5s ease-in-out infinite;
+  }
+  .grid-lines line:nth-child(1) { animation-delay: 0s; }
+  .grid-lines line:nth-child(2) { animation-delay: 0.3s; }
+  .grid-lines line:nth-child(3) { animation-delay: 0.6s; }
+  .grid-lines line:nth-child(4) { animation-delay: 0.15s; }
+  @keyframes grid-dance {
+    0%, 100% { opacity: 0.15; }
+    50% { opacity: 0.35; }
+  }
+
+  .link-pulse {
+    animation: link-ambient 4s ease-in-out infinite;
+  }
+  @keyframes link-ambient {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0.45; }
+  }
+
+  /* Outcome */
+  .outcome {
+    margin: 0 48px 48px;
+    background: var(--accent-dim);
+    border-radius: 10px;
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .outcome-arrow {
+    font-size: 16px; color: var(--accent);
+    opacity: 0.55; flex-shrink: 0;
+  }
+  .outcome p {
+    font-size: 13px; font-weight: 500;
+    color: var(--text-sec); line-height: 1.5;
+  }
+
+  @media (max-width: 680px) {
+    .title-area, .pillars-area, .outcome { padding-left: 24px; padding-right: 24px; }
+    body { padding: 16px; }
+    .pillars { grid-template-columns: 1fr; }
+  }
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="title-area">
+      <div class="label">Transparency</div>
+      <h1>First Precedent</h1>
+      <p class="subtitle">Defining the first precedent for AI-generated content at Reddit — across the entire platform</p>
+    </div>
+
+    <div class="partners-bar">
+      <strong>Partnered with:</strong> Brand · Legal · Design Systems
+    </div>
+
+    <div class="pillars-area">
+      <div class="pillars">
+        <!-- Identification -->
+        <div class="pillar p-red">
+          <div class="pillar-icon">
+            <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+              <!-- Eye icon — SHR-05 style -->
+              <ellipse cx="28" cy="28" rx="18" ry="12" stroke="rgba(196,120,120,0.3)" stroke-width="1.2" fill="none"/>
+              <circle cx="28" cy="28" r="7" stroke="rgba(196,120,120,0.35)" stroke-width="1" fill="rgba(196,120,120,0.06)"/>
+              <circle class="eye-scan" cx="28" cy="28" r="3" fill="rgba(196,120,120,0.3)"/>
+              <!-- Scan lines -->
+              <line class="eye-scan" x1="12" y1="22" x2="18" y2="22" stroke="rgba(196,120,120,0.15)" stroke-width="0.6" style="animation-delay: 0.3s;"/>
+              <line class="eye-scan" x1="38" y1="34" x2="44" y2="34" stroke="rgba(196,120,120,0.15)" stroke-width="0.6" style="animation-delay: 0.6s;"/>
+            </svg>
+          </div>
+          <div class="pillar-name">Identification</div>
+          <div class="pillar-question">Scalable, instantly recognizable signal that content was AI-generated</div>
+          <div class="pillar-divider"></div>
+          <div class="pillar-explored"><strong>Explored:</strong> icons, tags, containers, disclaimers, Snoo, text treatments</div>
+        </div>
+
+        <!-- Scalability -->
+        <div class="pillar p-teal">
+          <div class="pillar-icon">
+            <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+              <!-- Grid/system icon — SHR-05 style -->
+              <rect x="12" y="12" width="32" height="32" rx="4" stroke="rgba(127,181,176,0.3)" stroke-width="1.2" fill="none"/>
+              <g class="grid-lines">
+                <line x1="12" y1="23" x2="44" y2="23" stroke="rgba(127,181,176,0.2)" stroke-width="0.8"/>
+                <line x1="12" y1="33" x2="44" y2="33" stroke="rgba(127,181,176,0.2)" stroke-width="0.8"/>
+                <line x1="23" y1="12" x2="23" y2="44" stroke="rgba(127,181,176,0.2)" stroke-width="0.8"/>
+                <line x1="33" y1="12" x2="33" y2="44" stroke="rgba(127,181,176,0.2)" stroke-width="0.8"/>
+              </g>
+              <rect x="16" y="16" width="4" height="4" rx="1" fill="rgba(127,181,176,0.2)"/>
+              <rect x="26" y="26" width="4" height="4" rx="1" fill="rgba(127,181,176,0.25)"/>
+              <rect x="36" y="36" width="4" height="4" rx="1" fill="rgba(127,181,176,0.2)"/>
+            </svg>
+          </div>
+          <div class="pillar-name">Scalability</div>
+          <div class="pillar-question">Component library, identification, and feedback UI as reusable system components</div>
+          <div class="pillar-divider"></div>
+          <div class="pillar-explored"><strong>Shipped to:</strong> KLPs, Search, i18n, future surfaces</div>
+        </div>
+
+        <!-- Attribution -->
+        <div class="pillar p-blue">
+          <div class="pillar-icon">
+            <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+              <!-- Link/chain icon — SHR-05 style -->
+              <path class="link-pulse" d="M22 30 L18 34 A6 6 0 0 0 26 42 L30 38" stroke="rgba(138,158,196,0.35)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+              <path class="link-pulse" d="M34 26 L38 22 A6 6 0 0 0 30 14 L26 18" stroke="rgba(138,158,196,0.35)" stroke-width="1.5" fill="none" stroke-linecap="round" style="animation-delay: 0.5s;"/>
+              <!-- Connection dots -->
+              <circle cx="24" cy="32" r="2" fill="rgba(138,158,196,0.2)"/>
+              <circle cx="32" cy="24" r="2" fill="rgba(138,158,196,0.2)"/>
+              <line x1="25" y1="31" x2="31" y2="25" stroke="rgba(138,158,196,0.15)" stroke-width="0.8" stroke-dasharray="2 2"/>
+            </svg>
+          </div>
+          <div class="pillar-name">Attribution</div>
+          <div class="pillar-question">Ensuring users understand posts below are sources for the summary above</div>
+          <div class="pillar-divider"></div>
+          <div class="pillar-explored"><strong>Tested:</strong> hyperlinks, pills, collapsible lists</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="outcome">
+      <span class="outcome-arrow">↳</span>
+      <p>Three pillars became the framework every future AI surface at Reddit inherits — identification, scalability, attribution</p>
+    </div>
+  </div>
+</body>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</html>

@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>NOT-E1 — Cross-Platform Cohort Decay</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
 <style>
   :root {
     --canvas: #0A0C16; --card: #10121C; --elevated: #151722;
@@ -230,134 +231,111 @@
 <body>
 <div class="diagram">
 
-  <div class="title-area">
-    <div class="label">Retention Curves</div>
-    <h1>Cross-Platform Cohort Decay</h1>
-    <p class="subtitle">Averaged across all user segments, Inbox notification usage decays faster than overall Reddit retention — revealing the retention gap that the notification strategy targets.</p>
-  </div>
-
-  <div class="hover-hint">
-    <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M8 3v10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+<div class="hover-hint">
+<svg fill="none" height="12" viewbox="0 0 16 16" width="12"><path d="M3 8h10M8 3v10" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path></svg>
     Hover chart to inspect values
   </div>
-
-  <div class="chart-area">
-    <div class="chart-container">
-      <!--
+<div class="chart-area">
+<div class="chart-container">
+<!--
         Chart dimensions: viewBox 0 0 664 300
         Plot area: x=50..634, y=10..270 (584w × 260h)
         X: 0-7 days → 50 + day*(584/7) = 50 + day*83.43
         Y: 0-100% → 270 - pct*2.6
       -->
-      <svg class="chart-svg" viewBox="0 0 664 300" preserveAspectRatio="xMidYMid meet">
-        <defs>
-          <linearGradient id="gradGap" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#7FB5B0" stop-opacity="0.14"/>
-            <stop offset="100%" stop-color="#7FB5B0" stop-opacity="0.03"/>
-          </linearGradient>
-        </defs>
-
-        <!-- Grid lines at 25% intervals -->
-        <line class="grid-line" x1="50" y1="10" x2="634" y2="10"/>    <!-- 100% -->
-        <line class="grid-line" x1="50" y1="75" x2="634" y2="75"/>    <!-- 75% -->
-        <line class="grid-line" x1="50" y1="140" x2="634" y2="140"/>  <!-- 50% -->
-        <line class="grid-line" x1="50" y1="205" x2="634" y2="205"/>  <!-- 25% -->
-        <line class="grid-line" x1="50" y1="270" x2="634" y2="270"/>  <!-- 0% -->
-
-        <!-- Y axis labels -->
-        <text class="y-label" x="42" y="14" text-anchor="end">100%</text>
-        <text class="y-label" x="42" y="79" text-anchor="end">75%</text>
-        <text class="y-label" x="42" y="144" text-anchor="end">50%</text>
-        <text class="y-label" x="42" y="209" text-anchor="end">25%</text>
-        <text class="y-label" x="42" y="274" text-anchor="end">0%</text>
-
-        <!-- X axis labels -->
-        <text class="x-label" x="50" y="292">0</text>
-        <text class="x-label" x="133" y="292">1</text>
-        <text class="x-label" x="217" y="292">2</text>
-        <text class="x-label" x="300" y="292">3</text>
-        <text class="x-label" x="384" y="292">4</text>
-        <text class="x-label" x="467" y="292">5</text>
-        <text class="x-label" x="550" y="292">6</text>
-        <text class="x-label" x="634" y="292">7</text>
-
-        <!-- Axis title -->
-        <text class="axis-title" x="342" y="306" text-anchor="middle">Days in post-cohort window</text>
-
-        <!-- Retention gap fill — region between the two curves -->
-        <path class="gap-fill" d="M50,10 C72,30 112,50 133,57 C154,64 196,88 217,97 C238,106 279,118 300,124 C321,130 363,143 384,148 C405,153 446,162 467,166 C488,170 529,176 550,179 C571,182 613,187 634,189 L634,252 C613,251 571,249 550,247 C529,245 488,242 467,239 C446,236 405,228 384,223 C363,218 321,204 300,197 C279,190 238,174 217,161 C196,148 154,117 133,101 C112,85 72,40 50,10 Z"/>
-
-        <!-- Retention gap annotation at Day 5 -->
-        <line class="gap-line" x1="467" y1="10" x2="467" y2="270"/>
-        <!-- Bracket between two curve points at x=467 (Day 5): reddit y=166, inbox y=239 -->
-        <line class="gap-bracket" x1="473" y1="170" x2="473" y2="235"/>
-        <line class="gap-bracket" x1="470" y1="170" x2="476" y2="170"/>
-        <line class="gap-bracket" x1="470" y1="235" x2="476" y2="235"/>
-        <text class="gap-label" x="500" y="206">retention</text>
-        <text class="gap-label" x="500" y="218">gap</text>
-
-        <!-- Curves -->
-        <path class="curve-reddit" d="M50,10 C72,30 112,50 133,57 C154,64 196,88 217,97 C238,106 279,118 300,124 C321,130 363,143 384,148 C405,153 446,162 467,166 C488,170 529,176 550,179 C571,182 613,187 634,189"/>
-        <path class="curve-inbox" d="M50,10 C72,40 112,85 133,101 C154,117 196,148 217,161 C238,174 279,190 300,197 C321,204 363,218 384,223 C405,228 446,236 467,239 C488,242 529,245 550,247 C571,249 613,251 634,252"/>
-
-        <!-- Endpoint dots -->
-        <circle cx="634" cy="189" r="3.5" fill="rgba(224,223,228,0.45)"/>
-        <circle cx="634" cy="252" r="4" fill="#7FB5B0"/>
-
-        <!-- Curve labels at endpoints -->
-        <text class="curve-label curve-label-reddit" x="624" y="183" text-anchor="end">Reddit overall</text>
-        <text class="curve-label curve-label-inbox" x="624" y="265" text-anchor="end">Inbox usage</text>
-
-        <!-- Hover columns (invisible, one per day) -->
-        <g class="hover-zones">
-          <rect class="hover-col" data-day="0" x="50" y="0" width="83" height="280" data-reddit="100" data-inbox="100"/>
-          <rect class="hover-col" data-day="1" x="133" y="0" width="83" height="280" data-reddit="82" data-inbox="65"/>
-          <rect class="hover-col" data-day="2" x="217" y="0" width="83" height="280" data-reddit="68" data-inbox="42"/>
-          <rect class="hover-col" data-day="3" x="300" y="0" width="83" height="280" data-reddit="56" data-inbox="28"/>
-          <rect class="hover-col" data-day="4" x="384" y="0" width="83" height="280" data-reddit="47" data-inbox="18"/>
-          <rect class="hover-col" data-day="5" x="467" y="0" width="83" height="280" data-reddit="40" data-inbox="12"/>
-          <rect class="hover-col" data-day="6" x="550" y="0" width="83" height="280" data-reddit="35" data-inbox="9"/>
-          <rect class="hover-col" data-day="7" x="634" y="0" width="30" height="280" data-reddit="31" data-inbox="7"/>
-        </g>
-
-        <!-- Tooltip (positioned by JS) -->
-        <g class="tooltip-group" id="tooltip">
-          <rect class="tooltip-bg" x="0" y="0" width="120" height="52" rx="6"/>
-          <text class="tooltip-text" x="10" y="18" id="tt-day">Day 0</text>
-          <text class="tooltip-text" x="10" y="32" id="tt-reddit" fill="rgba(224,223,228,0.5)">Reddit: 100%</text>
-          <text class="tooltip-text" x="10" y="44" id="tt-inbox" fill="#7FB5B0">Inbox: 100%</text>
-        </g>
-
-        <!-- Dot indicators (positioned by JS) -->
-        <circle class="dot-reddit" id="dot-r" cx="0" cy="0" r="3.5"/>
-        <circle class="dot-inbox" id="dot-i" cx="0" cy="0" r="4"/>
-      </svg>
-    </div>
-  </div>
-
-  <div class="legend">
-    <div class="legend-item">
-      <div class="legend-line reddit"></div>
+<svg class="chart-svg" preserveaspectratio="xMidYMid meet" viewbox="0 0 664 300">
+<defs>
+<lineargradient id="gradGap" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#7FB5B0" stop-opacity="0.14"></stop>
+<stop offset="100%" stop-color="#7FB5B0" stop-opacity="0.03"></stop>
+</lineargradient>
+</defs>
+<!-- Grid lines at 25% intervals -->
+<line class="grid-line" x1="50" x2="634" y1="10" y2="10"></line> <!-- 100% -->
+<line class="grid-line" x1="50" x2="634" y1="75" y2="75"></line> <!-- 75% -->
+<line class="grid-line" x1="50" x2="634" y1="140" y2="140"></line> <!-- 50% -->
+<line class="grid-line" x1="50" x2="634" y1="205" y2="205"></line> <!-- 25% -->
+<line class="grid-line" x1="50" x2="634" y1="270" y2="270"></line> <!-- 0% -->
+<!-- Y axis labels -->
+<text class="y-label" text-anchor="end" x="42" y="14">100%</text>
+<text class="y-label" text-anchor="end" x="42" y="79">75%</text>
+<text class="y-label" text-anchor="end" x="42" y="144">50%</text>
+<text class="y-label" text-anchor="end" x="42" y="209">25%</text>
+<text class="y-label" text-anchor="end" x="42" y="274">0%</text>
+<!-- X axis labels -->
+<text class="x-label" x="50" y="292">0</text>
+<text class="x-label" x="133" y="292">1</text>
+<text class="x-label" x="217" y="292">2</text>
+<text class="x-label" x="300" y="292">3</text>
+<text class="x-label" x="384" y="292">4</text>
+<text class="x-label" x="467" y="292">5</text>
+<text class="x-label" x="550" y="292">6</text>
+<text class="x-label" x="634" y="292">7</text>
+<!-- Axis title -->
+<text class="axis-title" text-anchor="middle" x="342" y="306">Days in post-cohort window</text>
+<!-- Retention gap fill — region between the two curves -->
+<path class="gap-fill" d="M50,10 C72,30 112,50 133,57 C154,64 196,88 217,97 C238,106 279,118 300,124 C321,130 363,143 384,148 C405,153 446,162 467,166 C488,170 529,176 550,179 C571,182 613,187 634,189 L634,252 C613,251 571,249 550,247 C529,245 488,242 467,239 C446,236 405,228 384,223 C363,218 321,204 300,197 C279,190 238,174 217,161 C196,148 154,117 133,101 C112,85 72,40 50,10 Z"></path>
+<!-- Retention gap annotation at Day 5 -->
+<line class="gap-line" x1="467" x2="467" y1="10" y2="270"></line>
+<!-- Bracket between two curve points at x=467 (Day 5): reddit y=166, inbox y=239 -->
+<line class="gap-bracket" x1="473" x2="473" y1="170" y2="235"></line>
+<line class="gap-bracket" x1="470" x2="476" y1="170" y2="170"></line>
+<line class="gap-bracket" x1="470" x2="476" y1="235" y2="235"></line>
+<text class="gap-label" x="500" y="206">retention</text>
+<text class="gap-label" x="500" y="218">gap</text>
+<!-- Curves -->
+<path class="curve-reddit" d="M50,10 C72,30 112,50 133,57 C154,64 196,88 217,97 C238,106 279,118 300,124 C321,130 363,143 384,148 C405,153 446,162 467,166 C488,170 529,176 550,179 C571,182 613,187 634,189"></path>
+<path class="curve-inbox" d="M50,10 C72,40 112,85 133,101 C154,117 196,148 217,161 C238,174 279,190 300,197 C321,204 363,218 384,223 C405,228 446,236 467,239 C488,242 529,245 550,247 C571,249 613,251 634,252"></path>
+<!-- Endpoint dots -->
+<circle cx="634" cy="189" fill="rgba(224,223,228,0.45)" r="3.5"></circle>
+<circle cx="634" cy="252" fill="#7FB5B0" r="4"></circle>
+<!-- Curve labels at endpoints -->
+<text class="curve-label curve-label-reddit" text-anchor="end" x="624" y="183">Reddit overall</text>
+<text class="curve-label curve-label-inbox" text-anchor="end" x="624" y="265">Inbox usage</text>
+<!-- Hover columns (invisible, one per day) -->
+<g class="hover-zones">
+<rect class="hover-col" data-day="0" data-inbox="100" data-reddit="100" height="280" width="83" x="50" y="0"></rect>
+<rect class="hover-col" data-day="1" data-inbox="65" data-reddit="82" height="280" width="83" x="133" y="0"></rect>
+<rect class="hover-col" data-day="2" data-inbox="42" data-reddit="68" height="280" width="83" x="217" y="0"></rect>
+<rect class="hover-col" data-day="3" data-inbox="28" data-reddit="56" height="280" width="83" x="300" y="0"></rect>
+<rect class="hover-col" data-day="4" data-inbox="18" data-reddit="47" height="280" width="83" x="384" y="0"></rect>
+<rect class="hover-col" data-day="5" data-inbox="12" data-reddit="40" height="280" width="83" x="467" y="0"></rect>
+<rect class="hover-col" data-day="6" data-inbox="9" data-reddit="35" height="280" width="83" x="550" y="0"></rect>
+<rect class="hover-col" data-day="7" data-inbox="7" data-reddit="31" height="280" width="30" x="634" y="0"></rect>
+</g>
+<!-- Tooltip (positioned by JS) -->
+<g class="tooltip-group" id="tooltip">
+<rect class="tooltip-bg" height="52" rx="6" width="120" x="0" y="0"></rect>
+<text class="tooltip-text" id="tt-day" x="10" y="18">Day 0</text>
+<text class="tooltip-text" fill="rgba(224,223,228,0.5)" id="tt-reddit" x="10" y="32">Reddit: 100%</text>
+<text class="tooltip-text" fill="#7FB5B0" id="tt-inbox" x="10" y="44">Inbox: 100%</text>
+</g>
+<!-- Dot indicators (positioned by JS) -->
+<circle class="dot-reddit" cx="0" cy="0" id="dot-r" r="3.5"></circle>
+<circle class="dot-inbox" cx="0" cy="0" id="dot-i" r="4"></circle>
+</svg>
+</div>
+</div>
+<div class="legend">
+<div class="legend-item">
+<div class="legend-line reddit"></div>
       Reddit overall retention
     </div>
-    <div class="legend-item">
-      <div class="legend-line inbox"></div>
+<div class="legend-item">
+<div class="legend-line inbox"></div>
       Inbox notification usage
     </div>
-  </div>
-
-  <div class="insight-bar">
-    <svg class="insight-icon" viewBox="0 0 20 20" fill="none">
-      <path d="M10 2L12.09 7.26L18 8.27L14 12.14L14.81 18.02L10 15.27L5.19 18.02L6 12.14L2 8.27L7.91 7.26L10 2Z" stroke="#7FB5B0" stroke-width="1.5" stroke-linejoin="round" fill="none"/>
-    </svg>
-    <div class="insight-text">
-      <strong>By Day 5, inbox retention drops to 12% — while overall Reddit retention holds at 40%.</strong> This 28-point gap is the opportunity the notification strategy targets: every percentage point recovered here compounds across the full user base.
-      <span class="insight-formula">retention gap @ d5 = 40% − 12% = 28pp · 7.5m DAU = ~2.1m recoverable users</span>
-    </div>
-  </div>
-
 </div>
-
+<div class="insight-bar">
+<svg class="insight-icon" fill="none" viewbox="0 0 20 20">
+<path d="M10 2L12.09 7.26L18 8.27L14 12.14L14.81 18.02L10 15.27L5.19 18.02L6 12.14L2 8.27L7.91 7.26L10 2Z" fill="none" stroke="#7FB5B0" stroke-linejoin="round" stroke-width="1.5"></path>
+</svg>
+<div class="insight-text">
+<strong>By Day 5, inbox retention drops to 12% — while overall Reddit retention holds at 40%.</strong> This 28-point gap is the opportunity the notification strategy targets: every percentage point recovered here compounds across the full user base.
+      <span class="insight-formula">retention gap @ d5 = 40% − 12% = 28pp · 7.5m DAU = ~2.1m recoverable users</span>
+</div>
+</div>
+</div>
 <script>
   // Hover interaction
   const xPositions = { 0:50, 1:133, 2:217, 3:300, 4:384, 5:467, 6:550, 7:634 };

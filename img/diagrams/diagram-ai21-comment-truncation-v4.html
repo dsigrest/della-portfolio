@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comment Truncation</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --casual: #D4A574;
+    --resur: #C4B078;
+    --new-seg: #8A9EC4;
+    --red: #C47878;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .title-area { padding: 48px 48px 0; }
+  .label {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); opacity: 0.8; margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 36px; font-weight: 700;
+    color: var(--text-pri); letter-spacing: -0.025em;
+    margin-bottom: 8px; line-height: 1.15;
+  }
+  .subtitle {
+    font-size: 15px; color: var(--text-sec);
+    line-height: 1.55; max-width: 540px;
+  }
+
+  /* Chart area */
+  .chart-area {
+    padding: 40px 48px 32px;
+    position: relative;
+  }
+  .chart-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 220px 200px at 30% 50%, rgba(127,181,176,0.05) 0%, transparent 70%),
+      radial-gradient(ellipse 180px 200px at 70% 50%, rgba(212,165,116,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .chart-container {
+    position: relative;
+    z-index: 1;
+    height: 240px;
+  }
+
+  /* SVG chart */
+  .chart-svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Axis labels */
+  .x-labels {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 32px 0 52px;
+    position: relative;
+    z-index: 1;
+  }
+  .x-label {
+    font-size: 11px;
+    color: var(--text-ter);
+    text-align: center;
+    width: 60px;
+  }
+  .x-label.active {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .y-label {
+    position: absolute;
+    left: 0;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.04em;
+    transform: rotate(-90deg);
+    transform-origin: left center;
+    white-space: nowrap;
+    z-index: 1;
+  }
+
+  .axis-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--text-dim);
+    text-align: center;
+    margin-top: 8px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Sweet spot region label */
+  .sweet-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: var(--accent-dim);
+    border: 1px solid rgba(127,181,176,0.15);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.03em;
+    margin: 12px auto 0;
+    display: flex;
+    width: fit-content;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* SHR-05 ambient — line draw animation */
+  .curve-line {
+    stroke-dasharray: 800;
+    stroke-dashoffset: 800;
+    animation: draw-curve 2.5s ease-out forwards;
+  }
+  @keyframes draw-curve {
+    to { stroke-dashoffset: 0; }
+  }
+
+  /* Sweet zone fill pulse */
+  .sweet-zone-fill {
+    animation: zone-ambient 5s ease-in-out infinite;
+  }
+  @keyframes zone-ambient {
+    0%, 100% { opacity: 0.06; }
+    50% { opacity: 0.12; }
+  }
+
+  /* Callout */
+  .callout {
+    margin: 16px 48px 16px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 14px 20px;
+    box-shadow: var(--glass-highlight);
+    position: relative;
+    z-index: 1;
+  }
+  .callout p {
+    font-size: 13px;
+    color: var(--text-sec);
+    line-height: 1.5;
+  }
+  .callout-emphasis {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* Outcome */
+  .outcome {
+    margin: 0 48px 48px;
+    background: var(--accent-dim);
+    border-radius: 10px;
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .outcome-arrow {
+    font-size: 16px; color: var(--accent);
+    opacity: 0.55; flex-shrink: 0;
+  }
+  .outcome p {
+    font-size: 13px; font-weight: 500;
+    color: var(--text-sec); line-height: 1.5;
+  }
+
+  @media (max-width: 680px) {
+    .title-area, .chart-area, .callout, .outcome { padding-left: 24px; padding-right: 24px; }
+    body { padding: 16px; }
+  }
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="title-area">
+      <div class="label">Attribution — Data</div>
+      <h1>Comment Truncation</h1>
+      <p class="subtitle">The vast majority of comment value fits in 1–2 lines — with severe diminishing returns after that</p>
+    </div>
+
+    <div class="chart-area">
+      <div class="chart-container">
+        <svg class="chart-svg" viewBox="0 0 664 240" fill="none" preserveAspectRatio="xMidYMid meet">
+          <!-- Y axis -->
+          <line x1="50" y1="10" x2="50" y2="210" stroke="rgba(224,223,228,0.07)" stroke-width="1"/>
+          <!-- X axis -->
+          <line x1="50" y1="210" x2="640" y2="210" stroke="rgba(224,223,228,0.07)" stroke-width="1"/>
+
+          <!-- Grid lines -->
+          <line x1="50" y1="60" x2="640" y2="60" stroke="rgba(224,223,228,0.03)" stroke-width="0.5"/>
+          <line x1="50" y1="110" x2="640" y2="110" stroke="rgba(224,223,228,0.03)" stroke-width="0.5"/>
+          <line x1="50" y1="160" x2="640" y2="160" stroke="rgba(224,223,228,0.03)" stroke-width="0.5"/>
+
+          <!-- Sweet zone highlight -->
+          <rect class="sweet-zone-fill" x="50" y="10" width="236" height="200" rx="4" fill="rgba(127,181,176,0.08)"/>
+
+          <!-- Truncation threshold line -->
+          <line x1="286" y1="10" x2="286" y2="210" stroke="rgba(212,165,116,0.35)" stroke-width="1.5" stroke-dasharray="6 4"/>
+          <text x="294" y="26" font-family="Inter" font-size="9" font-weight="600" fill="rgba(212,165,116,0.6)" letter-spacing="0.03em">TRUNCATION</text>
+          <text x="294" y="38" font-family="Inter" font-size="9" font-weight="600" fill="rgba(212,165,116,0.6)" letter-spacing="0.03em">THRESHOLD</text>
+
+          <!-- The distribution curve — hump shape peaking at 1-2 lines -->
+          <path class="curve-line"
+            d="M80 195 C100 190, 120 100, 168 30 C190 15, 210 18, 250 70 C270 105, 286 135, 350 175 C400 195, 500 205, 620 208"
+            stroke="rgba(127,181,176,0.6)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+          <!-- Gradient fill under curve -->
+          <path
+            d="M80 195 C100 190, 120 100, 168 30 C190 15, 210 18, 250 70 C270 105, 286 135, 350 175 C400 195, 500 205, 620 208 L620 210 L80 210 Z"
+            fill="url(#curveGrad)" opacity="0.15"/>
+
+          <defs>
+            <linearGradient id="curveGrad" x1="80" y1="30" x2="620" y2="210" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="rgba(127,181,176,1)"/>
+              <stop offset="45%" stop-color="rgba(127,181,176,0.3)"/>
+              <stop offset="100%" stop-color="rgba(127,181,176,0)"/>
+            </linearGradient>
+          </defs>
+
+          <!-- Peak marker -->
+          <circle cx="168" cy="30" r="4" fill="rgba(127,181,176,0.5)" stroke="rgba(127,181,176,0.8)" stroke-width="1.5"/>
+
+          <!-- Y axis label -->
+          <text x="16" y="110" font-family="Inter" font-size="9" fill="rgba(224,223,228,0.2)" letter-spacing="0.04em" text-anchor="middle" transform="rotate(-90, 16, 110)">COMMENT VOLUME</text>
+
+          <!-- Diminishing returns annotation -->
+          <text x="460" y="185" font-family="Inter" font-size="9" fill="rgba(224,223,228,0.15)" font-style="italic">Diminishing returns</text>
+        </svg>
+      </div>
+
+      <div class="x-labels">
+        <div class="x-label active">1 line</div>
+        <div class="x-label active">2 lines</div>
+        <div class="x-label">3 lines</div>
+        <div class="x-label">4 lines</div>
+        <div class="x-label">5+</div>
+      </div>
+      <div class="axis-label">Comment length</div>
+    </div>
+
+    <div class="sweet-badge">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+        <path d="M5 1 L6.5 4 L10 4.5 L7.5 7 L8 10 L5 8.5 L2 10 L2.5 7 L0 4.5 L3.5 4 Z" fill="rgba(127,181,176,0.5)"/>
+      </svg>
+      Sweet spot: 1–2 lines
+    </div>
+
+    <div class="callout">
+      <p><span class="callout-emphasis">Two comments per post</span> — enough to show a conversation without overwhelming the unit. Truncation at 2 lines captures the vast majority of comment value.</p>
+    </div>
+
+    <div class="outcome">
+      <span class="outcome-arrow">↳</span>
+      <p>Data-driven truncation — the curve showed where to cut, not guesswork</p>
+    </div>
+  </div>
+</body>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</html>

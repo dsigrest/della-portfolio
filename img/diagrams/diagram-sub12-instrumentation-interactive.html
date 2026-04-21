@@ -1,332 +1,374 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SUB-12 — Instrumentation Interactive</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --canvas: #0A0C16;
-    --elevated: #151722;
-    --highest: #1A1C28;
-    --text-pri: #E0DFE4;
-    --text-sec: rgba(224,223,228,0.6);
-    --text-ter: rgba(224,223,228,0.4);
-    --text-dim: rgba(224,223,228,0.2);
-    --border: rgba(224,223,228,0.07);
-    --accent: #7FB5B0;
-    --accent-dim: rgba(127,181,176,0.12);
-    --red: #C47878;
-    --warm: #D4A574;
-    --blue: #8A9EC4;
-    --resur: #C4B078;
-    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
-    --glass-border: rgba(224,223,228,0.08);
-    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
-  }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body {
-    background: #08090F;
-    display: flex; justify-content: center;
-    padding: 40px;
-    font-family: 'Inter', -apple-system, sans-serif;
-    -webkit-font-smoothing: antialiased;
-  }
-  .diagram {
-    width: 760px;
-    background: var(--canvas);
-    border-radius: 16px;
-    overflow: hidden;
-    position: relative;
-    padding: 36px 48px;
-  }
-  .diagram::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse 400px 250px at 50% 45%, rgba(127,181,176,0.03) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  .header { position: relative; z-index: 1; margin-bottom: 24px; }
-  .header-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px; font-weight: 600;
-    letter-spacing: 0.06em; text-transform: uppercase;
-    color: var(--accent); opacity: 0.7;
-    margin-bottom: 6px;
-  }
-  .header-title {
-    font-size: 16px; font-weight: 700;
-    color: var(--text-pri); letter-spacing: -0.01em;
-  }
-
-  /* Heatmap grid */
-  .heatmap {
-    position: relative; z-index: 1;
-    display: grid;
-    grid-template-columns: 80px repeat(5, 1fr);
-    gap: 3px;
-  }
-  .hm-corner {
-    /* empty corner cell */
-  }
-  .hm-col-header {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 8px; font-weight: 600;
-    text-transform: uppercase; letter-spacing: 0.04em;
-    color: var(--text-dim);
-    text-align: center; padding: 6px 0;
-  }
-  .hm-row-label {
-    font-size: 9px; font-weight: 500;
-    color: var(--text-ter);
-    display: flex; align-items: center;
-    padding-right: 8px;
-  }
-  .hm-cell {
-    height: 36px;
-    border-radius: 4px;
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 9px; font-weight: 600;
-    color: var(--text-pri);
-    cursor: default;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-    position: relative;
-  }
-  .hm-cell:hover {
-    transform: scale(1.08);
-    box-shadow: 0 0 12px rgba(127,181,176,0.15);
-    z-index: 2;
-  }
-
-  /* Heat levels */
-  .heat-0 { background: rgba(224,223,228,0.03); color: var(--text-dim); }
-  .heat-1 { background: rgba(127,181,176,0.08); }
-  .heat-2 { background: rgba(127,181,176,0.16); }
-  .heat-3 { background: rgba(127,181,176,0.28); }
-  .heat-4 { background: rgba(127,181,176,0.42); }
-  .heat-stall { background: rgba(196,120,120,0.2); color: var(--red); }
-
-  /* Legend */
-  .legend {
-    margin-top: 16px;
-    display: flex; align-items: center; gap: 12px;
-    position: relative; z-index: 1;
-  }
-  .legend-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 8px; color: var(--text-dim);
-    text-transform: uppercase; letter-spacing: 0.04em;
-  }
-  .legend-scale {
-    display: flex; gap: 2px;
-  }
-  .legend-swatch {
-    width: 16px; height: 8px; border-radius: 2px;
-  }
-  .legend-stall {
-    margin-left: 8px;
-    display: flex; align-items: center; gap: 4px;
-  }
-  .legend-stall-dot {
-    width: 8px; height: 8px; border-radius: 2px;
-    background: rgba(196,120,120,0.2);
-  }
-  .legend-stall-text {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 8px; color: var(--red); opacity: 0.7;
-  }
-
-  /* Insights row */
-  .insights {
-    margin-top: 20px;
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 12px; position: relative; z-index: 1;
-  }
-  .insight-card {
-    padding: 14px 16px;
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-highlight);
-    border-radius: 10px;
-  }
-  .insight-card-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 9px; font-weight: 600;
-    color: var(--accent); opacity: 0.7;
-    text-transform: uppercase; letter-spacing: 0.04em;
-    margin-bottom: 4px;
-  }
-  .insight-card-text {
-    font-size: 11px; color: var(--text-sec); line-height: 1.5;
-  }
-
-  /* Outcome */
-  .outcome {
-    margin-top: 16px;
-    background: var(--accent-dim);
-    border-radius: 10px;
-    padding: 14px 20px;
-    display: flex; align-items: center; gap: 12px;
-    position: relative; z-index: 1;
-  }
-  .outcome-icon { flex-shrink: 0; }
-  .outcome p { font-size: 13px; font-weight: 500; color: var(--text-sec); line-height: 1.5; }
-
-  /* Entrance */
-  .reveal {
-    opacity: 0; transform: translateY(10px);
-    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  .reveal.visible { opacity: 1; transform: translateY(0); }
-
-  /* Cell entrance stagger */
-  .hm-cell {
-    opacity: 0; transform: scale(0.85);
-    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  .hm-cell.visible { opacity: 1; transform: scale(1); }
-
-  @media (prefers-reduced-motion: reduce) {
-    .reveal { opacity: 1; transform: none; transition: none; }
-    .hm-cell { opacity: 1; transform: none; transition: transform 0.15s ease, box-shadow 0.15s ease; }
-  }
-
-/* Embed mode: strip body chrome when loaded in iframe */
-body.embedded {
-  padding: 0;
-  min-height: auto;
-  display: block;
-  background: transparent;
-  overflow: hidden;
-  align-items: initial;
-}
-body.embedded .diagram {
-  width: 100%;
-  border-radius: 0;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instrumentation Heatmap — SUB-12c</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --canvas: #0A0C16;
+      --elevated: #151722;
+      --text-pri: #E0DFE4;
+      --text-sec: rgba(224,223,228,0.6);
+      --text-ter: rgba(224,223,228,0.4);
+      --text-dim: rgba(224,223,228,0.2);
+      --border: rgba(224,223,228,0.07);
+      --accent: #7FB5B0;
+      --accent-dim: rgba(127,181,176,0.12);
+      --red: #C47878;
+      --resur: #C4B078;
+      --warm: #D4A574;
+      --blue: #8A9EC4;
+      --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+      --glass-border: rgba(224,223,228,0.08);
+      --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    }
+    
+    body {
+      background: #08090F;
+      display: flex;
+      justify-content: center;
+      padding: 40px;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+    
+    .diagram {
+      width: 760px;
+      background: var(--canvas);
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      padding: 36px 48px;
+    }
+    
+    .diagram::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 200px;
+      background: radial-gradient(circle at center, rgba(127,181,176,0.06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    .diagram > * { position: relative; z-index: 1; }
+    
+    .heatmap-header {
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+    
+    .heatmap-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: rgba(127,181,176,0.7);
+      margin-bottom: 8px;
+    }
+    
+    .heatmap-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-pri);
+    }
+    
+    .heatmap-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    
+    .heatmap-row {
+      display: flex;
+      gap: 3px;
+      align-items: stretch;
+    }
+    
+    .heatmap-row-label {
+      width: 80px;
+      display: flex;
+      align-items: center;
+      font-size: 9px;
+      color: var(--text-ter);
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+    
+    .heatmap-col-header {
+      width: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.32px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-align: center;
+      padding: 0 4px;
+    }
+    
+    .heatmap-row-data {
+      display: flex;
+      gap: 3px;
+      flex: 1;
+    }
+    
+    .heatmap-cell {
+      flex: 1;
+      height: 36px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--text-pri);
+      text-align: center;
+    }
+    
+    .heatmap-cell.empty {
+      background: rgba(224,223,228,0.03);
+      color: rgba(224,223,228,0.2);
+    }
+    
+    .heatmap-cell.low {
+      background: rgba(127,181,176,0.08);
+      color: var(--text-pri);
+    }
+    
+    .heatmap-cell.medium {
+      background: rgba(127,181,176,0.16);
+      color: var(--text-pri);
+    }
+    
+    .heatmap-cell.high {
+      background: rgba(127,181,176,0.28);
+      color: var(--text-pri);
+    }
+    
+    .heatmap-cell.very-high {
+      background: rgba(127,181,176,0.42);
+      color: var(--text-pri);
+    }
+    
+    .heatmap-cell.stall {
+      background: rgba(196,120,120,0.2);
+      color: #C47878;
+    }
+    
+    .legend {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      margin-top: 16px;
+    }
+    
+    .legend-label {
+      font-size: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      letter-spacing: 0.32px;
+    }
+    
+    .legend-swatches {
+      display: flex;
+      gap: 4px;
+    }
+    
+    .legend-swatch {
+      width: 16px;
+      height: 8px;
+      border-radius: 1px;
+    }
+    
+    .swatch-light { background: rgba(127,181,176,0.08); }
+    .swatch-medium { background: rgba(127,181,176,0.16); }
+    .swatch-high { background: rgba(127,181,176,0.28); }
+    .swatch-very-high { background: rgba(127,181,176,0.42); }
+    
+    .legend-stall {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: auto;
+    }
+    
+    .stall-dot {
+      width: 8px;
+      height: 8px;
+      background: rgba(196,120,120,0.2);
+      border-radius: 1px;
+    }
+    
+    .stall-label {
+      font-size: 8px;
+      color: var(--text-ter);
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .reveal {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.5s, transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    
+    body.embedded {
+      padding: 0;
+      min-height: auto;
+      display: block;
+      background: transparent;
+      overflow: hidden;
+      align-items: initial;
+    }
+    
+    body.embedded .diagram {
+      width: 100%;
+      border-radius: 0;
+    }
+  </style>
 </head>
 <body>
   <div class="diagram">
-    <div class="header reveal">
-      <div class="header-label">Instrumentation — Action Completion Heatmap</div>
-      <div class="header-title">Where creators completed, skipped, and stalled</div>
+    <div class="heatmap-header reveal">
+      <div class="heatmap-label">Instrumentation — Action Completion Heatmap</div>
+      <div class="heatmap-title">Where creators completed, skipped, and stalled</div>
     </div>
-
-    <div class="heatmap reveal" style="transition-delay: 80ms">
-      <div class="hm-corner"></div>
-      <div class="hm-col-header">Create</div>
-      <div class="hm-col-header">Setup</div>
-      <div class="hm-col-header">Content</div>
-      <div class="hm-col-header">Growth</div>
-      <div class="hm-col-header">Sustain</div>
-
-      <div class="hm-row-label">Avatar</div>
-      <div class="hm-cell heat-4" data-delay="0">92%</div>
-      <div class="hm-cell heat-1" data-delay="1">—</div>
-      <div class="hm-cell heat-0" data-delay="2">—</div>
-      <div class="hm-cell heat-0" data-delay="3">—</div>
-      <div class="hm-cell heat-0" data-delay="4">—</div>
-
-      <div class="hm-row-label">Description</div>
-      <div class="hm-cell heat-stall" data-delay="5">28%</div>
-      <div class="hm-cell heat-2" data-delay="6">45%</div>
-      <div class="hm-cell heat-1" data-delay="7">12%</div>
-      <div class="hm-cell heat-0" data-delay="8">—</div>
-      <div class="hm-cell heat-0" data-delay="9">—</div>
-
-      <div class="hm-row-label">Rules</div>
-      <div class="hm-cell heat-1" data-delay="10">18%</div>
-      <div class="hm-cell heat-2" data-delay="11">34%</div>
-      <div class="hm-cell heat-3" data-delay="12">62%</div>
-      <div class="hm-cell heat-2" data-delay="13">41%</div>
-      <div class="hm-cell heat-1" data-delay="14">8%</div>
-
-      <div class="hm-row-label">First post</div>
-      <div class="hm-cell heat-0" data-delay="15">—</div>
-      <div class="hm-cell heat-1" data-delay="16">15%</div>
-      <div class="hm-cell heat-4" data-delay="17">88%</div>
-      <div class="hm-cell heat-1" data-delay="18">—</div>
-      <div class="hm-cell heat-0" data-delay="19">—</div>
-
-      <div class="hm-row-label">Co-mod</div>
-      <div class="hm-cell heat-0" data-delay="20">—</div>
-      <div class="hm-cell heat-0" data-delay="21">—</div>
-      <div class="hm-cell heat-stall" data-delay="22">8%</div>
-      <div class="hm-cell heat-2" data-delay="23">36%</div>
-      <div class="hm-cell heat-3" data-delay="24">54%</div>
-
-      <div class="hm-row-label">Analytics</div>
-      <div class="hm-cell heat-0" data-delay="25">—</div>
-      <div class="hm-cell heat-0" data-delay="26">—</div>
-      <div class="hm-cell heat-0" data-delay="27">—</div>
-      <div class="hm-cell heat-3" data-delay="28">58%</div>
-      <div class="hm-cell heat-4" data-delay="29">82%</div>
+    
+    <div class="heatmap-grid reveal">
+      <div class="heatmap-row">
+        <div style="width: 80px;"></div>
+        <div class="heatmap-col-header">Create</div>
+        <div class="heatmap-col-header">Setup</div>
+        <div class="heatmap-col-header">Content</div>
+        <div class="heatmap-col-header">Growth</div>
+        <div class="heatmap-col-header">Sustain</div>
+      </div>
+      
+      <div class="heatmap-row">
+        <div class="heatmap-row-label">Avatar</div>
+        <div class="heatmap-row-data">
+          <div class="heatmap-cell very-high">92%</div>
+          <div class="heatmap-cell empty">—</div>
+          <div class="heatmap-cell empty">—</div>
+          <div class="heatmap-cell empty">—</div>
+          <div class="heatmap-cell empty">—</div>
+        </div>
+      </div>
+      
+      <div class="heatmap-row">
+        <div class="heatmap-row-label">Description</div>
+        <div class="heatmap-row-data">
+          <div class="heatmap-cell stall">28%</div>
+          <div class="heatmap-cell medium">45%</div>
+          <div class="heatmap-cell low">12%</div>
+          <div class="heatmap-cell empty">—</div>
+          <div class="heatmap-cell empty">—</div>
+        </div>
+      </div>
+      
+      <div class="heatmap-row">
+        <div class="heatmap-row-label">Rules</div>
+        <div class="heatmap-row-data">
+          <div class="heatmap-cell low">18%</div>
+          <div class="heatmap-cell low">34%</div>
+          <div class="heatmap-cell high">62%</div>
+          <div class="heatmap-cell medium">41%</div>
+          <div class="heatmap-cell low">8%</div>
+        </div>
+      </div>
+      
+      <div class="heatmap-row">
+        <div class="heatmap-row-label">First post</div>
+        <div class="heatmap-row-data">
+          <div class="heatmap-cell empty">—</div>
+          <div class="heatmap-cell low">15%</div>
+          <div class="heatmap-cell very-high">88%</div>
+          <div class="heatmap-cell empty">—</div>
+          <div class="heatmap-cell empty">—</div>
+        </div>
+      </div>
+      
+      <div class="heatmap-row">
+        <div class="heatmap-row-label">Co-mod</div>
+        <div class="heatmap-row-data">
+          <div class="heatmap-cell empty">—</div>
+          <div class="heatmap-cell empty">—</div>
+          <div class="heatmap-cell stall">8%</div>
+          <div class="heatmap-cell low">36%</div>
+          <div class="heatmap-cell medium">54%</div>
+        </div>
+      </div>
+      
+      <div class="heatmap-row">
+        <div class="heatmap-row-label">Analytics</div>
+        <div class="heatmap-row-data">
+          <div class="heatmap-cell empty">—</div>
+          <div class="heatmap-cell empty">—</div>
+          <div class="heatmap-cell empty">—</div>
+          <div class="heatmap-cell high">58%</div>
+          <div class="heatmap-cell very-high">82%</div>
+        </div>
+      </div>
     </div>
-
-    <div class="legend reveal" style="transition-delay: 200ms">
-      <span class="legend-label">Adoption</span>
-      <div class="legend-scale">
-        <div class="legend-swatch heat-0"></div>
-        <div class="legend-swatch heat-1"></div>
-        <div class="legend-swatch heat-2"></div>
-        <div class="legend-swatch heat-3"></div>
-        <div class="legend-swatch heat-4"></div>
+    
+    <div class="legend reveal">
+      <div class="legend-label">Adoption</div>
+      <div class="legend-swatches">
+        <div class="legend-swatch swatch-light"></div>
+        <div class="legend-swatch swatch-medium"></div>
+        <div class="legend-swatch swatch-high"></div>
+        <div class="legend-swatch swatch-very-high"></div>
       </div>
       <div class="legend-stall">
-        <div class="legend-stall-dot"></div>
-        <span class="legend-stall-text">Stall point</span>
+        <div class="stall-dot"></div>
+        <div class="stall-label">Stall point</div>
       </div>
-    </div>
-
-    <div class="insights reveal" style="transition-delay: 300ms">
-      <div class="insight-card">
-        <div class="insight-card-label">Biggest stall</div>
-        <div class="insight-card-text">Description skipped most at Creation — mods didn't see it as urgent. Revisited at Setup when distribution surfaced the gap.</div>
-      </div>
-      <div class="insight-card">
-        <div class="insight-card-label">Critical gate</div>
-        <div class="insight-card-text">Co-moderator recruitment — communities with 2+ mods significantly outperformed solo founders on every retention metric.</div>
-      </div>
-    </div>
-
-    <div class="outcome reveal" style="transition-delay: 400ms">
-      <div class="outcome-icon">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M4 8h8M8 4v8" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
-        </svg>
-      </div>
-      <p>Where creators stalled — which actions they completed, which they skipped, which stages dropped off — all visible in real time without additional instrumentation.</p>
     </div>
   </div>
 
-<script>
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
-    });
-  }, { threshold: 0.15 });
-  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
-
-  // Stagger heatmap cells
-  const cellObs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        const cells = e.target.querySelectorAll('.hm-cell');
-        cells.forEach(c => {
-          const d = parseInt(c.dataset.delay || 0);
-          setTimeout(() => c.classList.add('visible'), 30 * d);
-        });
-        cellObs.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.15 });
-  cellObs.observe(document.querySelector('.heatmap'));
-</script>
-<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+  <script>
+    if (window !== window.parent) document.body.classList.add('embedded');
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+    
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
 </body>
 </html>

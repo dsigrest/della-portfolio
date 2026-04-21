@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>NOT-E6 — Butterfly Chart</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
 <style>
   :root {
     --canvas: #0A0C16; --card: #10121C; --elevated: #151722;
@@ -145,20 +146,13 @@
 <body>
 <div class="diagram">
 
-  <div class="title-area">
-    <div class="label">Performance Comparison</div>
-    <h1>Notification Performance by Type</h1>
-    <p class="subtitle">Sent volume vs. read rate for each notification type — revealing which types drive engagement and which drive fatigue.</p>
-  </div>
-
-  <div class="legend">
-    <div class="legend-item"><div class="legend-bar sent" style="background: var(--text-pri);"></div> Sent / received</div>
-    <div class="legend-item"><div class="legend-bar read" style="background: var(--text-pri);"></div> Read / clicked</div>
-  </div>
-
-  <div class="chart-area">
-    <div class="chart-container">
-      <!--
+<div class="legend">
+<div class="legend-item"><div class="legend-bar sent" style="background: var(--text-pri);"></div> Sent / received</div>
+<div class="legend-item"><div class="legend-bar read" style="background: var(--text-pri);"></div> Read / clicked</div>
+</div>
+<div class="chart-area">
+<div class="chart-container">
+<!--
         Layout: viewBox 0 0 664 480
         Baseline at y=240 (center)
         Sent bars grow UP from y=240
@@ -167,122 +161,107 @@
         Each type: 2 bars (sent + read) + notif card mockup at baseline
         Colors per type: Comment Reply = teal, Upvote = gold, Trending = blue, Following = warm
       -->
-      <svg class="chart-svg" viewBox="0 0 664 480" preserveAspectRatio="xMidYMid meet">
-        <!-- Baseline -->
-        <line x1="60" y1="240" x2="620" y2="240" stroke="rgba(224,223,228,0.1)" stroke-width="1"/>
-
-        <!-- Side labels -->
-        <text class="side-label" x="16" y="120" fill="rgba(224,223,228,0.25)">SENT</text>
-        <text class="side-label" x="16" y="370" fill="rgba(224,223,228,0.25)">READ</text>
-
-        <!-- Grid hints -->
-        <line x1="60" y1="120" x2="620" y2="120" stroke="rgba(224,223,228,0.04)" stroke-width="1" stroke-dasharray="4 6"/>
-        <line x1="60" y1="360" x2="620" y2="360" stroke="rgba(224,223,228,0.04)" stroke-width="1" stroke-dasharray="4 6"/>
-
-        <!-- Scale labels -->
-        <text class="metric-label" x="638" y="124">High</text>
-        <text class="metric-label" x="638" y="244">0</text>
-        <text class="metric-label" x="638" y="364">High</text>
-
-        <!-- ═══ Comment Reply ═══ -->
-        <g class="bar-group">
-          <!-- Sent bar (up from baseline) — high volume -->
-          <rect class="bar-sent" x="96" y="90" width="56" height="150" rx="4" fill="#7FB5B0" opacity="0.8"/>
-          <!-- Read bar (down from baseline) — high engagement -->
-          <rect class="bar-read" x="96" y="240" width="56" height="120" rx="4" fill="#7FB5B0" opacity="0.35"/>
-          <!-- Value labels on hover -->
-          <text class="bar-val" x="124" y="82" text-anchor="middle" fill="#7FB5B0">2.4M sent</text>
-          <text class="bar-val" x="124" y="374" text-anchor="middle" fill="#7FB5B0">68% read</text>
-        </g>
-
-        <!-- Notif card mockup — Comment Reply -->
-        <g class="notif-card" transform="translate(80, 226)">
-          <rect class="notif-card-bg" x="0" y="0" width="88" height="28" rx="6"/>
-          <text class="notif-card-title" x="10" y="12" fill="#7FB5B0">💬</text>
-          <text class="notif-card-title" x="26" y="13" fill="var(--text-sec)">Reply</text>
-          <text class="notif-card-sub" x="26" y="23">comment reply</text>
-        </g>
-
-        <!-- ═══ Upvote ═══ -->
-        <g class="bar-group">
-          <!-- Sent bar — highest volume -->
-          <rect class="bar-sent" x="236" y="60" width="56" height="180" rx="4" fill="#C4B078" opacity="0.8"/>
-          <!-- Read bar — lower engagement -->
-          <rect class="bar-read" x="236" y="240" width="56" height="72" rx="4" fill="#C4B078" opacity="0.35"/>
-          <text class="bar-val" x="264" y="52" text-anchor="middle" fill="#C4B078">4.1M sent</text>
-          <text class="bar-val" x="264" y="326" text-anchor="middle" fill="#C4B078">31% read</text>
-        </g>
-
-        <!-- Notif card mockup — Upvote -->
-        <g class="notif-card" transform="translate(220, 226)">
-          <rect class="notif-card-bg" x="0" y="0" width="88" height="28" rx="6"/>
-          <text class="notif-card-title" x="10" y="12" fill="#C4B078">⬆</text>
-          <text class="notif-card-title" x="26" y="13" fill="var(--text-sec)">Upvote</text>
-          <text class="notif-card-sub" x="26" y="23">post upvoted</text>
-        </g>
-
-        <!-- ═══ Trending ═══ -->
-        <g class="bar-group">
-          <!-- Sent bar — medium volume -->
-          <rect class="bar-sent" x="376" y="110" width="56" height="130" rx="4" fill="#8A9EC4" opacity="0.8"/>
-          <!-- Read bar — moderate engagement -->
-          <rect class="bar-read" x="376" y="240" width="56" height="90" rx="4" fill="#8A9EC4" opacity="0.35"/>
-          <text class="bar-val" x="404" y="102" text-anchor="middle" fill="#8A9EC4">1.8M sent</text>
-          <text class="bar-val" x="404" y="344" text-anchor="middle" fill="#8A9EC4">42% read</text>
-        </g>
-
-        <!-- Notif card mockup — Trending -->
-        <g class="notif-card" transform="translate(360, 226)">
-          <rect class="notif-card-bg" x="0" y="0" width="88" height="28" rx="6"/>
-          <text class="notif-card-title" x="10" y="12" fill="#8A9EC4">🔥</text>
-          <text class="notif-card-title" x="26" y="13" fill="var(--text-sec)">Trending</text>
-          <text class="notif-card-sub" x="26" y="23">trending post</text>
-        </g>
-
-        <!-- ═══ Following ═══ -->
-        <g class="bar-group">
-          <!-- Sent bar — lower volume -->
-          <rect class="bar-sent" x="516" y="140" width="56" height="100" rx="4" fill="#D4A574" opacity="0.8"/>
-          <!-- Read bar — highest engagement rate -->
-          <rect class="bar-read" x="516" y="240" width="56" height="108" rx="4" fill="#D4A574" opacity="0.35"/>
-          <text class="bar-val" x="544" y="132" text-anchor="middle" fill="#D4A574">0.9M sent</text>
-          <text class="bar-val" x="544" y="362" text-anchor="middle" fill="#D4A574">54% read</text>
-        </g>
-
-        <!-- Notif card mockup — Following -->
-        <g class="notif-card" transform="translate(500, 226)">
-          <rect class="notif-card-bg" x="0" y="0" width="88" height="28" rx="6"/>
-          <text class="notif-card-title" x="10" y="12" fill="#D4A574">👤</text>
-          <text class="notif-card-title" x="26" y="13" fill="var(--text-sec)">Following</text>
-          <text class="notif-card-sub" x="26" y="23">user posted</text>
-        </g>
-
-        <!-- Type labels below -->
-        <text class="metric-label" x="124" y="430" text-anchor="middle" style="font-size: 11px; fill: rgba(224,223,228,0.4);">Comment reply</text>
-        <text class="metric-label" x="264" y="430" text-anchor="middle" style="font-size: 11px; fill: rgba(224,223,228,0.4);">Upvote</text>
-        <text class="metric-label" x="404" y="430" text-anchor="middle" style="font-size: 11px; fill: rgba(224,223,228,0.4);">Trending</text>
-        <text class="metric-label" x="544" y="430" text-anchor="middle" style="font-size: 11px; fill: rgba(224,223,228,0.4);">Following</text>
-
-        <!-- Efficiency arrows — connecting sent to read ratio -->
-        <g opacity="0.15">
-          <path d="M152,180 Q168,240 152,300" fill="none" stroke="#7FB5B0" stroke-width="1" stroke-dasharray="3 3"/>
-          <path d="M292,180 Q308,240 292,290" fill="none" stroke="#C4B078" stroke-width="1" stroke-dasharray="3 3"/>
-          <path d="M432,200 Q448,240 432,310" fill="none" stroke="#8A9EC4" stroke-width="1" stroke-dasharray="3 3"/>
-          <path d="M572,200 Q588,240 572,320" fill="none" stroke="#D4A574" stroke-width="1" stroke-dasharray="3 3"/>
-        </g>
-      </svg>
+<svg class="chart-svg" preserveaspectratio="xMidYMid meet" viewbox="0 0 664 480">
+<!-- Baseline -->
+<line stroke="rgba(224,223,228,0.1)" stroke-width="1" x1="60" x2="620" y1="240" y2="240"></line>
+<!-- Side labels -->
+<text class="side-label" fill="rgba(224,223,228,0.25)" x="16" y="120">SENT</text>
+<text class="side-label" fill="rgba(224,223,228,0.25)" x="16" y="370">READ</text>
+<!-- Grid hints -->
+<line stroke="rgba(224,223,228,0.04)" stroke-dasharray="4 6" stroke-width="1" x1="60" x2="620" y1="120" y2="120"></line>
+<line stroke="rgba(224,223,228,0.04)" stroke-dasharray="4 6" stroke-width="1" x1="60" x2="620" y1="360" y2="360"></line>
+<!-- Scale labels -->
+<text class="metric-label" x="638" y="124">High</text>
+<text class="metric-label" x="638" y="244">0</text>
+<text class="metric-label" x="638" y="364">High</text>
+<!-- ═══ Comment Reply ═══ -->
+<g class="bar-group">
+<!-- Sent bar (up from baseline) — high volume -->
+<rect class="bar-sent" fill="#7FB5B0" height="150" opacity="0.8" rx="4" width="56" x="96" y="90"></rect>
+<!-- Read bar (down from baseline) — high engagement -->
+<rect class="bar-read" fill="#7FB5B0" height="120" opacity="0.35" rx="4" width="56" x="96" y="240"></rect>
+<!-- Value labels on hover -->
+<text class="bar-val" fill="#7FB5B0" text-anchor="middle" x="124" y="82">2.4M sent</text>
+<text class="bar-val" fill="#7FB5B0" text-anchor="middle" x="124" y="374">68% read</text>
+</g>
+<!-- Notif card mockup — Comment Reply -->
+<g class="notif-card" transform="translate(80, 226)">
+<rect class="notif-card-bg" height="28" rx="6" width="88" x="0" y="0"></rect>
+<text class="notif-card-title" fill="#7FB5B0" x="10" y="12">💬</text>
+<text class="notif-card-title" fill="var(--text-sec)" x="26" y="13">Reply</text>
+<text class="notif-card-sub" x="26" y="23">comment reply</text>
+</g>
+<!-- ═══ Upvote ═══ -->
+<g class="bar-group">
+<!-- Sent bar — highest volume -->
+<rect class="bar-sent" fill="#C4B078" height="180" opacity="0.8" rx="4" width="56" x="236" y="60"></rect>
+<!-- Read bar — lower engagement -->
+<rect class="bar-read" fill="#C4B078" height="72" opacity="0.35" rx="4" width="56" x="236" y="240"></rect>
+<text class="bar-val" fill="#C4B078" text-anchor="middle" x="264" y="52">4.1M sent</text>
+<text class="bar-val" fill="#C4B078" text-anchor="middle" x="264" y="326">31% read</text>
+</g>
+<!-- Notif card mockup — Upvote -->
+<g class="notif-card" transform="translate(220, 226)">
+<rect class="notif-card-bg" height="28" rx="6" width="88" x="0" y="0"></rect>
+<text class="notif-card-title" fill="#C4B078" x="10" y="12">⬆</text>
+<text class="notif-card-title" fill="var(--text-sec)" x="26" y="13">Upvote</text>
+<text class="notif-card-sub" x="26" y="23">post upvoted</text>
+</g>
+<!-- ═══ Trending ═══ -->
+<g class="bar-group">
+<!-- Sent bar — medium volume -->
+<rect class="bar-sent" fill="#8A9EC4" height="130" opacity="0.8" rx="4" width="56" x="376" y="110"></rect>
+<!-- Read bar — moderate engagement -->
+<rect class="bar-read" fill="#8A9EC4" height="90" opacity="0.35" rx="4" width="56" x="376" y="240"></rect>
+<text class="bar-val" fill="#8A9EC4" text-anchor="middle" x="404" y="102">1.8M sent</text>
+<text class="bar-val" fill="#8A9EC4" text-anchor="middle" x="404" y="344">42% read</text>
+</g>
+<!-- Notif card mockup — Trending -->
+<g class="notif-card" transform="translate(360, 226)">
+<rect class="notif-card-bg" height="28" rx="6" width="88" x="0" y="0"></rect>
+<text class="notif-card-title" fill="#8A9EC4" x="10" y="12">🔥</text>
+<text class="notif-card-title" fill="var(--text-sec)" x="26" y="13">Trending</text>
+<text class="notif-card-sub" x="26" y="23">trending post</text>
+</g>
+<!-- ═══ Following ═══ -->
+<g class="bar-group">
+<!-- Sent bar — lower volume -->
+<rect class="bar-sent" fill="#D4A574" height="100" opacity="0.8" rx="4" width="56" x="516" y="140"></rect>
+<!-- Read bar — highest engagement rate -->
+<rect class="bar-read" fill="#D4A574" height="108" opacity="0.35" rx="4" width="56" x="516" y="240"></rect>
+<text class="bar-val" fill="#D4A574" text-anchor="middle" x="544" y="132">0.9M sent</text>
+<text class="bar-val" fill="#D4A574" text-anchor="middle" x="544" y="362">54% read</text>
+</g>
+<!-- Notif card mockup — Following -->
+<g class="notif-card" transform="translate(500, 226)">
+<rect class="notif-card-bg" height="28" rx="6" width="88" x="0" y="0"></rect>
+<text class="notif-card-title" fill="#D4A574" x="10" y="12">👤</text>
+<text class="notif-card-title" fill="var(--text-sec)" x="26" y="13">Following</text>
+<text class="notif-card-sub" x="26" y="23">user posted</text>
+</g>
+<!-- Type labels below -->
+<text class="metric-label" style="font-size: 11px; fill: rgba(224,223,228,0.4);" text-anchor="middle" x="124" y="430">Comment reply</text>
+<text class="metric-label" style="font-size: 11px; fill: rgba(224,223,228,0.4);" text-anchor="middle" x="264" y="430">Upvote</text>
+<text class="metric-label" style="font-size: 11px; fill: rgba(224,223,228,0.4);" text-anchor="middle" x="404" y="430">Trending</text>
+<text class="metric-label" style="font-size: 11px; fill: rgba(224,223,228,0.4);" text-anchor="middle" x="544" y="430">Following</text>
+<!-- Efficiency arrows — connecting sent to read ratio -->
+<g opacity="0.15">
+<path d="M152,180 Q168,240 152,300" fill="none" stroke="#7FB5B0" stroke-dasharray="3 3" stroke-width="1"></path>
+<path d="M292,180 Q308,240 292,290" fill="none" stroke="#C4B078" stroke-dasharray="3 3" stroke-width="1"></path>
+<path d="M432,200 Q448,240 432,310" fill="none" stroke="#8A9EC4" stroke-dasharray="3 3" stroke-width="1"></path>
+<path d="M572,200 Q588,240 572,320" fill="none" stroke="#D4A574" stroke-dasharray="3 3" stroke-width="1"></path>
+</g>
+</svg>
+</div>
+</div>
+<div class="insight-bar">
+<svg class="insight-icon" fill="none" viewbox="0 0 20 20">
+<path d="M10 2L12.09 7.26L18 8.27L14 12.14L14.81 18.02L10 15.27L5.19 18.02L6 12.14L2 8.27L7.91 7.26L10 2Z" fill="none" stroke="#7FB5B0" stroke-linejoin="round" stroke-width="1.5"></path>
+</svg>
+<div class="insight-text">
+<strong>Comment replies have the highest read rate (68%)</strong> despite moderate volume — while upvotes dominate volume but see only 31% reads. This inversion reveals which types create genuine value vs. notification fatigue.
     </div>
-  </div>
-
-  <div class="insight-bar">
-    <svg class="insight-icon" viewBox="0 0 20 20" fill="none">
-      <path d="M10 2L12.09 7.26L18 8.27L14 12.14L14.81 18.02L10 15.27L5.19 18.02L6 12.14L2 8.27L7.91 7.26L10 2Z" stroke="#7FB5B0" stroke-width="1.5" stroke-linejoin="round" fill="none"/>
-    </svg>
-    <div class="insight-text">
-      <strong>Comment replies have the highest read rate (68%)</strong> despite moderate volume — while upvotes dominate volume but see only 31% reads. This inversion reveals which types create genuine value vs. notification fatigue.
-    </div>
-  </div>
-
+</div>
 </div>
 <script>if(window!==window.parent)document.body.classList.add('embedded');</script>
 </body>

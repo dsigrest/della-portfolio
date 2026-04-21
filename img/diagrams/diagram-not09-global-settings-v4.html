@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>NOT-09 — Global Settings Rebuild</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
 <style>
   :root {
     --canvas: #0A0C16; --card: #10121C; --elevated: #151722;
@@ -271,210 +272,182 @@
 </head>
 <body>
 <div class="diagram">
-  <div class="title-area" style="--ai:0">
-    <div class="label">Design Change · Settings Architecture</div>
-    <h1>Global Settings Rebuild</h1>
-    <p class="subtitle">Rebuilt subscription management from a complex, multi-screen hierarchy into a single, clear view with consistent tiered options.</p>
-  </div>
 
-  <div class="problem-bar" style="--ai:2">
-    <div class="problem-icon">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="var(--red)" stroke-width="1.5" fill="none"/><line x1="8" y1="5" x2="8" y2="9" stroke="var(--red)" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="11.5" r="0.8" fill="var(--red)"/></svg>
-    </div>
-    <p class="problem-text"><strong>Settings scattered across screens:</strong> Nested folders, binary toggles with no context, technical language, and controls for the same content type living in different places.</p>
-  </div>
 
-  <div class="hover-hint" style="--ai:3">
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v4M4 3l2 2 2-2" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><rect x="1" y="6" width="10" height="5" rx="1.5" stroke="currentColor" stroke-width="1" fill="none"/></svg>
+<div class="hover-hint" style="--ai:3">
+<svg fill="none" height="12" viewbox="0 0 12 12" width="12"><path d="M6 1v4M4 3l2 2 2-2" stroke="currentColor" stroke-linecap="round" stroke-width="1"></path><rect fill="none" height="5" rx="1.5" stroke="currentColor" stroke-width="1" width="10" x="1" y="6"></rect></svg>
     Hover to compare structure
   </div>
+<!-- Before/After settings mockups -->
+<div class="compare-area">
+<!-- Before: nested tree + toggles -->
+<div class="settings-panel before" style="--ai:5">
+<div class="panel-label before-label"><span class="dot"></span>Before — Nested hierarchy</div>
+<div class="tree">
+<div class="tree-node">
+<span class="tree-icon">
+<svg fill="none" height="10" viewbox="0 0 10 10" width="10"><path d="M1 3h8v5.5a1 1 0 01-1 1H2a1 1 0 01-1-1V3z" fill="none" stroke="var(--text-dim)" stroke-width="0.8"></path><path d="M1 3V2.5a1 1 0 011-1h2.5l1 1.5H8a1 1 0 011 1" fill="none" stroke="var(--text-dim)" stroke-width="0.8"></path></svg>
+</span>
+<span class="tree-text">Settings</span>
+</div>
+<div class="tree-children">
+<div class="tree-node">
+<span class="tree-icon">
+<svg fill="none" height="10" viewbox="0 0 10 10" width="10"><path d="M1 3h8v5.5a1 1 0 01-1 1H2a1 1 0 01-1-1V3z" fill="none" stroke="var(--text-dim)" stroke-width="0.8"></path><path d="M1 3V2.5a1 1 0 011-1h2.5l1 1.5H8a1 1 0 011 1" fill="none" stroke="var(--text-dim)" stroke-width="0.8"></path></svg>
+</span>
+<span class="tree-text">Notifications</span>
+</div>
+<div class="tree-children">
+<div class="tree-node">
+<span class="tree-icon">
+<svg fill="none" height="10" viewbox="0 0 10 10" width="10"><path d="M1 3h8v5.5a1 1 0 01-1 1H2a1 1 0 01-1-1V3z" fill="none" stroke="var(--text-dim)" stroke-width="0.8"></path><path d="M1 3V2.5a1 1 0 011-1h2.5l1 1.5H8a1 1 0 011 1" fill="none" stroke="var(--text-dim)" stroke-width="0.8"></path></svg>
+</span>
+<span class="tree-text">Subscriptions</span>
+</div>
+<div class="tree-children">
+<div class="tree-node active">
+<span class="tree-icon">⚙</span>
+<span class="tree-text">Subreddit prefs</span>
+<span class="tree-badge">deep</span>
+</div>
+<div class="tree-node">
+<span class="tree-icon">⚙</span>
+<span class="tree-text">Advanced</span>
+</div>
+</div>
+</div>
+<div class="tree-children" style="border-color: rgba(196,120,120,0.08);">
+<div class="tree-node">
+<span class="tree-icon">⚙</span>
+<span class="tree-text">Feature toggles</span>
+<span class="tree-badge">separate</span>
+</div>
+</div>
+</div>
+</div>
+<div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(196,120,120,0.1);">
+<div class="toggle-row">
+<div class="toggle-track"><div class="toggle-thumb"></div></div>
+<span class="toggle-label">Enable PushToInbox</span>
+</div>
+<div class="toggle-row">
+<div class="toggle-track"><div class="toggle-thumb"></div></div>
+<span class="toggle-label">Digest frequency</span>
+</div>
+<div class="toggle-row">
+<div class="toggle-track"><div class="toggle-thumb"></div></div>
+<span class="toggle-label">Notification cohort</span>
+</div>
+</div>
+</div>
+<!-- After: flat unified list with tiered options -->
+<div class="settings-panel after" style="--ai:6">
+<div class="panel-label after-label"><span class="dot"></span>After — Flat, unified view</div>
+<div class="flat-list">
+<div class="flat-row">
+<div class="flat-row-icon">
+<svg fill="none" height="12" viewbox="0 0 12 12" width="12"><path d="M2 4l4-2.5L10 4v4l-4 2.5L2 8V4z" fill="none" opacity="0.6" stroke="var(--accent)" stroke-width="1"></path></svg>
+</div>
+<div class="flat-row-content">
+<div class="flat-row-title">Breaking news</div>
+<div class="flat-row-desc">major events</div>
+</div>
+<div class="flat-seg">
+<div class="flat-seg-opt">Off</div>
+<div class="flat-seg-opt active">Popular</div>
+<div class="flat-seg-opt">All</div>
+</div>
+</div>
+<div class="flat-row">
+<div class="flat-row-icon">
+<svg fill="none" height="12" viewbox="0 0 12 12" width="12"><circle cx="6" cy="6" fill="none" opacity="0.6" r="4" stroke="var(--accent)" stroke-width="1"></circle><path d="M6 3.5v3l2 1" opacity="0.5" stroke="var(--accent)" stroke-linecap="round" stroke-width="0.8"></path></svg>
+</div>
+<div class="flat-row-content">
+<div class="flat-row-title">Recommendations</div>
+<div class="flat-row-desc">trending + for you</div>
+</div>
+<div class="flat-seg">
+<div class="flat-seg-opt">Off</div>
+<div class="flat-seg-opt">Popular</div>
+<div class="flat-seg-opt active">All</div>
+</div>
+</div>
+<div class="flat-row">
+<div class="flat-row-icon">
+<svg fill="none" height="12" viewbox="0 0 12 12" width="12"><rect fill="none" height="6" opacity="0.6" rx="1" stroke="var(--accent)" stroke-width="1" width="8" x="2" y="3"></rect><path d="M2 4.5h8" opacity="0.4" stroke="var(--accent)" stroke-width="0.8"></path></svg>
+</div>
+<div class="flat-row-content">
+<div class="flat-row-title">Subreddit updates</div>
+<div class="flat-row-desc">per community</div>
+</div>
+<div class="flat-seg">
+<div class="flat-seg-opt">Off</div>
+<div class="flat-seg-opt active">Popular</div>
+<div class="flat-seg-opt">All</div>
+</div>
+</div>
+<div class="flat-row">
+<div class="flat-row-icon">
+<svg fill="none" height="12" viewbox="0 0 12 12" width="12"><path d="M2 3h8v6a1 1 0 01-1 1H3a1 1 0 01-1-1V3z" fill="none" opacity="0.6" stroke="var(--accent)" stroke-width="1"></path><path d="M2 3l4 3 4-3" opacity="0.5" stroke="var(--accent)" stroke-width="0.8"></path></svg>
+</div>
+<div class="flat-row-content">
+<div class="flat-row-title">Messages</div>
+<div class="flat-row-desc">DMs + chat</div>
+</div>
+<div class="flat-seg">
+<div class="flat-seg-opt">Off</div>
+<div class="flat-seg-opt">Popular</div>
+<div class="flat-seg-opt active">All</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Structure stats -->
+<div class="stat-strip" style="--ai:8">
+<div class="stat-item">
+<span class="stat-before">4</span>
+<span class="stat-after">1</span>
+<span class="stat-label">Screens</span>
+</div>
+<div class="stat-item">
+<span class="stat-before">binary</span>
+<span class="stat-after">tiered</span>
+<span class="stat-label">Controls</span>
+</div>
+<div class="stat-item">
+<span class="stat-before">technical</span>
+<span class="stat-after">plain</span>
+<span class="stat-label">Language</span>
+</div>
+<div class="stat-item">
+<span class="stat-before">scattered</span>
+<span class="stat-after">unified</span>
+<span class="stat-label">Channels</span>
+</div>
+</div>
+<!-- Annotations -->
+<div class="annotations">
+<div class="ann-card" style="--ai:10">
+<div class="ann-content">
+<div class="ann-title">Hierarchy Flattening</div>
+<div class="ann-detail">Moved from nested folders to a single-screen view. No more <span class="mono">Settings › Notifications › Subscriptions › Advanced</span>. All preference types visible on one page.</div>
+</div>
+</div>
+<div class="ann-card" style="--ai:11">
+<div class="ann-content">
+<div class="ann-title">Toggles → Tiered Options</div>
+<div class="ann-detail">Replaced binary on/off switches with 3 concrete levels: <span class="mono">Off</span> · <span class="mono">Popular</span> · <span class="mono">All</span>. Same structure for every notification type — one pattern, every preference.</div>
+</div>
+</div>
+<div class="ann-card" style="--ai:12">
+<div class="ann-content">
+<div class="ann-title">Language Maps to Behavior</div>
+<div class="ann-detail">Changed from technical terms (<span class="mono">Enable PushToInbox</span>, <span class="mono">Digest frequency</span>) to user-facing language. Each label states the notification type; each option explains delivery behavior.</div>
+</div>
+</div>
+</div>
 
-  <!-- Before/After settings mockups -->
-  <div class="compare-area">
-    <!-- Before: nested tree + toggles -->
-    <div class="settings-panel before" style="--ai:5">
-      <div class="panel-label before-label"><span class="dot"></span>Before — Nested hierarchy</div>
-
-      <div class="tree">
-        <div class="tree-node">
-          <span class="tree-icon">
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 3h8v5.5a1 1 0 01-1 1H2a1 1 0 01-1-1V3z" stroke="var(--text-dim)" stroke-width="0.8" fill="none"/><path d="M1 3V2.5a1 1 0 011-1h2.5l1 1.5H8a1 1 0 011 1" stroke="var(--text-dim)" stroke-width="0.8" fill="none"/></svg>
-          </span>
-          <span class="tree-text">Settings</span>
-        </div>
-        <div class="tree-children">
-          <div class="tree-node">
-            <span class="tree-icon">
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 3h8v5.5a1 1 0 01-1 1H2a1 1 0 01-1-1V3z" stroke="var(--text-dim)" stroke-width="0.8" fill="none"/><path d="M1 3V2.5a1 1 0 011-1h2.5l1 1.5H8a1 1 0 011 1" stroke="var(--text-dim)" stroke-width="0.8" fill="none"/></svg>
-            </span>
-            <span class="tree-text">Notifications</span>
-          </div>
-          <div class="tree-children">
-            <div class="tree-node">
-              <span class="tree-icon">
-                <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 3h8v5.5a1 1 0 01-1 1H2a1 1 0 01-1-1V3z" stroke="var(--text-dim)" stroke-width="0.8" fill="none"/><path d="M1 3V2.5a1 1 0 011-1h2.5l1 1.5H8a1 1 0 011 1" stroke="var(--text-dim)" stroke-width="0.8" fill="none"/></svg>
-              </span>
-              <span class="tree-text">Subscriptions</span>
-            </div>
-            <div class="tree-children">
-              <div class="tree-node active">
-                <span class="tree-icon">⚙</span>
-                <span class="tree-text">Subreddit prefs</span>
-                <span class="tree-badge">deep</span>
-              </div>
-              <div class="tree-node">
-                <span class="tree-icon">⚙</span>
-                <span class="tree-text">Advanced</span>
-              </div>
-            </div>
-          </div>
-          <div class="tree-children" style="border-color: rgba(196,120,120,0.08);">
-            <div class="tree-node">
-              <span class="tree-icon">⚙</span>
-              <span class="tree-text">Feature toggles</span>
-              <span class="tree-badge">separate</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(196,120,120,0.1);">
-        <div class="toggle-row">
-          <div class="toggle-track"><div class="toggle-thumb"></div></div>
-          <span class="toggle-label">Enable PushToInbox</span>
-        </div>
-        <div class="toggle-row">
-          <div class="toggle-track"><div class="toggle-thumb"></div></div>
-          <span class="toggle-label">Digest frequency</span>
-        </div>
-        <div class="toggle-row">
-          <div class="toggle-track"><div class="toggle-thumb"></div></div>
-          <span class="toggle-label">Notification cohort</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- After: flat unified list with tiered options -->
-    <div class="settings-panel after" style="--ai:6">
-      <div class="panel-label after-label"><span class="dot"></span>After — Flat, unified view</div>
-
-      <div class="flat-list">
-        <div class="flat-row">
-          <div class="flat-row-icon">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4-2.5L10 4v4l-4 2.5L2 8V4z" stroke="var(--accent)" stroke-width="1" fill="none" opacity="0.6"/></svg>
-          </div>
-          <div class="flat-row-content">
-            <div class="flat-row-title">Breaking news</div>
-            <div class="flat-row-desc">major events</div>
-          </div>
-          <div class="flat-seg">
-            <div class="flat-seg-opt">Off</div>
-            <div class="flat-seg-opt active">Popular</div>
-            <div class="flat-seg-opt">All</div>
-          </div>
-        </div>
-
-        <div class="flat-row">
-          <div class="flat-row-icon">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="4" stroke="var(--accent)" stroke-width="1" fill="none" opacity="0.6"/><path d="M6 3.5v3l2 1" stroke="var(--accent)" stroke-width="0.8" stroke-linecap="round" opacity="0.5"/></svg>
-          </div>
-          <div class="flat-row-content">
-            <div class="flat-row-title">Recommendations</div>
-            <div class="flat-row-desc">trending + for you</div>
-          </div>
-          <div class="flat-seg">
-            <div class="flat-seg-opt">Off</div>
-            <div class="flat-seg-opt">Popular</div>
-            <div class="flat-seg-opt active">All</div>
-          </div>
-        </div>
-
-        <div class="flat-row">
-          <div class="flat-row-icon">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="2" y="3" width="8" height="6" rx="1" stroke="var(--accent)" stroke-width="1" fill="none" opacity="0.6"/><path d="M2 4.5h8" stroke="var(--accent)" stroke-width="0.8" opacity="0.4"/></svg>
-          </div>
-          <div class="flat-row-content">
-            <div class="flat-row-title">Subreddit updates</div>
-            <div class="flat-row-desc">per community</div>
-          </div>
-          <div class="flat-seg">
-            <div class="flat-seg-opt">Off</div>
-            <div class="flat-seg-opt active">Popular</div>
-            <div class="flat-seg-opt">All</div>
-          </div>
-        </div>
-
-        <div class="flat-row">
-          <div class="flat-row-icon">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 3h8v6a1 1 0 01-1 1H3a1 1 0 01-1-1V3z" stroke="var(--accent)" stroke-width="1" fill="none" opacity="0.6"/><path d="M2 3l4 3 4-3" stroke="var(--accent)" stroke-width="0.8" opacity="0.5"/></svg>
-          </div>
-          <div class="flat-row-content">
-            <div class="flat-row-title">Messages</div>
-            <div class="flat-row-desc">DMs + chat</div>
-          </div>
-          <div class="flat-seg">
-            <div class="flat-seg-opt">Off</div>
-            <div class="flat-seg-opt">Popular</div>
-            <div class="flat-seg-opt active">All</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Structure stats -->
-  <div class="stat-strip" style="--ai:8">
-    <div class="stat-item">
-      <span class="stat-before">4</span>
-      <span class="stat-after">1</span>
-      <span class="stat-label">Screens</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-before">binary</span>
-      <span class="stat-after">tiered</span>
-      <span class="stat-label">Controls</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-before">technical</span>
-      <span class="stat-after">plain</span>
-      <span class="stat-label">Language</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-before">scattered</span>
-      <span class="stat-after">unified</span>
-      <span class="stat-label">Channels</span>
-    </div>
-  </div>
-
-  <!-- Annotations -->
-  <div class="annotations">
-    <div class="ann-card" style="--ai:10">
-      <div class="ann-content">
-        <div class="ann-title">Hierarchy Flattening</div>
-        <div class="ann-detail">Moved from nested folders to a single-screen view. No more <span class="mono">Settings › Notifications › Subscriptions › Advanced</span>. All preference types visible on one page.</div>
-      </div>
-    </div>
-    <div class="ann-card" style="--ai:11">
-      <div class="ann-content">
-        <div class="ann-title">Toggles → Tiered Options</div>
-        <div class="ann-detail">Replaced binary on/off switches with 3 concrete levels: <span class="mono">Off</span> · <span class="mono">Popular</span> · <span class="mono">All</span>. Same structure for every notification type — one pattern, every preference.</div>
-      </div>
-    </div>
-    <div class="ann-card" style="--ai:12">
-      <div class="ann-content">
-        <div class="ann-title">Language Maps to Behavior</div>
-        <div class="ann-detail">Changed from technical terms (<span class="mono">Enable PushToInbox</span>, <span class="mono">Digest frequency</span>) to user-facing language. Each label states the notification type; each option explains delivery behavior.</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="outcome-bar" style="--ai:14">
-    <div class="outcome-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 10l4 4 8-8" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-    <div class="outcome-content">
-      <p class="outcome-text">Simplified subscription management — <strong>fewer screens, clearer language, predictable delivery</strong>. Every notification type uses the same 3-level structure.</p>
-      <div class="metric-tag">4 screens → 1 · binary → tiered · technical → plain language</div>
-    </div>
-  </div>
 </div>
 <script>if(window!==window.parent)document.body.classList.add('embedded');</script>
 </body>

@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Feedback Engine</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --casual: #D4A574;
+    --resur: #C4B078;
+    --new-seg: #8A9EC4;
+    --red: #C47878;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .title-area { padding: 48px 48px 0; }
+  .label {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); opacity: 0.8; margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 36px; font-weight: 700;
+    color: var(--text-pri); letter-spacing: -0.025em;
+    margin-bottom: 8px; line-height: 1.15;
+  }
+  .subtitle {
+    font-size: 15px; color: var(--text-sec);
+    line-height: 1.55; max-width: 560px;
+  }
+
+  /* Flow area */
+  .flow-area {
+    padding: 48px;
+    position: relative;
+  }
+  .flow-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 160px 220px at 17% 50%, rgba(196,120,120,0.05) 0%, transparent 70%),
+      radial-gradient(ellipse 160px 220px at 50% 50%, rgba(212,165,116,0.04) 0%, transparent 70%),
+      radial-gradient(ellipse 160px 220px at 83% 50%, rgba(127,181,176,0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .flow {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .flow-step {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .step-icon {
+    width: 72px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+  }
+
+  .step-name {
+    font-size: 14px; font-weight: 600;
+    color: var(--text-pri);
+    letter-spacing: -0.01em;
+    margin-bottom: 6px;
+  }
+
+  .step-desc {
+    font-size: 11px;
+    color: var(--text-ter);
+    line-height: 1.45;
+    max-width: 150px;
+  }
+
+  .step-signals {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 10px;
+    align-items: center;
+  }
+  .signal-tag {
+    font-size: 10px;
+    color: var(--text-sec);
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: rgba(224,223,228,0.02);
+    border: 1px solid var(--border-normal);
+    white-space: nowrap;
+  }
+  /* Interactive states */
+  .flow-step { cursor: pointer; transition: opacity 0.3s ease; border-radius: 12px; padding: 12px; margin: -12px; }
+  .flow-step:hover { background: rgba(224,223,228,0.02); }
+  .flow-step.active .step-icon { transform: scale(1.08); }
+  .flow-step .step-icon { transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  .flow-step .step-signals { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.35s ease, opacity 0.25s ease; }
+  .flow-step.active .step-signals { max-height: 80px; opacity: 1; }
+  .flow.has-active .flow-step:not(.active) { opacity: 0.35; }
+  .step-metric { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--accent); margin-top: 6px; opacity: 0; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, opacity 0.25s ease; }
+  .flow-step.active .step-metric { opacity: 0.8; max-height: 30px; }
+
+  /* Connectors */
+  .connector {
+    width: 40px;
+    height: 2px;
+    position: relative;
+    margin-top: 36px;
+    flex-shrink: 0;
+  }
+  .connector-line {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--border-normal);
+    overflow: hidden;
+  }
+  .connector-line::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 30px; height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(224,223,228,0.15), transparent);
+    animation: flow-pulse 4s ease-in-out infinite;
+  }
+  .connector:nth-child(4) .connector-line::after {
+    animation-delay: 1.2s;
+  }
+  @keyframes flow-pulse {
+    0% { left: -30px; opacity: 0.4; }
+    100% { left: calc(100% + 30px); opacity: 0.4; }
+  }
+  .connector-arrow {
+    position: absolute;
+    right: 0; top: -4px;
+    width: 0; height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 8px solid rgba(224,223,228,0.12);
+  }
+
+  /* Return loop — the visual that makes this a loop, not a line */
+  .loop-return {
+    margin: -8px 48px 0;
+    padding: 0 60px;
+    position: relative;
+    z-index: 1;
+    height: 40px;
+  }
+  .loop-return-svg {
+    width: 100%;
+    height: 40px;
+  }
+
+  /* SHR-05 ambient animations */
+  /* Flag icon — subtle warning pulse */
+  .flag-pulse {
+    animation: flag-ambient 4s ease-in-out infinite;
+  }
+  @keyframes flag-ambient {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.6; }
+  }
+
+  /* Gear — slow rotation */
+  .engage-gear {
+    animation: gear-slow 16s linear infinite;
+    transform-origin: 36px 36px;
+  }
+  @keyframes gear-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* Trust checkmark — ambient glow */
+  .trust-ring {
+    animation: trust-ambient 5s ease-in-out infinite;
+  }
+  @keyframes trust-ambient {
+    0%, 100% { opacity: 0.15; }
+    50% { opacity: 0.3; }
+  }
+
+  /* Insight */
+  .insight {
+    margin: 0 48px;
+    padding: 14px 18px;
+    background: rgba(212,165,116,0.06);
+    border: 1px solid rgba(212,165,116,0.12);
+    border-radius: 8px;
+    position: relative;
+    z-index: 1;
+  }
+  .insight p {
+    font-size: 12px;
+    color: var(--text-sec);
+    line-height: 1.55;
+  }
+  .insight strong {
+    color: var(--casual);
+    font-weight: 600;
+  }
+
+  /* Outcome */
+  .outcome {
+    margin: 16px 48px 48px;
+    background: var(--accent-dim);
+    border-radius: 10px;
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .outcome-arrow {
+    font-size: 16px; color: var(--accent);
+    opacity: 0.55; flex-shrink: 0;
+  }
+  .outcome p {
+    font-size: 13px; font-weight: 500;
+    color: var(--text-sec); line-height: 1.5;
+  }
+
+  @media (max-width: 680px) {
+    .title-area, .flow-area, .insight, .outcome { padding-left: 24px; padding-right: 24px; }
+    body { padding: 16px; }
+    .flow { flex-direction: column; align-items: center; }
+    .connector { width: 2px; height: 24px; margin-top: 0; }
+  }
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="title-area">
+      <div class="label">User Feedback Loops</div>
+      <h1>The Feedback Engine</h1>
+      <p class="subtitle">Every flag, every upvote, every skip feeds back into model training — the loop is the product</p>
+    </div>
+
+    <div class="flow-area">
+      <div class="flow">
+        <!-- Step 1: Share (Signal) -->
+        <div class="flow-step">
+          <div class="step-icon">
+            <svg width="72" height="72" viewBox="0 0 72 72" fill="none">
+              <circle cx="36" cy="36" r="28" stroke="rgba(196,120,120,0.2)" stroke-width="1" fill="none"/>
+              <!-- Flag icon -->
+              <path d="M28 20 L28 52" stroke="rgba(196,120,120,0.35)" stroke-width="1.2" stroke-linecap="round"/>
+              <path d="M28 20 L44 26 L28 32" stroke="rgba(196,120,120,0.4)" stroke-width="1.2" fill="rgba(196,120,120,0.08)" stroke-linejoin="round"/>
+              <!-- Warning dots -->
+              <circle class="flag-pulse" cx="48" cy="24" r="3" fill="rgba(196,120,120,0.2)"/>
+              <circle class="flag-pulse" cx="44" cy="40" r="2" fill="rgba(196,120,120,0.15)" style="animation-delay: 0.5s;"/>
+            </svg>
+          </div>
+          <div class="step-name">Share</div>
+          <div class="step-desc">Users flag low quality, hallucinations, outdated info</div>
+          <div class="step-signals">
+            <div class="signal-tag">Flags</div>
+            <div class="signal-tag">Downvotes</div>
+            <div class="signal-tag">Skips</div>
+          </div>
+          <div class="step-metric">Team = the human raters</div>
+        </div>
+
+        <div class="connector">
+          <div class="connector-line"></div>
+          <div class="connector-arrow"></div>
+        </div>
+
+        <!-- Step 2: Engage (Process) -->
+        <div class="flow-step">
+          <div class="step-icon">
+            <svg width="72" height="72" viewBox="0 0 72 72" fill="none">
+              <!-- Gear -->
+              <g class="engage-gear">
+                <circle cx="36" cy="36" r="16" stroke="rgba(212,165,116,0.3)" stroke-width="1.2" fill="none"/>
+                <circle cx="36" cy="36" r="9" stroke="rgba(212,165,116,0.25)" stroke-width="0.8" fill="rgba(212,165,116,0.05)"/>
+                <rect x="34" y="17" width="4" height="7" rx="1" fill="rgba(212,165,116,0.2)"/>
+                <rect x="34" y="48" width="4" height="7" rx="1" fill="rgba(212,165,116,0.2)"/>
+                <rect x="17" y="34" width="7" height="4" rx="1" fill="rgba(212,165,116,0.2)"/>
+                <rect x="48" y="34" width="7" height="4" rx="1" fill="rgba(212,165,116,0.2)"/>
+              </g>
+              <circle cx="36" cy="36" r="3" fill="rgba(212,165,116,0.3)"/>
+            </svg>
+          </div>
+          <div class="step-name">Engage</div>
+          <div class="step-desc">Rubric tightens, thresholds adjust, model retrains</div>
+          <div class="step-signals">
+            <div class="signal-tag">Rubric updates</div>
+            <div class="signal-tag">Training data</div>
+          </div>
+          <div class="step-metric">Shipped ~2× per quarter</div>
+        </div>
+
+        <div class="connector">
+          <div class="connector-line"></div>
+          <div class="connector-arrow"></div>
+        </div>
+
+        <!-- Step 3: Trust (Outcome) -->
+        <div class="flow-step">
+          <div class="step-icon">
+            <svg width="72" height="72" viewBox="0 0 72 72" fill="none">
+              <circle class="trust-ring" cx="36" cy="36" r="28" stroke="rgba(127,181,176,0.15)" stroke-width="1" fill="none"/>
+              <circle class="trust-ring" cx="36" cy="36" r="22" stroke="rgba(127,181,176,0.2)" stroke-width="1" fill="none" style="animation-delay: 0.4s;"/>
+              <circle cx="36" cy="36" r="14" stroke="rgba(127,181,176,0.3)" stroke-width="1.2" fill="rgba(127,181,176,0.06)"/>
+              <!-- Checkmark -->
+              <polyline points="29,36 34,41 44,31" stroke="rgba(127,181,176,0.5)" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="step-name">Trust</div>
+          <div class="step-desc">Higher quality outputs, lower error rate, more users</div>
+          <div class="step-signals">
+            <div class="signal-tag">Better synthesis</div>
+            <div class="signal-tag">User confidence</div>
+          </div>
+          <div class="step-metric">→ Reddit Answers: 15M WAU</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Return loop arc -->
+    <div class="loop-return">
+      <svg class="loop-return-svg" viewBox="0 0 664 40" fill="none" preserveAspectRatio="none">
+        <path d="M554 4 C580 4 600 20 600 36 L64 36 C64 20 84 4 110 4" stroke="rgba(224,223,228,0.06)" stroke-width="1" fill="none" stroke-dasharray="4 4"/>
+        <text x="332" y="28" text-anchor="middle" font-family="Inter" font-size="9" fill="rgba(224,223,228,0.2)" letter-spacing="0.06em">TRUST → MORE SHARING</text>
+      </svg>
+    </div>
+
+    <div class="insight">
+      <p><strong>The insight:</strong> Feedback is structural, not a feature. Every user interaction — flags, upvotes, skips — becomes training signal. The loop closes within hours, not quarters.</p>
+    </div>
+
+    <div class="outcome">
+      <span class="outcome-arrow">↳</span>
+      <p>The product improves because users use it — feedback isn't a bolt-on, it's the engine</p>
+    </div>
+  </div>
+
+<script>
+  const flow = document.querySelector('.flow');
+  const steps = document.querySelectorAll('.flow-step');
+
+  steps.forEach(step => {
+    step.addEventListener('click', () => {
+      const wasActive = step.classList.contains('active');
+      // Clear all
+      steps.forEach(s => s.classList.remove('active'));
+      flow.classList.remove('has-active');
+      // Toggle
+      if (!wasActive) {
+        step.classList.add('active');
+        flow.classList.add('has-active');
+      }
+    });
+  });
+
+  // Click outside to clear
+  document.querySelector('.diagram').addEventListener('click', (e) => {
+    if (!e.target.closest('.flow-step')) {
+      steps.forEach(s => s.classList.remove('active'));
+      flow.classList.remove('has-active');
+    }
+  });
+</script>
+</body>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</html>

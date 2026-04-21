@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Static MVP Process</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --casual: #D4A574;
+    --resur: #C4B078;
+    --new-seg: #8A9EC4;
+    --red: #C47878;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .title-area { padding: 48px 48px 0; }
+  .label {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); opacity: 0.8; margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 36px; font-weight: 700;
+    color: var(--text-pri); letter-spacing: -0.025em;
+    margin-bottom: 8px; line-height: 1.15;
+  }
+  .subtitle {
+    font-size: 15px; color: var(--text-sec);
+    line-height: 1.55; max-width: 540px;
+  }
+
+  /* Process pipeline */
+  .process-area {
+    padding: 48px 48px 48px;
+    position: relative;
+  }
+  .process-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 200px 200px at 17% 50%, rgba(212,165,116,0.05) 0%, transparent 70%),
+      radial-gradient(ellipse 200px 200px at 50% 50%, rgba(127,181,176,0.04) 0%, transparent 70%),
+      radial-gradient(ellipse 200px 200px at 83% 50%, rgba(138,158,196,0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .pipeline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+    position: relative;
+  }
+
+  .step-icon {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 16px;
+  }
+
+  /* Step number */
+  .step-num {
+    position: absolute;
+    top: -4px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px; font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+  }
+
+  .step-name {
+    font-size: 15px; font-weight: 600;
+    color: var(--text-pri);
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+  }
+  .step-desc {
+    font-size: 11px;
+    color: var(--text-ter);
+    line-height: 1.45;
+    max-width: 160px;
+  }
+
+  /* Connector arrows between steps */
+  .connector {
+    width: 48px;
+    height: 2px;
+    position: relative;
+    margin-top: -52px;
+    flex-shrink: 0;
+  }
+  .connector-line {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--border-normal);
+    overflow: hidden;
+  }
+  /* SHR-05 style: subtle ambient flow, longer cycle */
+  .connector-line::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 40px; height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(224,223,228,0.15), transparent);
+    animation: flow-ambient 4s ease-in-out infinite;
+  }
+  .connector:nth-child(4) .connector-line::after {
+    animation-delay: 1.2s;
+  }
+  @keyframes flow-ambient {
+    0% { left: -40px; opacity: 0.4; }
+    100% { left: calc(100% + 40px); opacity: 0.4; }
+  }
+  .connector-arrow {
+    position: absolute;
+    right: 0; top: -4px;
+    width: 0; height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 8px solid rgba(224,223,228,0.12);
+  }
+
+  /* ── GENERATE: Lines appearing — SHR-05 ambient style ──
+     Longer cycle, subtle opacity shift, no full fade-out */
+  .generate-lines {
+    position: absolute;
+    top: 28px; left: 28px;
+  }
+  .gen-line {
+    height: 2px;
+    border-radius: 1px;
+    margin-bottom: 5px;
+    background: rgba(212,165,116,0.35);
+    animation: line-ambient 4s ease-in-out infinite;
+  }
+  .gen-line:nth-child(1) { width: 36px; animation-delay: 0s; }
+  .gen-line:nth-child(2) { width: 28px; animation-delay: 0.55s; }
+  .gen-line:nth-child(3) { width: 32px; animation-delay: 0.2s; }
+  .gen-line:nth-child(4) { width: 22px; animation-delay: 0.75s; }
+  .gen-line:nth-child(5) { width: 30px; animation-delay: 0.4s; }
+  @keyframes line-ambient {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.7; }
+  }
+
+  /* ── DEPLOY: Page settling — SHR-05 style gentle arrival ──
+     Subtle translate, no bounce, longer hold */
+  .deploy-page {
+    position: absolute;
+    top: 22px; left: 30px;
+    width: 40px; height: 50px;
+    border: 1.2px solid rgba(127,181,176,0.35);
+    border-radius: 3px;
+    background: rgba(127,181,176,0.04);
+    animation: page-settle 5s ease-in-out infinite;
+  }
+  .deploy-page::before {
+    content: '';
+    position: absolute;
+    top: 8px; left: 6px; right: 6px;
+    height: 1.5px;
+    background: rgba(127,181,176,0.25);
+    box-shadow:
+      0 6px 0 rgba(127,181,176,0.2),
+      0 12px 0 rgba(127,181,176,0.15),
+      0 18px 0 rgba(127,181,176,0.1);
+  }
+  @keyframes page-settle {
+    0%, 100% { transform: translateY(0); opacity: 0.5; }
+    15% { transform: translateY(-4px); opacity: 0.8; }
+    50% { transform: translateY(0); opacity: 0.8; }
+    85% { transform: translateY(0); opacity: 0.5; }
+  }
+
+  /* ── REFRESH: Arc rotation — SHR-05 ambient style ──
+     Slower spin, subtle opacity, no snap */
+  .refresh-page {
+    position: absolute;
+    top: 18px; left: 26px;
+    width: 48px; height: 56px;
+    border: 1.2px solid rgba(138,158,196,0.3);
+    border-radius: 4px;
+    background: rgba(138,158,196,0.04);
+  }
+  .mini-klp-header {
+    position: absolute;
+    top: 6px; left: 6px; right: 6px;
+    height: 8px;
+    background: rgba(138,158,196,0.15);
+    border-radius: 2px;
+  }
+  .mini-klp-body {
+    position: absolute;
+    top: 18px; left: 6px;
+    width: 20px; height: 28px;
+    background: rgba(138,158,196,0.1);
+    border-radius: 2px;
+  }
+  .mini-klp-sidebar {
+    position: absolute;
+    top: 18px; right: 6px;
+    width: 14px; height: 28px;
+    background: rgba(138,158,196,0.08);
+    border-radius: 2px;
+  }
+  .refresh-arc {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 64px; height: 64px;
+    margin: -32px 0 0 -32px;
+    animation: refresh-gentle 6s ease-in-out infinite;
+  }
+  .refresh-arc svg {
+    width: 100%; height: 100%;
+  }
+  @keyframes refresh-gentle {
+    0% { transform: rotate(0deg); opacity: 0.25; }
+    50% { transform: rotate(360deg); opacity: 0.45; }
+    100% { transform: rotate(360deg); opacity: 0.25; }
+  }
+
+  /* Outcome */
+  .outcome {
+    margin: 0 48px 48px;
+    background: var(--accent-dim);
+    border-radius: 10px;
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .outcome-arrow {
+    font-size: 16px; color: var(--accent);
+    opacity: 0.55; flex-shrink: 0;
+  }
+  .outcome p {
+    font-size: 13px; font-weight: 500;
+    color: var(--text-sec); line-height: 1.5;
+  }
+
+  @media (max-width: 680px) {
+    .title-area, .process-area, .outcome { padding-left: 24px; padding-right: 24px; }
+    body { padding: 16px; }
+    .pipeline { flex-direction: column; }
+    .connector { width: 2px; height: 32px; margin-top: 0; }
+  }
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="title-area">
+      <div class="label">Proving the Concept</div>
+      <h1>Static MVP</h1>
+      <p class="subtitle">Zero real-time infrastructure — generate offline, deploy as static pages, refresh on a schedule to prove the model works</p>
+    </div>
+
+    <div class="process-area">
+      <div class="pipeline">
+        <!-- Step 1: Generate -->
+        <div class="step">
+          <div class="step-icon">
+            <div class="step-num">01</div>
+            <svg width="100" height="100" viewBox="0 0 100 100" fill="none">
+              <circle cx="50" cy="50" r="30" stroke="rgba(212,165,116,0.25)" stroke-width="1" fill="none"/>
+              <path d="M50 28 L53 44 L62 38 L56 47 L72 50 L56 53 L62 62 L53 56 L50 72 L47 56 L38 62 L44 53 L28 50 L44 47 L38 38 L47 44 Z"
+                    fill="rgba(212,165,116,0.12)" stroke="rgba(212,165,116,0.4)" stroke-width="1" stroke-linejoin="round"/>
+            </svg>
+            <div class="generate-lines">
+              <div class="gen-line"></div>
+              <div class="gen-line"></div>
+              <div class="gen-line"></div>
+              <div class="gen-line"></div>
+              <div class="gen-line"></div>
+            </div>
+          </div>
+          <div class="step-name">Generate offline</div>
+          <div class="step-desc">LLM synthesizes Reddit threads into summaries — no live API calls</div>
+        </div>
+
+        <!-- Connector 1→2 -->
+        <div class="connector">
+          <div class="connector-line"></div>
+          <div class="connector-arrow"></div>
+        </div>
+
+        <!-- Step 2: Deploy -->
+        <div class="step">
+          <div class="step-icon">
+            <div class="step-num">02</div>
+            <svg width="100" height="100" viewBox="0 0 100 100" fill="none">
+              <rect x="25" y="20" width="50" height="60" rx="6" stroke="rgba(127,181,176,0.3)" stroke-width="1.2" fill="none"/>
+              <line x1="25" y1="36" x2="75" y2="36" stroke="rgba(127,181,176,0.18)" stroke-width="0.8"/>
+              <circle cx="34" cy="28" r="2.5" fill="rgba(127,181,176,0.25)"/>
+              <circle cx="42" cy="28" r="2.5" fill="rgba(127,181,176,0.18)"/>
+              <circle cx="50" cy="28" r="2.5" fill="rgba(127,181,176,0.18)"/>
+            </svg>
+            <div class="deploy-page"></div>
+          </div>
+          <div class="step-name">Deploy static</div>
+          <div class="step-desc">Pre-rendered pages served from CDN — zero server-side computation</div>
+        </div>
+
+        <!-- Connector 2→3 -->
+        <div class="connector">
+          <div class="connector-line"></div>
+          <div class="connector-arrow"></div>
+        </div>
+
+        <!-- Step 3: Refresh -->
+        <div class="step">
+          <div class="step-icon">
+            <div class="step-num">03</div>
+            <svg width="100" height="100" viewBox="0 0 100 100" fill="none">
+              <circle cx="50" cy="50" r="30" stroke="rgba(138,158,196,0.15)" stroke-width="1" fill="none"/>
+            </svg>
+            <div class="refresh-page">
+              <div class="mini-klp-header"></div>
+              <div class="mini-klp-body"></div>
+              <div class="mini-klp-sidebar"></div>
+            </div>
+            <div class="refresh-arc">
+              <svg viewBox="0 0 64 64" fill="none">
+                <path d="M32 8 A24 24 0 1 1 10 40" stroke="rgba(138,158,196,0.35)" stroke-width="2" stroke-linecap="round" fill="none"/>
+                <path d="M10 34 L10 42 L18 40" stroke="rgba(138,158,196,0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              </svg>
+            </div>
+          </div>
+          <div class="step-name">Refresh on schedule</div>
+          <div class="step-desc">Periodic regeneration keeps content current without real-time overhead</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</html>

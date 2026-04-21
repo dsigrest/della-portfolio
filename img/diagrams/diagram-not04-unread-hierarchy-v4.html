@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>NOT-04 — Unread Hierarchy: Progressive Disclosure</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
 <style>
   :root {
     --canvas: #0A0C16; --card: #10121C; --elevated: #151722;
@@ -353,176 +354,152 @@
 </head>
 <body>
 <div class="diagram">
-  <div class="title-area">
-    <div class="label">Foundation · Unread System Redesign</div>
-    <h1>Unread Hierarchy</h1>
-    <p class="subtitle">I rebuilt the unread system around progressive disclosure — from a single numeric badge at the inbox level down to subtle typography shifts at the row level.</p>
-    <div class="impact-anchor">DS migration shifted unread color → click-through dropped → data identified cause → adjusted → recovered</div>
-  </div>
 
-  <div class="hover-hint">
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7.5l2.5-5L7 7.5" stroke="var(--text-dim)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 7.5v3.5" stroke="var(--text-dim)" stroke-width="1.2" stroke-linecap="round"/><circle cx="7" cy="12.5" r="1" fill="var(--text-dim)"/></svg>
+<div class="hover-hint">
+<svg fill="none" height="14" viewbox="0 0 14 14" width="14"><path d="M3 7.5l2.5-5L7 7.5" stroke="var(--text-dim)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path><path d="M7 7.5v3.5" stroke="var(--text-dim)" stroke-linecap="round" stroke-width="1.2"></path><circle cx="7" cy="12.5" fill="var(--text-dim)" r="1"></circle></svg>
     Hover each level to see callouts
   </div>
-
-  <div class="levels-flow">
-    <!-- Level labels -->
-    <div class="level-labels">
-      <div class="level-label">
-        <span class="level-num l1">1</span>
-        <span class="level-name">Inbox</span>
-      </div>
-      <div class="level-label">
-        <span class="level-num l2">2</span>
-        <span class="level-name">Tab</span>
-      </div>
-      <div class="level-label">
-        <span class="level-num l3">3</span>
-        <span class="level-name">Row</span>
-      </div>
-    </div>
-
-    <!-- Level cards -->
-    <div class="levels-grid">
-      <!-- Level 1: Badge -->
-      <div class="level-card l1" style="--li:0">
-        <div class="illustration">
-          <div class="badge-mock">
-            <div class="tab-icon-wrap">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path d="M3 5h14v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5z" stroke="var(--text-sec)" stroke-width="1.5" fill="none"/>
-                <path d="M3 8h14" stroke="var(--text-sec)" stroke-width="1" opacity="0.4"/>
-              </svg>
-              <span class="badge-num">3</span>
-            </div>
-            <span class="badge-text">Inbox</span>
-          </div>
-          <div class="callout arrow-bottom" style="top: 2px; left: 50%; transform: translateX(-50%) translateY(4px);">
+<div class="levels-flow">
+<!-- Level labels -->
+<div class="level-labels">
+<div class="level-label">
+<span class="level-num l1">1</span>
+<span class="level-name">Inbox</span>
+</div>
+<div class="level-label">
+<span class="level-num l2">2</span>
+<span class="level-name">Tab</span>
+</div>
+<div class="level-label">
+<span class="level-num l3">3</span>
+<span class="level-name">Row</span>
+</div>
+</div>
+<!-- Level cards -->
+<div class="levels-grid">
+<!-- Level 1: Badge -->
+<div class="level-card l1" style="--li:0">
+<div class="illustration">
+<div class="badge-mock">
+<div class="tab-icon-wrap">
+<svg fill="none" height="20" viewbox="0 0 20 20" width="20">
+<path d="M3 5h14v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5z" fill="none" stroke="var(--text-sec)" stroke-width="1.5"></path>
+<path d="M3 8h14" opacity="0.4" stroke="var(--text-sec)" stroke-width="1"></path>
+</svg>
+<span class="badge-num">3</span>
+</div>
+<span class="badge-text">Inbox</span>
+</div>
+<div class="callout arrow-bottom" style="top: 2px; left: 50%; transform: translateX(-50%) translateY(4px);">
             Numeric = exact count
           </div>
-          <div class="callout arrow-left" style="top: 50%; right: 6px; transform: translateY(-50%) translateY(4px);">
+<div class="callout arrow-left" style="top: 50%; right: 6px; transform: translateY(-50%) translateY(4px);">
             Single entry point
           </div>
-        </div>
-        <p class="card-desc">Aggregate count. User sees <span class="mono">3</span> and knows exactly how many items wait inside.</p>
-      </div>
-
-      <!-- Level 2: Tab dot -->
-      <div class="level-card l2" style="--li:1">
-        <div class="illustration">
-          <div class="tabs-ill">
-            <div class="tab-ill active-ill">
+</div>
+<p class="card-desc">Aggregate count. User sees <span class="mono">3</span> and knows exactly how many items wait inside.</p>
+</div>
+<!-- Level 2: Tab dot -->
+<div class="level-card l2" style="--li:1">
+<div class="illustration">
+<div class="tabs-ill">
+<div class="tab-ill active-ill">
               Notifications
               <span class="tab-dot-ill"></span>
-            </div>
-            <div class="tab-ill">Messages</div>
-          </div>
-          <div class="callout arrow-bottom" style="top: 6px; right: 24px; transform: translateY(4px);">
+</div>
+<div class="tab-ill">Messages</div>
+</div>
+<div class="callout arrow-bottom" style="top: 6px; right: 24px; transform: translateY(4px);">
             Dot = new items exist
           </div>
-          <div class="callout arrow-top" style="bottom: 10px; left: 16px; transform: translateY(4px);">
+<div class="callout arrow-top" style="bottom: 10px; left: 16px; transform: translateY(4px);">
             Active tab highlight
           </div>
-        </div>
-        <p class="card-desc">Boolean signal. The dot says "something's new here" without specifying how many.</p>
-      </div>
-
-      <!-- Level 3: Row treatment -->
-      <div class="level-card l3" style="--li:2">
-        <div class="illustration">
-          <div class="rows-ill">
-            <div class="row-ill unread-ill">
-              <span class="row-dot-ill vis"></span>
-              <div class="row-avatar-ill"></div>
-              <span class="row-text-ill">u/user replied to you</span>
-              <span class="row-time">2m</span>
-            </div>
-            <div class="row-ill unread-ill">
-              <span class="row-dot-ill vis"></span>
-              <div class="row-avatar-ill"></div>
-              <span class="row-text-ill">Trending in r/design</span>
-              <span class="row-time">14m</span>
-            </div>
-            <div class="row-ill">
-              <span class="row-dot-ill invis"></span>
-              <div class="row-avatar-ill"></div>
-              <span class="row-text-ill">Post approved</span>
-              <span class="row-time">1h</span>
-            </div>
-          </div>
-          <div class="callout arrow-left" style="top: 12px; right: -8px; transform: translateY(4px);">
+</div>
+<p class="card-desc">Boolean signal. The dot says "something's new here" without specifying how many.</p>
+</div>
+<!-- Level 3: Row treatment -->
+<div class="level-card l3" style="--li:2">
+<div class="illustration">
+<div class="rows-ill">
+<div class="row-ill unread-ill">
+<span class="row-dot-ill vis"></span>
+<div class="row-avatar-ill"></div>
+<span class="row-text-ill">u/user replied to you</span>
+<span class="row-time">2m</span>
+</div>
+<div class="row-ill unread-ill">
+<span class="row-dot-ill vis"></span>
+<div class="row-avatar-ill"></div>
+<span class="row-text-ill">Trending in r/design</span>
+<span class="row-time">14m</span>
+</div>
+<div class="row-ill">
+<span class="row-dot-ill invis"></span>
+<div class="row-avatar-ill"></div>
+<span class="row-text-ill">Post approved</span>
+<span class="row-time">1h</span>
+</div>
+</div>
+<div class="callout arrow-left" style="top: 12px; right: -8px; transform: translateY(4px);">
             Bold + tint = unread
           </div>
-          <div class="callout arrow-left" style="bottom: 10px; right: -8px; transform: translateY(4px);">
+<div class="callout arrow-left" style="bottom: 10px; right: -8px; transform: translateY(4px);">
             Light weight = read
           </div>
-        </div>
-        <p class="card-desc">Typographic + color shift. Items distinguished by weight, background tint, and dot.</p>
-      </div>
-    </div>
-  </div>
+</div>
+<p class="card-desc">Typographic + color shift. Items distinguished by weight, background tint, and dot.</p>
+</div>
+</div>
+</div>
+<!-- Flow arrows -->
+<div class="flow-arrows">
+<svg fill="none" height="20" viewbox="0 0 664 20">
+<path class="flow-path" d="M 120 4 L 120 10 L 270 10"></path>
+<polygon class="flow-head" points="270,7 277,10 270,13"></polygon>
+<path class="flow-path" d="M 385 10 L 510 10"></path>
+<polygon class="flow-head" points="510,7 517,10 510,13"></polygon>
+</svg>
+</div>
+<!-- Information density strip -->
+<div class="disclosure-strip">
+<div class="disc-seg s1">
+<div class="disc-density">
+<div class="density-bar" style="height:12px; animation-delay:0.6s;"></div>
+</div>
+<span class="disc-label">count</span>
+</div>
+<div class="disc-seg s2">
+<div class="disc-density">
+<div class="density-bar" style="height:8px; animation-delay:0.7s;"></div>
+<div class="density-bar" style="height:12px; animation-delay:0.75s;"></div>
+</div>
+<span class="disc-label">presence</span>
+</div>
+<div class="disc-seg s3">
+<div class="disc-density">
+<div class="density-bar" style="height:6px; animation-delay:0.8s;"></div>
+<div class="density-bar" style="height:10px; animation-delay:0.85s;"></div>
+<div class="density-bar" style="height:14px; animation-delay:0.9s;"></div>
+<div class="density-bar" style="height:8px; animation-delay:0.95s;"></div>
+</div>
+<span class="disc-label">identity</span>
+</div>
+</div>
+<!-- 1:1 Principle -->
+<div class="principle-bar">
+<div class="principle-icon">
+<svg fill="none" height="18" viewbox="0 0 18 18" width="18">
+<text fill="var(--accent)" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" opacity="0.8" x="1" y="13">1:1</text>
+</svg>
+</div>
+<div class="principle-content">
+<div class="principle-title">Every badge maps 1:1 to a visible item</div>
+<div class="principle-desc">Users never had to do math. The badge count at the inbox level equals the number of unread rows inside — no phantom counts, no mismatches.</div>
+</div>
+</div>
+<!-- Outcome bar -->
 
-  <!-- Flow arrows -->
-  <div class="flow-arrows">
-    <svg height="20" viewBox="0 0 664 20" fill="none">
-      <path class="flow-path" d="M 120 4 L 120 10 L 270 10"/>
-      <polygon class="flow-head" points="270,7 277,10 270,13"/>
-      <path class="flow-path" d="M 385 10 L 510 10"/>
-      <polygon class="flow-head" points="510,7 517,10 510,13"/>
-    </svg>
-  </div>
-
-  <!-- Information density strip -->
-  <div class="disclosure-strip">
-    <div class="disc-seg s1">
-      <div class="disc-density">
-        <div class="density-bar" style="height:12px; animation-delay:0.6s;"></div>
-      </div>
-      <span class="disc-label">count</span>
-    </div>
-    <div class="disc-seg s2">
-      <div class="disc-density">
-        <div class="density-bar" style="height:8px; animation-delay:0.7s;"></div>
-        <div class="density-bar" style="height:12px; animation-delay:0.75s;"></div>
-      </div>
-      <span class="disc-label">presence</span>
-    </div>
-    <div class="disc-seg s3">
-      <div class="disc-density">
-        <div class="density-bar" style="height:6px; animation-delay:0.8s;"></div>
-        <div class="density-bar" style="height:10px; animation-delay:0.85s;"></div>
-        <div class="density-bar" style="height:14px; animation-delay:0.9s;"></div>
-        <div class="density-bar" style="height:8px; animation-delay:0.95s;"></div>
-      </div>
-      <span class="disc-label">identity</span>
-    </div>
-  </div>
-
-  <!-- 1:1 Principle -->
-  <div class="principle-bar">
-    <div class="principle-icon">
-      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-        <text x="1" y="13" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="var(--accent)" opacity="0.8">1:1</text>
-      </svg>
-    </div>
-    <div class="principle-content">
-      <div class="principle-title">Every badge maps 1:1 to a visible item</div>
-      <div class="principle-desc">Users never had to do math. The badge count at the inbox level equals the number of unread rows inside — no phantom counts, no mismatches.</div>
-    </div>
-  </div>
-
-  <!-- Outcome bar -->
-  <div class="outcome-bar">
-    <div class="outcome-icon">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path d="M3 9l3.5 3.5 6.5-7" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </div>
-    <div>
-      <p class="outcome-text">Migration introduced a less prominent unread color and click-through dropped — <strong>data identified the cause, fix influenced design system usage beyond the inbox.</strong></p>
-      <span class="outcome-metric">unread color → CTR impact → DS-wide fix</span>
-    </div>
-  </div>
 </div>
 <script>if(window!==window.parent)document.body.classList.add('embedded');</script>
 </body>

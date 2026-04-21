@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NOT-E7 — Sankey Flow: User Segmentation & Contribution</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NOT-E7 — Sankey Flow: User Segmentation &amp; Contribution</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
 <style>
   :root {
     --canvas: #0A0C16; --card: #10121C; --elevated: #151722;
@@ -205,22 +206,15 @@
 <body>
 <div class="diagram">
 
-  <div class="title-area">
-    <div class="label">User Journey · Data Visualization</div>
-    <h1>From Inbox to Contribution</h1>
-    <p class="subtitle">How 7.5 million daily inbox users flow through click and contribution stages — segmented by engagement profile.</p>
-  </div>
-
-  <div class="legend-bar">
-    <div class="legend-item" data-seg="core"><div class="legend-dot core"></div>Core</div>
-    <div class="legend-item" data-seg="casual"><div class="legend-dot casual"></div>Casual</div>
-    <div class="legend-item" data-seg="resurrected"><div class="legend-dot resurrected"></div>Resurrected</div>
-    <div class="legend-item" data-seg="new"><div class="legend-dot new"></div>New</div>
-    <span class="legend-hint">Click segment to isolate · hover flows for detail</span>
-  </div>
-
-  <div class="sankey-area">
-    <!--
+<div class="legend-bar">
+<div class="legend-item" data-seg="core"><div class="legend-dot core"></div>Core</div>
+<div class="legend-item" data-seg="casual"><div class="legend-dot casual"></div>Casual</div>
+<div class="legend-item" data-seg="resurrected"><div class="legend-dot resurrected"></div>Resurrected</div>
+<div class="legend-item" data-seg="new"><div class="legend-dot new"></div>New</div>
+<span class="legend-hint">Click segment to isolate · hover flows for detail</span>
+</div>
+<div class="sankey-area">
+<!--
       SVG Sankey: viewBox 0 0 664 420
       Three columns of stacked bars:
         Col 1 (DAU): x=20, bar width=14
@@ -266,188 +260,139 @@
 
       I'll use approximate proportional heights that look correct.
     -->
-    <svg class="sankey-svg" viewBox="0 0 664 420" preserveAspectRatio="xMidYMid meet">
-      <defs>
-        <!-- Flow gradients — left-to-right with fade at split point -->
-        <linearGradient id="gCore" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="#7FB5B0"/><stop offset="60%" stop-color="#7FB5B0"/><stop offset="100%" stop-color="#7FB5B0" stop-opacity="0.7"/>
-        </linearGradient>
-        <linearGradient id="gCasual" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="#C4B078"/><stop offset="50%" stop-color="#C4B078"/><stop offset="100%" stop-color="#C4B078" stop-opacity="0.6"/>
-        </linearGradient>
-        <linearGradient id="gResurrected" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="#C47878"/><stop offset="50%" stop-color="#C47878"/><stop offset="100%" stop-color="#C47878" stop-opacity="0.6"/>
-        </linearGradient>
-        <linearGradient id="gNew" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="#8A9EC4"/><stop offset="50%" stop-color="#8A9EC4"/><stop offset="100%" stop-color="#8A9EC4" stop-opacity="0.6"/>
-        </linearGradient>
-        <!-- Dropout gradient (fades to nothing) -->
-        <linearGradient id="gDrop" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="#E0DFE4" stop-opacity="0.08"/><stop offset="100%" stop-color="#E0DFE4" stop-opacity="0.02"/>
-        </linearGradient>
-      </defs>
-
-      <!-- Column headers -->
-      <text class="col-metric" x="27" y="24" font-size="16">7.5m</text>
-      <text class="col-sub" x="27" y="38">inbox DAU</text>
-
-      <text class="col-metric" x="332" y="24" font-size="16">47%</text>
-      <text class="col-sub" x="332" y="38">click (3.2m)</text>
-
-      <text class="col-metric" x="637" y="24" font-size="16">75%</text>
-      <text class="col-sub" x="637" y="38">contribute</text>
-
-      <!-- ═══ FLOW PATHS — Stage 1 → Stage 2 (DAU → Clickers) ═══ -->
-
-      <!-- Core → Clickers (largest flow) -->
-      <path class="flow-glow" data-seg="core"
-            d="M34,50 C180,50 180,50 332,50 L332,195 C180,195 180,190 34,340 Z" fill="url(#gCore)"/>
-      <path class="flow-path" data-seg="core"
-            d="M34,50 C180,50 180,50 332,50 L332,195 C180,195 180,190 34,340 Z" fill="url(#gCore)"/>
-
-      <!-- Core → Non-clickers -->
-      <path class="flow-path" data-seg="core" style="fill-opacity:0.06"
-            d="M34,342 C180,342 180,280 332,260 L332,410 C180,410 180,412 34,412 Z" fill="url(#gCore)"/>
-
-      <!-- Casual → Clickers -->
-      <path class="flow-glow" data-seg="casual"
-            d="M34,344 C180,344 180,197 332,197 L332,207 C180,207 180,370 34,370 Z" fill="url(#gCasual)"/>
-      <path class="flow-path secondary" data-seg="casual"
-            d="M34,344 C180,344 180,197 332,197 L332,207 C180,207 180,370 34,370 Z" fill="url(#gCasual)"/>
-
-      <!-- Casual → Non-clickers -->
-      <path class="flow-path" data-seg="casual" style="fill-opacity:0.06"
-            d="M34,372 C180,372 180,412 332,412 L332,418 C180,418 180,380 34,380 Z" fill="url(#gCasual)"/>
-
-      <!-- Resurrected → Clickers -->
-      <path class="flow-glow" data-seg="resurrected"
-            d="M34,382 C180,382 180,209 332,209 L332,216 C180,216 180,398 34,398 Z" fill="url(#gResurrected)"/>
-      <path class="flow-path secondary" data-seg="resurrected"
-            d="M34,382 C180,382 180,209 332,209 L332,216 C180,216 180,398 34,398 Z" fill="url(#gResurrected)"/>
-
-      <!-- New → Clickers -->
-      <path class="flow-glow" data-seg="new"
-            d="M34,400 C180,400 180,218 332,218 L332,222 C180,222 180,408 34,408 Z" fill="url(#gNew)"/>
-      <path class="flow-path secondary" data-seg="new"
-            d="M34,400 C180,400 180,218 332,218 L332,222 C180,222 180,408 34,408 Z" fill="url(#gNew)"/>
-
-
-      <!-- ═══ FLOW PATHS — Stage 2 → Stage 3 (Clickers → Contributors) ═══ -->
-
-      <!-- Core clickers → Contributors -->
-      <path class="flow-glow" data-seg="core"
-            d="M346,50 C490,50 490,50 637,50 L637,165 C490,165 490,155 346,155 Z" fill="url(#gCore)"/>
-      <path class="flow-path" data-seg="core"
-            d="M346,50 C490,50 490,50 637,50 L637,165 C490,165 490,155 346,155 Z" fill="url(#gCore)"/>
-
-      <!-- Core clickers → Non-contributors -->
-      <path class="flow-path" data-seg="core" style="fill-opacity:0.06"
-            d="M346,157 C490,157 490,290 637,290 L637,330 C490,330 490,195 346,195 Z" fill="url(#gCore)"/>
-
-      <!-- Casual clickers → Contributors -->
-      <path class="flow-glow" data-seg="casual"
-            d="M346,197 C490,197 490,167 637,167 L637,175 C490,175 490,207 346,207 Z" fill="url(#gCasual)"/>
-      <path class="flow-path secondary" data-seg="casual"
-            d="M346,197 C490,197 490,167 637,167 L637,175 C490,175 490,207 346,207 Z" fill="url(#gCasual)"/>
-
-      <!-- Casual clickers → Non-contributors -->
-      <path class="flow-path" data-seg="casual" style="fill-opacity:0.06"
-            d="M346,207 C490,207 490,332 637,332 L637,345 C490,345 490,210 346,210 Z" fill="url(#gCasual)"/>
-
-      <!-- Resurrected clickers → Contributors -->
-      <path class="flow-glow" data-seg="resurrected"
-            d="M346,209 C490,209 490,177 637,177 L637,183 C490,183 490,216 346,216 Z" fill="url(#gResurrected)"/>
-      <path class="flow-path secondary" data-seg="resurrected"
-            d="M346,209 C490,209 490,177 637,177 L637,183 C490,183 490,216 346,216 Z" fill="url(#gResurrected)"/>
-
-      <!-- New clickers → Contributors -->
-      <path class="flow-glow" data-seg="new"
-            d="M346,218 C490,218 490,185 637,185 L637,189 C490,189 490,222 346,222 Z" fill="url(#gNew)"/>
-      <path class="flow-path secondary" data-seg="new"
-            d="M346,218 C490,218 490,185 637,185 L637,189 C490,189 490,222 346,222 Z" fill="url(#gNew)"/>
-
-
-      <!-- ═══ NODE BARS — Column 1 (DAU) ═══ -->
-      <rect class="node-bar" data-seg="core" x="20" y="50" width="14" height="290" fill="#7FB5B0"/>
-      <rect class="node-bar" data-seg="casual" x="20" y="344" width="14" height="28" fill="#C4B078"/>
-      <rect class="node-bar" data-seg="resurrected" x="20" y="376" width="14" height="22" fill="#C47878"/>
-      <rect class="node-bar" data-seg="new" x="20" y="402" width="14" height="10" fill="#8A9EC4"/>
-
-      <!-- ═══ NODE BARS — Column 2 (Clickers) ═══ -->
-      <rect class="node-bar" data-seg="core" x="325" y="50" width="14" height="145" fill="#7FB5B0"/>
-      <rect class="node-bar" data-seg="casual" x="325" y="197" width="14" height="10" fill="#C4B078"/>
-      <rect class="node-bar" data-seg="resurrected" x="325" y="209" width="14" height="7" fill="#C47878"/>
-      <rect class="node-bar" data-seg="new" x="325" y="218" width="14" height="4" fill="#8A9EC4"/>
-
-      <!-- Non-clicker bar (muted) -->
-      <rect class="node-bar" x="325" y="256" width="14" height="158" fill="rgba(224,223,228,0.08)" rx="3"/>
-      <text class="dropout-label" x="332" y="340">53%</text>
-      <text class="dropout-label" x="332" y="352" font-size="8">don't click</text>
-
-      <!-- ═══ NODE BARS — Column 3 (Contributors) ═══ -->
-      <rect class="node-bar" data-seg="core" x="630" y="50" width="14" height="115" fill="#7FB5B0"/>
-      <rect class="node-bar" data-seg="casual" x="630" y="167" width="14" height="8" fill="#C4B078"/>
-      <rect class="node-bar" data-seg="resurrected" x="630" y="177" width="14" height="6" fill="#C47878"/>
-      <rect class="node-bar" data-seg="new" x="630" y="185" width="14" height="4" fill="#8A9EC4"/>
-
-      <!-- Non-contributor bar (muted) -->
-      <rect class="node-bar" x="630" y="220" width="14" height="60" fill="rgba(224,223,228,0.08)" rx="3"/>
-      <text class="dropout-label" x="637" y="254">25%</text>
-      <text class="dropout-label" x="637" y="266" font-size="8">non-contrib</text>
-
-      <!-- Column base labels -->
-      <text class="col-label" x="27" y="428">DAU</text>
-      <text class="col-label" x="332" y="428">Clickers</text>
-      <text class="col-label" x="637" y="428">Contributors</text>
-    </svg>
-  </div>
-
-  <!-- Stage breakdown cards -->
-  <div class="stage-cards">
-    <div class="stage-card">
-      <div class="stage-title">7.5m inbox DAU</div>
-      <div class="stage-sub">daily active inbox users</div>
-      <div class="stage-rows">
-        <div class="stage-row core"><div class="dot"></div><span class="pct">85%</span> core</div>
-        <div class="stage-row casual"><div class="dot"></div><span class="pct">8%</span> casual</div>
-        <div class="stage-row resurrected"><div class="dot"></div><span class="pct">5%</span> resurrected</div>
-        <div class="stage-row new"><div class="dot"></div><span class="pct">2%</span> new</div>
-      </div>
-    </div>
-    <div class="stage-card">
-      <div class="stage-title">47% click</div>
-      <div class="stage-sub">3.2m clickers</div>
-      <div class="stage-rows">
-        <div class="stage-row core"><div class="dot"></div><span class="pct">48%</span> of core</div>
-        <div class="stage-row casual"><div class="dot"></div><span class="pct">35%</span> of casual</div>
-        <div class="stage-row resurrected"><div class="dot"></div><span class="pct">39%</span> of resurrected</div>
-        <div class="stage-row new"><div class="dot"></div><span class="pct">50%</span> of new</div>
-      </div>
-    </div>
-    <div class="stage-card">
-      <div class="stage-title">75% contribute</div>
-      <div class="stage-sub">of clickers become contributors</div>
-      <div class="stage-rows">
-        <div class="stage-row core"><div class="dot"></div><span class="pct">78%</span> of core clickers</div>
-        <div class="stage-row casual"><div class="dot"></div><span class="pct">40%</span> of casual clickers</div>
-        <div class="stage-row resurrected"><div class="dot"></div><span class="pct">45%</span> of resurrected clickers</div>
-        <div class="stage-row new"><div class="dot"></div><span class="pct">65%</span> of new clickers</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="insight-bar">
-    <svg class="insight-icon" viewBox="0 0 20 20" fill="none">
-      <path d="M10 2L12.09 7.26L18 8.27L14 12.14L14.81 18.02L10 15.27L5.19 18.02L6 12.14L2 8.27L7.91 7.26L10 2Z" stroke="#7FB5B0" stroke-width="1.5" stroke-linejoin="round" fill="none"/>
-    </svg>
-    <div class="insight-text">
-      <strong>Core users dominate the contribution pipeline</strong> — 85% of DAU, but they convert at the highest rates too (48% click, 78% contribute). The notification strategy's biggest leverage is converting casual and resurrected users, where click rates are 13–15 points lower but the population is still meaningful.
-      <span class="insight-formula">casual click gap: 48% − 35% = 13pp · 0.6m casual DAU = ~78k recoverable clickers</span>
-    </div>
-  </div>
-
+<svg class="sankey-svg" preserveaspectratio="xMidYMid meet" viewbox="0 0 664 420">
+<defs>
+<!-- Flow gradients — left-to-right with fade at split point -->
+<lineargradient id="gCore" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0%" stop-color="#7FB5B0"></stop><stop offset="60%" stop-color="#7FB5B0"></stop><stop offset="100%" stop-color="#7FB5B0" stop-opacity="0.7"></stop>
+</lineargradient>
+<lineargradient id="gCasual" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0%" stop-color="#C4B078"></stop><stop offset="50%" stop-color="#C4B078"></stop><stop offset="100%" stop-color="#C4B078" stop-opacity="0.6"></stop>
+</lineargradient>
+<lineargradient id="gResurrected" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0%" stop-color="#C47878"></stop><stop offset="50%" stop-color="#C47878"></stop><stop offset="100%" stop-color="#C47878" stop-opacity="0.6"></stop>
+</lineargradient>
+<lineargradient id="gNew" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0%" stop-color="#8A9EC4"></stop><stop offset="50%" stop-color="#8A9EC4"></stop><stop offset="100%" stop-color="#8A9EC4" stop-opacity="0.6"></stop>
+</lineargradient>
+<!-- Dropout gradient (fades to nothing) -->
+<lineargradient id="gDrop" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0%" stop-color="#E0DFE4" stop-opacity="0.08"></stop><stop offset="100%" stop-color="#E0DFE4" stop-opacity="0.02"></stop>
+</lineargradient>
+</defs>
+<!-- Column headers -->
+<text class="col-metric" font-size="16" x="27" y="24">7.5m</text>
+<text class="col-sub" x="27" y="38">inbox DAU</text>
+<text class="col-metric" font-size="16" x="332" y="24">47%</text>
+<text class="col-sub" x="332" y="38">click (3.2m)</text>
+<text class="col-metric" font-size="16" x="637" y="24">75%</text>
+<text class="col-sub" x="637" y="38">contribute</text>
+<!-- ═══ FLOW PATHS — Stage 1 → Stage 2 (DAU → Clickers) ═══ -->
+<!-- Core → Clickers (largest flow) -->
+<path class="flow-glow" d="M34,50 C180,50 180,50 332,50 L332,195 C180,195 180,190 34,340 Z" data-seg="core" fill="url(#gCore)"></path>
+<path class="flow-path" d="M34,50 C180,50 180,50 332,50 L332,195 C180,195 180,190 34,340 Z" data-seg="core" fill="url(#gCore)"></path>
+<!-- Core → Non-clickers -->
+<path class="flow-path" d="M34,342 C180,342 180,280 332,260 L332,410 C180,410 180,412 34,412 Z" data-seg="core" fill="url(#gCore)" style="fill-opacity:0.06"></path>
+<!-- Casual → Clickers -->
+<path class="flow-glow" d="M34,344 C180,344 180,197 332,197 L332,207 C180,207 180,370 34,370 Z" data-seg="casual" fill="url(#gCasual)"></path>
+<path class="flow-path secondary" d="M34,344 C180,344 180,197 332,197 L332,207 C180,207 180,370 34,370 Z" data-seg="casual" fill="url(#gCasual)"></path>
+<!-- Casual → Non-clickers -->
+<path class="flow-path" d="M34,372 C180,372 180,412 332,412 L332,418 C180,418 180,380 34,380 Z" data-seg="casual" fill="url(#gCasual)" style="fill-opacity:0.06"></path>
+<!-- Resurrected → Clickers -->
+<path class="flow-glow" d="M34,382 C180,382 180,209 332,209 L332,216 C180,216 180,398 34,398 Z" data-seg="resurrected" fill="url(#gResurrected)"></path>
+<path class="flow-path secondary" d="M34,382 C180,382 180,209 332,209 L332,216 C180,216 180,398 34,398 Z" data-seg="resurrected" fill="url(#gResurrected)"></path>
+<!-- New → Clickers -->
+<path class="flow-glow" d="M34,400 C180,400 180,218 332,218 L332,222 C180,222 180,408 34,408 Z" data-seg="new" fill="url(#gNew)"></path>
+<path class="flow-path secondary" d="M34,400 C180,400 180,218 332,218 L332,222 C180,222 180,408 34,408 Z" data-seg="new" fill="url(#gNew)"></path>
+<!-- ═══ FLOW PATHS — Stage 2 → Stage 3 (Clickers → Contributors) ═══ -->
+<!-- Core clickers → Contributors -->
+<path class="flow-glow" d="M346,50 C490,50 490,50 637,50 L637,165 C490,165 490,155 346,155 Z" data-seg="core" fill="url(#gCore)"></path>
+<path class="flow-path" d="M346,50 C490,50 490,50 637,50 L637,165 C490,165 490,155 346,155 Z" data-seg="core" fill="url(#gCore)"></path>
+<!-- Core clickers → Non-contributors -->
+<path class="flow-path" d="M346,157 C490,157 490,290 637,290 L637,330 C490,330 490,195 346,195 Z" data-seg="core" fill="url(#gCore)" style="fill-opacity:0.06"></path>
+<!-- Casual clickers → Contributors -->
+<path class="flow-glow" d="M346,197 C490,197 490,167 637,167 L637,175 C490,175 490,207 346,207 Z" data-seg="casual" fill="url(#gCasual)"></path>
+<path class="flow-path secondary" d="M346,197 C490,197 490,167 637,167 L637,175 C490,175 490,207 346,207 Z" data-seg="casual" fill="url(#gCasual)"></path>
+<!-- Casual clickers → Non-contributors -->
+<path class="flow-path" d="M346,207 C490,207 490,332 637,332 L637,345 C490,345 490,210 346,210 Z" data-seg="casual" fill="url(#gCasual)" style="fill-opacity:0.06"></path>
+<!-- Resurrected clickers → Contributors -->
+<path class="flow-glow" d="M346,209 C490,209 490,177 637,177 L637,183 C490,183 490,216 346,216 Z" data-seg="resurrected" fill="url(#gResurrected)"></path>
+<path class="flow-path secondary" d="M346,209 C490,209 490,177 637,177 L637,183 C490,183 490,216 346,216 Z" data-seg="resurrected" fill="url(#gResurrected)"></path>
+<!-- New clickers → Contributors -->
+<path class="flow-glow" d="M346,218 C490,218 490,185 637,185 L637,189 C490,189 490,222 346,222 Z" data-seg="new" fill="url(#gNew)"></path>
+<path class="flow-path secondary" d="M346,218 C490,218 490,185 637,185 L637,189 C490,189 490,222 346,222 Z" data-seg="new" fill="url(#gNew)"></path>
+<!-- ═══ NODE BARS — Column 1 (DAU) ═══ -->
+<rect class="node-bar" data-seg="core" fill="#7FB5B0" height="290" width="14" x="20" y="50"></rect>
+<rect class="node-bar" data-seg="casual" fill="#C4B078" height="28" width="14" x="20" y="344"></rect>
+<rect class="node-bar" data-seg="resurrected" fill="#C47878" height="22" width="14" x="20" y="376"></rect>
+<rect class="node-bar" data-seg="new" fill="#8A9EC4" height="10" width="14" x="20" y="402"></rect>
+<!-- ═══ NODE BARS — Column 2 (Clickers) ═══ -->
+<rect class="node-bar" data-seg="core" fill="#7FB5B0" height="145" width="14" x="325" y="50"></rect>
+<rect class="node-bar" data-seg="casual" fill="#C4B078" height="10" width="14" x="325" y="197"></rect>
+<rect class="node-bar" data-seg="resurrected" fill="#C47878" height="7" width="14" x="325" y="209"></rect>
+<rect class="node-bar" data-seg="new" fill="#8A9EC4" height="4" width="14" x="325" y="218"></rect>
+<!-- Non-clicker bar (muted) -->
+<rect class="node-bar" fill="rgba(224,223,228,0.08)" height="158" rx="3" width="14" x="325" y="256"></rect>
+<text class="dropout-label" x="332" y="340">53%</text>
+<text class="dropout-label" font-size="8" x="332" y="352">don't click</text>
+<!-- ═══ NODE BARS — Column 3 (Contributors) ═══ -->
+<rect class="node-bar" data-seg="core" fill="#7FB5B0" height="115" width="14" x="630" y="50"></rect>
+<rect class="node-bar" data-seg="casual" fill="#C4B078" height="8" width="14" x="630" y="167"></rect>
+<rect class="node-bar" data-seg="resurrected" fill="#C47878" height="6" width="14" x="630" y="177"></rect>
+<rect class="node-bar" data-seg="new" fill="#8A9EC4" height="4" width="14" x="630" y="185"></rect>
+<!-- Non-contributor bar (muted) -->
+<rect class="node-bar" fill="rgba(224,223,228,0.08)" height="60" rx="3" width="14" x="630" y="220"></rect>
+<text class="dropout-label" x="637" y="254">25%</text>
+<text class="dropout-label" font-size="8" x="637" y="266">non-contrib</text>
+<!-- Column base labels -->
+<text class="col-label" x="27" y="428">DAU</text>
+<text class="col-label" x="332" y="428">Clickers</text>
+<text class="col-label" x="637" y="428">Contributors</text>
+</svg>
 </div>
-
+<!-- Stage breakdown cards -->
+<div class="stage-cards">
+<div class="stage-card">
+<div class="stage-title">7.5m inbox DAU</div>
+<div class="stage-sub">daily active inbox users</div>
+<div class="stage-rows">
+<div class="stage-row core"><div class="dot"></div><span class="pct">85%</span> core</div>
+<div class="stage-row casual"><div class="dot"></div><span class="pct">8%</span> casual</div>
+<div class="stage-row resurrected"><div class="dot"></div><span class="pct">5%</span> resurrected</div>
+<div class="stage-row new"><div class="dot"></div><span class="pct">2%</span> new</div>
+</div>
+</div>
+<div class="stage-card">
+<div class="stage-title">47% click</div>
+<div class="stage-sub">3.2m clickers</div>
+<div class="stage-rows">
+<div class="stage-row core"><div class="dot"></div><span class="pct">48%</span> of core</div>
+<div class="stage-row casual"><div class="dot"></div><span class="pct">35%</span> of casual</div>
+<div class="stage-row resurrected"><div class="dot"></div><span class="pct">39%</span> of resurrected</div>
+<div class="stage-row new"><div class="dot"></div><span class="pct">50%</span> of new</div>
+</div>
+</div>
+<div class="stage-card">
+<div class="stage-title">75% contribute</div>
+<div class="stage-sub">of clickers become contributors</div>
+<div class="stage-rows">
+<div class="stage-row core"><div class="dot"></div><span class="pct">78%</span> of core clickers</div>
+<div class="stage-row casual"><div class="dot"></div><span class="pct">40%</span> of casual clickers</div>
+<div class="stage-row resurrected"><div class="dot"></div><span class="pct">45%</span> of resurrected clickers</div>
+<div class="stage-row new"><div class="dot"></div><span class="pct">65%</span> of new clickers</div>
+</div>
+</div>
+</div>
+<div class="insight-bar">
+<svg class="insight-icon" fill="none" viewbox="0 0 20 20">
+<path d="M10 2L12.09 7.26L18 8.27L14 12.14L14.81 18.02L10 15.27L5.19 18.02L6 12.14L2 8.27L7.91 7.26L10 2Z" fill="none" stroke="#7FB5B0" stroke-linejoin="round" stroke-width="1.5"></path>
+</svg>
+<div class="insight-text">
+<strong>Core users dominate the contribution pipeline</strong> — 85% of DAU, but they convert at the highest rates too (48% click, 78% contribute). The notification strategy's biggest leverage is converting casual and resurrected users, where click rates are 13–15 points lower but the population is still meaningful.
+      <span class="insight-formula">casual click gap: 48% − 35% = 13pp · 0.6m casual DAU = ~78k recoverable clickers</span>
+</div>
+</div>
+</div>
 <script>
   // Segment isolation on legend click
   const legendItems = document.querySelectorAll('.legend-item');

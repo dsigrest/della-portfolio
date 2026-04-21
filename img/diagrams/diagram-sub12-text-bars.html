@@ -1,243 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SUB-12 — Text Bars</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --canvas: #0A0C16;
-    --elevated: #151722;
-    --text-pri: #E0DFE4;
-    --text-sec: rgba(224,223,228,0.6);
-    --text-ter: rgba(224,223,228,0.4);
-    --text-dim: rgba(224,223,228,0.2);
-    --border: rgba(224,223,228,0.07);
-    --accent: #7FB5B0;
-    --accent-dim: rgba(127,181,176,0.12);
-    --red: #C47878;
-    --warm: #D4A574;
-    --blue: #8A9EC4;
-    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
-    --glass-border: rgba(224,223,228,0.08);
-    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
-  }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body {
-    background: #08090F;
-    display: flex; justify-content: center;
-    padding: 40px;
-    font-family: 'Inter', -apple-system, sans-serif;
-    -webkit-font-smoothing: antialiased;
-  }
-  .diagram {
-    width: 760px;
-    background: var(--canvas);
-    border-radius: 16px;
-    overflow: hidden;
-    position: relative;
-    padding: 36px 48px;
-  }
-  .diagram::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse 400px 200px at 50% 40%, rgba(127,181,176,0.03) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  /* Stall cards with mini bars */
-  .stall-row {
-    display: grid; grid-template-columns: 1fr 1fr 1fr;
-    gap: 12px; position: relative; z-index: 1;
-  }
-  .stall-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-highlight);
-    border-radius: 10px;
-    padding: 14px 16px;
-    position: relative; overflow: hidden;
-  }
-  .stall-card::before {
-    content: ''; position: absolute;
-    left: 0; top: 0; bottom: 27px; width: 3px;
-  }
-  .stall-card:nth-child(1)::before { background: var(--red); opacity: 0.5; }
-  .stall-card:nth-child(2)::before { background: var(--warm); opacity: 0.5; }
-  .stall-card:nth-child(3)::before { background: var(--blue); opacity: 0.5; }
-
-  .stall-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 9px; font-weight: 600;
-    letter-spacing: 0.04em; text-transform: uppercase;
-    margin-bottom: 4px;
-  }
-  .stall-card:nth-child(1) .stall-label { color: var(--red); }
-  .stall-card:nth-child(2) .stall-label { color: var(--warm); }
-  .stall-card:nth-child(3) .stall-label { color: var(--blue); }
-
-  .stall-desc {
-    font-size: 10px; color: var(--text-ter); line-height: 1.5;
-    margin-bottom: 10px;
-  }
-
-  /* Mini horizontal bar */
-  .mini-bar-track {
-    height: 4px; border-radius: 2px;
-    background: var(--border);
-    position: relative; overflow: hidden;
-  }
-  .mini-bar-fill {
-    position: absolute; left: 0; top: 0; bottom: 0;
-    border-radius: 2px;
-    width: 0;
-  }
-  @keyframes growBar { to { width: var(--fill); } }
-  .stall-card:nth-child(1) .mini-bar-fill { background: var(--red); --fill: 28%; }
-  .stall-card:nth-child(2) .mini-bar-fill { background: var(--warm); --fill: 45%; }
-  .stall-card:nth-child(3) .mini-bar-fill { background: var(--blue); --fill: 72%; }
-
-  .mini-bar-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 8px; color: var(--text-dim);
-    margin-top: 4px;
-  }
-
-  /* Insight bar */
-  .insight {
-    margin-top: 16px;
-    display: flex; align-items: center; gap: 14px;
-    padding: 16px 20px;
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-highlight);
-    border-radius: 10px;
-    position: relative; z-index: 1;
-    overflow: hidden;
-  }
-  .insight::before {
-    content: ''; position: absolute;
-    top: 0; left: 0; right: 39px; height: 2px;
-    background: var(--accent);
-  }
-  .insight-icon {
-    width: 36px; height: 36px; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    background: rgba(127,181,176,0.1);
-    border: 1px solid rgba(127,181,176,0.18);
-    border-radius: 8px;
-  }
-  .insight-text { display: flex; flex-direction: column; gap: 2px; }
-  .insight-label-text {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px; font-weight: 600;
-    letter-spacing: 0.06em; text-transform: uppercase;
-    color: var(--accent); opacity: 0.7;
-  }
-  .insight-desc { font-size: 12px; color: var(--text-sec); line-height: 1.5; }
-
-  /* Outcome */
-  .outcome {
-    margin-top: 12px;
-    background: var(--accent-dim);
-    border-radius: 10px;
-    padding: 14px 20px;
-    display: flex; align-items: center; gap: 12px;
-    position: relative; z-index: 1;
-  }
-  .outcome-icon { flex-shrink: 0; }
-  .outcome p { font-size: 13px; font-weight: 500; color: var(--text-sec); line-height: 1.5; }
-
-  /* Entrance */
-  .reveal {
-    opacity: 0; transform: translateY(10px);
-    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  .reveal.visible { opacity: 1; transform: translateY(0); }
-
-  @media (prefers-reduced-motion: reduce) {
-    .reveal { opacity: 1; transform: none; transition: none; }
-    .mini-bar-fill { animation: none; width: var(--fill) !important; }
-  }
-
-/* Embed mode: strip body chrome when loaded in iframe */
-body.embedded {
-  padding: 0;
-  min-height: auto;
-  display: block;
-  background: transparent;
-  overflow: hidden;
-  align-items: initial;
-}
-body.embedded .diagram {
-  width: 100%;
-  border-radius: 0;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stall Points — SUB-12t</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --canvas: #0A0C16;
+      --elevated: #151722;
+      --text-pri: #E0DFE4;
+      --text-sec: rgba(224,223,228,0.6);
+      --text-ter: rgba(224,223,228,0.4);
+      --text-dim: rgba(224,223,228,0.2);
+      --border: rgba(224,223,228,0.07);
+      --accent: #7FB5B0;
+      --accent-dim: rgba(127,181,176,0.12);
+      --red: #C47878;
+      --resur: #C4B078;
+      --warm: #D4A574;
+      --blue: #8A9EC4;
+      --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+      --glass-border: rgba(224,223,228,0.08);
+      --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    }
+    
+    body {
+      background: #08090F;
+      display: flex;
+      justify-content: center;
+      padding: 40px;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+    
+    .diagram {
+      width: 760px;
+      background: var(--canvas);
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      padding: 36px 48px;
+    }
+    
+    .diagram::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 200px;
+      background: radial-gradient(circle at center, rgba(127,181,176,0.06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    .diagram > * { position: relative; z-index: 1; }
+    
+    .stalls-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+    
+    .stall-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-highlight);
+      border-radius: 10px;
+      padding: 14px 16px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .stall-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 27px;
+      width: 3px;
+      border-radius: 10px 0 0 0;
+    }
+    
+    .stall-card.red::before { background: rgba(196,120,120,0.5); }
+    .stall-card.warm::before { background: rgba(212,165,116,0.5); }
+    .stall-card.blue::before { background: rgba(138,158,196,0.5); }
+    
+    .stall-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.36px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      line-height: 1;
+    }
+    
+    .stall-card.red .stall-label { color: var(--red); }
+    .stall-card.warm .stall-label { color: var(--warm); }
+    .stall-card.blue .stall-label { color: var(--blue); }
+    
+    .stall-desc {
+      font-size: 10px;
+      color: var(--text-ter);
+      line-height: 1.5;
+      margin-bottom: 12px;
+      flex-grow: 1;
+    }
+    
+    .stall-bar-track {
+      width: 100%;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    
+    .stall-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+    }
+    
+    .stall-card.red .stall-bar-fill { background: var(--red); }
+    .stall-card.warm .stall-bar-fill { background: var(--warm); }
+    .stall-card.blue .stall-bar-fill { background: var(--blue); }
+    
+    .stall-metric {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      color: var(--text-dim);
+      text-align: left;
+    }
+    
+    .reveal {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.5s, transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    
+    body.embedded {
+      padding: 0;
+      min-height: auto;
+      display: block;
+      background: transparent;
+      overflow: hidden;
+      align-items: initial;
+    }
+    
+    body.embedded .diagram {
+      width: 100%;
+      border-radius: 0;
+    }
+  </style>
 </head>
 <body>
   <div class="diagram">
-    <div class="stall-row reveal">
-      <div class="stall-card">
+    <div class="stalls-grid">
+      <!-- Biggest stall -->
+      <div class="stall-card red reveal">
         <div class="stall-label">Biggest stall</div>
         <div class="stall-desc">Description skipped most — mods didn't see it as urgent at creation</div>
-        <div class="mini-bar-track">
-          <div class="mini-bar-fill" style="animation: growBar 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.3s forwards;"></div>
+        <div class="stall-bar-track">
+          <div class="stall-bar-fill" style="width: 28%;"></div>
         </div>
-        <div class="mini-bar-label">28% at Create</div>
+        <div class="stall-metric">28% at Create</div>
       </div>
-      <div class="stall-card">
+      
+      <!-- Key skip -->
+      <div class="stall-card warm reveal">
         <div class="stall-label">Key skip</div>
         <div class="stall-desc">Rules often skipped at Growth — revisited later at Mod Team stage</div>
-        <div class="mini-bar-track">
-          <div class="mini-bar-fill" style="animation: growBar 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.4s forwards;"></div>
+        <div class="stall-bar-track">
+          <div class="stall-bar-fill" style="width: 45%;"></div>
         </div>
-        <div class="mini-bar-label">45% at Growth</div>
+        <div class="stall-metric">45% at Growth</div>
       </div>
-      <div class="stall-card">
+      
+      <!-- Critical gate -->
+      <div class="stall-card blue reveal">
         <div class="stall-label">Critical gate</div>
         <div class="stall-desc">Co-mod recruitment — teams significantly outperformed solo founders</div>
-        <div class="mini-bar-track">
-          <div class="mini-bar-fill" style="animation: growBar 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.5s forwards;"></div>
+        <div class="stall-bar-track">
+          <div class="stall-bar-fill" style="width: 72%;"></div>
         </div>
-        <div class="mini-bar-label">72% at Sustain</div>
+        <div class="stall-metric">72% at Sustain</div>
       </div>
-    </div>
-
-    <div class="insight reveal" style="transition-delay: 100ms">
-      <div class="insight-icon">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <circle cx="10" cy="10" r="7" stroke="var(--accent)" stroke-width="1" fill="none"/>
-          <path d="M10 6v4l2.5 2.5" stroke="var(--accent)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-      <div class="insight-text">
-        <div class="insight-label-text">Design as Measurement</div>
-        <div class="insight-desc">Where creators stalled — which actions they completed, which they skipped, which stages dropped off — all visible in real time without additional instrumentation.</div>
-      </div>
-    </div>
-
-    <div class="outcome reveal" style="transition-delay: 200ms">
-      <div class="outcome-icon">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M4 8h8M8 4v8" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
-        </svg>
-      </div>
-      <p>As the team experimented, we fine-tuned where and when to intercept moderators — testing different triggers, user signals, and contexts through hypothesis-driven iteration.</p>
     </div>
   </div>
 
-<script>
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
-    });
-  }, { threshold: 0.15 });
-  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
-</script>
-<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+  <script>
+    if (window !== window.parent) document.body.classList.add('embedded');
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+    
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
 </body>
 </html>

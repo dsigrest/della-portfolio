@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Sparkle Problem</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --casual: #D4A574;
+    --resur: #C4B078;
+    --new-seg: #8A9EC4;
+    --red: #C47878;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .title-area { padding: 48px 48px 0; }
+  .label {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); opacity: 0.8; margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 36px; font-weight: 700;
+    color: var(--text-pri); letter-spacing: -0.025em;
+    margin-bottom: 8px; line-height: 1.15;
+  }
+  .subtitle {
+    font-size: 15px; color: var(--text-sec);
+    line-height: 1.55; max-width: 580px;
+  }
+
+  /* Problem section — the sparkle */
+  .problem-area {
+    padding: 40px 48px 24px;
+    position: relative;
+  }
+  .problem-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 300px 200px at 50% 50%, rgba(196,120,120,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .problem-row {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Sparkle with X */
+  .sparkle-rejection {
+    width: 80px; height: 80px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .sparkle-rejection svg {
+    width: 100%; height: 100%;
+  }
+  .x-slash {
+    position: absolute;
+    top: 50%; left: 10%; right: 10%;
+    height: 2px;
+    background: var(--red);
+    opacity: 0.6;
+    transform: translateY(-50%) rotate(45deg);
+    border-radius: 1px;
+  }
+
+  /* Sentiment bar */
+  .sentiment-section {
+    flex: 1;
+  }
+  .sentiment-label-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .sent-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .sent-neg { color: var(--red); }
+  .sent-pos { color: var(--accent); }
+
+  .sentiment-bar {
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    background: var(--elevated);
+  }
+  .bar-neg {
+    flex: 0.75;
+    background: linear-gradient(90deg, rgba(196,120,120,0.6), rgba(196,120,120,0.35));
+    border-radius: 4px 0 0 4px;
+  }
+  .bar-pos {
+    flex: 0.25;
+    background: linear-gradient(90deg, rgba(127,181,176,0.35), rgba(127,181,176,0.6));
+    border-radius: 0 4px 4px 0;
+  }
+
+  .sentiment-note {
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 6px;
+    text-align: center;
+  }
+
+  /* Transition arrow */
+  .pivot-area {
+    padding: 0 48px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+  }
+  .pivot-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(196,120,120,0.1), rgba(224,223,228,0.06), rgba(127,181,176,0.1));
+  }
+  .pivot-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  /* Alternatives — what worked */
+  .alternatives-area {
+    padding: 0 48px 32px;
+    position: relative;
+  }
+  .alternatives-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 400px 200px at 50% 50%, rgba(127,181,176,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .alternatives {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .alt-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-highlight);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .alt-icon {
+    width: 36px; height: 36px;
+    margin: 0 auto 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-dim);
+    border: 1px solid rgba(127,181,176,0.15);
+    border-radius: 8px;
+  }
+
+  .alt-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-pri);
+    margin-bottom: 4px;
+  }
+  .alt-desc {
+    font-size: 11px;
+    color: var(--text-ter);
+    line-height: 1.4;
+  }
+
+  /* SHR-05 ambient on the sparkle */
+  .sparkle-fade {
+    animation: sparkle-dim 5s ease-in-out infinite;
+  }
+  @keyframes sparkle-dim {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0.35; }
+  }
+
+  /* Outcome */
+  .outcome {
+    margin: 0 48px 48px;
+    background: var(--accent-dim);
+    border-radius: 10px;
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .outcome-arrow {
+    font-size: 16px; color: var(--accent);
+    opacity: 0.55; flex-shrink: 0;
+  }
+  .outcome p {
+    font-size: 13px; font-weight: 500;
+    color: var(--text-sec); line-height: 1.5;
+  }
+
+  @media (max-width: 680px) {
+    .title-area, .problem-area, .pivot-area, .alternatives-area, .outcome { padding-left: 24px; padding-right: 24px; }
+    body { padding: 16px; }
+    .alternatives { grid-template-columns: 1fr; }
+    .problem-row { flex-direction: column; }
+  }
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="title-area">
+      <div class="label">Transparency — UI</div>
+      <h1>The Sparkle Problem</h1>
+      <p class="subtitle">The sparkle icon got negative reactions — users saw it as an AI cliché. This crossed beyond design systems into identity.</p>
+    </div>
+
+    <div class="problem-area">
+      <div class="problem-row">
+        <!-- The rejected sparkle -->
+        <div class="sparkle-rejection">
+          <svg viewBox="0 0 80 80" fill="none">
+            <path class="sparkle-fade" d="M40 12 L45.5 30.5 L64 28 L50 38 L60 56 L42 46 L40 68 L38 46 L20 56 L30 38 L16 28 L34.5 30.5 Z"
+                  fill="rgba(196,120,120,0.12)" stroke="rgba(196,120,120,0.3)" stroke-width="1" stroke-linejoin="round"/>
+          </svg>
+          <div class="x-slash"></div>
+        </div>
+
+        <!-- Sentiment breakdown -->
+        <div class="sentiment-section">
+          <div class="sentiment-label-row">
+            <span class="sent-label sent-neg">75% Negative</span>
+            <span class="sent-label sent-pos">25% Positive</span>
+          </div>
+          <div class="sentiment-bar">
+            <div class="bar-neg"></div>
+            <div class="bar-pos"></div>
+          </div>
+          <div class="sentiment-note">Sparkle felt trendy, not trustworthy</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pivot-area">
+      <div class="pivot-line"></div>
+      <div class="pivot-label">Pivoted to</div>
+      <div class="pivot-line"></div>
+    </div>
+
+    <div class="alternatives-area">
+      <div class="alternatives">
+        <div class="alt-card">
+          <div class="alt-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <circle cx="9" cy="9" r="5" stroke="rgba(127,181,176,0.5)" stroke-width="1.2" fill="rgba(127,181,176,0.1)"/>
+              <circle cx="9" cy="9" r="2" fill="rgba(127,181,176,0.3)"/>
+            </svg>
+          </div>
+          <div class="alt-name">Color System</div>
+          <div class="alt-desc">Consistent color for AI content</div>
+        </div>
+
+        <div class="alt-card">
+          <div class="alt-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <rect x="2" y="6" width="14" height="6" rx="3" stroke="rgba(127,181,176,0.5)" stroke-width="1" fill="rgba(127,181,176,0.08)"/>
+              <text x="9" y="11" text-anchor="middle" font-size="5" font-weight="600" font-family="Inter" fill="rgba(127,181,176,0.5)">AI</text>
+            </svg>
+          </div>
+          <div class="alt-name">Named Label</div>
+          <div class="alt-desc">Clear text identification</div>
+        </div>
+
+        <div class="alt-card">
+          <div class="alt-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <rect x="2" y="2" width="14" height="14" rx="2" stroke="rgba(127,181,176,0.4)" stroke-width="1" fill="none"/>
+              <line x1="9" y1="2" x2="9" y2="16" stroke="rgba(127,181,176,0.2)" stroke-width="0.6" stroke-dasharray="2 2"/>
+            </svg>
+          </div>
+          <div class="alt-name">Visual Separation</div>
+          <div class="alt-desc">Spatial separation from user content</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="outcome">
+      <span class="outcome-arrow">↳</span>
+      <p>Ditching the industry default (sparkle) forced the team to design identification that earned trust instead of borrowing it</p>
+    </div>
+  </div>
+</body>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</html>

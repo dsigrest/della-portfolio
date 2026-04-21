@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scoring Session</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --casual: #D4A574;
+    --resur: #C4B078;
+    --new-seg: #8A9EC4;
+    --red: #C47878;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .title-area { padding: 48px 48px 0; }
+  .label {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); opacity: 0.8; margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 36px; font-weight: 700;
+    color: var(--text-pri); letter-spacing: -0.025em;
+    margin-bottom: 8px; line-height: 1.15;
+  }
+  .subtitle {
+    font-size: 15px; color: var(--text-sec);
+    line-height: 1.55; max-width: 540px;
+  }
+
+  /* Disciplines area */
+  .disciplines-area {
+    padding: 48px 48px 40px;
+    position: relative;
+  }
+  .disciplines-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 180px 200px at 17% 40%, rgba(138,158,196,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 180px 200px at 50% 40%, rgba(127,181,176,0.05) 0%, transparent 70%),
+      radial-gradient(ellipse 180px 200px at 83% 40%, rgba(212,165,116,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .disciplines-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .discipline {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .disc-icon {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 16px;
+  }
+
+  /* ── SHR-05 STYLE ANIMATIONS ──
+     Ambient, subtle, long cycles, no breathing/pulsing */
+
+  /* Engineering gear — very slow rotation, ambient */
+  .eng-gear {
+    animation: gear-rotate 18s linear infinite;
+    transform-origin: 50px 50px;
+  }
+  @keyframes gear-rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* Design target — SHR-05 expanding circles pattern */
+  .target-ring {
+    animation: ring-ambient 4s ease-in-out infinite;
+    transform-origin: 50px 50px;
+  }
+  .target-ring:nth-child(1) { animation-delay: 0s; }
+  .target-ring:nth-child(2) { animation-delay: 0.4s; }
+  .target-ring:nth-child(3) { animation-delay: 0.8s; }
+  @keyframes ring-ambient {
+    0%, 100% { opacity: 0.15; }
+    50% { opacity: 0.3; }
+  }
+
+  /* Content pencil — very subtle writing, barely perceptible */
+  .content-write {
+    animation: pencil-ambient 5s ease-in-out infinite;
+  }
+  @keyframes pencil-ambient {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(1px, 0.5px); }
+    75% { transform: translate(-0.5px, 0.5px); }
+  }
+
+  /* Content lines — SHR-05 dancing style */
+  .doc-line {
+    animation: line-dance 3.5s ease-in-out infinite;
+  }
+  .doc-line:nth-child(1) { animation-delay: 0.1s; }
+  .doc-line:nth-child(2) { animation-delay: 0.4s; }
+  .doc-line:nth-child(3) { animation-delay: 0.7s; }
+  .doc-line:nth-child(4) { animation-delay: 0.25s; }
+  @keyframes line-dance {
+    0%, 100% { opacity: 0.15; }
+    50% { opacity: 0.3; }
+  }
+
+  .disc-name {
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .disc-name.eng { color: var(--new-seg); }
+  .disc-name.des { color: var(--accent); }
+  .disc-name.con { color: var(--casual); }
+
+  /* Focus areas — tags */
+  .focus-areas {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+  }
+  .focus-tag {
+    font-size: 11px;
+    color: var(--text-sec);
+    padding: 5px 12px;
+    border-radius: 20px;
+    background: rgba(224,223,228,0.02);
+    border: 1px solid var(--border-normal);
+    white-space: nowrap;
+  }
+
+  /* Center connection */
+  .connection-zone {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    padding: 0 48px;
+    margin-top: -4px;
+  }
+  .connection-line {
+    width: 200px;
+    height: 1px;
+    background: linear-gradient(90deg,
+      rgba(138,158,196,0.1),
+      rgba(127,181,176,0.15),
+      rgba(212,165,116,0.1)
+    );
+  }
+
+  /* Insight callout */
+  .insight {
+    margin: 20px 48px 0;
+    padding: 14px 18px;
+    background: rgba(212,165,116,0.06);
+    border: 1px solid rgba(212,165,116,0.12);
+    border-radius: 8px;
+    position: relative;
+    z-index: 1;
+  }
+  .insight p {
+    font-size: 12px;
+    color: var(--text-sec);
+    line-height: 1.55;
+  }
+  .insight strong {
+    color: var(--casual);
+    font-weight: 600;
+  }
+
+  /* Outcome */
+  .outcome {
+    margin: 20px 48px 48px;
+    background: var(--accent-dim);
+    border-radius: 10px;
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .outcome-arrow {
+    font-size: 16px; color: var(--accent);
+    opacity: 0.55; flex-shrink: 0;
+  }
+  .outcome p {
+    font-size: 13px; font-weight: 500;
+    color: var(--text-sec); line-height: 1.5;
+  }
+
+  @media (max-width: 680px) {
+    .title-area, .disciplines-area, .insight, .outcome { padding-left: 24px; padding-right: 24px; }
+    body { padding: 16px; }
+    .disciplines-grid { grid-template-columns: 1fr; }
+  }
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="title-area">
+      <div class="label">Prompt Design</div>
+      <h1>Scoring Session</h1>
+      <p class="subtitle">Cross-functional team rating outputs against the rubric — engineers, design, and content design evaluating together</p>
+    </div>
+
+    <div class="disciplines-area">
+      <div class="disciplines-grid">
+        <!-- Engineering -->
+        <div class="discipline">
+          <div class="disc-icon">
+            <svg width="100" height="100" viewBox="0 0 100 100" fill="none">
+              <g class="eng-gear">
+                <circle cx="50" cy="50" r="20" stroke="rgba(138,158,196,0.3)" stroke-width="1.2" fill="none"/>
+                <circle cx="50" cy="50" r="12" stroke="rgba(138,158,196,0.25)" stroke-width="0.8" fill="rgba(138,158,196,0.05)"/>
+                <rect x="47" y="26" width="6" height="10" rx="1.5" fill="rgba(138,158,196,0.2)"/>
+                <rect x="47" y="64" width="6" height="10" rx="1.5" fill="rgba(138,158,196,0.2)"/>
+                <rect x="26" y="47" width="10" height="6" rx="1.5" fill="rgba(138,158,196,0.2)"/>
+                <rect x="64" y="47" width="10" height="6" rx="1.5" fill="rgba(138,158,196,0.2)"/>
+                <rect x="30" y="30" width="6" height="8" rx="1.5" fill="rgba(138,158,196,0.18)" transform="rotate(45, 33, 34)"/>
+                <rect x="64" y="30" width="6" height="8" rx="1.5" fill="rgba(138,158,196,0.18)" transform="rotate(-45, 67, 34)"/>
+                <rect x="30" y="62" width="6" height="8" rx="1.5" fill="rgba(138,158,196,0.18)" transform="rotate(-45, 33, 66)"/>
+                <rect x="64" y="62" width="6" height="8" rx="1.5" fill="rgba(138,158,196,0.18)" transform="rotate(45, 67, 66)"/>
+              </g>
+              <circle cx="50" cy="50" r="4" fill="rgba(138,158,196,0.35)"/>
+              <text x="18" y="40" font-size="14" font-family="monospace" fill="rgba(138,158,196,0.25)">{</text>
+              <text x="78" y="65" font-size="14" font-family="monospace" fill="rgba(138,158,196,0.25)">}</text>
+            </svg>
+          </div>
+          <div class="disc-name eng">Engineering</div>
+          <div class="focus-areas">
+            <div class="focus-tag">SEO signals</div>
+            <div class="focus-tag">Length adherence</div>
+            <div class="focus-tag">Technical feasibility</div>
+          </div>
+        </div>
+
+        <!-- Design -->
+        <div class="discipline">
+          <div class="disc-icon">
+            <svg width="100" height="100" viewBox="0 0 100 100" fill="none">
+              <!-- SHR-05 expanding rings pattern -->
+              <circle class="target-ring" cx="50" cy="50" r="32" stroke="rgba(127,181,176,0.15)" stroke-width="1" fill="none"/>
+              <circle class="target-ring" cx="50" cy="50" r="24" stroke="rgba(127,181,176,0.2)" stroke-width="1" fill="none"/>
+              <circle class="target-ring" cx="50" cy="50" r="16" stroke="rgba(127,181,176,0.28)" stroke-width="1" fill="none"/>
+              <circle cx="50" cy="50" r="8" stroke="rgba(127,181,176,0.35)" stroke-width="1.2" fill="rgba(127,181,176,0.1)"/>
+              <circle cx="50" cy="50" r="3" fill="var(--accent)" opacity="0.55"/>
+              <!-- Crosshair lines -->
+              <line x1="50" y1="16" x2="50" y2="36" stroke="rgba(127,181,176,0.18)" stroke-width="0.6"/>
+              <line x1="50" y1="64" x2="50" y2="84" stroke="rgba(127,181,176,0.18)" stroke-width="0.6"/>
+              <line x1="16" y1="50" x2="36" y2="50" stroke="rgba(127,181,176,0.18)" stroke-width="0.6"/>
+              <line x1="64" y1="50" x2="84" y2="50" stroke="rgba(127,181,176,0.18)" stroke-width="0.6"/>
+            </svg>
+          </div>
+          <div class="disc-name des">Design</div>
+          <div class="focus-areas">
+            <div class="focus-tag">Tone</div>
+            <div class="focus-tag">Sentence structure</div>
+            <div class="focus-tag">User experience</div>
+          </div>
+        </div>
+
+        <!-- Content Design -->
+        <div class="discipline">
+          <div class="disc-icon">
+            <svg width="100" height="100" viewBox="0 0 100 100" fill="none">
+              <!-- Document -->
+              <rect x="26" y="16" width="40" height="52" rx="4" stroke="rgba(212,165,116,0.35)" stroke-width="1.2" fill="rgba(212,165,116,0.04)"/>
+              <!-- Document lines — SHR-05 dancing style -->
+              <line class="doc-line" x1="34" y1="28" x2="58" y2="28" stroke="rgba(212,165,116,0.25)" stroke-width="1.5" stroke-linecap="round"/>
+              <line class="doc-line" x1="34" y1="36" x2="54" y2="36" stroke="rgba(212,165,116,0.2)" stroke-width="1.5" stroke-linecap="round"/>
+              <line class="doc-line" x1="34" y1="44" x2="56" y2="44" stroke="rgba(212,165,116,0.18)" stroke-width="1.5" stroke-linecap="round"/>
+              <line class="doc-line" x1="34" y1="52" x2="48" y2="52" stroke="rgba(212,165,116,0.15)" stroke-width="1.5" stroke-linecap="round"/>
+              <!-- Pencil writing — very subtle -->
+              <g class="content-write">
+                <line x1="62" y1="58" x2="74" y2="46" stroke="rgba(212,165,116,0.4)" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M62 58 L60 64 L66 62 Z" fill="rgba(212,165,116,0.25)" stroke="rgba(212,165,116,0.3)" stroke-width="0.6"/>
+              </g>
+              <!-- Globe/i18n hint -->
+              <circle cx="70" cy="76" r="8" stroke="rgba(212,165,116,0.25)" stroke-width="0.8" fill="none"/>
+              <ellipse cx="70" cy="76" rx="4" ry="8" stroke="rgba(212,165,116,0.18)" stroke-width="0.6" fill="none"/>
+              <line x1="62" y1="76" x2="78" y2="76" stroke="rgba(212,165,116,0.15)" stroke-width="0.5"/>
+            </svg>
+          </div>
+          <div class="disc-name con">Content Design</div>
+          <div class="focus-areas">
+            <div class="focus-tag">Accuracy</div>
+            <div class="focus-tag">i18n readiness</div>
+            <div class="focus-tag">Voice consistency</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="connection-zone">
+      <div class="connection-line"></div>
+    </div>
+
+    <div class="insight">
+      <p><strong>The key insight:</strong> Pulling engineers into content evaluation shifted the team dynamic — they stopped seeing prompts as "just the words" and started owning quality alongside design and content.</p>
+    </div>
+
+    <div class="outcome">
+      <span class="outcome-arrow">↳</span>
+      <p>Cross-functional scoring created shared ownership of output quality — engineering, design, and content aligned on what "good" looks like</p>
+    </div>
+  </div>
+</body>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</html>

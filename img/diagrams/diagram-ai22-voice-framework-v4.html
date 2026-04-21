@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voice Framework</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --casual: #D4A574;
+    --resur: #C4B078;
+    --new-seg: #8A9EC4;
+    --red: #C47878;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .title-area { padding: 48px 48px 0; }
+  .label {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); opacity: 0.8; margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 36px; font-weight: 700;
+    color: var(--text-pri); letter-spacing: -0.025em;
+    margin-bottom: 8px; line-height: 1.15;
+  }
+  .subtitle {
+    font-size: 15px; color: var(--text-sec);
+    line-height: 1.55; max-width: 560px;
+  }
+
+  /* Dimensions area */
+  .dimensions-area {
+    padding: 36px 48px 32px;
+    position: relative;
+  }
+  .dimensions-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 200px 220px at 17% 40%, rgba(212,165,116,0.05) 0%, transparent 70%),
+      radial-gradient(ellipse 200px 220px at 50% 40%, rgba(127,181,176,0.05) 0%, transparent 70%),
+      radial-gradient(ellipse 200px 220px at 83% 40%, rgba(138,158,196,0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .dimensions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .dimension-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: var(--glass-highlight);
+    border-top: 3px solid var(--border-normal);
+  }
+
+  .dimension-card.tone { border-top-color: var(--casual); }
+  .dimension-card.clarity { border-top-color: var(--accent); }
+  .dimension-card.identity { border-top-color: var(--new-seg); }
+
+  /* Visual illustration zones */
+  .dim-illustration {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    position: relative;
+  }
+
+  /* Tone illustration — speech bubbles at different distances */
+  .tone-visual {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    position: relative;
+  }
+  .tone-bubble {
+    border-radius: 8px;
+    padding: 6px 8px;
+    position: relative;
+  }
+  .tone-bubble.close {
+    background: rgba(212,165,116,0.12);
+    border: 1px solid rgba(212,165,116,0.25);
+  }
+  .tone-bubble.far {
+    background: rgba(224,223,228,0.03);
+    border: 1px solid rgba(224,223,228,0.06);
+  }
+  .tone-bubble-line {
+    height: 2px; border-radius: 1px;
+    margin-bottom: 3px;
+  }
+  .tone-bubble-line:last-child { margin-bottom: 0; }
+  .tone-bubble.close .tone-bubble-line { background: rgba(212,165,116,0.3); }
+  .tone-bubble.far .tone-bubble-line { background: rgba(224,223,228,0.06); }
+
+  .tone-arrow {
+    position: absolute;
+    bottom: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .tone-arrow-line {
+    width: 40px; height: 1px;
+    background: linear-gradient(to right, rgba(212,165,116,0.4), rgba(224,223,228,0.1));
+  }
+  .tone-arrow-label {
+    font-size: 7px;
+    color: var(--text-dim);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  /* Clarity illustration — spectrum mini bar */
+  .clarity-visual {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .clarity-bar {
+    width: 85%;
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(to right, rgba(196,120,120,0.4), rgba(127,181,176,0.5) 40%, rgba(127,181,176,0.5) 60%, rgba(196,120,120,0.4));
+    position: relative;
+  }
+  .clarity-marker {
+    position: absolute;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.7;
+    box-shadow: 0 0 8px rgba(127,181,176,0.3);
+  }
+  .clarity-labels {
+    display: flex;
+    justify-content: space-between;
+    width: 85%;
+  }
+  .clarity-end {
+    font-size: 7px;
+    color: var(--text-dim);
+    letter-spacing: 0.03em;
+  }
+  .clarity-center {
+    font-size: 7px;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.03em;
+  }
+
+  /* Identity illustration — 4 mini identity icons */
+  .identity-visual {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+    width: 100%;
+  }
+  .id-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 2px;
+    border-radius: 6px;
+    border: 1px solid rgba(224,223,228,0.04);
+  }
+  .id-option.winner {
+    border-color: rgba(127,181,176,0.2);
+    background: rgba(127,181,176,0.04);
+  }
+  .id-option-label {
+    font-size: 6px;
+    color: var(--text-dim);
+    letter-spacing: 0.02em;
+    text-align: center;
+  }
+  .id-option.winner .id-option-label {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .dimension-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-pri);
+    margin-bottom: 6px;
+  }
+  .dimension-desc {
+    font-size: 12px;
+    color: var(--text-sec);
+    line-height: 1.5;
+  }
+
+  /* Bracket connector */
+  .bracket-area {
+    padding: 0 48px;
+    position: relative;
+    z-index: 1;
+    height: 44px;
+  }
+
+  /* Outcome */
+  .outcome {
+    margin: 8px 48px 48px;
+    background: var(--accent-dim);
+    border-radius: 10px;
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .outcome-arrow {
+    font-size: 16px; color: var(--accent);
+    opacity: 0.55; flex-shrink: 0;
+  }
+  .outcome p {
+    font-size: 13px; font-weight: 500;
+    color: var(--text-sec); line-height: 1.5;
+  }
+
+  /* SHR-05 ambient — gentle card border glow */
+  .dim-glow {
+    animation: dim-ambient 5s ease-in-out infinite;
+  }
+  .dim-glow:nth-child(2) { animation-delay: 0.8s; }
+  .dim-glow:nth-child(3) { animation-delay: 1.6s; }
+  @keyframes dim-ambient {
+    0%, 100% { opacity: 0.85; }
+    50% { opacity: 1; }
+  }
+
+  @media (max-width: 680px) {
+    .title-area, .dimensions-area, .bracket-area, .outcome { padding-left: 24px; padding-right: 24px; }
+    body { padding: 16px; }
+    .dimensions-grid { grid-template-columns: 1fr; }
+  }
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="title-area">
+      <div class="label">Voice</div>
+      <h1>Voice Framework</h1>
+      <p class="subtitle">Defining what the LLM produced was as much a design problem as defining how it looked</p>
+    </div>
+
+    <div class="dimensions-area">
+      <div class="dimensions-grid">
+        <!-- Tone -->
+        <div class="dimension-card tone dim-glow">
+          <div class="dim-illustration">
+            <div class="tone-visual">
+              <div class="tone-bubble close">
+                <div class="tone-bubble-line" style="width: 36px;"></div>
+                <div class="tone-bubble-line" style="width: 28px;"></div>
+              </div>
+              <div class="tone-bubble far">
+                <div class="tone-bubble-line" style="width: 30px;"></div>
+                <div class="tone-bubble-line" style="width: 22px;"></div>
+              </div>
+              <div class="tone-arrow">
+                <div class="tone-arrow-line"></div>
+                <span class="tone-arrow-label">CLOSENESS</span>
+              </div>
+            </div>
+          </div>
+          <p class="dimension-title">Tone</p>
+          <p class="dimension-desc">Closeness to source posts drove trust</p>
+        </div>
+
+        <!-- Clarity -->
+        <div class="dimension-card clarity dim-glow">
+          <div class="dim-illustration">
+            <div class="clarity-visual">
+              <div class="clarity-bar">
+                <div class="clarity-marker"></div>
+              </div>
+              <div class="clarity-labels">
+                <span class="clarity-end">PLATITUDES</span>
+                <span class="clarity-center">SWEET SPOT</span>
+                <span class="clarity-end">VERBATIM</span>
+              </div>
+            </div>
+          </div>
+          <p class="dimension-title">Clarity</p>
+          <p class="dimension-desc">Finding the sweet spot between platitudes and verbatim quotes</p>
+        </div>
+
+        <!-- Identity -->
+        <div class="dimension-card identity dim-glow">
+          <div class="dim-illustration">
+            <div class="identity-visual">
+              <div class="id-option">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <circle cx="10" cy="8" r="3" stroke="rgba(224,223,228,0.25)" stroke-width="1" fill="none"/>
+                  <path d="M5 16C5 13 7 11 10 11C13 11 15 13 15 16" stroke="rgba(224,223,228,0.25)" stroke-width="1" stroke-linecap="round" fill="none"/>
+                </svg>
+                <span class="id-option-label">Character</span>
+              </div>
+              <div class="id-option">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M5 13L7 15L11 11" stroke="rgba(224,223,228,0.25)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M15 5L13 7L11 11" stroke="rgba(224,223,228,0.25)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="id-option-label">Tool</span>
+              </div>
+              <div class="id-option winner">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <circle cx="10" cy="10" r="6" stroke="rgba(127,181,176,0.4)" stroke-width="1" fill="none"/>
+                  <circle cx="10" cy="10" r="3" stroke="rgba(127,181,176,0.35)" stroke-width="1" fill="none"/>
+                  <circle cx="10" cy="10" r="1.5" fill="rgba(127,181,176,0.5)"/>
+                </svg>
+                <span class="id-option-label">Omni</span>
+              </div>
+              <div class="id-option">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <circle cx="10" cy="10" r="6" stroke="rgba(224,223,228,0.15)" stroke-width="1" fill="none"/>
+                  <path d="M6 14L14 6" stroke="rgba(224,223,228,0.15)" stroke-width="1" stroke-linecap="round"/>
+                </svg>
+                <span class="id-option-label">None</span>
+              </div>
+            </div>
+          </div>
+          <p class="dimension-title">LLM Identity</p>
+          <p class="dimension-desc">Is the LLM Reddit, a character, a tool, or omnipresent?</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bracket SVG -->
+    <div class="bracket-area">
+      <svg width="100%" height="44" viewBox="0 0 664 44" preserveAspectRatio="xMidYMid meet" fill="none">
+        <line x1="110" y1="4" x2="332" y2="20" stroke="rgba(224,223,228,0.08)" stroke-width="1"/>
+        <line x1="554" y1="4" x2="332" y2="20" stroke="rgba(224,223,228,0.08)" stroke-width="1"/>
+        <line x1="332" y1="20" x2="332" y2="36" stroke="rgba(224,223,228,0.08)" stroke-width="1"/>
+        <circle cx="332" cy="20" r="2" fill="rgba(224,223,228,0.12)"/>
+        <text x="332" y="44" font-family="Inter" font-size="10" fill="rgba(224,223,228,0.2)" text-anchor="middle" font-weight="500" letter-spacing="0.04em">THREE DIMENSIONS OF AI VOICE</text>
+      </svg>
+    </div>
+
+    <div class="outcome">
+      <span class="outcome-arrow">↳</span>
+      <p>A framework that made voice design as rigorous as visual design — each dimension tunable, testable, and iterable</p>
+    </div>
+  </div>
+</body>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</html>

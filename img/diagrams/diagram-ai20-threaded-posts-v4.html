@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Threaded Source Posts</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --casual: #D4A574;
+    --resur: #C4B078;
+    --new-seg: #8A9EC4;
+    --red: #C47878;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .title-area { padding: 48px 48px 0; }
+  .label {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); opacity: 0.8; margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 36px; font-weight: 700;
+    color: var(--text-pri); letter-spacing: -0.025em;
+    margin-bottom: 8px; line-height: 1.15;
+  }
+  .subtitle {
+    font-size: 15px; color: var(--text-sec);
+    line-height: 1.55; max-width: 560px;
+  }
+
+  /* Phone mock area */
+  .mock-area {
+    padding: 36px 48px 24px;
+    display: flex;
+    gap: 32px;
+    align-items: flex-start;
+    position: relative;
+  }
+  .mock-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 250px 250px at 35% 50%, rgba(127,181,176,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Phone mock — NOT-03 pattern */
+  .phone-mock {
+    width: 220px;
+    aspect-ratio: 9 / 16;
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(127,181,176,0.04) 0%, rgba(224,223,228,0.01) 100%);
+    border: 1.5px dashed rgba(127,181,176,0.25);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+  }
+
+  /* Status bar */
+  .ph-status {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .ph-time { width: 24px; height: 3px; border-radius: 2px; background: rgba(224,223,228,0.1); }
+  .ph-icons { width: 32px; height: 3px; border-radius: 2px; background: rgba(224,223,228,0.06); }
+
+  /* Post card in phone */
+  .ph-post {
+    padding: 8px;
+    border-radius: 6px;
+    background: rgba(224,223,228,0.02);
+    border: 1px solid rgba(224,223,228,0.05);
+    position: relative;
+  }
+  .ph-post-header {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+  .ph-avatar {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: rgba(224,223,228,0.08);
+    flex-shrink: 0;
+  }
+  .ph-username {
+    height: 2px; width: 35px;
+    border-radius: 1px;
+    background: rgba(224,223,228,0.1);
+  }
+  .ph-vote {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    margin-left: auto;
+  }
+  .ph-vote-arrow {
+    width: 0; height: 0;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-bottom: 4px solid rgba(224,223,228,0.1);
+  }
+  .ph-vote-num {
+    height: 2px; width: 12px;
+    border-radius: 1px;
+    background: rgba(224,223,228,0.08);
+  }
+
+  .ph-line {
+    height: 2px; border-radius: 1px;
+    background: rgba(224,223,228,0.05);
+  }
+
+  /* Thread connector */
+  .ph-thread-line {
+    width: 1.5px;
+    height: 8px;
+    background: rgba(224,223,228,0.06);
+    margin-left: 14px;
+  }
+
+  /* Comment cards — indented */
+  .ph-comments {
+    margin-left: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: relative;
+  }
+  .ph-comments::before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: rgba(224,223,228,0.05);
+  }
+
+  .ph-comment {
+    padding: 5px 6px;
+    border-radius: 4px;
+    background: rgba(224,223,228,0.015);
+    border: 1px solid rgba(224,223,228,0.03);
+  }
+  .ph-comment-header {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    margin-bottom: 3px;
+  }
+  .ph-comment-avatar {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: rgba(224,223,228,0.06);
+  }
+  .ph-comment-user {
+    height: 1.5px; width: 25px;
+    border-radius: 1px;
+    background: rgba(224,223,228,0.08);
+  }
+
+  /* Hotspot overlays */
+  .hotspot {
+    position: absolute;
+    border-radius: 4px;
+    pointer-events: none;
+  }
+  .hotspot-post {
+    border: 1.5px solid rgba(127,181,176,0.5);
+    background: rgba(127,181,176,0.04);
+    box-shadow: 0 0 10px rgba(127,181,176,0.1);
+  }
+  .hotspot-thread {
+    border: 1.5px solid rgba(212,165,116,0.5);
+    background: rgba(212,165,116,0.04);
+    box-shadow: 0 0 10px rgba(212,165,116,0.1);
+  }
+  .hotspot-comments {
+    border: 1.5px solid rgba(138,158,196,0.5);
+    background: rgba(138,158,196,0.04);
+    box-shadow: 0 0 10px rgba(138,158,196,0.1);
+  }
+
+  /* Annotations — right side */
+  .annotations {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding-top: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .annotation {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .ann-marker {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+  .ann-marker.teal { background: rgba(127,181,176,0.5); }
+  .ann-marker.warm { background: rgba(212,165,116,0.5); }
+  .ann-marker.blue { background: rgba(138,158,196,0.5); }
+
+  .ann-content {}
+  .ann-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-pri);
+    margin-bottom: 3px;
+  }
+  .ann-desc {
+    font-size: 11px;
+    color: var(--text-ter);
+    line-height: 1.45;
+  }
+
+  /* Pattern label */
+  .pattern-note {
+    margin: 0 48px 16px;
+    padding: 10px 16px;
+    background: rgba(224,223,228,0.02);
+    border: 1px solid var(--border-normal);
+    border-radius: 8px;
+    font-size: 11px;
+    color: var(--text-ter);
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+  .pattern-note strong {
+    color: var(--text-sec);
+    font-weight: 500;
+  }
+
+  /* Outcome */
+  .outcome {
+    margin: 0 48px 48px;
+    background: var(--accent-dim);
+    border-radius: 10px;
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .outcome-arrow {
+    font-size: 16px; color: var(--accent);
+    opacity: 0.55; flex-shrink: 0;
+  }
+  .outcome p {
+    font-size: 13px; font-weight: 500;
+    color: var(--text-sec); line-height: 1.5;
+  }
+
+  @media (max-width: 680px) {
+    .title-area, .mock-area, .pattern-note, .outcome { padding-left: 24px; padding-right: 24px; }
+    body { padding: 16px; }
+    .mock-area { flex-direction: column; align-items: center; }
+    .phone-mock { width: 180px; }
+  }
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="title-area">
+      <div class="label">Attribution — UI</div>
+      <h1>Threaded Source Posts</h1>
+      <p class="subtitle">Posts appeared in a threaded structure with comments for the first time at Reddit — one repeating unit that scales</p>
+    </div>
+
+    <div class="mock-area">
+      <div class="phone-mock">
+        <div class="ph-status"><span class="ph-time"></span><span class="ph-icons"></span></div>
+
+        <!-- Post 1 -->
+        <div class="ph-post" style="position: relative;">
+          <div class="hotspot hotspot-post" style="inset: -2px;"></div>
+          <div class="ph-post-header">
+            <div class="ph-avatar"></div>
+            <div class="ph-username"></div>
+            <div class="ph-vote">
+              <div class="ph-vote-arrow"></div>
+              <div class="ph-vote-num"></div>
+            </div>
+          </div>
+          <div class="ph-line" style="width: 85%;"></div>
+          <div class="ph-line" style="width: 65%; margin-top: 3px;"></div>
+        </div>
+
+        <div class="ph-thread-line" style="position: relative;">
+          <div class="hotspot hotspot-thread" style="inset: -3px -6px; border-radius: 2px;"></div>
+        </div>
+
+        <!-- Comments -->
+        <div class="ph-comments" style="position: relative;">
+          <div class="hotspot hotspot-comments" style="inset: -3px;"></div>
+          <div class="ph-comment">
+            <div class="ph-comment-header">
+              <div class="ph-comment-avatar"></div>
+              <div class="ph-comment-user"></div>
+            </div>
+            <div class="ph-line" style="width: 80%;"></div>
+          </div>
+          <div class="ph-comment">
+            <div class="ph-comment-header">
+              <div class="ph-comment-avatar"></div>
+              <div class="ph-comment-user"></div>
+            </div>
+            <div class="ph-line" style="width: 70%;"></div>
+          </div>
+        </div>
+
+        <!-- Separator -->
+        <div style="height: 1px; background: rgba(224,223,228,0.04); margin: 4px 0;"></div>
+
+        <!-- Post 2 (dimmer — showing repetition) -->
+        <div class="ph-post" style="opacity: 0.5;">
+          <div class="ph-post-header">
+            <div class="ph-avatar"></div>
+            <div class="ph-username"></div>
+            <div class="ph-vote">
+              <div class="ph-vote-arrow"></div>
+              <div class="ph-vote-num"></div>
+            </div>
+          </div>
+          <div class="ph-line" style="width: 75%;"></div>
+          <div class="ph-line" style="width: 55%; margin-top: 3px;"></div>
+        </div>
+        <div class="ph-thread-line" style="opacity: 0.4;"></div>
+        <div class="ph-comments" style="opacity: 0.4;">
+          <div class="ph-comment">
+            <div class="ph-comment-header">
+              <div class="ph-comment-avatar"></div>
+              <div class="ph-comment-user"></div>
+            </div>
+            <div class="ph-line" style="width: 70%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Annotations -->
+      <div class="annotations">
+        <div class="annotation">
+          <div class="ann-marker teal"></div>
+          <div class="ann-content">
+            <div class="ann-title">Source Post</div>
+            <div class="ann-desc">Original post with title, body preview, and vote count — the primary source for the synthesis above</div>
+          </div>
+        </div>
+
+        <div class="annotation">
+          <div class="ann-marker warm"></div>
+          <div class="ann-content">
+            <div class="ann-title">Thread Connector</div>
+            <div class="ann-desc">Visual link between post and its comments — establishes conversation hierarchy</div>
+          </div>
+        </div>
+
+        <div class="annotation">
+          <div class="ann-marker blue"></div>
+          <div class="ann-content">
+            <div class="ann-title">Threaded Comments</div>
+            <div class="ann-desc">Two comments per post — enough to show conversation context without overwhelming the card</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pattern-note">
+      <strong>One repeating unit:</strong> post + thread line + 2 comments — scales to any number of sources
+    </div>
+
+    <div class="outcome">
+      <span class="outcome-arrow">↳</span>
+      <p>Threading gave source posts context that flat lists couldn't — users understood why each post was relevant</p>
+    </div>
+  </div>
+</body>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</html>

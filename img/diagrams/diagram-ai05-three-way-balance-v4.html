@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Three-Way Balance</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --casual: #D4A574;
+    --resur: #C4B078;
+    --new-seg: #8A9EC4;
+    --red: #C47878;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .title-area { padding: 48px 48px 0; }
+  .label {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); opacity: 0.8; margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 36px; font-weight: 700;
+    color: var(--text-pri); letter-spacing: -0.025em;
+    margin-bottom: 8px; line-height: 1.15;
+  }
+  .subtitle {
+    font-size: 15px; color: var(--text-sec);
+    line-height: 1.55; max-width: 580px;
+  }
+
+  /* ══════════════════════════════════════
+     HORIZONTAL LAYOUT: 3 cards in a row
+     Each card: icon + name/role + needs
+     ══════════════════════════════════════ */
+  .users-area {
+    padding: 40px 48px 24px;
+    position: relative;
+  }
+  .users-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 180px 180px at 17% 40%, rgba(127,181,176,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 180px 180px at 50% 40%, rgba(212,165,116,0.05) 0%, transparent 70%),
+      radial-gradient(ellipse 180px 180px at 83% 40%, rgba(138,158,196,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .users-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Each persona is a horizontal card */
+  .persona-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-highlight);
+    border-radius: 12px;
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .persona-icon {
+    width: 72px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 12px;
+  }
+
+  /* SHR-05 style: static glow, no breathing animation */
+  .persona-icon::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    opacity: 0.5;
+  }
+  .persona-card.seo .persona-icon::before {
+    background: radial-gradient(circle, rgba(127,181,176,0.10) 0%, transparent 70%);
+  }
+  .persona-card.engage .persona-icon::before {
+    background: radial-gradient(circle, rgba(212,165,116,0.10) 0%, transparent 70%);
+  }
+  .persona-card.platform .persona-icon::before {
+    background: radial-gradient(circle, rgba(138,158,196,0.10) 0%, transparent 70%);
+  }
+
+  /* SHR-05 ambient micro-interactions */
+  .bot-eye {
+    animation: bot-blink 5s ease-in-out infinite;
+  }
+  .bot-eye:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+  @keyframes bot-blink {
+    0%, 42%, 48%, 100% { transform: scaleY(1); }
+    45% { transform: scaleY(0.1); }
+  }
+
+  .antenna-ball {
+    animation: antenna-ambient 3.5s ease-in-out infinite;
+  }
+  @keyframes antenna-ambient {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.6; }
+  }
+
+  /* Search magnifier subtle pulse */
+  .search-lens {
+    animation: lens-ambient 4s ease-in-out infinite;
+  }
+  @keyframes lens-ambient {
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 0.5; }
+  }
+
+  .persona-name {
+    font-size: 14px; font-weight: 600;
+    color: var(--text-pri);
+    letter-spacing: -0.01em;
+    margin-bottom: 2px;
+  }
+  .persona-role {
+    font-size: 9px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .persona-role.seo { color: var(--accent); }
+  .persona-role.engage { color: var(--casual); }
+  .persona-role.platform { color: var(--new-seg); }
+
+  .needs {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+  }
+  .need {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    text-align: left;
+  }
+  .need-dot {
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 5px;
+  }
+  .need-dot.seo { background: rgba(127,181,176,0.5); }
+  .need-dot.engage { background: rgba(212,165,116,0.5); }
+  .need-dot.platform { background: rgba(138,158,196,0.5); }
+  .need-label {
+    font-size: 11px;
+    color: var(--text-ter);
+    line-height: 1.4;
+  }
+
+  /* ── Tension bar — horizontal between personas ── */
+  .tensions-area {
+    padding: 0 48px 16px;
+    position: relative;
+    z-index: 1;
+  }
+  .tension-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .tension-item {
+    text-align: center;
+    padding: 8px 0;
+    position: relative;
+  }
+  .tension-item::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 15%; right: 15%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-normal), transparent);
+  }
+  .tension-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--text-dim);
+  }
+
+  /* Outcome */
+  .outcome {
+    margin: 16px 48px 48px;
+    background: var(--accent-dim);
+    border-radius: 10px;
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .outcome-arrow {
+    font-size: 16px; color: var(--accent);
+    opacity: 0.55; flex-shrink: 0;
+  }
+  .outcome p {
+    font-size: 13px; font-weight: 500;
+    color: var(--text-sec); line-height: 1.5;
+  }
+
+  @media (max-width: 680px) {
+    .title-area, .users-area, .tensions-area, .outcome { padding-left: 24px; padding-right: 24px; }
+    body { padding: 16px; }
+    .users-grid { grid-template-columns: 1fr; }
+    .tension-bar { grid-template-columns: 1fr; }
+  }
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="title-area">
+      <div class="label">Value</div>
+      <h1>Three-Way Balance</h1>
+      <p class="subtitle">Every design decision served three competing users — each with needs that could undermine the others</p>
+    </div>
+
+    <div class="users-area">
+      <div class="users-grid">
+        <!-- Googlebot — Robot -->
+        <div class="persona-card seo">
+          <div class="persona-icon">
+            <svg width="64" height="64" viewBox="0 0 80 80" fill="none">
+              <rect x="18" y="24" width="44" height="36" rx="8" stroke="var(--accent)" stroke-width="1.5" fill="rgba(127,181,176,0.04)"/>
+              <line x1="40" y1="24" x2="40" y2="14" stroke="rgba(127,181,176,0.35)" stroke-width="1.3"/>
+              <circle cx="40" cy="12" r="3" fill="rgba(127,181,176,0.2)" stroke="rgba(127,181,176,0.35)" stroke-width="1"/>
+              <g class="bot-eye" style="transform-origin: 32px 38px;">
+                <rect x="27" y="34" width="10" height="8" rx="2" fill="rgba(127,181,176,0.12)" stroke="rgba(127,181,176,0.35)" stroke-width="0.8"/>
+                <circle cx="32" cy="38" r="2" fill="var(--accent)" opacity="0.6"/>
+              </g>
+              <g class="bot-eye" style="transform-origin: 48px 38px;">
+                <rect x="43" y="34" width="10" height="8" rx="2" fill="rgba(127,181,176,0.12)" stroke="rgba(127,181,176,0.35)" stroke-width="0.8"/>
+                <circle cx="48" cy="38" r="2" fill="var(--accent)" opacity="0.6"/>
+              </g>
+              <line x1="30" y1="49" x2="50" y2="49" stroke="rgba(127,181,176,0.25)" stroke-width="1" stroke-linecap="round"/>
+              <rect x="12" y="32" width="6" height="16" rx="2" fill="rgba(127,181,176,0.06)" stroke="rgba(127,181,176,0.2)" stroke-width="0.8"/>
+              <rect x="62" y="32" width="6" height="16" rx="2" fill="rgba(127,181,176,0.06)" stroke="rgba(127,181,176,0.2)" stroke-width="0.8"/>
+            </svg>
+          </div>
+          <div class="persona-name">Googlebot</div>
+          <div class="persona-role seo">SEO Ranking</div>
+          <div class="needs">
+            <div class="need"><div class="need-dot seo"></div><span class="need-label">Keyword density in summaries</span></div>
+            <div class="need"><div class="need-dot seo"></div><span class="need-label">Connected internal links</span></div>
+            <div class="need"><div class="need-dot seo"></div><span class="need-label">Regularly updated content</span></div>
+          </div>
+        </div>
+
+        <!-- Search User — Human -->
+        <div class="persona-card engage">
+          <div class="persona-icon">
+            <svg width="64" height="64" viewBox="0 0 80 80" fill="none">
+              <circle cx="40" cy="26" r="14" stroke="var(--casual)" stroke-width="1.5" fill="rgba(212,165,116,0.04)"/>
+              <circle cx="35" cy="24" r="1.5" fill="rgba(212,165,116,0.5)"/>
+              <circle cx="45" cy="24" r="1.5" fill="rgba(212,165,116,0.5)"/>
+              <path d="M36 30 Q40 34 44 30" stroke="rgba(212,165,116,0.35)" stroke-width="1" fill="none" stroke-linecap="round"/>
+              <path d="M26 22 Q28 12 40 12 Q52 12 54 22" stroke="rgba(212,165,116,0.25)" stroke-width="1.5" fill="none"/>
+              <path d="M20 64 Q20 48 30 44 Q35 42 40 42 Q45 42 50 44 Q60 48 60 64"
+                    stroke="var(--casual)" stroke-width="1.5" fill="rgba(212,165,116,0.04)" stroke-linecap="round"/>
+              <g class="search-lens">
+                <circle cx="58" cy="52" r="6" stroke="rgba(212,165,116,0.3)" stroke-width="1" fill="none"/>
+                <line x1="62" y1="56" x2="66" y2="60" stroke="rgba(212,165,116,0.3)" stroke-width="1.2" stroke-linecap="round"/>
+              </g>
+            </svg>
+          </div>
+          <div class="persona-name">Search User</div>
+          <div class="persona-role engage">Engagement</div>
+          <div class="needs">
+            <div class="need"><div class="need-dot engage"></div><span class="need-label">Consolidated, direct answers</span></div>
+            <div class="need"><div class="need-dot engage"></div><span class="need-label">Verify against sources</span></div>
+            <div class="need"><div class="need-dot engage"></div><span class="need-label">Not another page of links</span></div>
+          </div>
+        </div>
+
+        <!-- Reddit — Snoo -->
+        <div class="persona-card platform">
+          <div class="persona-icon">
+            <svg width="64" height="64" viewBox="0 0 80 80" fill="none">
+              <circle cx="40" cy="38" r="22" stroke="var(--new-seg)" stroke-width="1.5" fill="rgba(138,158,196,0.03)"/>
+              <line x1="40" y1="16" x2="50" y2="6" stroke="rgba(138,158,196,0.35)" stroke-width="1.3"/>
+              <circle class="antenna-ball" cx="50" cy="6" r="3" fill="rgba(138,158,196,0.15)" stroke="rgba(138,158,196,0.35)" stroke-width="1"/>
+              <circle cx="21" cy="25" r="4" fill="rgba(138,158,196,0.06)" stroke="rgba(138,158,196,0.25)" stroke-width="1"/>
+              <circle cx="59" cy="25" r="4" fill="rgba(138,158,196,0.06)" stroke="rgba(138,158,196,0.25)" stroke-width="1"/>
+              <circle cx="33" cy="35" r="5" fill="rgba(138,158,196,0.5)"/>
+              <circle cx="47" cy="35" r="5" fill="rgba(138,158,196,0.5)"/>
+              <path d="M34 45 Q40 50 46 45" stroke="rgba(138,158,196,0.3)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+              <ellipse cx="32" cy="62" rx="6" ry="3" stroke="rgba(138,158,196,0.15)" stroke-width="0.8" fill="none"/>
+              <ellipse cx="48" cy="62" rx="6" ry="3" stroke="rgba(138,158,196,0.15)" stroke-width="0.8" fill="none"/>
+            </svg>
+          </div>
+          <div class="persona-name">Reddit</div>
+          <div class="persona-role platform">Platform Depth</div>
+          <div class="needs">
+            <div class="need"><div class="need-dot platform"></div><span class="need-label">On-ramps into communities</span></div>
+            <div class="need"><div class="need-dot platform"></div><span class="need-label">Search bar engagement</span></div>
+            <div class="need"><div class="need-dot platform"></div><span class="need-label">Shift from Google-append</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tensions-area">
+      <div class="tension-bar">
+        <div class="tension-item"><span class="tension-label">Keywords hurt readability</span></div>
+        <div class="tension-item"><span class="tension-label">Depth competes with answers</span></div>
+        <div class="tension-item"><span class="tension-label">Links help SEO, clutter users</span></div>
+      </div>
+    </div>
+
+    <div class="outcome">
+      <span class="outcome-arrow">↳</span>
+      <p>The KLP design resolves all three — summaries satisfy SEO and users while on-ramps serve platform depth</p>
+    </div>
+  </div>
+</body>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</html>

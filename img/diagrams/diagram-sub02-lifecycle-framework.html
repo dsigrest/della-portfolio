@@ -1,467 +1,476 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SUB-02 — Lifecycle Framework</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --canvas: #0A0C16;
-    --card: #10121C;
-    --elevated: #151722;
-    --highest: #1A1C28;
-    --text-pri: #E0DFE4;
-    --text-sec: rgba(224,223,228,0.6);
-    --text-ter: rgba(224,223,228,0.4);
-    --text-dim: rgba(224,223,228,0.2);
-    --border: rgba(224,223,228,0.07);
-    --accent: #7FB5B0;
-    --accent-dim: rgba(127,181,176,0.12);
-    --warm: #D4A574;
-    --resur: #C4B078;
-    --blue: #8A9EC4;
-    --red: #C47878;
-    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
-    --glass-border: rgba(224,223,228,0.08);
-    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
-  }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body {
-    background: #08090F;
-    display: flex; justify-content: center;
-    padding: 40px;
-    font-family: 'Inter', -apple-system, sans-serif;
-    -webkit-font-smoothing: antialiased;
-  }
-  .diagram {
-    width: 760px;
-    background: var(--canvas);
-    border-radius: 16px;
-    overflow: hidden;
-    position: relative;
-  }
-  .diagram::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse 500px 300px at 50% 55%, rgba(127,181,176,0.03) 0%, transparent 70%);
-    pointer-events: none;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SUB-02a — Lifecycle Framework</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  /* ── Title ── */
-  .title-area { padding: 48px 48px 0; position: relative; z-index: 1; }
-  .label {
-    font-size: 11px; font-weight: 600;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--accent); opacity: 0.8; margin-bottom: 8px;
-  }
-  h1 {
-    font-size: 36px; font-weight: 700;
-    color: var(--text-pri); letter-spacing: -0.025em;
-    margin-bottom: 8px; line-height: 1.15;
-  }
-  .subtitle {
-    font-size: 15px; color: var(--text-sec);
-    line-height: 1.55; max-width: 560px;
-  }
+    :root {
+      --canvas: #0A0C16;
+      --elevated: #151722;
+      --text-pri: #E0DFE4;
+      --text-sec: rgba(224,223,228,0.6);
+      --text-ter: rgba(224,223,228,0.4);
+      --text-dim: rgba(224,223,228,0.2);
+      --border: rgba(224,223,228,0.07);
+      --accent: #7FB5B0;
+      --accent-dim: rgba(127,181,176,0.12);
+      --red: #C47878;
+      --resur: #C4B078;
+      --warm: #D4A574;
+      --blue: #8A9EC4;
+      --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+      --glass-border: rgba(224,223,228,0.08);
+      --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    }
 
-  /* ── Five-stage grid — 3 top + 2 bottom ── */
-  .pipeline {
-    padding: 36px 48px 0;
-    position: relative; z-index: 1;
-  }
-  .pipeline-row {
-    display: grid; gap: 10px;
-  }
-  .pipeline-row.top { grid-template-columns: 1fr 1fr 1fr; }
-  .pipeline-row.bottom {
-    grid-template-columns: 1fr 1fr;
-    margin-top: 10px;
-    padding: 0 80px;
-  }
+    body {
+      background: #08090F;
+      display: flex;
+      justify-content: center;
+      padding: 40px;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
 
-  .stage {
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-highlight);
-    border-radius: 12px;
-    padding: 20px 16px;
-    position: relative;
-    overflow: hidden;
-    display: flex; flex-direction: column;
-  }
-  .stage::before {
-    content: ''; position: absolute;
-    top: 0; left: 0; width: 100px; height: 2px;
-  }
-  .stage[data-color="red"]::before { background: var(--red); }
-  .stage[data-color="warm"]::before { background: var(--warm); }
-  .stage[data-color="resur"]::before { background: var(--resur); }
-  .stage[data-color="blue"]::before { background: var(--blue); }
-  .stage[data-color="accent"]::before { background: var(--accent); }
+    .diagram {
+      width: 760px;
+      background: var(--canvas);
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      padding: 36px 48px;
+    }
 
-  .stage-header {
-    display: flex; align-items: center; gap: 10px;
-    margin-bottom: 10px;
-  }
-  .stage-icon {
-    width: 32px; height: 32px; border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
-  .stage[data-color="red"] .stage-icon { background: rgba(196,120,120,0.1); border: 1px solid rgba(196,120,120,0.18); }
-  .stage[data-color="warm"] .stage-icon { background: rgba(212,165,116,0.1); border: 1px solid rgba(212,165,116,0.18); }
-  .stage[data-color="resur"] .stage-icon { background: rgba(196,176,120,0.1); border: 1px solid rgba(196,176,120,0.18); }
-  .stage[data-color="blue"] .stage-icon { background: rgba(138,158,196,0.1); border: 1px solid rgba(138,158,196,0.18); }
-  .stage[data-color="accent"] .stage-icon { background: rgba(127,181,176,0.1); border: 1px solid rgba(127,181,176,0.18); }
+    .diagram::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(
+        ellipse 600px 300px at 50% 0%,
+        rgba(127, 181, 176, 0.06) 0%,
+        rgba(127, 181, 176, 0) 70%
+      );
+      pointer-events: none;
+    }
 
-  .stage-meta { display: flex; flex-direction: column; }
-  .stage-num {
-    font-size: 9px; font-weight: 600;
-    letter-spacing: 0.06em; text-transform: uppercase;
-  }
-  .stage[data-color="red"] .stage-num { color: var(--red); }
-  .stage[data-color="warm"] .stage-num { color: var(--warm); }
-  .stage[data-color="resur"] .stage-num { color: var(--resur); }
-  .stage[data-color="blue"] .stage-num { color: var(--blue); }
-  .stage[data-color="accent"] .stage-num { color: var(--accent); }
+    .diagram > * {
+      position: relative;
+      z-index: 1;
+    }
 
-  .stage-name {
-    font-size: 14px; font-weight: 600;
-    color: var(--text-pri); letter-spacing: -0.01em;
-    line-height: 1.25;
-  }
-  .stage-desc {
-    font-size: 11px; color: var(--text-ter);
-    line-height: 1.45; margin-bottom: auto;
-  }
+    /* Stage cards grid */
+    .stages-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
 
-  /* Threshold bar */
-  .threshold {
-    margin-top: 14px; padding-top: 10px;
-    border-top: 1px solid var(--border);
-  }
-  .threshold-row {
-    display: flex; align-items: center;
-    justify-content: space-between; margin-bottom: 5px;
-  }
-  .threshold-label {
-    font-size: 8px; font-weight: 600;
-    letter-spacing: 0.06em; text-transform: uppercase;
-    color: var(--text-dim);
-  }
-  .threshold-pct {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px; color: var(--text-ter);
-  }
-  .threshold-track {
-    height: 4px; border-radius: 2px;
-    background: var(--elevated); position: relative;
-    overflow: hidden;
-  }
-  .threshold-fill {
-    position: absolute; left: 0; top: 0; bottom: 0;
-    border-radius: 2px; width: 0;
-    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .stage[data-color="red"] .threshold-fill { background: var(--red); opacity: 0.6; }
-  .stage[data-color="warm"] .threshold-fill { background: var(--warm); opacity: 0.6; }
-  .stage[data-color="resur"] .threshold-fill { background: var(--resur); opacity: 0.6; }
-  .stage[data-color="blue"] .threshold-fill { background: var(--blue); opacity: 0.6; }
-  .stage[data-color="accent"] .threshold-fill { background: var(--accent); opacity: 0.6; }
+    .stage-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-highlight);
+      border-radius: 10px;
+      padding: 16px 20px;
+      position: relative;
+    }
 
-  /* Progress arrows between rows */
-  .flow-arrow {
-    display: flex; justify-content: center;
-    padding: 8px 0; position: relative; z-index: 1;
-  }
+    .stage-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100px;
+      height: 2px;
+      border-radius: 1px;
+    }
 
-  /* ── Drop-off bar ── */
-  .dropoff {
-    padding: 28px 48px 0;
-    position: relative; z-index: 1;
-  }
-  .dropoff-title {
-    font-size: 10px; font-weight: 600;
-    letter-spacing: 0.06em; text-transform: uppercase;
-    color: var(--text-ter); margin-bottom: 8px;
-  }
-  .dropoff-bar {
-    display: flex; height: 24px;
-    border-radius: 6px; overflow: hidden;
-    background: var(--elevated);
-    border: 1px solid var(--border);
-  }
-  .drop-seg {
-    display: flex; align-items: center; justify-content: center;
-    font-size: 9px; font-weight: 600; color: var(--text-pri);
-    font-family: 'JetBrains Mono', monospace;
-  }
-  .drop-seg:nth-child(1) { flex: 90; background: rgba(196,120,120,0.12); border-right: 1px solid rgba(196,120,120,0.2); }
-  .drop-seg:nth-child(2) { flex: 5; background: rgba(196,176,120,0.08); border-right: 1px solid rgba(196,176,120,0.15); }
-  .drop-seg:nth-child(3) { flex: 3; background: rgba(138,158,196,0.06); border-right: 1px solid rgba(138,158,196,0.1); }
-  .drop-seg:nth-child(4) { flex: 2; background: rgba(127,181,176,0.1); }
-  .dropoff-labels {
-    display: flex; justify-content: space-between;
-    padding-top: 5px;
-  }
-  .dropoff-label { font-size: 9px; color: var(--text-dim); }
+    /* Stage card colors */
+    .stage-card.creation::before { background: var(--red); }
+    .stage-card.seed::before { background: var(--warm); }
+    .stage-card.distribute::before { background: var(--resur); }
+    .stage-card.mod::before { background: var(--blue); }
+    .stage-card.sustained::before { background: var(--accent); }
 
-  /* ── Outcome ── */
-  .outcome {
-    margin: 24px 48px 48px;
-    background: var(--accent-dim);
-    border-radius: 10px;
-    padding: 14px 20px;
-    display: flex; align-items: center; gap: 12px;
-    position: relative; z-index: 1;
-  }
-  .outcome-icon { flex-shrink: 0; }
-  .outcome p {
-    font-size: 13px; font-weight: 500;
-    color: var(--text-sec); line-height: 1.5;
-  }
+    .stage-header {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+      align-items: flex-start;
+    }
 
-  /* ── Entrance animations ── */
-  .reveal {
-    opacity: 0; transform: translateY(12px);
-    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  .reveal.visible { opacity: 1; transform: translateY(0); }
-  .stage { opacity: 0; transform: translateY(12px);
-    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
-  .stage.visible { opacity: 1; transform: translateY(0); }
+    .stage-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
 
-  @media (prefers-reduced-motion: reduce) {
-    .reveal, .stage { opacity: 1; transform: none; transition: none; }
-    .threshold-fill { transition: none; }
-  }
-  @media (max-width: 680px) {
-    body { padding: 16px; }
-    .pipeline-row.top { grid-template-columns: 1fr; }
-    .pipeline-row.bottom { grid-template-columns: 1fr; padding: 0; }
-  }
+    .stage-card.creation .stage-icon {
+      background: rgba(196, 120, 120, 0.12);
+      border: 1.5px solid rgba(196, 120, 120, 0.3);
+    }
+    .stage-card.seed .stage-icon {
+      background: rgba(212, 165, 116, 0.12);
+      border: 1.5px solid rgba(212, 165, 116, 0.3);
+    }
+    .stage-card.distribute .stage-icon {
+      background: rgba(196, 176, 120, 0.12);
+      border: 1.5px solid rgba(196, 176, 120, 0.3);
+    }
+    .stage-card.mod .stage-icon {
+      background: rgba(138, 158, 196, 0.12);
+      border: 1.5px solid rgba(138, 158, 196, 0.3);
+    }
+    .stage-card.sustained .stage-icon {
+      background: rgba(127, 181, 176, 0.12);
+      border: 1.5px solid rgba(127, 181, 176, 0.3);
+    }
 
-/* Embed mode: strip body chrome when loaded in iframe */
-body.embedded {
-  padding: 0;
-  min-height: auto;
-  display: block;
-  background: transparent;
-  overflow: hidden;
-  align-items: initial;
-}
-body.embedded .diagram {
-  width: 100%;
-  border-radius: 0;
-}
-</style>
+    .stage-icon svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .stage-meta {
+      flex: 1;
+    }
+
+    .stage-label {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 2px;
+    }
+
+    .stage-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-pri);
+      line-height: 1.2;
+    }
+
+    .stage-description {
+      font-size: 11px;
+      color: var(--text-ter);
+      line-height: 1.45;
+      margin-bottom: 12px;
+    }
+
+    .stage-threshold {
+      border-top: 1px solid var(--border);
+      padding-top: 8px;
+    }
+
+    .threshold-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .threshold-label-text {
+      font-size: 8px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .threshold-severity {
+      font-size: 10px;
+      font-weight: 400;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-ter);
+    }
+
+    .threshold-track {
+      height: 4px;
+      background: var(--elevated);
+      border-radius: 2px;
+      overflow: hidden;
+      border: 0.5px solid var(--border);
+    }
+
+    .threshold-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.8s ease-out;
+    }
+
+    .stage-card.creation .threshold-fill { background: var(--red); }
+    .stage-card.seed .threshold-fill { background: var(--warm); }
+    .stage-card.distribute .threshold-fill { background: var(--resur); }
+    .stage-card.mod .threshold-fill { background: var(--blue); }
+    .stage-card.sustained .threshold-fill { background: var(--accent); }
+
+    /* Cumulative drop-off section */
+    .cumulative-section {
+      border-top: 1px solid var(--border);
+      padding-top: 18px;
+      margin-top: 6px;
+    }
+
+    .cumulative-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--text-ter);
+      margin-bottom: 12px;
+    }
+
+    .cumulative-bar {
+      display: flex;
+      height: 24px;
+      background: var(--elevated);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .cumulative-segment {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-ter);
+    }
+
+    .segment-1 {
+      width: 90%;
+      background: rgba(196, 120, 120, 0.12);
+      border-right: 1px solid var(--border);
+      color: rgba(196, 120, 120, 0.8);
+    }
+
+    .segment-2 {
+      width: 5%;
+      background: rgba(196, 176, 120, 0.08);
+      border-right: 1px solid var(--border);
+    }
+
+    .segment-3 {
+      width: 3%;
+      background: rgba(138, 158, 196, 0.06);
+      border-right: 1px solid var(--border);
+    }
+
+    .segment-4 {
+      flex: 1;
+      background: rgba(127, 181, 176, 0.1);
+      color: rgba(127, 181, 176, 0.9);
+    }
+
+    /* Reveal animation */
+    .reveal {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* Embed mode */
+    body.embedded {
+      padding: 0;
+      min-height: auto;
+      display: block;
+      background: transparent;
+      overflow: hidden;
+      align-items: initial;
+    }
+
+    body.embedded .diagram {
+      width: 100%;
+      border-radius: 0;
+    }
+  </style>
 </head>
 <body>
   <div class="diagram">
-    <div class="title-area reveal">
-      <div class="label">Solution — Framework</div>
-      <h1>Lifecycle Framework</h1>
-      <p class="subtitle">Five stages from creation to sustainability. Each stage has a survival threshold — miss it and the community dies.</p>
-    </div>
-
-    <!-- PIPELINE -->
-    <div class="pipeline">
-      <!-- Row 1: stages 1-3 -->
-      <div class="pipeline-row top">
-        <div class="stage" data-color="red" data-fill="90">
-          <div class="stage-header">
-            <div class="stage-icon">
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <rect x="3" y="3" width="12" height="12" rx="2" stroke="var(--red)" stroke-width="1.2"/>
-                <line x1="6" y1="7" x2="12" y2="7" stroke="var(--red)" stroke-width="0.8" opacity="0.6"/>
-                <line x1="6" y1="9.5" x2="10" y2="9.5" stroke="var(--red)" stroke-width="0.8" opacity="0.6"/>
-              </svg>
-            </div>
-            <div class="stage-meta">
-              <div class="stage-num">Stage 1</div>
-              <div class="stage-name">Creation</div>
-            </div>
+    <div class="stages-grid">
+      <div class="stage-card creation reveal">
+        <div class="stage-header">
+          <div class="stage-icon">
+            <svg viewBox="0 0 16 16" fill="currentColor">
+              <rect x="3" y="3" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
           </div>
-          <div class="stage-desc">Identity, category, first description</div>
-          <div class="threshold">
-            <div class="threshold-row">
-              <span class="threshold-label">Drop-off</span>
-              <span class="threshold-pct">Highest</span>
-            </div>
-            <div class="threshold-track"><div class="threshold-fill" data-width="90%"></div></div>
+          <div class="stage-meta">
+            <div class="stage-label">Creation</div>
+            <div class="stage-title">Identity &amp; Category</div>
           </div>
         </div>
-
-        <div class="stage" data-color="warm" data-fill="65">
-          <div class="stage-header">
-            <div class="stage-icon">
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <path d="M4 14V8l3-4h4l3 4v6" stroke="var(--warm)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                <line x1="4" y1="14" x2="14" y2="14" stroke="var(--warm)" stroke-width="1.2" stroke-linecap="round"/>
-              </svg>
-            </div>
-            <div class="stage-meta">
-              <div class="stage-num">Stage 2</div>
-              <div class="stage-name">Early Content</div>
-            </div>
+        <div class="stage-description">Identity, category, first description</div>
+        <div class="stage-threshold">
+          <div class="threshold-label">
+            <span class="threshold-label-text">Drop-off</span>
+            <span class="threshold-severity">Highest</span>
           </div>
-          <div class="stage-desc">First-week post activity</div>
-          <div class="threshold">
-            <div class="threshold-row">
-              <span class="threshold-label">Drop-off</span>
-              <span class="threshold-pct">High</span>
-            </div>
-            <div class="threshold-track"><div class="threshold-fill" data-width="65%"></div></div>
-          </div>
-        </div>
-
-        <div class="stage" data-color="resur" data-fill="45">
-          <div class="stage-header">
-            <div class="stage-icon">
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <circle cx="7" cy="7" r="3" stroke="var(--resur)" stroke-width="1.1" fill="none"/>
-                <circle cx="12" cy="7" r="3" stroke="var(--resur)" stroke-width="1.1" fill="none"/>
-                <path d="M5 14c0-1.5 1.3-2.5 3-2.5h2c1.7 0 3 1 3 2.5" stroke="var(--resur)" stroke-width="1.1" stroke-linecap="round"/>
-              </svg>
-            </div>
-            <div class="stage-meta">
-              <div class="stage-num">Stage 3</div>
-              <div class="stage-name">Member Growth</div>
-            </div>
-          </div>
-          <div class="stage-desc">Acquisition beyond founder</div>
-          <div class="threshold">
-            <div class="threshold-row">
-              <span class="threshold-label">Drop-off</span>
-              <span class="threshold-pct">Moderate</span>
-            </div>
-            <div class="threshold-track"><div class="threshold-fill" data-width="45%"></div></div>
+          <div class="threshold-track">
+            <div class="threshold-fill" style="width: 100%;"></div>
           </div>
         </div>
       </div>
 
-      <!-- Flow arrow -->
-      <div class="flow-arrow">
-        <svg width="200" height="16" viewBox="0 0 200 16" fill="none">
-          <path d="M20 8h160" stroke="var(--border)" stroke-width="1" stroke-dasharray="4,3"/>
-          <path d="M176 4l6 4-6 4" stroke="var(--text-dim)" stroke-width="1" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-
-      <!-- Row 2: stages 4-5 -->
-      <div class="pipeline-row bottom">
-        <div class="stage" data-color="blue" data-fill="28">
-          <div class="stage-header">
-            <div class="stage-icon">
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <circle cx="6" cy="6" r="2.5" stroke="var(--blue)" stroke-width="1.1" fill="none"/>
-                <circle cx="12" cy="6" r="2.5" stroke="var(--blue)" stroke-width="1.1" fill="none"/>
-                <circle cx="9" cy="12" r="2.5" stroke="var(--blue)" stroke-width="1.1" fill="none"/>
-              </svg>
-            </div>
-            <div class="stage-meta">
-              <div class="stage-num">Stage 4</div>
-              <div class="stage-name">Mod Team</div>
-            </div>
+      <div class="stage-card seed reveal" style="transition-delay: 0.08s;">
+        <div class="stage-header">
+          <div class="stage-icon">
+            <svg viewBox="0 0 16 16" fill="currentColor">
+              <path d="M8 2 Q10 5 10 8 Q10 11 8 13 Q6 11 6 8 Q6 5 8 2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
           </div>
-          <div class="stage-desc">Teams outperformed solo founders</div>
-          <div class="threshold">
-            <div class="threshold-row">
-              <span class="threshold-label">Drop-off</span>
-              <span class="threshold-pct">Lower</span>
-            </div>
-            <div class="threshold-track"><div class="threshold-fill" data-width="28%"></div></div>
+          <div class="stage-meta">
+            <div class="stage-label">Seed Post</div>
+            <div class="stage-title">First Week Activity</div>
           </div>
         </div>
-
-        <div class="stage" data-color="accent" data-fill="15">
-          <div class="stage-header">
-            <div class="stage-icon">
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <path d="M3 13l3-4 3 2 3-5 3 3" stroke="var(--accent)" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                <circle cx="15" cy="9" r="1.5" fill="rgba(127,181,176,0.4)"/>
-              </svg>
-            </div>
-            <div class="stage-meta">
-              <div class="stage-num">Stage 5</div>
-              <div class="stage-name">Sustained</div>
-            </div>
+        <div class="stage-description">First-week post activity</div>
+        <div class="stage-threshold">
+          <div class="threshold-label">
+            <span class="threshold-label-text">Drop-off</span>
+            <span class="threshold-severity">High</span>
           </div>
-          <div class="stage-desc">Self-sustaining contributor engagement</div>
-          <div class="threshold">
-            <div class="threshold-row">
-              <span class="threshold-label">Drop-off</span>
-              <span class="threshold-pct">Lowest</span>
-            </div>
-            <div class="threshold-track"><div class="threshold-fill" data-width="15%"></div></div>
+          <div class="threshold-track">
+            <div class="threshold-fill" style="width: 72%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage-card distribute reveal" style="transition-delay: 0.16s;">
+        <div class="stage-header">
+          <div class="stage-icon">
+            <svg viewBox="0 0 16 16" fill="currentColor">
+              <path d="M2 8h5M8 2v5M8 9v5M9 8h5" stroke="currentColor" stroke-width="1.5" fill="none"/>
+            </svg>
+          </div>
+          <div class="stage-meta">
+            <div class="stage-label">Distribute</div>
+            <div class="stage-title">Beyond Founder</div>
+          </div>
+        </div>
+        <div class="stage-description">Acquisition beyond founder</div>
+        <div class="stage-threshold">
+          <div class="threshold-label">
+            <span class="threshold-label-text">Drop-off</span>
+            <span class="threshold-severity">Moderate</span>
+          </div>
+          <div class="threshold-track">
+            <div class="threshold-fill" style="width: 50%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage-card mod reveal" style="transition-delay: 0.24s;">
+        <div class="stage-header">
+          <div class="stage-icon">
+            <svg viewBox="0 0 16 16" fill="currentColor">
+              <circle cx="5" cy="5" r="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+              <circle cx="11" cy="5" r="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+              <circle cx="8" cy="11" r="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <div class="stage-meta">
+            <div class="stage-label">Mod Team</div>
+            <div class="stage-title">Leadership</div>
+          </div>
+        </div>
+        <div class="stage-description">Teams outperformed solo founders</div>
+        <div class="stage-threshold">
+          <div class="threshold-label">
+            <span class="threshold-label-text">Drop-off</span>
+            <span class="threshold-severity">Lower</span>
+          </div>
+          <div class="threshold-track">
+            <div class="threshold-fill" style="width: 36%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage-card sustained reveal" style="transition-delay: 0.32s;">
+        <div class="stage-header">
+          <div class="stage-icon">
+            <svg viewBox="0 0 16 16" fill="currentColor">
+              <polyline points="2,12 4,8 6,10 10,2 14,8" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <div class="stage-meta">
+            <div class="stage-label">Sustained</div>
+            <div class="stage-title">Self-Sustaining</div>
+          </div>
+        </div>
+        <div class="stage-description">Self-sustaining engagement</div>
+        <div class="stage-threshold">
+          <div class="threshold-label">
+            <span class="threshold-label-text">Drop-off</span>
+            <span class="threshold-severity">Lowest</span>
+          </div>
+          <div class="threshold-track">
+            <div class="threshold-fill" style="width: 20%;"></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- DROP-OFF BAR -->
-    <div class="dropoff reveal" style="transition-delay: 200ms">
-      <div class="dropoff-title">Cumulative drop-off</div>
-      <div class="dropoff-bar">
-        <div class="drop-seg">90%</div>
-        <div class="drop-seg"></div>
-        <div class="drop-seg"></div>
-        <div class="drop-seg">✓</div>
+    <div class="cumulative-section reveal" style="transition-delay: 0.4s;">
+      <div class="cumulative-label">Cumulative Drop-off</div>
+      <div class="cumulative-bar">
+        <div class="cumulative-segment segment-1">90%</div>
+        <div class="cumulative-segment segment-2"></div>
+        <div class="cumulative-segment segment-3"></div>
+        <div class="cumulative-segment segment-4">✓</div>
       </div>
-      <div class="dropoff-labels">
-        <span class="dropoff-label">← Failed within 21 days</span>
-        <span class="dropoff-label">Survived →</span>
-      </div>
-    </div>
-
-    <!-- OUTCOME -->
-    <div class="outcome reveal" style="transition-delay: 280ms">
-      <div class="outcome-icon">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M4 8h8M8 4v8" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
-        </svg>
-      </div>
-      <p>This framework became the team's strategy and roadmap — each stage mapped to prioritized interventions.</p>
     </div>
   </div>
 
-<script>
-  // Entrance — general reveals
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.15 });
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  <script>
+    if (window !== window.parent) {
+      document.body.classList.add('embedded');
+    }
 
-  // Stage cards — staggered entrance + threshold bar animation
-  const stageObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const stages = entry.target.querySelectorAll('.stage');
-        stages.forEach((stage, i) => {
-          setTimeout(() => {
-            stage.classList.add('visible');
-            // Animate threshold fill
-            const fill = stage.querySelector('.threshold-fill');
-            if (fill) {
-              setTimeout(() => {
-                fill.style.width = fill.dataset.width;
-              }, 300);
-            }
-          }, i * 80);
-        });
-        stageObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.15 });
-  stageObserver.observe(document.querySelector('.pipeline'));
-</script>
-<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+  </script>
 </body>
 </html>

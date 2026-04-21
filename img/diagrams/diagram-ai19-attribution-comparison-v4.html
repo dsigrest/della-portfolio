@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Attribution Analysis</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --casual: #D4A574;
+    --resur: #C4B078;
+    --new-seg: #8A9EC4;
+    --red: #C47878;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .title-area { padding: 48px 48px 0; }
+  .label {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); opacity: 0.8; margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 36px; font-weight: 700;
+    color: var(--text-pri); letter-spacing: -0.025em;
+    margin-bottom: 8px; line-height: 1.15;
+  }
+  .subtitle {
+    font-size: 15px; color: var(--text-sec);
+    line-height: 1.55; max-width: 560px;
+  }
+
+  /* Table area */
+  .table-area {
+    padding: 36px 48px 32px;
+    position: relative;
+  }
+  .table-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 300px 200px at 50% 50%, rgba(127,181,176,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .comparison-table {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: var(--glass-highlight);
+    position: relative;
+    z-index: 1;
+  }
+
+  .table-row {
+    display: grid;
+    grid-template-columns: 120px repeat(3, 1fr) 90px;
+    border-bottom: 1px solid var(--border-normal);
+  }
+  .table-row:last-child { border-bottom: none; }
+  .table-row.header { background: rgba(21,23,34,0.4); }
+
+  .table-cell {
+    padding: 14px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-right: 1px solid var(--border-normal);
+    font-size: 12px;
+  }
+  .table-cell:last-child { border-right: none; }
+
+  .table-row.header .table-cell {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 10px;
+    color: var(--text-ter);
+  }
+
+  .table-row:not(.header) .table-cell:first-child {
+    font-weight: 600;
+    color: var(--text-sec);
+    text-align: left;
+    justify-content: flex-start;
+    font-size: 11px;
+  }
+
+  /* Visual grading — horizontal bars instead of dots */
+  .grade-bar-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .grade-bar {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--elevated);
+    width: 100%;
+    max-width: 80px;
+    overflow: hidden;
+    position: relative;
+  }
+  .grade-fill {
+    height: 100%;
+    border-radius: 3px;
+    position: absolute;
+    left: 0; top: 0;
+  }
+  .grade-fill.high {
+    background: var(--accent);
+    box-shadow: 0 0 6px rgba(127,181,176,0.3);
+  }
+  .grade-fill.med {
+    background: var(--casual);
+    box-shadow: 0 0 6px rgba(212,165,116,0.2);
+  }
+  .grade-fill.low {
+    background: var(--red);
+    box-shadow: 0 0 6px rgba(196,120,120,0.2);
+  }
+
+  .grade-label {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+  .grade-label.high { color: var(--accent); }
+  .grade-label.med { color: var(--casual); }
+  .grade-label.low { color: var(--red); }
+
+  /* Winner column highlight */
+  .table-row.winner-row .table-cell:last-child {
+    background: rgba(127,181,176,0.06);
+  }
+
+  .verdict-tag {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .neutral-tag {
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+
+  /* Tradeoff callout */
+  .tradeoff {
+    margin: 0 48px 16px;
+    padding: 14px 18px;
+    background: rgba(212,165,116,0.06);
+    border: 1px solid rgba(212,165,116,0.12);
+    border-radius: 8px;
+  }
+  .tradeoff-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--casual);
+    opacity: 0.7;
+    margin-bottom: 4px;
+  }
+  .tradeoff p {
+    font-size: 12px;
+    color: var(--text-sec);
+    line-height: 1.55;
+  }
+
+  /* Outcome */
+  .outcome {
+    margin: 0 48px 48px;
+    background: var(--accent-dim);
+    border-radius: 10px;
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .outcome-arrow {
+    font-size: 16px; color: var(--accent);
+    opacity: 0.55; flex-shrink: 0;
+  }
+  .outcome p {
+    font-size: 13px; font-weight: 500;
+    color: var(--text-sec); line-height: 1.5;
+  }
+
+  @media (max-width: 680px) {
+    .title-area, .table-area, .tradeoff, .outcome { padding-left: 24px; padding-right: 24px; }
+    body { padding: 16px; }
+    .table-row { grid-template-columns: 100px repeat(3, 1fr) 70px; }
+  }
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="title-area">
+      <div class="label">Content Attribution</div>
+      <h1>Attribution Analysis</h1>
+      <p class="subtitle">Each pattern optimized for different things — trustworthiness, discoverability, space efficiency</p>
+    </div>
+
+    <div class="table-area">
+      <div class="comparison-table">
+        <div class="table-row header">
+          <div class="table-cell">Pattern</div>
+          <div class="table-cell">Trust</div>
+          <div class="table-cell">Visibility</div>
+          <div class="table-cell">Space</div>
+          <div class="table-cell">Verdict</div>
+        </div>
+
+        <div class="table-row winner-row">
+          <div class="table-cell">Hyperlinks</div>
+          <div class="table-cell">
+            <div class="grade-bar-container">
+              <div class="grade-bar"><div class="grade-fill high" style="width: 90%;"></div></div>
+              <span class="grade-label high">High</span>
+            </div>
+          </div>
+          <div class="table-cell">
+            <div class="grade-bar-container">
+              <div class="grade-bar"><div class="grade-fill high" style="width: 85%;"></div></div>
+              <span class="grade-label high">High</span>
+            </div>
+          </div>
+          <div class="table-cell">
+            <div class="grade-bar-container">
+              <div class="grade-bar"><div class="grade-fill med" style="width: 65%;"></div></div>
+              <span class="grade-label med">Med</span>
+            </div>
+          </div>
+          <div class="table-cell">
+            <div class="verdict-tag">
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                <polyline points="2,5 4.5,7.5 8,3" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Winner
+            </div>
+          </div>
+        </div>
+
+        <div class="table-row">
+          <div class="table-cell">Pills</div>
+          <div class="table-cell">
+            <div class="grade-bar-container">
+              <div class="grade-bar"><div class="grade-fill med" style="width: 55%;"></div></div>
+              <span class="grade-label med">Med</span>
+            </div>
+          </div>
+          <div class="table-cell">
+            <div class="grade-bar-container">
+              <div class="grade-bar"><div class="grade-fill low" style="width: 35%;"></div></div>
+              <span class="grade-label low">Low</span>
+            </div>
+          </div>
+          <div class="table-cell">
+            <div class="grade-bar-container">
+              <div class="grade-bar"><div class="grade-fill high" style="width: 80%;"></div></div>
+              <span class="grade-label high">High</span>
+            </div>
+          </div>
+          <div class="table-cell"><span class="neutral-tag">Noisy</span></div>
+        </div>
+
+        <div class="table-row">
+          <div class="table-cell">Collapsible</div>
+          <div class="table-cell">
+            <div class="grade-bar-container">
+              <div class="grade-bar"><div class="grade-fill low" style="width: 30%;"></div></div>
+              <span class="grade-label low">Low</span>
+            </div>
+          </div>
+          <div class="table-cell">
+            <div class="grade-bar-container">
+              <div class="grade-bar"><div class="grade-fill low" style="width: 25%;"></div></div>
+              <span class="grade-label low">Low</span>
+            </div>
+          </div>
+          <div class="table-cell">
+            <div class="grade-bar-container">
+              <div class="grade-bar"><div class="grade-fill high" style="width: 92%;"></div></div>
+              <span class="grade-label high">High</span>
+            </div>
+          </div>
+          <div class="table-cell"><span class="neutral-tag">Hidden</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tradeoff">
+      <div class="tradeoff-label">The Core Tradeoff</div>
+      <p>Inline hyperlinks balance trust with discoverability — citations visible without taking extra space, credibility right where users need it</p>
+    </div>
+
+    <div class="outcome">
+      <span class="outcome-arrow">↳</span>
+      <p>Trust and visibility won over space efficiency — users need to see sources immediately, not hunt for them</p>
+    </div>
+  </div>
+</body>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</html>
