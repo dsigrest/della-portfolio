@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PORT-03a — Direction Exploration</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --casual: #D4A574;
+    --resur: #C4B078;
+    --blue: #8A9EC4;
+    --red: #C47878;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    opacity: 0;
+    animation: fadeIn 0.7s ease-out 0.1s forwards;
+  }
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+  .diagram::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 400px 300px at 50% 50%, rgba(127,181,176,0.025) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .title-area {
+    padding: 48px 48px 0;
+    position: relative;
+    z-index: 1;
+  }
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.8;
+    margin-bottom: 8px;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-out 0.15s forwards;
+  }
+  h1 {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--text-pri);
+    letter-spacing: -0.025em;
+    margin-bottom: 8px;
+    line-height: 1.15;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-out 0.25s forwards;
+  }
+  .subtitle {
+    font-size: 15px;
+    color: var(--text-sec);
+    line-height: 1.55;
+    max-width: 540px;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-out 0.35s forwards;
+  }
+
+  /* Stats bar */
+  .stats-bar {
+    padding: 24px 48px 0;
+    display: flex;
+    gap: 32px;
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-out 0.4s forwards;
+  }
+  .stat {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .stat-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+  }
+  .stat:nth-child(1) .stat-num { color: var(--accent); }
+  .stat:nth-child(2) .stat-num { color: var(--casual); }
+  .stat:nth-child(3) .stat-num { color: var(--blue); }
+  .stat-text {
+    font-size: 12px;
+    color: var(--text-ter);
+  }
+
+  /* Grid */
+  .grid-area {
+    padding: 24px 48px 48px;
+    position: relative;
+  }
+
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    position: relative;
+    z-index: 1;
+  }
+  .portfolio-thumb {
+    aspect-ratio: 4/3;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+    border: 1.5px dashed var(--red);
+    transition: opacity 0.35s ease;
+    opacity: 0;
+    animation: thumbReveal 0.5s ease-out forwards;
+  }
+  .portfolio-thumb.explored {
+    border-color: var(--resur);
+  }
+  .portfolio-thumb.chosen {
+    border-style: solid;
+    border-color: var(--accent);
+  }
+  .portfolio-thumb:nth-child(1) { animation-delay: 0.45s; }
+  .portfolio-thumb:nth-child(2) { animation-delay: 0.50s; }
+  .portfolio-thumb:nth-child(3) { animation-delay: 0.55s; }
+  .portfolio-thumb:nth-child(4) { animation-delay: 0.60s; }
+  .portfolio-thumb:nth-child(5) { animation-delay: 0.65s; }
+  .portfolio-thumb:nth-child(6) { animation-delay: 0.70s; }
+
+  @keyframes thumbReveal {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  /* Hover: dim others (informational, not action) */
+  .grid-area:hover .portfolio-thumb:not(:hover) {
+    opacity: 0.3;
+  }
+
+  .thumb-bg {
+    position: absolute;
+    inset: 0;
+  }
+  .thumb-elements {
+    position: absolute;
+    inset: 0;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .thumb-line {
+    height: 3px;
+    border-radius: 2px;
+    opacity: 0.3;
+  }
+  .thumb-block {
+    flex: 1;
+    border-radius: 4px;
+    opacity: 0.12;
+    margin-top: 6px;
+  }
+
+  /* Label appears on hover */
+  .thumb-info {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 24px 12px 10px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+    transform: translateY(4px);
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  .portfolio-thumb:hover .thumb-info {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .thumb-name {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-pri);
+    margin-bottom: 2px;
+  }
+  .thumb-desc {
+    font-size: 9px;
+    color: var(--text-sec);
+  }
+
+  /* Verdict dot */
+  .verdict {
+    position: absolute;
+    top: 10px; right: 10px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+  }
+  .v-skip { background: var(--red); opacity: 0.6; }
+  .v-explore { background: var(--resur); opacity: 0.6; }
+  .v-chosen {
+    background: var(--accent);
+    opacity: 0.8;
+    box-shadow: 0 0 8px rgba(127,181,176,0.4);
+    animation: chosenPulse 2s ease-in-out infinite;
+  }
+  @keyframes chosenPulse {
+    0%, 100% { box-shadow: 0 0 8px rgba(127,181,176,0.4); }
+    50% { box-shadow: 0 0 14px rgba(127,181,176,0.6); }
+  }
+
+  /* Chosen glow */
+  .portfolio-thumb.chosen {
+    box-shadow: 0 0 20px rgba(127,181,176,0.06);
+  }
+  .chosen-tag {
+    position: absolute;
+    top: 10px; left: 10px;
+    background: rgba(127,181,176,0.2);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(127,181,176,0.25);
+    border-radius: 4px;
+    padding: 2px 7px;
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    gap: 16px;
+    margin-top: 14px;
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-out 0.8s forwards;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+  .legend-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+  }
+
+  @media (max-width: 680px) {
+    .title-area, .stats-bar, .grid-area { padding-left: 24px; padding-right: 24px; }
+    body { padding: 16px; }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="title-area">
+      <div class="section-label">Portfolio — Design Exploration</div>
+      <h1>Visual Direction<br>Exploration</h1>
+      <p class="subtitle">21 designer portfolios analyzed across target companies. 5 directions explored. Restraint won — it keeps focus on the case studies, not the chrome.</p>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat"><span class="stat-num">21</span><span class="stat-text">portfolios studied</span></div>
+      <div class="stat"><span class="stat-num">5</span><span class="stat-text">directions explored</span></div>
+      <div class="stat"><span class="stat-num">1</span><span class="stat-text">chosen for clarity</span></div>
+    </div>
+
+    <div class="grid-area">
+      <div class="portfolio-grid">
+        <div class="portfolio-thumb">
+          <div class="thumb-bg" style="background: linear-gradient(135deg, #f5f3ef, #e8e5e0);"></div>
+          <div class="thumb-elements">
+            <div class="thumb-line" style="width: 50%; background: #333;"></div>
+            <div class="thumb-line" style="width: 70%; background: #333;"></div>
+            <div class="thumb-block" style="background: #ccc;"></div>
+          </div>
+          <div class="verdict v-skip"></div>
+          <div class="thumb-info">
+            <div class="thumb-name">Maximalist</div>
+            <div class="thumb-desc">High visual density, decorative elements</div>
+          </div>
+        </div>
+
+        <div class="portfolio-thumb explored">
+          <div class="thumb-bg" style="background: linear-gradient(135deg, #1c1814, #2a2420);"></div>
+          <div class="thumb-elements">
+            <div class="thumb-line" style="width: 40%; background: #c9a87c;"></div>
+            <div class="thumb-line" style="width: 60%; background: #c9a87c;"></div>
+            <div class="thumb-block" style="background: #c9a87c;"></div>
+          </div>
+          <div class="verdict v-explore"></div>
+          <div class="thumb-info">
+            <div class="thumb-name">Warm Editorial</div>
+            <div class="thumb-desc">Personality-forward, serif accents</div>
+          </div>
+        </div>
+
+        <div class="portfolio-thumb">
+          <div class="thumb-bg" style="background: linear-gradient(135deg, #1a1c2e, #222640);"></div>
+          <div class="thumb-elements">
+            <div class="thumb-line" style="width: 45%; background: #6a7ec4;"></div>
+            <div class="thumb-line" style="width: 65%; background: #6a7ec4;"></div>
+            <div class="thumb-block" style="background: #6a7ec4;"></div>
+          </div>
+          <div class="verdict v-skip"></div>
+          <div class="thumb-info">
+            <div class="thumb-name">Brutalist</div>
+            <div class="thumb-desc">Structural signal, angular layout</div>
+          </div>
+        </div>
+
+        <div class="portfolio-thumb explored">
+          <div class="thumb-bg" style="background: linear-gradient(135deg, #f5f3ef, #e8e5e0);"></div>
+          <div class="thumb-elements">
+            <div class="thumb-line" style="width: 35%; background: #999;"></div>
+            <div class="thumb-line" style="width: 55%; background: #999;"></div>
+            <div class="thumb-block" style="background: #ddd;"></div>
+          </div>
+          <div class="verdict v-explore"></div>
+          <div class="thumb-info">
+            <div class="thumb-name">Apple-Clean</div>
+            <div class="thumb-desc">Light mode minimal, generous whitespace</div>
+          </div>
+        </div>
+
+        <div class="portfolio-thumb chosen">
+          <div class="thumb-bg" style="background: linear-gradient(135deg, #0d0f1a, #141824);"></div>
+          <div class="thumb-elements">
+            <div class="thumb-line" style="width: 40%; background: #2dd4bf;"></div>
+            <div class="thumb-line" style="width: 60%; background: rgba(224,223,228,0.25);"></div>
+            <div class="thumb-block" style="background: rgba(45,212,191,0.1);"></div>
+          </div>
+          <div class="verdict v-chosen"></div>
+          <div class="chosen-tag">Chosen</div>
+          <div class="thumb-info" style="opacity: 1; transform: none;">
+            <div class="thumb-name">Dark Spare</div>
+            <div class="thumb-desc">Work speaks, not chrome</div>
+          </div>
+        </div>
+
+        <div class="portfolio-thumb">
+          <div class="thumb-bg" style="background: linear-gradient(135deg, #0f1218, #1a1e30);"></div>
+          <div class="thumb-elements">
+            <div class="thumb-line" style="width: 50%; background: #e0a0ff;"></div>
+            <div class="thumb-line" style="width: 70%; background: rgba(224,160,255,0.3);"></div>
+            <div class="thumb-block" style="background: rgba(224,160,255,0.1);"></div>
+          </div>
+          <div class="verdict v-skip"></div>
+          <div class="thumb-info">
+            <div class="thumb-name">Dark Accent</div>
+            <div class="thumb-desc">Gradient-heavy, high contrast</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background: var(--accent);"></div>Chosen</div>
+        <div class="legend-item"><div class="legend-dot" style="background: var(--resur);"></div>Explored</div>
+        <div class="legend-item"><div class="legend-dot" style="background: var(--red);"></div>Eliminated</div>
+      </div>
+    </div>
+  </div>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+</body>
+</html>
