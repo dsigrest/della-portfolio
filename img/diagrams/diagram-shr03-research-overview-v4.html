@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHR-03 — Research Overview</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --red: #C47878;
+    --red-dim: rgba(196,120,120,0.12);
+    --casual: #D4A574;
+    --casual-dim: rgba(212,165,116,0.12);
+    --new-seg: #8A9EC4;
+    --new-seg-dim: rgba(138,158,196,0.12);
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    color: var(--text-pri);
+  }
+  .diagram {
+    width: 100%;
+    max-width: 760px;
+    min-width: 400px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ── Hub area ── */
+  .hub-area {
+    padding: 36px 48px 48px;
+    position: relative;
+  }
+  .hub-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 300px 300px at 50% 45%, rgba(127,181,176,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Center hub */
+  .hub {
+    position: relative;
+    z-index: 1;
+    width: 220px;
+    margin: 0 auto 24px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--accent);
+    box-shadow: var(--glass-highlight), 0 0 40px rgba(127,181,176,0.08);
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+    opacity: 0; animation: fadeUp 600ms cubic-bezier(0.34, 1.56, 0.64, 1) 100ms forwards;
+  }
+  .hub-icon {
+    width: 36px; height: 36px;
+    margin: 0 auto 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-dim);
+    border-radius: 10px;
+  }
+  .hub-icon svg { width: 20px; height: 20px; color: var(--accent); }
+  .hub-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-pri);
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+  }
+  .hub-desc {
+    font-size: 11px;
+    color: var(--text-sec);
+    line-height: 1.45;
+  }
+
+  /* Connector lines */
+  .connectors {
+    position: relative;
+    z-index: 1;
+    height: 28px;
+    display: flex;
+    justify-content: center;
+    opacity: 0; animation: fadeUp 400ms ease 200ms forwards;
+  }
+  .connector-svg { width: 664px; height: 28px; }
+
+  /* Spoke cards */
+  .spokes {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    padding: 0;
+  }
+
+  .spoke-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-highlight);
+    border-radius: 12px;
+    padding: 18px;
+    position: relative;
+    overflow: hidden;
+    opacity: 0; transform: translateY(12px);
+  }
+  .spoke-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .spoke-card:nth-child(1) { animation: fadeUp 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 300ms forwards; }
+  .spoke-card:nth-child(2) { animation: fadeUp 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 380ms forwards; }
+  .spoke-card:nth-child(3) { animation: fadeUp 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 460ms forwards; }
+  .spoke-card:nth-child(4) { animation: fadeUp 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 540ms forwards; }
+
+  .spoke-card.participants::before { background: var(--casual); }
+  .spoke-card.scope::before { background: var(--accent); }
+  .spoke-card.questions::before { background: var(--new-seg); }
+  .spoke-card.method::before { background: var(--red); }
+
+  .spoke-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .spoke-icon {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .spoke-icon svg { width: 14px; height: 14px; }
+  .spoke-icon.participants { background: var(--casual-dim); color: var(--casual); }
+  .spoke-icon.scope { background: var(--accent-dim); color: var(--accent); }
+  .spoke-icon.questions { background: var(--new-seg-dim); color: var(--new-seg); }
+  .spoke-icon.method { background: var(--red-dim); color: var(--red); }
+
+  .spoke-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-pri);
+    letter-spacing: -0.01em;
+  }
+
+  .spoke-items {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .spoke-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--text-sec);
+    line-height: 1.45;
+  }
+  .spoke-bullet {
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
+  .spoke-bullet.participants { background: var(--casual); }
+  .spoke-bullet.scope { background: var(--accent); }
+  .spoke-bullet.questions { background: var(--new-seg); }
+  .spoke-bullet.method { background: var(--red); }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    .hub-area { padding-left: 24px; padding-right: 24px; }
+    .spokes { grid-template-columns: 1fr; }
+  }
+
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+
+    <div class="hub-area">
+      <!-- Center hub -->
+      <div class="hub">
+        <div class="hub-icon">
+          <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.1"/><path d="M10 6v4l3 2" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="hub-title">Ran Full Project Length</div>
+        <div class="hub-desc">Shaped every stage of the framework — from entry points to privacy controls</div>
+      </div>
+
+      <!-- Connectors -->
+      <div class="connectors">
+        <svg class="connector-svg" viewBox="0 0 664 28" fill="none">
+          <path d="M332 0 V10 Q332 14 270 14 H166" stroke="rgba(224,223,228,0.1)" stroke-width="1"/>
+          <path d="M332 0 V10 Q332 14 394 14 H498" stroke="rgba(224,223,228,0.1)" stroke-width="1"/>
+          <path d="M332 0 V10 Q332 18 240 22 H166" stroke="rgba(224,223,228,0.1)" stroke-width="1"/>
+          <path d="M332 0 V10 Q332 18 424 22 H498" stroke="rgba(224,223,228,0.1)" stroke-width="1"/>
+        </svg>
+      </div>
+
+      <!-- Spoke cards -->
+      <div class="spokes">
+        <div class="spoke-card participants">
+          <div class="spoke-header">
+            <div class="spoke-icon participants">
+              <svg viewBox="0 0 14 14" fill="none"><circle cx="5" cy="4.5" r="2.5" stroke="currentColor" stroke-width="1.1"/><path d="M1 12c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><circle cx="10.5" cy="5" r="1.8" stroke="currentColor" stroke-width="1.1"/><path d="M10.5 8.5c1.4 0 2.5 1.1 2.5 2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+            </div>
+            <span class="spoke-title">Participant Types</span>
+          </div>
+          <div class="spoke-items">
+            <div class="spoke-item"><div class="spoke-bullet participants"></div><span>Active Redditors — sharing behavior and inhibitors</span></div>
+            <div class="spoke-item"><div class="spoke-bullet participants"></div><span>Non-users — preview comprehension and first impressions</span></div>
+            <div class="spoke-item"><div class="spoke-bullet participants"></div><span>Both tested before and after redesign</span></div>
+          </div>
+        </div>
+
+        <div class="spoke-card scope">
+          <div class="spoke-header">
+            <div class="spoke-icon scope">
+              <svg viewBox="0 0 14 14" fill="none"><rect x="2" y="2" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1.1"/><path d="M5 5h4M5 7h3M5 9h2" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+            </div>
+            <span class="spoke-title">Study Scope</span>
+          </div>
+          <div class="spoke-items">
+            <div class="spoke-item"><div class="spoke-bullet scope"></div><span>Social behavior on pseudonymous platforms</span></div>
+            <div class="spoke-item"><div class="spoke-bullet scope"></div><span>Privacy perception and identity exposure</span></div>
+            <div class="spoke-item"><div class="spoke-bullet scope"></div><span>Sharing motivations and inhibitors</span></div>
+          </div>
+        </div>
+
+        <div class="spoke-card questions">
+          <div class="spoke-header">
+            <div class="spoke-icon questions">
+              <svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.1"/><path d="M5.5 5.5c0-1.1.7-1.8 1.5-1.8s1.5.7 1.5 1.8c0 .8-.5 1.2-1.5 1.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><circle cx="7" cy="9.5" r="0.5" fill="currentColor"/></svg>
+            </div>
+            <span class="spoke-title">Core Questions</span>
+          </div>
+          <div class="spoke-items">
+            <div class="spoke-item"><div class="spoke-bullet questions"></div><span>What motivates sharing on a pseudonymous platform?</span></div>
+            <div class="spoke-item"><div class="spoke-bullet questions"></div><span>What inhibits it?</span></div>
+            <div class="spoke-item"><div class="spoke-bullet questions"></div><span>How do non-users perceive Reddit content in the wild?</span></div>
+          </div>
+        </div>
+
+        <div class="spoke-card method">
+          <div class="spoke-header">
+            <div class="spoke-icon method">
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 10l3-3 2 2 5-5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 4h3v3" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <span class="spoke-title">Methodology</span>
+          </div>
+          <div class="spoke-items">
+            <div class="spoke-item"><div class="spoke-bullet method"></div><span>Before/after testing with same participants</span></div>
+            <div class="spoke-item"><div class="spoke-bullet method"></div><span>Preview comprehension tests with non-Redditors</span></div>
+            <div class="spoke-item"><div class="spoke-bullet method"></div><span>Behavioral model built from findings</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</body>
+</html>

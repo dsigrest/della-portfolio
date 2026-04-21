@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SHR-14 — Privacy Barrier</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --canvas: #0A0C16;
+      --card: #10121C;
+      --elevated: #151722;
+      --highest: #1A1C28;
+      --text-pri: #E0DFE4;
+      --text-sec: rgba(224,223,228,0.6);
+      --text-ter: rgba(224,223,228,0.4);
+      --text-dim: rgba(224,223,228,0.2);
+      --border-normal: rgba(224,223,228,0.07);
+      --accent: #7FB5B0;
+      --accent-dim: rgba(127,181,176,0.12);
+      --red: #C47878;
+      --red-dim: rgba(196,120,120,0.12);
+      --casual: #D4A574;
+      --casual-dim: rgba(212,165,116,0.12);
+      --new-seg: #8A9EC4;
+      --new-seg-dim: rgba(138,158,196,0.12);
+      --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+      --glass-border: rgba(224,223,228,0.08);
+      --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    }
+
+    body {
+      background: #08090F;
+      display: flex;
+      justify-content: center;
+      padding: 40px 20px;
+      font-family: 'Inter', -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .diagram {
+      max-width: 760px;
+      width: 100%;
+      min-width: 400px;
+      background: var(--canvas);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .content {
+      padding: 48px;
+    }
+
+    .barrier-center {
+      height: 162px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      animation: fadeInUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+    }
+
+    .barrier-word {
+      font-size: 40px;
+      font-weight: 700;
+      color: var(--red);
+      text-align: center;
+      letter-spacing: -0.03em;
+      position: relative;
+      z-index: 1;
+    }
+
+    .glow-rings {
+      position: absolute;
+      width: 152px;
+      height: 152px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .ring {
+      position: absolute;
+      border: 1px solid var(--red);
+      border-radius: 50%;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+    }
+
+    .ring:nth-child(1) {
+      width: 76px; height: 76px;
+      animation: expand-ring 3s cubic-bezier(0.34, 1.56, 0.64, 1) 0s infinite;
+    }
+
+    .ring:nth-child(2) {
+      width: 114px; height: 114px;
+      animation: expand-ring 3s cubic-bezier(0.34, 1.56, 0.64, 1) 1s infinite;
+    }
+
+    .ring:nth-child(3) {
+      width: 152px; height: 152px;
+      animation: expand-ring 3s cubic-bezier(0.34, 1.56, 0.64, 1) 2s infinite;
+    }
+
+    @keyframes expand-ring {
+      0% {
+        opacity: 0.8;
+        transform: translate(-50%, -50%) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1.8);
+      }
+    }
+
+    .spacer-40 { height: 40px; }
+
+    .barrier-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
+
+    .barrier-card {
+      background: rgba(224,223,228,0.03);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 20px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      animation: fadeInUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    .barrier-card:nth-child(1) { animation-delay: 0.3s; }
+    .barrier-card:nth-child(2) { animation-delay: 0.45s; }
+    .barrier-card:nth-child(3) { animation-delay: 0.6s; }
+
+    .left-accent {
+      position: absolute;
+      left: -1px;
+      top: -1px;
+      bottom: -1px;
+      width: 3px;
+      background: var(--red);
+    }
+
+    .barrier-card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-pri);
+    }
+
+    .barrier-card-desc {
+      font-size: 11px;
+      color: var(--text-ter);
+      line-height: 1.5;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .barrier-cards {
+        grid-template-columns: 1fr;
+      }
+    }
+  
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="content">
+      <div class="barrier-center">
+        <div class="glow-rings">
+          <div class="ring"></div>
+          <div class="ring"></div>
+          <div class="ring"></div>
+        </div>
+        <div class="barrier-word">Privacy</div>
+      </div>
+
+      <div class="spacer-40"></div>
+
+      <div class="barrier-cards">
+        <div class="barrier-card">
+          <div class="left-accent"></div>
+          <div class="barrier-card-title">Identity Exposure</div>
+          <div class="barrier-card-desc">Users feared their username or profile data would travel with the share, exposing their pseudonymous identity.</div>
+        </div>
+        <div class="barrier-card">
+          <div class="left-accent"></div>
+          <div class="barrier-card-title">Recipient View Unknown</div>
+          <div class="barrier-card-desc">No way to preview what information the recipient would actually receive. Uncertainty became the blocker.</div>
+        </div>
+        <div class="barrier-card">
+          <div class="left-accent"></div>
+          <div class="barrier-card-title">Trust Gap</div>
+          <div class="barrier-card-desc">Even with explicit assurances, users couldn't verify the promise. The system felt opaque.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</body>
+</html>

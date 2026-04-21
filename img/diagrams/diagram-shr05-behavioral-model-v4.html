@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHR-05 — Behavioral Model</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --red: #C47878;
+    --red-dim: rgba(196,120,120,0.12);
+    --casual: #D4A574;
+    --casual-dim: rgba(212,165,116,0.12);
+    --new-seg: #8A9EC4;
+    --new-seg-dim: rgba(138,158,196,0.12);
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 100%;
+    max-width: 760px;
+    min-width: 400px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ── Header (compact, centered) ── */
+  .header {
+    padding: 36px 48px 32px;
+    text-align: center;
+    opacity: 0;
+    animation: fadeUp 600ms cubic-bezier(0.34, 1.56, 0.64, 1) 100ms forwards;
+  }
+  .header-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-pri);
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  .header-desc {
+    font-size: 12px;
+    color: var(--text-ter);
+    line-height: 1.45;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  /* ── Hub area ── */
+  .hub-area {
+    padding: 0 48px 48px;
+    position: relative;
+  }
+  .hub-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 320px 280px at 50% 30%, rgba(127,181,176,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Spoke cards ── */
+  .spokes-row {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  @media (max-width: 600px) {
+    .spokes-row { grid-template-columns: 1fr; }
+    .hub-area { padding-left: 24px; padding-right: 24px; }
+  }
+
+  .spoke {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-highlight);
+    border-radius: 12px;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  .spoke:nth-child(1) { animation: fadeUp 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 250ms forwards; }
+  .spoke:nth-child(2) { animation: fadeUp 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 350ms forwards; }
+  .spoke:nth-child(3) { animation: fadeUp 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 450ms forwards; }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Illustration zones (80px, ambient animation) ── */
+  .spoke-illustration {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .spoke.motivators .spoke-illustration { background: linear-gradient(180deg, rgba(127,181,176,0.08) 0%, transparent 100%); }
+  .spoke.inhibitors .spoke-illustration { background: linear-gradient(180deg, rgba(196,120,120,0.08) 0%, transparent 100%); }
+  .spoke.perception .spoke-illustration { background: linear-gradient(180deg, rgba(138,158,196,0.08) 0%, transparent 100%); }
+
+  .illust-group { position: relative; width: 80px; height: 60px; }
+
+  /* ── Pattern: Expanding Circles (motivators → sharing outward) ── */
+  .circle-pulse {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid var(--accent);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+  }
+  .circle-pulse:nth-child(1) { width: 16px; height: 16px; animation: pulseOut 3s ease-out 0s infinite; }
+  .circle-pulse:nth-child(2) { width: 16px; height: 16px; animation: pulseOut 3s ease-out 0.6s infinite; }
+  .circle-pulse:nth-child(3) { width: 16px; height: 16px; animation: pulseOut 3s ease-out 1.2s infinite; }
+  .pulse-center {
+    position: absolute;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 12px rgba(127,181,176,0.4);
+  }
+  @keyframes pulseOut {
+    0% { width: 16px; height: 16px; opacity: 0.6; }
+    100% { width: 56px; height: 56px; opacity: 0; }
+  }
+
+  /* ── Pattern: Barrier Lines (inhibitors → blocking) ── */
+  .barrier-group { position: relative; width: 80px; height: 60px; }
+  .barrier-line {
+    position: absolute;
+    height: 1px;
+    background: var(--red);
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+  }
+  .barrier-line:nth-child(1) { top: 18px; animation: barrierSlide 2.5s ease-in-out 0s infinite; }
+  .barrier-line:nth-child(2) { top: 30px; animation: barrierSlide 2.5s ease-in-out 0.3s infinite; }
+  .barrier-line:nth-child(3) { top: 42px; animation: barrierSlide 2.5s ease-in-out 0.6s infinite; }
+  .barrier-dot {
+    position: absolute;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--red);
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.6;
+    animation: barrierPulse 2.5s ease-in-out infinite;
+  }
+  @keyframes barrierSlide {
+    0%, 100% { width: 0; opacity: 0; }
+    30% { width: 50px; opacity: 0.5; }
+    70% { width: 50px; opacity: 0.5; }
+    100% { width: 0; opacity: 0; }
+  }
+  @keyframes barrierPulse {
+    0%, 100% { opacity: 0.3; transform: translate(-50%,-50%) scale(1); }
+    50% { opacity: 0.7; transform: translate(-50%,-50%) scale(1.3); }
+  }
+
+  /* ── Pattern: Floating Items (perception → uncertainty) ── */
+  .perception-group { position: relative; width: 80px; height: 60px; }
+  .float-item {
+    position: absolute;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--new-seg);
+    opacity: 0;
+  }
+  .float-item:nth-child(1) { left: 15px; animation: floatUp 3s ease-out 0s infinite; }
+  .float-item:nth-child(2) { left: 36px; animation: floatUp 3s ease-out 0.8s infinite; }
+  .float-item:nth-child(3) { left: 57px; animation: floatUp 3s ease-out 1.6s infinite; }
+  @keyframes floatUp {
+    0% { bottom: 5px; opacity: 0; }
+    20% { opacity: 0.7; }
+    80% { opacity: 0.7; }
+    100% { bottom: 50px; opacity: 0; }
+  }
+
+  /* ── Card content ── */
+  .spoke-content { padding: 16px 16px 18px; }
+
+  .spoke-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .spoke-badge {
+    width: 26px; height: 26px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .spoke-badge svg { width: 13px; height: 13px; }
+  .spoke-badge.motivators { background: var(--accent-dim); color: var(--accent); }
+  .spoke-badge.inhibitors { background: var(--red-dim); color: var(--red); }
+  .spoke-badge.perception { background: var(--new-seg-dim); color: var(--new-seg); }
+
+  .spoke-label { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+  .spoke-label.motivators { color: var(--accent); }
+  .spoke-label.inhibitors { color: var(--red); }
+  .spoke-label.perception { color: var(--new-seg); }
+
+  .spoke-items { display: flex; flex-direction: column; gap: 8px; }
+  .spoke-item { display: flex; align-items: flex-start; gap: 8px; }
+  .item-dot {
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
+  .item-dot.motivators { background: var(--accent); }
+  .item-dot.inhibitors { background: var(--red); }
+  .item-dot.perception { background: var(--new-seg); }
+  .item-text {
+    font-size: 11px;
+    color: var(--text-sec);
+    line-height: 1.4;
+  }
+
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+
+    <div class="header">
+      <div class="header-title">Why People Share (or Don't)</div>
+      <div class="header-desc">Behavioral model from longitudinal UXR study — pseudonymous platform dynamics</div>
+    </div>
+
+    <div class="hub-area">
+
+      <div class="spokes-row">
+
+        <!-- Motivators -->
+        <div class="spoke motivators">
+          <div class="spoke-illustration">
+            <div class="illust-group">
+              <div class="pulse-center"></div>
+              <div class="circle-pulse"></div>
+              <div class="circle-pulse"></div>
+              <div class="circle-pulse"></div>
+            </div>
+          </div>
+          <div class="spoke-content">
+            <div class="spoke-header">
+              <div class="spoke-badge motivators">
+                <svg viewBox="0 0 13 13" fill="none"><path d="M6.5 1v11M1 6.5h11" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+              </div>
+              <span class="spoke-label motivators">Motivators</span>
+            </div>
+            <div class="spoke-items">
+              <div class="spoke-item"><div class="item-dot motivators"></div><span class="item-text">Sharing content that reflects identity or taste</span></div>
+              <div class="spoke-item"><div class="item-dot motivators"></div><span class="item-text">Sparking conversation with friends or groups</span></div>
+              <div class="spoke-item"><div class="item-dot motivators"></div><span class="item-text">Saving or bookmarking for later reference</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inhibitors -->
+        <div class="spoke inhibitors">
+          <div class="spoke-illustration">
+            <div class="barrier-group">
+              <div class="barrier-dot"></div>
+              <div class="barrier-line"></div>
+              <div class="barrier-line"></div>
+              <div class="barrier-line"></div>
+            </div>
+          </div>
+          <div class="spoke-content">
+            <div class="spoke-header">
+              <div class="spoke-badge inhibitors">
+                <svg viewBox="0 0 13 13" fill="none"><path d="M3 6.5h7" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+              </div>
+              <span class="spoke-label inhibitors">Inhibitors</span>
+            </div>
+            <div class="spoke-items">
+              <div class="spoke-item"><div class="item-dot inhibitors"></div><span class="item-text">Fear of exposing pseudonymous identity</span></div>
+              <div class="spoke-item"><div class="item-dot inhibitors"></div><span class="item-text">Uncertainty about what info travels with the share</span></div>
+              <div class="spoke-item"><div class="item-dot inhibitors"></div><span class="item-text">Raw URLs look untrustworthy to recipients</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Non-user perception -->
+        <div class="spoke perception">
+          <div class="spoke-illustration">
+            <div class="perception-group">
+              <div class="float-item">?</div>
+              <div class="float-item">?</div>
+              <div class="float-item">?</div>
+            </div>
+          </div>
+          <div class="spoke-content">
+            <div class="spoke-header">
+              <div class="spoke-badge perception">
+                <svg viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="3" stroke="currentColor" stroke-width="1.1"/><path d="M1 6.5c0 0 2.2-4 5.5-4s5.5 4 5.5 4 -2.2 4-5.5 4S1 6.5 1 6.5z" stroke="currentColor" stroke-width="1.1"/></svg>
+              </div>
+              <span class="spoke-label perception">Non-User Perception</span>
+            </div>
+            <div class="spoke-items">
+              <div class="spoke-item"><div class="item-dot perception"></div><span class="item-text">Reddit URLs perceived as unfamiliar or sketchy</span></div>
+              <div class="spoke-item"><div class="item-dot perception"></div><span class="item-text">No context about what to expect after tapping</span></div>
+              <div class="spoke-item"><div class="item-dot perception"></div><span class="item-text">Screenshots more trusted than links</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</body>
+</html>

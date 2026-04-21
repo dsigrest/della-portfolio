@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SHR-E1 — The Feedback Engine</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --canvas: #0A0C16;
+      --card: #10121C;
+      --elevated: #151722;
+      --highest: #1A1C28;
+      --text-pri: #E0DFE4;
+      --text-sec: rgba(224,223,228,0.6);
+      --text-ter: rgba(224,223,228,0.4);
+      --text-dim: rgba(224,223,228,0.2);
+      --border-normal: rgba(224,223,228,0.07);
+      --accent: #7FB5B0;
+      --accent-dim: rgba(127,181,176,0.12);
+      --red: #C47878;
+      --red-dim: rgba(196,120,120,0.12);
+      --casual: #D4A574;
+      --casual-dim: rgba(212,165,116,0.12);
+      --new-seg: #8A9EC4;
+      --new-seg-dim: rgba(138,158,196,0.12);
+      --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+      --glass-border: rgba(224,223,228,0.08);
+      --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    }
+
+    body {
+      background: #08090F;
+      display: flex;
+      justify-content: center;
+      padding: 40px 20px;
+      font-family: 'Inter', -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      color: var(--text-pri);
+    }
+
+    .diagram {
+      max-width: 760px;
+      width: 100%;
+      min-width: 400px;
+      background: var(--canvas);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .content {
+      padding: 48px;
+    }
+
+    /* ── Flow row ── */
+    .flow-area {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 0;
+      padding: 20px 0 0;
+    }
+
+    .flow-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 180px;
+      opacity: 0;
+      animation: fadeUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    .flow-step:nth-child(1) { animation-delay: 0.15s; }
+    .flow-step:nth-child(3) { animation-delay: 0.3s; }
+    .flow-step:nth-child(5) { animation-delay: 0.45s; }
+
+    /* ── Circle + dot ── */
+    .step-circle {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      border: 1px solid var(--border-normal);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+
+    .step-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .step-dot.share { background: var(--red); box-shadow: 0 0 8px rgba(196,120,120,0.4); }
+    .step-dot.engage { background: var(--casual); box-shadow: 0 0 8px rgba(212,165,116,0.4); }
+    .step-dot.trust { background: var(--accent); box-shadow: 0 0 8px rgba(127,181,176,0.4); }
+
+    .step-title {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-pri);
+      text-align: center;
+      margin-bottom: 4px;
+    }
+
+    .step-desc {
+      font-size: 11px;
+      color: var(--text-ter);
+      text-align: center;
+      line-height: 1.5;
+      max-width: 150px;
+    }
+
+    /* ── Connector + arrow ── */
+    .connector {
+      display: flex;
+      align-items: center;
+      padding-top: 32px;
+      opacity: 0;
+      animation: fadeUp 0.4s ease forwards;
+    }
+    .connector:nth-of-type(2) { animation-delay: 0.22s; }
+    .connector:nth-of-type(4) { animation-delay: 0.37s; }
+
+    .connector-line {
+      width: 52px;
+      height: 1.5px;
+      background: var(--border-normal);
+      border-radius: 1px;
+    }
+
+    .connector-arrow {
+      width: 0;
+      height: 0;
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+      border-left: 6px solid var(--border-normal);
+      margin-left: -1px;
+    }
+
+    /* ── Loop return ── */
+    .loop-return {
+      margin-top: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      animation: fadeUp 0.5s ease 0.6s forwards;
+    }
+
+    .loop-label {
+      font-size: 9px;
+      font-weight: 400;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .loop-line {
+      width: 500px;
+      max-width: 100%;
+      height: 1px;
+      background: rgba(224,223,228,0.06);
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .flow-area {
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+      }
+      .connector {
+        transform: rotate(90deg);
+        padding-top: 0;
+      }
+      .loop-line {
+        width: 200px;
+      }
+    }
+  
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="content">
+      <div class="flow-area">
+        <div class="flow-step">
+          <div class="step-circle">
+            <div class="step-dot share"></div>
+          </div>
+          <div class="step-title">Share</div>
+          <div class="step-desc">Users flag low quality, hallucinations, outdated info</div>
+        </div>
+
+        <div class="connector">
+          <div class="connector-line"></div>
+          <div class="connector-arrow"></div>
+        </div>
+
+        <div class="flow-step">
+          <div class="step-circle">
+            <div class="step-dot engage"></div>
+          </div>
+          <div class="step-title">Engage</div>
+          <div class="step-desc">Rubric tightens, thresholds adjust, model retrains</div>
+        </div>
+
+        <div class="connector">
+          <div class="connector-line"></div>
+          <div class="connector-arrow"></div>
+        </div>
+
+        <div class="flow-step">
+          <div class="step-circle">
+            <div class="step-dot trust"></div>
+          </div>
+          <div class="step-title">Trust</div>
+          <div class="step-desc">Higher quality outputs, lower error rate, more users</div>
+        </div>
+      </div>
+
+      <div class="loop-return">
+        <div class="loop-label">Trust → More Sharing</div>
+        <div class="loop-line"></div>
+      </div>
+    </div>
+  </div>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</body>
+</html>

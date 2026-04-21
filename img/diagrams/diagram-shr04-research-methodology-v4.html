@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHR-04 — Research Methodology</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --red: #C47878;
+    --red-dim: rgba(196,120,120,0.12);
+    --casual: #D4A574;
+    --casual-dim: rgba(212,165,116,0.12);
+    --new-seg: #8A9EC4;
+    --new-seg-dim: rgba(138,158,196,0.12);
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    color: var(--text-pri);
+  }
+  .diagram {
+    width: 100%;
+    max-width: 760px;
+    min-width: 400px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ── Flow area ── */
+  .flow-area {
+    padding: 32px 48px 48px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .flow-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 250px 200px at 25% 50%, rgba(196,120,120,0.04) 0%, transparent 70%),
+      radial-gradient(ellipse 250px 200px at 75% 50%, rgba(127,181,176,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Track labels */
+  .track-label {
+    font-size: 10px;
+    font-weight: 400;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-ter);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    z-index: 1;
+    opacity: 0; animation: fadeUp 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 100ms forwards;
+  }
+  .track-label .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+  }
+
+  /* Flow rows */
+  .flow-row {
+    display: flex;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .flow-step {
+    flex: 1;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-highlight);
+    border-radius: 12px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    opacity: 0; transform: translateY(12px);
+  }
+  .flow-step::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .flow-step.before::before { background: var(--red); }
+  .flow-step.after::before { background: var(--accent); }
+  .flow-step.parallel::before { background: var(--new-seg); }
+  .flow-step.outcome::before { background: var(--casual); }
+
+  .flow-row:nth-of-type(1) .flow-step:nth-child(1) { animation: fadeUp 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 200ms forwards; }
+  .flow-row:nth-of-type(1) .flow-step:nth-child(3) { animation: fadeUp 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 300ms forwards; }
+  .flow-row:nth-of-type(2) .flow-step:nth-child(1) { animation: fadeUp 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 450ms forwards; }
+  .flow-row:nth-of-type(2) .flow-step:nth-child(3) { animation: fadeUp 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 530ms forwards; }
+
+  .step-num {
+    font-size: 9px;
+    font-weight: 400;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .step-num.before { color: var(--red); }
+  .step-num.after { color: var(--accent); }
+  .step-num.parallel { color: var(--new-seg); }
+  .step-num.outcome { color: var(--casual); }
+
+  .step-icon {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .step-icon svg { width: 14px; height: 14px; }
+  .step-icon.before { background: var(--red-dim); color: var(--red); }
+  .step-icon.after { background: var(--accent-dim); color: var(--accent); }
+  .step-icon.parallel { background: var(--new-seg-dim); color: var(--new-seg); }
+  .step-icon.outcome { background: var(--casual-dim); color: var(--casual); }
+
+  .step-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-pri);
+    letter-spacing: -0.01em;
+  }
+  .step-desc {
+    font-size: 11px;
+    color: var(--text-sec);
+    line-height: 1.45;
+  }
+
+  /* Arrow connector */
+  .flow-arrow {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    opacity: 0; animation: fadeUp 400ms ease 250ms forwards;
+  }
+  .flow-arrow svg {
+    width: 24px; height: 24px;
+    color: var(--text-dim);
+  }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    .flow-area { padding-left: 24px; padding-right: 24px; }
+    .flow-row { flex-direction: column; }
+    .flow-arrow { justify-content: center; }
+    .flow-arrow svg { transform: rotate(90deg); }
+  }
+
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+
+    <div class="flow-area">
+      <!-- Track 1: Redditor testing -->
+      <div class="track-label">
+        <div class="dot" style="background: var(--red)"></div>
+        <span>Share-ers (Redditors)</span>
+      </div>
+
+      <div class="flow-row">
+        <div class="flow-step before">
+          <div class="step-num before">Phase 1</div>
+          <div class="step-icon before">
+            <svg viewBox="0 0 14 14" fill="none"><path d="M7 2v5l3 2" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.1"/></svg>
+          </div>
+          <div class="step-title">Test Existing Experience</div>
+          <div class="step-desc">Redditors use current sharing flow. Identify breakdowns, friction points, and workarounds (screenshot behavior).</div>
+        </div>
+
+        <div class="flow-arrow">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M14 7l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+
+        <div class="flow-step after">
+          <div class="step-num after">Phase 2</div>
+          <div class="step-icon after">
+            <svg viewBox="0 0 14 14" fill="none"><rect x="2" y="2" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1.1"/><path d="M5 7l1.5 1.5L9 5.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="step-title">Test Redesigned Version</div>
+          <div class="step-desc">Same participants validate new experience. Confirm breakdowns are addressed. Measure comprehension and confidence shift.</div>
+        </div>
+      </div>
+
+      <!-- Track 2: Non-Redditor testing -->
+      <div class="track-label" style="animation-delay: 370ms;">
+        <div class="dot" style="background: var(--new-seg)"></div>
+        <span>Recipients (Non-Redditors)</span>
+      </div>
+
+      <div class="flow-row">
+        <div class="flow-step parallel">
+          <div class="step-num parallel">Parallel</div>
+          <div class="step-icon parallel">
+            <svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="4" r="2.5" stroke="currentColor" stroke-width="1.1"/><path d="M2.5 12c0-2.5 2-4.5 4.5-4.5s4.5 2 4.5 4.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><path d="M10 4l2.5 2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+          </div>
+          <div class="step-title">Preview Comprehension Tests</div>
+          <div class="step-desc">Non-Redditors evaluate different preview formats. What makes sense, what doesn't, and what they'd expect after tapping.</div>
+        </div>
+
+        <div class="flow-arrow">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M14 7l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+
+        <div class="flow-step outcome">
+          <div class="step-num outcome">Synthesis</div>
+          <div class="step-icon outcome">
+            <svg viewBox="0 0 14 14" fill="none"><path d="M2 10l3-3 2.5 2.5L12 4" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/><circle cx="2" cy="10" r="1.2" fill="currentColor" opacity="0.3"/><circle cx="5" cy="7" r="1.2" fill="currentColor" opacity="0.3"/><circle cx="7.5" cy="9.5" r="1.2" fill="currentColor" opacity="0.3"/><circle cx="12" cy="4" r="1.2" fill="currentColor" opacity="0.3"/></svg>
+          </div>
+          <div class="step-title">Behavioral Model</div>
+          <div class="step-desc">Findings converge into a model of sharing motivations and inhibitors — the foundation for every design decision in the project.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</body>
+</html>

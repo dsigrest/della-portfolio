@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHR-FW — Share, Engage, Trust Flywheel</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --canvas: #0A0C16;
+    --elevated: #151722;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --warm: #D4A574;
+    --blue: #8A9EC4;
+    --red: #C47878;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  body {
+    background: #08090F;
+    display: flex; justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+  .diagram::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 320px 280px at 50% 55%, rgba(127,181,176,0.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Center badge */
+  .center-badge {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    padding: 8px 16px;
+    background: rgba(127,181,176,0.1);
+    border: 1px solid rgba(127,181,176,0.2);
+    border-radius: 8px;
+    font-size: 9px; font-weight: 500;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--accent); white-space: nowrap;
+    z-index: 3;
+    opacity: 0;
+    transition: opacity 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+                transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition-delay: 0.25s;
+  }
+  .center-badge.in-view {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  /* Flywheel core */
+  .flywheel-area {
+    padding: 32px 48px 48px;
+    position: relative; z-index: 1;
+  }
+  .fw-core {
+    position: relative;
+    width: 100%; max-width: 600px;
+    aspect-ratio: 1 / 1.08;
+    margin: 0 auto;
+  }
+  .fw-svg {
+    position: absolute;
+    top: 10%; left: 8%;
+    width: 84%; height: 78%;
+    overflow: visible;
+  }
+  .glow-haze {
+    fill: none;
+    stroke: url(#fwRingGrad);
+    stroke-width: 6;
+    stroke-linecap: round;
+    opacity: 0;
+    transition: opacity 1s ease-out;
+    transition-delay: 0.3s;
+  }
+  .glow-haze.in-view { opacity: 0.85; }
+  .orbit-ring { fill: none; stroke: none; }
+
+  .fw-fairy {
+    opacity: 0;
+    filter: url(#fwFairyGlow);
+    transition: opacity 0.8s ease-out;
+    transition-delay: 0.5s;
+  }
+  .fw-fairy.in-view { opacity: 1; }
+  .fw-fairy-core {
+    opacity: 0;
+    filter: url(#fwCoreGlow);
+    transition: opacity 0.8s ease-out;
+    transition-delay: 0.5s;
+  }
+  .fw-fairy-core.in-view { opacity: 1; }
+  .fw-trail-dot {
+    opacity: 0;
+    filter: url(#fwTrailGlow);
+    transition: opacity 0.8s ease-out;
+    transition-delay: 0.5s;
+  }
+  .fw-trail-dot.in-view { opacity: 1; }
+
+  /* Node cards */
+  .fw-card {
+    position: absolute;
+    background: rgba(224,223,228,0.04);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    width: 196px;
+    display: flex; flex-direction: column;
+    text-align: center; justify-content: center;
+    opacity: 0; transform: translateY(20px);
+    z-index: 2;
+    gap: 8px;
+    transition: opacity 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+                transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .fw-card.in-view { opacity: 1; transform: translateY(0); }
+  .fw-card--share { transition-delay: 0.05s; }
+  .fw-card--engage { transition-delay: 0.12s; }
+  .fw-card--trust { transition-delay: 0.19s; }
+
+  .fw-card__head {
+    display: flex; align-items: baseline;
+    justify-content: center; gap: 8px;
+    overflow: hidden;
+  }
+  .fw-card__num {
+    font-size: 28px; font-weight: 400;
+    letter-spacing: -0.03em; line-height: 1;
+  }
+  .fw-card__name {
+    font-size: 13px; font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text-pri); line-height: 1.2;
+  }
+  .fw-card__desc {
+    font-size: 11px; color: var(--text-ter);
+    line-height: 1.5;
+    width: 160px;
+    margin: 0 auto;
+  }
+  .fw-card--share .fw-card__num { color: var(--accent); }
+  .fw-card--engage .fw-card__num { color: var(--warm); }
+  .fw-card--trust .fw-card__num { color: var(--blue); }
+
+  /* Positions */
+  .fw-card--share {
+    top: 3%; left: 50%; transform: translateX(-50%) translateY(20px);
+    border-color: rgba(18,20,29,1);
+  }
+  .fw-card--share.in-view { transform: translateX(-50%) translateY(0); }
+  .fw-card--engage { top: 60%; left: 63%; }
+  .fw-card--trust { top: 60%; right: 63%; left: auto; }
+
+  /* Arc labels */
+  .fw-arc-label {
+    position: absolute;
+    font-size: 8px; font-weight: 500;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    color: rgba(224,223,228,0.3);
+    white-space: nowrap;
+    opacity: 0; z-index: 1;
+    transition: opacity 0.4s ease-out;
+  }
+  .fw-arc-label.in-view { opacity: 1; }
+  .fw-arc-label--right { top: 38%; left: 83%; transition-delay: 0.6s; }
+  .fw-arc-label--bottom { top: 88%; left: 50%; transform: translateX(-50%); transition-delay: 0.7s; }
+  .fw-arc-label--left { top: 38%; right: 83%; text-align: right; transition-delay: 0.8s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .center-badge, .glow-haze, .fw-fairy, .fw-fairy-core, .fw-trail-dot,
+    .fw-card, .fw-arc-label {
+      opacity: 1; transform: none; transition: none;
+    }
+    .fw-card--share { transform: translateX(-50%); }
+    .center-badge { transform: translate(-50%, -50%); }
+    .fw-fairy, .fw-fairy-core, .fw-trail-dot { opacity: 0; }
+    .glow-haze { opacity: 0.85; }
+  }
+  @media (max-width: 680px) {
+    body { padding: 16px; }
+  }
+
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+
+    <div class="flywheel-area" id="flywheel">
+      <div class="fw-core">
+        <svg class="fw-svg" viewBox="0 0 520 520">
+          <defs>
+            <linearGradient id="fwRingGrad" gradientTransform="rotate(135)">
+              <stop offset="0%" stop-color="#7fb5b0"/>
+              <stop offset="35%" stop-color="#d4a574"/>
+              <stop offset="65%" stop-color="#a0beb4"/>
+              <stop offset="100%" stop-color="#8a9ec4"/>
+            </linearGradient>
+            <radialGradient id="fwFairyFill">
+              <stop offset="0%" stop-color="rgba(208,204,196,0.04)"/>
+              <stop offset="100%" stop-color="rgba(208,204,196,0)"/>
+            </radialGradient>
+            <filter id="fwFairyGlow" x="-200%" y="-200%" width="500%" height="500%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="6"/>
+            </filter>
+            <radialGradient id="fwCoreFill">
+              <stop offset="0%" stop-color="rgba(255,250,240,0.7)"/>
+              <stop offset="50%" stop-color="rgba(240,232,216,0.35)"/>
+              <stop offset="100%" stop-color="rgba(224,216,196,0)"/>
+            </radialGradient>
+            <filter id="fwCoreGlow" x="-150%" y="-150%" width="400%" height="400%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="3"/>
+            </filter>
+            <radialGradient id="fwTrailFill">
+              <stop offset="0%" stop-color="rgba(230,220,200,0.55)"/>
+              <stop offset="60%" stop-color="rgba(220,212,192,0.2)"/>
+              <stop offset="100%" stop-color="rgba(220,212,192,0)"/>
+            </radialGradient>
+            <filter id="fwTrailGlow" x="-200%" y="-200%" width="500%" height="500%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="4"/>
+            </filter>
+          </defs>
+
+          <circle class="glow-haze" cx="260" cy="260" r="160"/>
+          <circle class="orbit-ring" cx="260" cy="260" r="160"/>
+          <path id="fwOrbitPath" d="M 260 100 A 160 160 0 0 1 399 340 A 160 160 0 0 1 121 340 A 160 160 0 0 1 260 100" fill="none" stroke="none"/>
+
+          <circle class="fw-trail-dot" data-i="7" cx="260" cy="100" r="8"   fill="url(#fwTrailFill)"/>
+          <circle class="fw-trail-dot" data-i="6" cx="260" cy="100" r="7.5" fill="url(#fwTrailFill)"/>
+          <circle class="fw-trail-dot" data-i="5" cx="260" cy="100" r="7"   fill="url(#fwTrailFill)"/>
+          <circle class="fw-trail-dot" data-i="4" cx="260" cy="100" r="6.5" fill="url(#fwTrailFill)"/>
+          <circle class="fw-trail-dot" data-i="3" cx="260" cy="100" r="5.5" fill="url(#fwTrailFill)"/>
+          <circle class="fw-trail-dot" data-i="2" cx="260" cy="100" r="5"   fill="url(#fwTrailFill)"/>
+          <circle class="fw-trail-dot" data-i="1" cx="260" cy="100" r="4.5" fill="url(#fwTrailFill)"/>
+          <circle class="fw-trail-dot" data-i="0" cx="260" cy="100" r="4"   fill="url(#fwTrailFill)"/>
+
+          <circle class="fw-fairy" cx="260" cy="100" r="16" fill="url(#fwFairyFill)"/>
+          <circle class="fw-fairy-core" cx="260" cy="100" r="5" fill="url(#fwCoreFill)"/>
+        </svg>
+
+        <div class="center-badge">Growth Loop</div>
+
+        <div class="fw-card fw-card--share">
+          <div class="fw-card__head">
+            <span class="fw-card__num">1</span>
+            <span class="fw-card__name">Share</span>
+          </div>
+          <p class="fw-card__desc">Frictionless sharing surfaces — contextual buttons, standardized overflow, screenshot-to-share</p>
+        </div>
+
+        <div class="fw-card fw-card--engage">
+          <div class="fw-card__head">
+            <span class="fw-card__num">2</span>
+            <span class="fw-card__name">Engage</span>
+          </div>
+          <p class="fw-card__desc">Rich previews drive clicks — branded cards, text post previews, cross-platform consistency</p>
+        </div>
+
+        <div class="fw-card fw-card--trust">
+          <div class="fw-card__head">
+            <span class="fw-card__num">3</span>
+            <span class="fw-card__name">Trust</span>
+          </div>
+          <p class="fw-card__desc">Privacy controls build confidence — live previews, username protection, user consent</p>
+        </div>
+
+        <span class="fw-arc-label fw-arc-label--right">Drives Discovery</span>
+        <span class="fw-arc-label fw-arc-label--bottom">Builds Confidence</span>
+        <span class="fw-arc-label fw-arc-label--left">Removes Friction</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function() {
+    var wrap = document.getElementById('flywheel');
+    var orbitPath = document.getElementById('fwOrbitPath');
+    var fairy = wrap.querySelector('.fw-fairy');
+    var fairyCore = wrap.querySelector('.fw-fairy-core');
+    var trailDots = wrap.querySelectorAll('.fw-trail-dot');
+    var ringGrad = document.getElementById('fwRingGrad');
+    var pathLen = orbitPath.getTotalLength();
+    var duration = 10000;
+    var startTime = null;
+    var animating = false;
+    var trailCount = trailDots.length;
+    var trailSpacing = 0.02;
+
+    function animateLoop(timestamp) {
+      if (!startTime) startTime = timestamp;
+      var elapsed = (timestamp - startTime) % duration;
+      var progress = elapsed / duration;
+      var currentDist = progress * pathLen;
+
+      var point = orbitPath.getPointAtLength(currentDist);
+      fairy.setAttribute('cx', point.x);
+      fairy.setAttribute('cy', point.y);
+      fairyCore.setAttribute('cx', point.x);
+      fairyCore.setAttribute('cy', point.y);
+
+      for (var i = 0; i < trailCount; i++) {
+        var trailDist = currentDist - ((i + 1) * trailSpacing * pathLen);
+        if (trailDist < 0) trailDist += pathLen;
+        var tp = orbitPath.getPointAtLength(trailDist);
+        trailDots[i].setAttribute('cx', tp.x);
+        trailDots[i].setAttribute('cy', tp.y);
+      }
+
+      ringGrad.setAttribute('gradientTransform',
+        'rotate(' + ((progress * 360) - 40) + ' 0.5 0.5)');
+
+      if (animating) requestAnimationFrame(animateLoop);
+    }
+
+    var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var io = new IntersectionObserver(function(entries) {
+      if (!entries[0].isIntersecting) return;
+
+      wrap.querySelectorAll('.fw-card').forEach(function(c) { c.classList.add('in-view'); });
+      wrap.querySelector('.center-badge').classList.add('in-view');
+      wrap.querySelector('.glow-haze').classList.add('in-view');
+      wrap.querySelector('.fw-fairy').classList.add('in-view');
+      wrap.querySelector('.fw-fairy-core').classList.add('in-view');
+      trailDots.forEach(function(d) { d.classList.add('in-view'); });
+      wrap.querySelectorAll('.fw-arc-label').forEach(function(l) { l.classList.add('in-view'); });
+
+      if (!prefersReduced) {
+        setTimeout(function() {
+          animating = true;
+          requestAnimationFrame(animateLoop);
+        }, 500);
+      }
+      io.disconnect();
+    }, { threshold: 0.25 });
+    io.observe(wrap);
+  })();
+  </script>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</body>
+</html>
