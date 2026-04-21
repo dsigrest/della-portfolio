@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SUB-01 — The 21-Day Cliff</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --red: #C47878;
+    --red-dim: rgba(196,120,120,0.12);
+    --warm: #D4A574;
+    --resur: #C4B078;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+  .diagram::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 400px 300px at 50% 20%, rgba(196,120,120,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Title ── */
+  .title-area {
+    padding: 48px 48px 0;
+    position: relative;
+    z-index: 1;
+  }
+  .label {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--red); opacity: 0.8; margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 36px; font-weight: 700;
+    color: var(--text-pri); letter-spacing: -0.025em;
+    margin-bottom: 8px; line-height: 1.15;
+  }
+  .subtitle {
+    font-size: 15px; color: var(--text-sec);
+    line-height: 1.55; max-width: 580px;
+  }
+
+  /* ── Sections — vertical stack ── */
+  .section {
+    padding: 0 48px;
+    position: relative;
+    z-index: 1;
+  }
+  .section-label {
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .section-label.problem { color: var(--red); }
+  .section-label.context { color: var(--resur); }
+
+  /* ── Survival curve card ── */
+  .curve-section { margin-top: 36px; }
+  .curve-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-highlight);
+    border-radius: 12px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .curve-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100px; height: 2px;
+    background: var(--red);
+  }
+  .curve-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .curve-title {
+    font-size: 14px; font-weight: 600;
+    color: var(--text-pri);
+    letter-spacing: -0.01em;
+  }
+  .curve-period {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--text-ter);
+    letter-spacing: 0.02em;
+  }
+
+  .chart-area {
+    width: 100%;
+    height: 200px;
+    position: relative;
+  }
+
+  /* Animated curve draw */
+  .curve-line {
+    stroke-dasharray: 600;
+    stroke-dashoffset: 600;
+  }
+  .curve-line.animate {
+    animation: drawCurve 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+  @keyframes drawCurve {
+    to { stroke-dashoffset: 0; }
+  }
+  .curve-fill {
+    opacity: 0;
+  }
+  .curve-fill.animate {
+    animation: fadeIn 0.8s ease 1.6s forwards;
+  }
+
+  /* Stat row */
+  .stat-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+  .stat-big {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--red);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-ter);
+    line-height: 1.4;
+  }
+
+  /* ── Divider ── */
+  .divider-area {
+    display: flex;
+    justify-content: center;
+    padding: 28px 48px;
+    position: relative;
+    z-index: 1;
+  }
+  .divider-connector {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .divider-line {
+    width: 80px; height: 1px;
+    background: var(--border);
+  }
+  .divider-tag {
+    padding: 6px 14px;
+    background: rgba(196,120,120,0.08);
+    border: 1px solid rgba(196,120,120,0.15);
+    border-radius: 20px;
+    font-size: 10px; font-weight: 600;
+    color: var(--red);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  /* ── Legacy experience card ── */
+  .legacy-section { padding-bottom: 0; }
+  .legacy-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-highlight);
+    border-radius: 12px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .legacy-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100px; height: 2px;
+    background: var(--resur);
+  }
+  .legacy-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .legacy-title {
+    font-size: 14px; font-weight: 600;
+    color: var(--text-pri);
+    letter-spacing: -0.01em;
+  }
+  .legacy-tag {
+    font-size: 9px; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--resur);
+    padding: 3px 8px;
+    background: rgba(196,176,120,0.1);
+    border-radius: 4px;
+  }
+
+  /* UI mock — wider with more room */
+  .ui-mock {
+    background: var(--elevated);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    position: relative;
+  }
+  .mock-nav {
+    display: flex; gap: 4px; margin-bottom: 12px;
+  }
+  .mock-nav-pill {
+    height: 6px; border-radius: 3px;
+    background: var(--text-dim);
+  }
+  .mock-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  /* Left: carousel column */
+  .mock-carousel {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .mock-card-item {
+    height: 40px;
+    border-radius: 6px;
+    background: var(--highest);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    gap: 8px;
+  }
+  .mock-card-line {
+    height: 3px; border-radius: 1.5px;
+    background: var(--text-dim);
+  }
+  .mock-card-line.long { width: 48px; }
+  .mock-card-line.short { width: 28px; }
+
+  /* Right: empty state column */
+  .mock-right {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .mock-wiki {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 10px;
+    background: rgba(196,176,120,0.06);
+    border: 1px dashed rgba(196,176,120,0.2);
+    border-radius: 6px;
+  }
+  .mock-wiki-text {
+    font-size: 8px; color: var(--resur);
+    letter-spacing: 0.04em; text-transform: uppercase;
+    font-weight: 600;
+  }
+  .mock-blank {
+    flex: 1;
+    border-radius: 6px;
+    border: 1px dashed var(--text-dim);
+    display: flex; align-items: center; justify-content: center;
+    min-height: 56px;
+  }
+  .mock-blank-text {
+    font-size: 8px; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+
+  /* Issue tags */
+  .issues {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-top: 16px;
+  }
+  .issue-tag {
+    display: flex; align-items: center; gap: 5px;
+    padding: 5px 10px;
+    background: rgba(196,176,120,0.06);
+    border: 1px solid rgba(196,176,120,0.12);
+    border-radius: 12px;
+    transition: background 0.2s ease;
+  }
+  .issue-icon {
+    width: 10px; height: 10px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .issue-text {
+    font-size: 10px; font-weight: 500;
+    color: var(--resur);
+  }
+
+  /* ── Team bar ── */
+  .team-bar {
+    margin: 24px 48px 0;
+    padding: 14px 20px;
+    background: var(--elevated);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: flex; align-items: center; gap: 14px;
+    position: relative; z-index: 1;
+  }
+  .team-icon {
+    width: 36px; height: 36px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--accent-dim); border-radius: 8px;
+  }
+  .team-text { display: flex; flex-direction: column; gap: 2px; }
+  .team-label {
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--accent); opacity: 0.7;
+  }
+  .team-desc {
+    font-size: 12px; color: var(--text-sec); line-height: 1.5;
+  }
+
+  /* ── Outcome ── */
+  .outcome {
+    margin: 20px 48px 48px;
+    background: var(--accent-dim);
+    border-radius: 10px;
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+    position: relative; z-index: 1;
+  }
+  .outcome-icon {
+    flex-shrink: 0;
+    width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .outcome p {
+    font-size: 13px; font-weight: 500;
+    color: var(--text-sec); line-height: 1.5;
+  }
+
+  /* ── Entrance animations ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 0.4; }
+  }
+
+  /* 21-day pulse */
+  .day-marker-pulse {
+    animation: markerPulse 3s ease-in-out infinite;
+  }
+  @keyframes markerPulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.7; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .curve-line { stroke-dashoffset: 0; animation: none; }
+    .curve-fill { opacity: 0.4; animation: none; }
+    .day-marker-pulse { animation: none; opacity: 0.5; }
+  }
+  @media (max-width: 680px) {
+    body { padding: 16px; }
+    .diagram { width: 100%; }
+  }
+  .impact-anchor { font-size: 11px; font-weight: 600; color: var(--accent); letter-spacing: 0.04em; margin-top: 12px; opacity: 0.85; }
+
+/* Embed mode: strip body chrome when loaded in iframe */
+body.embedded {
+  padding: 0;
+  min-height: auto;
+  display: block;
+  background: transparent;
+  overflow: hidden;
+  align-items: initial;
+}
+body.embedded .diagram {
+  width: 100%;
+  border-radius: 0;
+}
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="title-area reveal">
+      <div class="label">Challenge</div>
+      <h1>The 21-Day Cliff</h1>
+      <p class="subtitle">90% of new subreddits failed within 21 days. Reddit had no scalable way of supporting new community growth.</p>
+        <div class="impact-anchor">90%+ of newly created communities die before reaching 21 days</div>
+    </div>
+
+    <!-- SURVIVAL CURVE — full width -->
+    <div class="section curve-section reveal" style="transition-delay: 80ms">
+      <div class="section-label problem">
+        <svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 1L11 10H1L6 1z" stroke="var(--red)" stroke-width="1.2" fill="rgba(196,120,120,0.15)"/></svg>
+        The data
+      </div>
+      <div class="curve-card">
+        <div class="curve-header">
+          <div class="curve-title">New Subreddit Survival</div>
+          <span class="curve-period">30-day window</span>
+        </div>
+        <div class="chart-area">
+          <svg width="100%" height="100%" viewBox="0 0 660 200" preserveAspectRatio="xMidYMid meet">
+            <!-- Grid -->
+            <line x1="50" y1="15" x2="50" y2="170" stroke="var(--border)" stroke-width="0.5"/>
+            <line x1="50" y1="170" x2="640" y2="170" stroke="var(--border)" stroke-width="0.5"/>
+            <line x1="50" y1="48" x2="640" y2="48" stroke="var(--border)" stroke-width="0.5" stroke-dasharray="3,4"/>
+            <line x1="50" y1="87" x2="640" y2="87" stroke="var(--border)" stroke-width="0.5" stroke-dasharray="3,4"/>
+            <line x1="50" y1="128" x2="640" y2="128" stroke="var(--border)" stroke-width="0.5" stroke-dasharray="3,4"/>
+
+            <!-- Y-axis -->
+            <text x="44" y="19" text-anchor="end" fill="var(--text-dim)" font-size="9" font-family="JetBrains Mono">100%</text>
+            <text x="44" y="52" text-anchor="end" fill="var(--text-dim)" font-size="9" font-family="JetBrains Mono">75%</text>
+            <text x="44" y="91" text-anchor="end" fill="var(--text-dim)" font-size="9" font-family="JetBrains Mono">50%</text>
+            <text x="44" y="132" text-anchor="end" fill="var(--text-dim)" font-size="9" font-family="JetBrains Mono">25%</text>
+            <text x="44" y="174" text-anchor="end" fill="var(--text-dim)" font-size="9" font-family="JetBrains Mono">0%</text>
+
+            <!-- X-axis -->
+            <text x="56" y="186" fill="var(--text-dim)" font-size="9" font-family="JetBrains Mono">Day 1</text>
+            <text x="200" y="186" fill="var(--text-dim)" font-size="9" font-family="JetBrains Mono">7</text>
+            <text x="340" y="186" fill="var(--text-dim)" font-size="9" font-family="JetBrains Mono">14</text>
+            <text x="490" y="186" fill="var(--text-dim)" font-size="9" font-family="JetBrains Mono">21</text>
+            <text x="610" y="186" fill="var(--text-dim)" font-size="9" font-family="JetBrains Mono">30+</text>
+
+            <!-- Danger zone -->
+            <rect x="50" y="15" width="590" height="155" fill="rgba(196,120,120,0.02)" rx="0"/>
+
+            <!-- Gradient def -->
+            <defs>
+              <linearGradient id="curveGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="var(--red)" stop-opacity="0.15"/>
+                <stop offset="100%" stop-color="var(--red)" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+
+            <!-- Curve, fill, marker, and annotation are generated by JS from CHART_DATA below -->
+            <path class="curve-fill" id="curveFill" fill="url(#curveGrad)"/>
+            <path class="curve-line" id="curveLine" stroke="var(--red)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <line id="dayMarker" y1="10" y2="170" stroke="var(--red)" stroke-width="1" stroke-dasharray="4,3" class="day-marker-pulse"/>
+            <rect id="dayMarkerBg" height="16" rx="4" fill="rgba(196,120,120,0.15)" stroke="rgba(196,120,120,0.3)" stroke-width="0.5"/>
+            <text id="dayMarkerLabel" text-anchor="middle" fill="var(--red)" font-size="9" font-weight="600" font-family="JetBrains Mono"></text>
+            <circle id="dataPoint" r="4" fill="var(--red)" opacity="0.9"/>
+            <line id="annotLine" stroke="rgba(196,120,120,0.4)" stroke-width="0.8"/>
+            <text id="annotLabel" fill="var(--red)" font-size="10" font-weight="600" font-family="Inter"></text>
+            <text id="annotSub" fill="var(--text-ter)" font-size="8" font-family="Inter"></text>
+          </svg>
+        </div>
+        <div class="stat-row">
+          <span class="stat-big">90%</span>
+          <span class="stat-label">of new subreddits failed within 21 days — <br/>no structured support existed</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIVIDER -->
+    <div class="divider-area reveal" style="transition-delay: 160ms">
+      <div class="divider-connector">
+        <div class="divider-line"></div>
+        <div class="divider-tag">No scalable support path</div>
+        <div class="divider-line"></div>
+      </div>
+    </div>
+
+    <!-- LEGACY EXPERIENCE — full width -->
+    <div class="section legacy-section reveal" style="transition-delay: 240ms">
+      <div class="section-label context">
+        <svg width="12" height="12" viewBox="0 0 12 12"><rect x="1.5" y="1.5" width="9" height="9" rx="2" stroke="var(--resur)" stroke-width="1.2" fill="rgba(196,176,120,0.15)"/><line x1="4" y1="4.5" x2="8" y2="4.5" stroke="var(--resur)" stroke-width="0.8"/><line x1="4" y1="6.5" x2="7" y2="6.5" stroke="var(--resur)" stroke-width="0.8"/><line x1="4" y1="8.5" x2="6" y2="8.5" stroke="var(--resur)" stroke-width="0.8"/></svg>
+        The experience
+      </div>
+      <div class="legacy-card">
+        <div class="legacy-header">
+          <div class="legacy-title">New Community Landing Page</div>
+          <span class="legacy-tag">Before</span>
+        </div>
+        <div class="ui-mock">
+          <div class="mock-nav">
+            <div class="mock-nav-pill" style="width:36px"></div>
+            <div class="mock-nav-pill" style="width:24px"></div>
+            <div class="mock-nav-pill" style="width:30px"></div>
+            <div class="mock-nav-pill" style="width:20px"></div>
+          </div>
+          <div class="mock-content">
+            <div class="mock-carousel">
+              <div class="mock-card-item">
+                <div class="mock-card-line long"></div>
+                <div class="mock-card-line short"></div>
+              </div>
+              <div class="mock-card-item">
+                <div class="mock-card-line long"></div>
+                <div class="mock-card-line short"></div>
+              </div>
+              <div class="mock-card-item" style="opacity:0.5">
+                <div class="mock-card-line long"></div>
+                <div class="mock-card-line short"></div>
+              </div>
+            </div>
+            <div class="mock-right">
+              <div class="mock-wiki">
+                <svg width="10" height="10" viewBox="0 0 10 10"><path d="M5 1L9 5L5 9" stroke="var(--resur)" stroke-width="1" fill="none" stroke-linecap="round"/><line x1="1" y1="5" x2="8" y2="5" stroke="var(--resur)" stroke-width="1" stroke-linecap="round"/></svg>
+                <span class="mock-wiki-text">Off-platform wiki</span>
+              </div>
+              <div class="mock-blank">
+                <span class="mock-blank-text">Blank composer — no context</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="issues">
+          <div class="issue-tag">
+            <div class="issue-icon"><svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" stroke="var(--resur)" stroke-width="0.8" fill="none"/><line x1="4" y1="2.5" x2="4" y2="4.5" stroke="var(--resur)" stroke-width="0.8"/><circle cx="4" cy="5.8" r="0.5" fill="var(--resur)"/></svg></div>
+            <span class="issue-text">Card carousels</span>
+          </div>
+          <div class="issue-tag">
+            <div class="issue-icon"><svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" stroke="var(--resur)" stroke-width="0.8" fill="none"/><line x1="4" y1="2.5" x2="4" y2="4.5" stroke="var(--resur)" stroke-width="0.8"/><circle cx="4" cy="5.8" r="0.5" fill="var(--resur)"/></svg></div>
+            <span class="issue-text">Off-platform links</span>
+          </div>
+          <div class="issue-tag">
+            <div class="issue-icon"><svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" stroke="var(--resur)" stroke-width="0.8" fill="none"/><line x1="4" y1="2.5" x2="4" y2="4.5" stroke="var(--resur)" stroke-width="0.8"/><circle cx="4" cy="5.8" r="0.5" fill="var(--resur)"/></svg></div>
+            <span class="issue-text">No guidance</span>
+          </div>
+          <div class="issue-tag">
+            <div class="issue-icon"><svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" stroke="var(--resur)" stroke-width="0.8" fill="none"/><line x1="4" y1="2.5" x2="4" y2="4.5" stroke="var(--resur)" stroke-width="0.8"/><circle cx="4" cy="5.8" r="0.5" fill="var(--resur)"/></svg></div>
+            <span class="issue-text">No progress signals</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEAM BAR -->
+    <div class="team-bar reveal" style="transition-delay: 320ms">
+      <div class="team-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <circle cx="10" cy="7" r="3.5" stroke="var(--accent)" stroke-width="1.2"/>
+          <path d="M4 17c0-3 2.7-5.5 6-5.5s6 2.5 6 5.5" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="team-text">
+        <div class="team-label">Team composition</div>
+        <div class="team-desc">Sole designer — no PM, no EM — with 15–16 engineers already allocated on a net-new team.</div>
+      </div>
+    </div>
+
+    <!-- OUTCOME -->
+    <div class="outcome reveal" style="transition-delay: 400ms">
+      <div class="outcome-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M4 8h8M8 4v8" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
+        </svg>
+      </div>
+      <p>Every prior initiative targeted large, established communities. New communities had no structured path to survive.</p>
+    </div>
+  </div>
+
+<script>
+  // ═══════════════════════════════════════════════════════
+  // PARAMETERIZED CHART DATA — edit values here to update the curve
+  // ═══════════════════════════════════════════════════════
+  const CHART_DATA = {
+    // Survival % at each day milestone (0-100 scale, 100 = all alive)
+    // Format: [day, survival%]
+    points: [
+      [1, 100],
+      [3, 85],
+      [5, 65],
+      [7, 50],
+      [10, 35],
+      [14, 22],
+      [18, 14],
+      [21, 10],
+      [25, 8],
+      [30, 6],
+    ],
+    // Marker config — the vertical callout line
+    marker: {
+      day: 21,
+      label: '21 days',
+      annotation: '90% failed',
+      annotationSub: 'by this point',
+    },
+    // Chart bounds (SVG viewBox coordinates)
+    bounds: { xMin: 56, xMax: 630, yMin: 15, yMax: 170 },
+    // Data range
+    dayRange: [1, 30],
+  };
+
+  // Generate smooth curve from data points
+  function buildCurve(data) {
+    const { points, marker, bounds } = data;
+    const { xMin, xMax, yMin, yMax } = bounds;
+    const [dayMin, dayMax] = data.dayRange;
+
+    // Map data to SVG coordinates
+    function toX(day) { return xMin + ((day - dayMin) / (dayMax - dayMin)) * (xMax - xMin); }
+    function toY(pct) { return yMax - ((pct / 100) * (yMax - yMin)); }
+
+    const coords = points.map(([day, pct]) => [toX(day), toY(pct)]);
+
+    // Build smooth cubic bezier path through points
+    let linePath = `M${coords[0][0]},${coords[0][1]}`;
+    for (let i = 1; i < coords.length; i++) {
+      const [x0, y0] = coords[i - 1];
+      const [x1, y1] = coords[i];
+      const cpx = (x0 + x1) / 2;
+      linePath += ` C${cpx},${y0} ${cpx},${y1} ${x1},${y1}`;
+    }
+
+    // Fill path closes to bottom
+    const fillPath = linePath + ` L${coords[coords.length-1][0]},${yMax} L${coords[0][0]},${yMax} Z`;
+
+    // Set curve paths
+    document.getElementById('curveLine').setAttribute('d', linePath);
+    document.getElementById('curveFill').setAttribute('d', fillPath);
+
+    // Set marker position
+    const markerX = toX(marker.day);
+    const markerPt = points.find(p => p[0] === marker.day);
+    const markerY = markerPt ? toY(markerPt[1]) : toY(10);
+
+    document.getElementById('dayMarker').setAttribute('x1', markerX);
+    document.getElementById('dayMarker').setAttribute('x2', markerX);
+
+    const bgW = 44;
+    document.getElementById('dayMarkerBg').setAttribute('x', markerX - bgW/2);
+    document.getElementById('dayMarkerBg').setAttribute('y', 2);
+    document.getElementById('dayMarkerBg').setAttribute('width', bgW);
+
+    document.getElementById('dayMarkerLabel').setAttribute('x', markerX);
+    document.getElementById('dayMarkerLabel').setAttribute('y', 13);
+    document.getElementById('dayMarkerLabel').textContent = marker.label;
+
+    // Data point
+    document.getElementById('dataPoint').setAttribute('cx', markerX);
+    document.getElementById('dataPoint').setAttribute('cy', markerY);
+
+    // Annotation line + text
+    const annotX = markerX + 40;
+    const annotY = markerY - 13;
+    document.getElementById('annotLine').setAttribute('x1', markerX + 4);
+    document.getElementById('annotLine').setAttribute('y1', markerY);
+    document.getElementById('annotLine').setAttribute('x2', annotX);
+    document.getElementById('annotLine').setAttribute('y2', annotY);
+
+    document.getElementById('annotLabel').setAttribute('x', annotX + 4);
+    document.getElementById('annotLabel').setAttribute('y', annotY - 2);
+    document.getElementById('annotLabel').textContent = marker.annotation;
+
+    document.getElementById('annotSub').setAttribute('x', annotX + 4);
+    document.getElementById('annotSub').setAttribute('y', annotY + 9);
+    document.getElementById('annotSub').textContent = marker.annotationSub;
+  }
+
+  buildCurve(CHART_DATA);
+</script>
+
+<script>
+  // Entrance animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Animated curve draw — trigger when curve section is visible
+  const curveObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.querySelector('.curve-line')?.classList.add('animate');
+        entry.target.querySelector('.curve-fill')?.classList.add('animate');
+        curveObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  const curveSection = document.querySelector('.curve-section');
+  if (curveSection) curveObserver.observe(curveSection);
+</script>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+</body>
+</html>

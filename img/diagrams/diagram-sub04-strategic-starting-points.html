@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SUB-04 — Strategic Starting Points</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --warm: #D4A574;
+    --blue: #8A9EC4;
+    --red: #C47878;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex; justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+  .diagram::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 300px 250px at 30% 60%, rgba(138,158,196,0.04) 0%, transparent 70%),
+      radial-gradient(ellipse 300px 250px at 70% 60%, rgba(212,165,116,0.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .title-area { padding: 48px 48px 0; position: relative; z-index: 1; }
+  .label {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); opacity: 0.8; margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 36px; font-weight: 700;
+    color: var(--text-pri); letter-spacing: -0.025em;
+    margin-bottom: 8px; line-height: 1.15;
+  }
+  .subtitle {
+    font-size: 15px; color: var(--text-sec);
+    line-height: 1.55; max-width: 580px;
+  }
+
+  /* Pressure context */
+  .pressure {
+    margin: 24px 48px 0;
+    padding: 12px 16px;
+    background: rgba(196,120,120,0.05);
+    border-left: 3px solid rgba(196,120,120,0.4);
+    border-radius: 10px;
+    display: flex; align-items: center; gap: 10px;
+    position: relative; z-index: 1;
+  }
+  .pressure-icon {
+    width: 28px; height: 28px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(196,120,120,0.08);
+    border-radius: 6px; border: 1px solid rgba(196,120,120,0.15);
+  }
+  .pressure-text {
+    font-size: 12px; color: var(--text-sec); line-height: 1.45;
+  }
+
+  /* Two bet cards */
+  .bets {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    padding: 32px 48px 0;
+    position: relative; z-index: 1;
+  }
+  .bet {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-highlight);
+    border-radius: 12px;
+    padding: 22px 18px;
+    position: relative; overflow: hidden;
+  }
+  .bet::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; width: 100px; height: 2px;
+  }
+  .bet.infra::before { background: var(--blue); }
+  .bet.comp::before { background: var(--warm); }
+
+  .bet-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 6px;
+  }
+  .bet-icon {
+    width: 36px; height: 36px; flex-shrink: 0;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .bet.infra .bet-icon { background: rgba(138,158,196,0.1); border: 1px solid rgba(138,158,196,0.18); }
+  .bet.comp .bet-icon { background: rgba(212,165,116,0.1); border: 1px solid rgba(212,165,116,0.18); }
+
+  .bet-meta { flex: 1; }
+  .bet-type {
+    font-size: 9px; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .bet.infra .bet-type { color: var(--blue); }
+  .bet.comp .bet-type { color: var(--warm); }
+  .bet-name {
+    font-size: 15px; font-weight: 600;
+    color: var(--text-pri); letter-spacing: -0.01em;
+  }
+  .bet-desc {
+    font-size: 11px; color: var(--text-ter);
+    line-height: 1.45; margin-bottom: 18px;
+  }
+
+  /* Unlocks section */
+  .unlocks-label {
+    font-size: 9px; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--text-dim); margin-bottom: 8px;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .unlocks-label svg { opacity: 0.5; }
+
+  .unlock-item {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 8px 0;
+    border-top: 1px solid var(--border);
+  }
+  .unlock-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    margin-top: 4px; flex-shrink: 0;
+  }
+  .bet.infra .unlock-dot { background: var(--blue); opacity: 0.6; }
+  .bet.comp .unlock-dot { background: var(--warm); opacity: 0.6; }
+  .unlock-text {
+    font-size: 11px; color: var(--text-sec);
+    line-height: 1.4;
+  }
+
+  /* Connecting badge between cards */
+  .connector-badge {
+    display: flex; justify-content: center;
+    padding: 16px 48px 0;
+    position: relative; z-index: 1;
+  }
+  .badge {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 16px;
+    background: var(--accent-dim);
+    border: 1px solid rgba(127,181,176,0.2);
+    border-radius: 20px;
+  }
+  .badge-text {
+    font-size: 11px; font-weight: 500;
+    color: var(--accent);
+  }
+
+  /* Outcome */
+  .outcome {
+    margin: 20px 48px 48px;
+    background: var(--accent-dim);
+    border-radius: 10px;
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+    position: relative; z-index: 1;
+  }
+  .outcome-icon { flex-shrink: 0; }
+  .outcome p {
+    font-size: 13px; font-weight: 500;
+    color: var(--text-sec); line-height: 1.5;
+  }
+
+  /* Entrance animations */
+  .reveal {
+    opacity: 0; transform: translateY(12px);
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .bet {
+    opacity: 0; transform: translateY(14px);
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .bet.visible { opacity: 1; transform: translateY(0); }
+
+  /* Unlock items stagger */
+  .unlock-item {
+    opacity: 0; transform: translateX(-6px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  .unlock-item.visible { opacity: 1; transform: translateX(0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal, .bet, .unlock-item { opacity: 1; transform: none; transition: none; }
+  }
+  @media (max-width: 680px) {
+    body { padding: 16px; }
+    .bets { grid-template-columns: 1fr; }
+  }
+
+/* Embed mode: strip body chrome when loaded in iframe */
+body.embedded {
+  padding: 0;
+  min-height: auto;
+  display: block;
+  background: transparent;
+  overflow: hidden;
+  align-items: initial;
+}
+body.embedded .diagram {
+  width: 100%;
+  border-radius: 0;
+}
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="title-area reveal">
+      <div class="label">Framework — Strategy</div>
+      <h1>Strategic Starting Points</h1>
+      <p class="subtitle">High-conviction bets chosen before the framework was finished. Each unlocked downstream flexibility.</p>
+    </div>
+
+    <div class="pressure reveal" style="transition-delay: 80ms">
+      <div class="pressure-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="6" stroke="var(--red)" stroke-width="1.2" fill="none"/>
+          <path d="M8 4.5v4" stroke="var(--red)" stroke-width="1.2" stroke-linecap="round"/>
+          <circle cx="8" cy="11" r="0.8" fill="var(--red)"/>
+        </svg>
+      </div>
+      <span class="pressure-text">Engineers already allocated — strategy and engineering constraints had to be navigated simultaneously.</span>
+    </div>
+
+    <div class="bets">
+      <!-- Bet 1: Progressive Disclosure -->
+      <div class="bet infra">
+        <div class="bet-header">
+          <div class="bet-icon">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <rect x="2" y="4" width="16" height="12" rx="2" stroke="var(--blue)" stroke-width="1.2" fill="none"/>
+              <line x1="5" y1="8" x2="11" y2="8" stroke="var(--blue)" stroke-width="0.8" opacity="0.5"/>
+              <line x1="5" y1="10.5" x2="9" y2="10.5" stroke="var(--blue)" stroke-width="0.8" opacity="0.5"/>
+              <path d="M13 9l1.5 1.5L18 7" stroke="var(--blue)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="bet-meta">
+            <div class="bet-type">Infrastructure bet</div>
+            <div class="bet-name">Progressive Disclosure</div>
+          </div>
+        </div>
+        <div class="bet-desc">Build it once, use it everywhere. A reusable system for revealing complexity over time.</div>
+
+        <div class="unlocks-label">
+          <svg width="10" height="10" viewBox="0 0 10 10"><path d="M5 1v3M3 3l2 2 2-2M2 6h6v3H2z" stroke="var(--blue)" stroke-width="0.8" fill="none" stroke-linecap="round"/></svg>
+          What this unlocks
+        </div>
+        <div class="unlock-item">
+          <div class="unlock-dot"></div>
+          <div class="unlock-text">Experimentation with different flows and content without re-engineering</div>
+        </div>
+        <div class="unlock-item">
+          <div class="unlock-dot"></div>
+          <div class="unlock-text">Stage-specific guidance that adapts as communities grow</div>
+        </div>
+        <div class="unlock-item">
+          <div class="unlock-dot"></div>
+          <div class="unlock-text">Reusable pattern for onboarding, settings, and mod tools</div>
+        </div>
+      </div>
+
+      <!-- Bet 2: Creation Flow -->
+      <div class="bet comp">
+        <div class="bet-header">
+          <div class="bet-icon">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <rect x="3" y="3" width="14" height="14" rx="3" stroke="var(--warm)" stroke-width="1.2" fill="none"/>
+              <circle cx="10" cy="8" r="2.5" stroke="var(--warm)" stroke-width="1" fill="none"/>
+              <path d="M6 15c0-2 1.8-3.5 4-3.5s4 1.5 4 3.5" stroke="var(--warm)" stroke-width="1" fill="none" stroke-linecap="round"/>
+              <rect x="13" y="2" width="5" height="5" rx="1" fill="var(--canvas)" stroke="var(--warm)" stroke-width="0.8"/>
+              <path d="M14.5 4.5h2M15.5 3.5v2" stroke="var(--warm)" stroke-width="0.7" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="bet-meta">
+            <div class="bet-type">Component bet</div>
+            <div class="bet-name">Creation Flow</div>
+          </div>
+        </div>
+        <div class="bet-desc">Repeatable components eng needed regardless: image editing, preview, multi-step architecture.</div>
+
+        <div class="unlocks-label">
+          <svg width="10" height="10" viewBox="0 0 10 10"><path d="M5 1v3M3 3l2 2 2-2M2 6h6v3H2z" stroke="var(--warm)" stroke-width="0.8" fill="none" stroke-linecap="round"/></svg>
+          What this unlocks
+        </div>
+        <div class="unlock-item">
+          <div class="unlock-dot"></div>
+          <div class="unlock-text">Visual editing components reused across subreddit settings</div>
+        </div>
+        <div class="unlock-item">
+          <div class="unlock-dot"></div>
+          <div class="unlock-text">Multi-step flow pattern applicable to mod onboarding</div>
+        </div>
+        <div class="unlock-item">
+          <div class="unlock-dot"></div>
+          <div class="unlock-text">Preview system for community identity before publishing</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="connector-badge reveal" style="transition-delay: 240ms">
+      <div class="badge">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M7 2l2 3h3.5l-3 2.5 1.2 3.5L7 9l-3.7 2L4.5 7.5 1.5 5H5l2-3z" stroke="var(--accent)" stroke-width="1" fill="rgba(127,181,176,0.15)" stroke-linejoin="round"/>
+        </svg>
+        <span class="badge-text">Both bets were needed regardless of what the framework revealed</span>
+      </div>
+    </div>
+
+    <div class="outcome reveal" style="transition-delay: 320ms">
+      <div class="outcome-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M4 8h8M8 4v8" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
+        </svg>
+      </div>
+      <p>High-conviction starting points let the team ship while the framework developed — each bet created optionality rather than locking in decisions.</p>
+    </div>
+  </div>
+
+<script>
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // Bet cards + unlock items stagger
+  const betObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const bets = e.target.querySelectorAll('.bet');
+        bets.forEach((bet, i) => {
+          setTimeout(() => {
+            bet.classList.add('visible');
+            // Stagger unlock items within each bet
+            const items = bet.querySelectorAll('.unlock-item');
+            items.forEach((item, j) => {
+              setTimeout(() => item.classList.add('visible'), 200 + j * 100);
+            });
+          }, i * 120);
+        });
+        betObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  betObs.observe(document.querySelector('.bets'));
+</script>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+</body>
+</html>

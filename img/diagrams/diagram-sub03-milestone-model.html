@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SUB-03 — Milestone Model</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --warm: #D4A574;
+    --resur: #C4B078;
+    --blue: #8A9EC4;
+    --red: #C47878;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex; justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+  .diagram::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 400px 600px at 15% 50%, rgba(127,181,176,0.03) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .title-area { padding: 48px 48px 0; position: relative; z-index: 1; }
+  .label {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); opacity: 0.8; margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 36px; font-weight: 700;
+    color: var(--text-pri); letter-spacing: -0.025em;
+    margin-bottom: 8px; line-height: 1.15;
+  }
+  .subtitle {
+    font-size: 15px; color: var(--text-sec);
+    line-height: 1.55; max-width: 560px;
+  }
+
+  /* ── Vertical timeline ── */
+  .timeline {
+    padding: 36px 48px 0;
+    position: relative; z-index: 1;
+  }
+  .stage-row {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 16px;
+    margin-bottom: 10px;
+  }
+  /* Marker column */
+  .marker {
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .marker-dot {
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; position: relative; z-index: 2;
+  }
+  .marker-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; font-weight: 400;
+  }
+  .marker-line {
+    width: 1.5px; flex: 1; margin-top: 4px;
+  }
+  /* Color per stage */
+  .stage-row[data-s="1"] .marker-dot { background: rgba(196,120,120,0.12); border: 1.5px solid rgba(196,120,120,0.3); }
+  .stage-row[data-s="1"] .marker-num { color: var(--red); }
+  .stage-row[data-s="1"] .marker-line { background: linear-gradient(180deg, rgba(196,120,120,0.25), rgba(212,165,116,0.25)); }
+  .stage-row[data-s="2"] .marker-dot { background: rgba(212,165,116,0.12); border: 1.5px solid rgba(212,165,116,0.3); }
+  .stage-row[data-s="2"] .marker-num { color: var(--warm); }
+  .stage-row[data-s="2"] .marker-line { background: linear-gradient(180deg, rgba(212,165,116,0.25), rgba(196,176,120,0.25)); }
+  .stage-row[data-s="3"] .marker-dot { background: rgba(196,176,120,0.12); border: 1.5px solid rgba(196,176,120,0.3); }
+  .stage-row[data-s="3"] .marker-num { color: var(--resur); }
+  .stage-row[data-s="3"] .marker-line { background: linear-gradient(180deg, rgba(196,176,120,0.25), rgba(138,158,196,0.25)); }
+  .stage-row[data-s="4"] .marker-dot { background: rgba(138,158,196,0.12); border: 1.5px solid rgba(138,158,196,0.3); }
+  .stage-row[data-s="4"] .marker-num { color: var(--blue); }
+  .stage-row[data-s="4"] .marker-line { background: linear-gradient(180deg, rgba(138,158,196,0.25), rgba(127,181,176,0.25)); }
+  .stage-row[data-s="5"] .marker-dot { background: rgba(127,181,176,0.12); border: 1.5px solid rgba(127,181,176,0.3); }
+  .stage-row[data-s="5"] .marker-num { color: var(--accent); }
+  .stage-row[data-s="5"] .marker-line { display: none; }
+
+  /* Card */
+  .card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-highlight);
+    border-radius: 12px;
+    padding: 16px 18px;
+    position: relative; overflow: hidden;
+    display: flex; gap: 14px;
+  }
+  .card::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; width: 100px; height: 2px;
+  }
+  .stage-row[data-s="1"] .card::before { background: var(--red); }
+  .stage-row[data-s="2"] .card::before { background: var(--warm); }
+  .stage-row[data-s="3"] .card::before { background: var(--resur); }
+  .stage-row[data-s="4"] .card::before { background: var(--blue); }
+  .stage-row[data-s="5"] .card::before { background: var(--accent); }
+
+  .card-body { flex: 1; min-width: 0; }
+  .stage-name {
+    font-size: 14px; font-weight: 600;
+    color: var(--text-pri); letter-spacing: -0.01em;
+    margin-bottom: 3px;
+  }
+  .stage-gate {
+    font-size: 11px; font-weight: 400;
+    color: var(--text-ter); margin-bottom: 10px;
+    line-height: 1.4;
+  }
+  .actions { display: flex; flex-wrap: wrap; gap: 5px; }
+  .action {
+    display: flex; align-items: center; gap: 5px;
+    padding: 4px 10px; border-radius: 6px;
+    font-size: 10px; font-weight: 500; color: var(--text-sec);
+  }
+  .stage-row[data-s="1"] .action { background: rgba(196,120,120,0.06); border: 1px solid rgba(196,120,120,0.12); }
+  .stage-row[data-s="2"] .action { background: rgba(212,165,116,0.06); border: 1px solid rgba(212,165,116,0.12); }
+  .stage-row[data-s="3"] .action { background: rgba(196,176,120,0.06); border: 1px solid rgba(196,176,120,0.12); }
+  .stage-row[data-s="4"] .action { background: rgba(138,158,196,0.06); border: 1px solid rgba(138,158,196,0.12); }
+  .stage-row[data-s="5"] .action { background: rgba(127,181,176,0.06); border: 1px solid rgba(127,181,176,0.12); }
+
+  .action-icon {
+    width: 12px; height: 12px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+
+  /* Impact pips */
+  .impact {
+    width: 50px; flex-shrink: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 4px;
+  }
+  .impact-label {
+    font-size: 8px; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .pips { display: flex; gap: 3px; }
+  .pip {
+    width: 6px; height: 6px; border-radius: 1.5px;
+    transition: opacity 0.3s ease;
+  }
+  .pip.on { opacity: 0.7; }
+  .pip.off { opacity: 0.12; }
+  .stage-row[data-s="1"] .pip { background: var(--red); }
+  .stage-row[data-s="2"] .pip { background: var(--warm); }
+  .stage-row[data-s="3"] .pip { background: var(--resur); }
+  .stage-row[data-s="4"] .pip { background: var(--blue); }
+  .stage-row[data-s="5"] .pip { background: var(--accent); }
+
+  /* Outcome */
+  .outcome {
+    margin: 28px 48px 48px;
+    background: var(--accent-dim);
+    border-radius: 10px;
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+    position: relative; z-index: 1;
+  }
+  .outcome-icon { flex-shrink: 0; }
+  .outcome p {
+    font-size: 13px; font-weight: 500;
+    color: var(--text-sec); line-height: 1.5;
+  }
+
+  /* Entrance animations */
+  .reveal {
+    opacity: 0; transform: translateY(12px);
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .stage-row {
+    opacity: 0; transform: translateY(10px);
+    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .stage-row.visible { opacity: 1; transform: translateY(0); }
+
+  /* Marker dot pulse on entrance */
+  @keyframes dotPulse {
+    0% { box-shadow: 0 0 0 0 currentColor; }
+    70% { box-shadow: 0 0 0 6px transparent; }
+    100% { box-shadow: 0 0 0 0 transparent; }
+  }
+  .stage-row.visible .marker-dot {
+    animation: dotPulse 0.6s ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal, .stage-row { opacity: 1; transform: none; transition: none; }
+    .stage-row.visible .marker-dot { animation: none; }
+  }
+  @media (max-width: 680px) {
+    body { padding: 16px; }
+  }
+
+/* Embed mode: strip body chrome when loaded in iframe */
+body.embedded {
+  padding: 0;
+  min-height: auto;
+  display: block;
+  background: transparent;
+  overflow: hidden;
+  align-items: initial;
+}
+body.embedded .diagram {
+  width: 100%;
+  border-radius: 0;
+}
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="title-area reveal">
+      <div class="label">Framework — Detail</div>
+      <h1>Milestone Model</h1>
+      <p class="subtitle">What moderators should do first, what has the most impact, and what unlocks downstream workflows.</p>
+    </div>
+
+    <div class="timeline">
+      <!-- Stage 1 -->
+      <div class="stage-row" data-s="1">
+        <div class="marker">
+          <div class="marker-dot"><span class="marker-num">1</span></div>
+          <div class="marker-line"></div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <div class="stage-name">Creation</div>
+            <div class="stage-gate">Gate: community launched with identity + category</div>
+            <div class="actions">
+              <div class="action">
+                <div class="action-icon"><svg width="10" height="10" viewBox="0 0 10 10"><rect x="1" y="1" width="8" height="8" rx="1.5" stroke="var(--red)" stroke-width="0.8" fill="none"/></svg></div>
+                Name + description
+              </div>
+              <div class="action">
+                <div class="action-icon"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.5" stroke="var(--red)" stroke-width="0.8" fill="none"/></svg></div>
+                Avatar + banner
+              </div>
+              <div class="action">
+                <div class="action-icon"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 7h6M3 5h4M4 3h2" stroke="var(--red)" stroke-width="0.8" stroke-linecap="round"/></svg></div>
+                Category
+              </div>
+            </div>
+          </div>
+          <div class="impact">
+            <div class="impact-label">Impact</div>
+            <div class="pips">
+              <div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stage 2 -->
+      <div class="stage-row" data-s="2">
+        <div class="marker">
+          <div class="marker-dot"><span class="marker-num">2</span></div>
+          <div class="marker-line"></div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <div class="stage-name">Early Content</div>
+            <div class="stage-gate">Gate: content activity within the first week</div>
+            <div class="actions">
+              <div class="action">
+                <div class="action-icon"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 8V3h6v5z" stroke="var(--warm)" stroke-width="0.8" fill="none"/><line x1="4" y1="5" x2="7" y2="5" stroke="var(--warm)" stroke-width="0.6"/></svg></div>
+                First posts
+              </div>
+              <div class="action">
+                <div class="action-icon"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M1 8l2-3 2 1.5 2-3 2 2" stroke="var(--warm)" stroke-width="0.8" fill="none" stroke-linecap="round"/></svg></div>
+                Content seeding
+              </div>
+              <div class="action">
+                <div class="action-icon"><svg width="10" height="10" viewBox="0 0 10 10"><rect x="1.5" y="1.5" width="7" height="7" rx="1" stroke="var(--warm)" stroke-width="0.8" fill="none"/><path d="M3 5l1.5 1.5L7 3.5" stroke="var(--warm)" stroke-width="0.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                Rules
+              </div>
+            </div>
+          </div>
+          <div class="impact">
+            <div class="impact-label">Impact</div>
+            <div class="pips">
+              <div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip off"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stage 3 -->
+      <div class="stage-row" data-s="3">
+        <div class="marker">
+          <div class="marker-dot"><span class="marker-num">3</span></div>
+          <div class="marker-line"></div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <div class="stage-name">Member Growth</div>
+            <div class="stage-gate">Gate: acquisition beyond the founder</div>
+            <div class="actions">
+              <div class="action">
+                <div class="action-icon"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="3.5" r="2" stroke="var(--resur)" stroke-width="0.8" fill="none"/><path d="M2 9c0-1.5 1.3-2.5 3-2.5s3 1 3 2.5" stroke="var(--resur)" stroke-width="0.8" fill="none"/></svg></div>
+                Invite members
+              </div>
+              <div class="action">
+                <div class="action-icon"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M5 1v8M1 5h8" stroke="var(--resur)" stroke-width="0.8" stroke-linecap="round"/></svg></div>
+                Cross-promote
+              </div>
+            </div>
+          </div>
+          <div class="impact">
+            <div class="impact-label">Impact</div>
+            <div class="pips">
+              <div class="pip on"></div><div class="pip on"></div><div class="pip on"></div><div class="pip off"></div><div class="pip off"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stage 4 -->
+      <div class="stage-row" data-s="4">
+        <div class="marker">
+          <div class="marker-dot"><span class="marker-num">4</span></div>
+          <div class="marker-line"></div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <div class="stage-name">Mod Team Formation</div>
+            <div class="stage-gate">Gate: teams significantly outperformed solo founders</div>
+            <div class="actions">
+              <div class="action">
+                <div class="action-icon"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="3.5" cy="3.5" r="1.8" stroke="var(--blue)" stroke-width="0.8" fill="none"/><circle cx="6.5" cy="3.5" r="1.8" stroke="var(--blue)" stroke-width="0.8" fill="none"/></svg></div>
+                Recruit co-mods
+              </div>
+              <div class="action">
+                <div class="action-icon"><svg width="10" height="10" viewBox="0 0 10 10"><rect x="1" y="2" width="8" height="6" rx="1" stroke="var(--blue)" stroke-width="0.8" fill="none"/><line x1="3" y1="4.5" x2="7" y2="4.5" stroke="var(--blue)" stroke-width="0.6"/></svg></div>
+                Delegate
+              </div>
+            </div>
+          </div>
+          <div class="impact">
+            <div class="impact-label">Impact</div>
+            <div class="pips">
+              <div class="pip on"></div><div class="pip on"></div><div class="pip off"></div><div class="pip off"></div><div class="pip off"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stage 5 -->
+      <div class="stage-row" data-s="5">
+        <div class="marker">
+          <div class="marker-dot"><span class="marker-num">5</span></div>
+          <div class="marker-line"></div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <div class="stage-name">Sustained Engagement</div>
+            <div class="stage-gate">Gate: self-sustaining contributor activity</div>
+            <div class="actions">
+              <div class="action">
+                <div class="action-icon"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 7l2-2 1.5 1 2-3 1.5 1.5" stroke="var(--accent)" stroke-width="0.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                Iterate engagement
+              </div>
+              <div class="action">
+                <div class="action-icon"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.5" stroke="var(--accent)" stroke-width="0.8" fill="none"/><path d="M5 3v2.5l1.5 1" stroke="var(--accent)" stroke-width="0.8" fill="none" stroke-linecap="round"/></svg></div>
+                Cadence
+              </div>
+            </div>
+          </div>
+          <div class="impact">
+            <div class="impact-label">Impact</div>
+            <div class="pips">
+              <div class="pip on"></div><div class="pip off"></div><div class="pip off"></div><div class="pip off"></div><div class="pip off"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="outcome reveal" style="transition-delay: 350ms">
+      <div class="outcome-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M4 8h8M8 4v8" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
+        </svg>
+      </div>
+      <p>Progressive disclosure ensured moderators faced one challenge at a time — actions ordered by survival impact.</p>
+    </div>
+  </div>
+
+<script>
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // Stagger stage rows
+  const tlObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const rows = e.target.querySelectorAll('.stage-row');
+        rows.forEach((row, i) => {
+          setTimeout(() => row.classList.add('visible'), i * 100);
+        });
+        tlObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  tlObs.observe(document.querySelector('.timeline'));
+</script>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+</body>
+</html>
