@@ -56,8 +56,13 @@
                 <p><strong>Six target companies. Six different evaluation rubrics.</strong> Ramp prioritizes technical collaboration and quantified impact. Figma leads with craft mastery. Anthropic splits focus between technical collaboration and impact storytelling. Meta weights scope navigation highest. A portfolio optimized for one audience actively underperforms for another.</p>
                 <p>The real problem wasn't building a portfolio — it was <strong>building a measurement system first.</strong> I needed to understand what each company actually evaluates before I could design something that holds up across all of them. Without that, every design decision is guesswork dressed as strategy.</p>
 
-                <div class="case-img-full">
-                    <div class="img-placeholder">Dimension weight comparison across 6 target companies — radar or bar chart showing divergence</div>
+                <div class="case-img-full diagram-embed" data-diagram="port-01b">
+                  <iframe
+                    src="img/diagrams/diagram-port01b-insights.html"
+                    loading="lazy"
+                    title="Dimension weight comparison — insight cards showing divergence across 6 target companies"
+                    style="width: 100%; border: none; border-radius: 12px; aspect-ratio: 760 / 380;"
+                  ></iframe>
                 </div>
 
                 <h2>Solution</h2>
@@ -108,8 +113,13 @@
                 <p>The panel confirmed what I suspected: <strong>solo projects score lower on scope navigation</strong> because there's no team to navigate, no competing priorities to broker. That's a structural ceiling, not a content problem. It also revealed that companies weighting craft mastery — Figma especially — wanted to see iteration artifacts: the rough versions, the abandoned directions, the visual progression from early to final.</p>
                 <p>The biggest liability across every evaluation was <strong>placeholder images.</strong> Case studies with image placeholders instead of real screenshots consistently scored 0.5–1.0 points lower than their content merited. The panel quantified exactly what needed fixing first.</p>
 
-                <div class="case-img-full">
-                    <div class="img-placeholder">Recruiter panel results — score breakdown by company with dimension-level detail</div>
+                <div class="case-img-full diagram-embed" data-diagram="port-05">
+                  <iframe
+                    src="img/diagrams/diagram-port05-recruiter-panel-v4.html"
+                    loading="lazy"
+                    title="Recruiter panel scoring — score breakdown by company with dimension-level detail"
+                    style="width: 100%; border: none; border-radius: 12px; aspect-ratio: 760 / 720;"
+                  ></iframe>
                 </div>
 
                 <h2>Reflection</h2>
@@ -209,6 +219,22 @@
         document.querySelectorAll('.case-body h2').forEach(el => {
             observer.observe(el);
         });
+    </script>
+    <script>
+    // Auto-resize diagram iframes to their content height
+    window.addEventListener('load', () => {
+      document.querySelectorAll('.diagram-embed iframe').forEach(iframe => {
+        iframe.addEventListener('load', () => {
+          try {
+            const height = iframe.contentDocument.querySelector('.diagram').offsetHeight;
+            iframe.style.height = height + 'px';
+            iframe.style.aspectRatio = '';
+          } catch(e) {
+            // Cross-origin or not yet loaded — aspect-ratio fallback handles it
+          }
+        });
+      });
+    });
     </script>
 </body>
 </html>

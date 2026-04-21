@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PORT-01b — Evaluation Insights</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --casual: #D4A574;
+    --red: #C47878;
+    --blue: #8A9EC4;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    padding: 48px;
+    position: relative;
+  }
+  .diagram::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 300px 250px at 50% 50%, rgba(127,181,176,0.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Section label */
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.8;
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-out 0.1s forwards;
+  }
+
+  .insights {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .insight {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-highlight);
+    border-radius: 12px;
+    padding: 24px 20px;
+    opacity: 0;
+    animation: cardSlideIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+  .insight:nth-child(1) { animation-delay: 0.2s; }
+  .insight:nth-child(2) { animation-delay: 0.3s; }
+  .insight:nth-child(3) { animation-delay: 0.4s; }
+
+  /* Number — large JetBrains Mono with count-up feel */
+  .insight-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 48px;
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .insight:nth-child(1) .insight-num { color: var(--accent); }
+  .insight:nth-child(2) .insight-num { color: var(--casual); }
+  .insight:nth-child(3) .insight-num { color: var(--blue); }
+
+  .insight-unit {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-ter);
+    margin-bottom: 16px;
+    letter-spacing: 0.02em;
+  }
+
+  /* Thin divider between unit and title */
+  .insight-divider {
+    width: 24px;
+    height: 1px;
+    margin-bottom: 14px;
+  }
+  .insight:nth-child(1) .insight-divider { background: rgba(127,181,176,0.3); }
+  .insight:nth-child(2) .insight-divider { background: rgba(212,165,116,0.3); }
+  .insight:nth-child(3) .insight-divider { background: rgba(138,158,196,0.3); }
+
+  .insight-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-pri);
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+  .insight-text {
+    font-size: 11px;
+    color: var(--text-sec);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 680px) {
+    .diagram { padding: 24px; }
+    .insights { grid-template-columns: 1fr; }
+    body { padding: 16px; }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes cardSlideIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="section-label">Key Insights</div>
+    <div class="insights">
+      <div class="insight">
+        <div class="insight-num">0</div>
+        <div class="insight-unit">universal priorities</div>
+        <div class="insight-divider"></div>
+        <div class="insight-title">No shared top dimension</div>
+        <div class="insight-text">The highest-weighted dimension shifts per company. Craft at Figma, tech collab at Ramp, scope at Meta. What matters most is company-specific.</div>
+      </div>
+      <div class="insight">
+        <div class="insight-num">20pt</div>
+        <div class="insight-unit">spread per dimension</div>
+        <div class="insight-divider"></div>
+        <div class="insight-title">Same dimension, different weight</div>
+        <div class="insight-text">Technical collaboration ranges 20–30%. Impact storytelling ranges 10–30%. A single portfolio can't optimize for all of them equally.</div>
+      </div>
+      <div class="insight">
+        <div class="insight-num">20%</div>
+        <div class="insight-unit">× 5 = equal weights</div>
+        <div class="insight-divider"></div>
+        <div class="insight-title">Equal ≠ neutral</div>
+        <div class="insight-text">OpenAI and Cursor default to 20% equal weights — meaning no dimension can be safely deprioritized. You have to be good at everything.</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
