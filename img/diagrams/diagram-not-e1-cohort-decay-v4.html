@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOT-E1 — Cross-Platform Cohort Decay</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16; --card: #10121C; --elevated: #151722;
+    --text-pri: #E0DFE4; --text-sec: rgba(224,223,228,0.6); --text-ter: rgba(224,223,228,0.4); --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0; --accent-dim: rgba(127,181,176,0.12);
+    --red: #C47878; --gold: #C4B078; --blue: #8A9EC4;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F; display: flex; justify-content: center; padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px; background: var(--canvas); border-radius: 16px; overflow: hidden; position: relative;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  }
+
+  /* ── Title ── */
+  .title-area {
+    padding: 48px 48px 0;
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+  }
+  .label {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); opacity: 0.8; margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 28px; font-weight: 700; color: var(--text-pri); letter-spacing: -0.025em;
+    margin-bottom: 8px; line-height: 1.15;
+  }
+  .subtitle {
+    font-size: 13px; color: var(--text-sec); line-height: 1.55; max-width: 580px;
+  }
+
+  /* ── Chart area ── */
+  .chart-area {
+    padding: 36px 48px 0; position: relative;
+    opacity: 0; animation: mount 0.5s var(--spring) 0.1s forwards;
+  }
+  .chart-area::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 400px 250px at 50% 60%, rgba(127,181,176,0.035) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .chart-container {
+    position: relative; width: 100%; height: 320px;
+  }
+
+  /* SVG chart */
+  .chart-svg {
+    width: 100%; height: 100%; overflow: visible;
+  }
+
+  /* Grid lines */
+  .grid-line {
+    stroke: rgba(224,223,228,0.06); stroke-width: 1;
+  }
+
+  /* Axis labels */
+  .y-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    fill: rgba(224,223,228,0.35);
+  }
+  .x-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    fill: rgba(224,223,228,0.35); text-anchor: middle;
+  }
+  .axis-title {
+    font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 500;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    fill: rgba(224,223,228,0.25);
+  }
+
+  /* Curves */
+  .curve-reddit {
+    fill: none; stroke: rgba(224,223,228,0.4); stroke-width: 2;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+  .curve-inbox {
+    fill: none; stroke: #7FB5B0; stroke-width: 2.5;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+  /* Retention gap fill — highlighted region between curves */
+  .gap-fill {
+    fill: url(#gradGap);
+    opacity: 0;
+    animation: fadeGap 1s ease-out 1.0s forwards;
+  }
+  @keyframes fadeGap {
+    to { opacity: 1; }
+  }
+
+  /* Retention gap annotation */
+  .gap-line {
+    stroke: rgba(224,223,228,0.15); stroke-width: 1;
+    stroke-dasharray: 4 4;
+  }
+  .gap-bracket {
+    stroke: var(--accent); stroke-width: 1.5; fill: none;
+    opacity: 0.5;
+  }
+  .gap-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    fill: var(--accent); opacity: 0.7; text-anchor: middle;
+  }
+
+  /* Curve labels */
+  .curve-label {
+    font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 500;
+  }
+  .curve-label-reddit { fill: rgba(224,223,228,0.5); }
+  .curve-label-inbox { fill: var(--accent); }
+
+  /* Dots on curves */
+  .dot-reddit {
+    fill: rgba(224,223,228,0.5); r: 3;
+    opacity: 0; transition: opacity 0.2s ease;
+  }
+  .dot-inbox {
+    fill: var(--accent); r: 3.5;
+    opacity: 0; transition: opacity 0.2s ease;
+  }
+
+  /* ── Legend ── */
+  .legend {
+    padding: 20px 48px 0;
+    display: flex; gap: 24px;
+    opacity: 0; animation: mount 0.5s var(--spring) 0.2s forwards;
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--text-sec);
+  }
+  .legend-line {
+    width: 20px; height: 2px; border-radius: 1px;
+  }
+  .legend-line.reddit { background: rgba(224,223,228,0.4); }
+  .legend-line.inbox { background: var(--accent); height: 2.5px; }
+
+  /* ── Insight bar ── */
+  .insight-bar {
+    margin: 28px 48px 48px; padding: 20px 24px;
+    background: rgba(127,181,176,0.06);
+    border-left: 3px solid rgba(127,181,176,0.4);
+    border-radius: 10px;
+    display: flex; align-items: flex-start; gap: 14px;
+    opacity: 0; animation: mount 0.5s var(--spring) 0.3s forwards;
+  }
+  .insight-icon {
+    width: 20px; height: 20px; flex-shrink: 0; margin-top: 1px;
+  }
+  .insight-text {
+    font-size: 13px; color: var(--text-sec); line-height: 1.55;
+  }
+  .insight-text strong {
+    color: var(--accent); font-weight: 600;
+  }
+  .insight-formula {
+    display: block; margin-top: 8px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--text-dim); letter-spacing: 0.02em;
+  }
+
+  /* ── Hover interaction ── */
+  .hover-col {
+    fill: transparent; cursor: crosshair;
+  }
+  .hover-col:hover ~ .tooltip-group { opacity: 1; }
+  .tooltip-group { opacity: 0; transition: opacity 0.15s ease; pointer-events: none; }
+  .tooltip-bg {
+    fill: rgba(16,18,28,0.9); stroke: rgba(224,223,228,0.1);
+    stroke-width: 1; rx: 6;
+  }
+  .tooltip-text {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    fill: var(--text-sec);
+  }
+  .tooltip-val { font-weight: 700; }
+
+  /* ── Hover hint ── */
+  .hover-hint {
+    text-align: center; padding: 8px 0 0;
+    font-size: 10px; color: var(--text-dim);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    opacity: 0; animation: mount 0.5s var(--spring) 0.15s forwards;
+  }
+
+  /* ── Draw animation ── */
+  .curve-reddit, .curve-inbox {
+    stroke-dasharray: 1000; stroke-dashoffset: 1000;
+    animation: drawLine 1.8s ease-out 0.4s forwards;
+  }
+  .curve-inbox { animation-delay: 0.6s; }
+
+  @keyframes drawLine {
+    to { stroke-dashoffset: 0; }
+  }
+  @keyframes mount {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+/* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+<div class="diagram">
+
+  <div class="title-area">
+    <div class="label">Retention Curves</div>
+    <h1>Cross-Platform Cohort Decay</h1>
+    <p class="subtitle">Averaged across all user segments, Inbox notification usage decays faster than overall Reddit retention — revealing the retention gap that the notification strategy targets.</p>
+  </div>
+
+  <div class="hover-hint">
+    <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M8 3v10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    Hover chart to inspect values
+  </div>
+
+  <div class="chart-area">
+    <div class="chart-container">
+      <!--
+        Chart dimensions: viewBox 0 0 664 300
+        Plot area: x=50..634, y=10..270 (584w × 260h)
+        X: 0-7 days → 50 + day*(584/7) = 50 + day*83.43
+        Y: 0-100% → 270 - pct*2.6
+      -->
+      <svg class="chart-svg" viewBox="0 0 664 300" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <linearGradient id="gradGap" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#7FB5B0" stop-opacity="0.14"/>
+            <stop offset="100%" stop-color="#7FB5B0" stop-opacity="0.03"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Grid lines at 25% intervals -->
+        <line class="grid-line" x1="50" y1="10" x2="634" y2="10"/>    <!-- 100% -->
+        <line class="grid-line" x1="50" y1="75" x2="634" y2="75"/>    <!-- 75% -->
+        <line class="grid-line" x1="50" y1="140" x2="634" y2="140"/>  <!-- 50% -->
+        <line class="grid-line" x1="50" y1="205" x2="634" y2="205"/>  <!-- 25% -->
+        <line class="grid-line" x1="50" y1="270" x2="634" y2="270"/>  <!-- 0% -->
+
+        <!-- Y axis labels -->
+        <text class="y-label" x="42" y="14" text-anchor="end">100%</text>
+        <text class="y-label" x="42" y="79" text-anchor="end">75%</text>
+        <text class="y-label" x="42" y="144" text-anchor="end">50%</text>
+        <text class="y-label" x="42" y="209" text-anchor="end">25%</text>
+        <text class="y-label" x="42" y="274" text-anchor="end">0%</text>
+
+        <!-- X axis labels -->
+        <text class="x-label" x="50" y="292">0</text>
+        <text class="x-label" x="133" y="292">1</text>
+        <text class="x-label" x="217" y="292">2</text>
+        <text class="x-label" x="300" y="292">3</text>
+        <text class="x-label" x="384" y="292">4</text>
+        <text class="x-label" x="467" y="292">5</text>
+        <text class="x-label" x="550" y="292">6</text>
+        <text class="x-label" x="634" y="292">7</text>
+
+        <!-- Axis title -->
+        <text class="axis-title" x="342" y="306" text-anchor="middle">Days in post-cohort window</text>
+
+        <!-- Retention gap fill — region between the two curves -->
+        <path class="gap-fill" d="M50,10 C72,30 112,50 133,57 C154,64 196,88 217,97 C238,106 279,118 300,124 C321,130 363,143 384,148 C405,153 446,162 467,166 C488,170 529,176 550,179 C571,182 613,187 634,189 L634,252 C613,251 571,249 550,247 C529,245 488,242 467,239 C446,236 405,228 384,223 C363,218 321,204 300,197 C279,190 238,174 217,161 C196,148 154,117 133,101 C112,85 72,40 50,10 Z"/>
+
+        <!-- Retention gap annotation at Day 5 -->
+        <line class="gap-line" x1="467" y1="10" x2="467" y2="270"/>
+        <!-- Bracket between two curve points at x=467 (Day 5): reddit y=166, inbox y=239 -->
+        <line class="gap-bracket" x1="473" y1="170" x2="473" y2="235"/>
+        <line class="gap-bracket" x1="470" y1="170" x2="476" y2="170"/>
+        <line class="gap-bracket" x1="470" y1="235" x2="476" y2="235"/>
+        <text class="gap-label" x="500" y="206">retention</text>
+        <text class="gap-label" x="500" y="218">gap</text>
+
+        <!-- Curves -->
+        <path class="curve-reddit" d="M50,10 C72,30 112,50 133,57 C154,64 196,88 217,97 C238,106 279,118 300,124 C321,130 363,143 384,148 C405,153 446,162 467,166 C488,170 529,176 550,179 C571,182 613,187 634,189"/>
+        <path class="curve-inbox" d="M50,10 C72,40 112,85 133,101 C154,117 196,148 217,161 C238,174 279,190 300,197 C321,204 363,218 384,223 C405,228 446,236 467,239 C488,242 529,245 550,247 C571,249 613,251 634,252"/>
+
+        <!-- Endpoint dots -->
+        <circle cx="634" cy="189" r="3.5" fill="rgba(224,223,228,0.45)"/>
+        <circle cx="634" cy="252" r="4" fill="#7FB5B0"/>
+
+        <!-- Curve labels at endpoints -->
+        <text class="curve-label curve-label-reddit" x="624" y="183" text-anchor="end">Reddit overall</text>
+        <text class="curve-label curve-label-inbox" x="624" y="265" text-anchor="end">Inbox usage</text>
+
+        <!-- Hover columns (invisible, one per day) -->
+        <g class="hover-zones">
+          <rect class="hover-col" data-day="0" x="50" y="0" width="83" height="280" data-reddit="100" data-inbox="100"/>
+          <rect class="hover-col" data-day="1" x="133" y="0" width="83" height="280" data-reddit="82" data-inbox="65"/>
+          <rect class="hover-col" data-day="2" x="217" y="0" width="83" height="280" data-reddit="68" data-inbox="42"/>
+          <rect class="hover-col" data-day="3" x="300" y="0" width="83" height="280" data-reddit="56" data-inbox="28"/>
+          <rect class="hover-col" data-day="4" x="384" y="0" width="83" height="280" data-reddit="47" data-inbox="18"/>
+          <rect class="hover-col" data-day="5" x="467" y="0" width="83" height="280" data-reddit="40" data-inbox="12"/>
+          <rect class="hover-col" data-day="6" x="550" y="0" width="83" height="280" data-reddit="35" data-inbox="9"/>
+          <rect class="hover-col" data-day="7" x="634" y="0" width="30" height="280" data-reddit="31" data-inbox="7"/>
+        </g>
+
+        <!-- Tooltip (positioned by JS) -->
+        <g class="tooltip-group" id="tooltip">
+          <rect class="tooltip-bg" x="0" y="0" width="120" height="52" rx="6"/>
+          <text class="tooltip-text" x="10" y="18" id="tt-day">Day 0</text>
+          <text class="tooltip-text" x="10" y="32" id="tt-reddit" fill="rgba(224,223,228,0.5)">Reddit: 100%</text>
+          <text class="tooltip-text" x="10" y="44" id="tt-inbox" fill="#7FB5B0">Inbox: 100%</text>
+        </g>
+
+        <!-- Dot indicators (positioned by JS) -->
+        <circle class="dot-reddit" id="dot-r" cx="0" cy="0" r="3.5"/>
+        <circle class="dot-inbox" id="dot-i" cx="0" cy="0" r="4"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-line reddit"></div>
+      Reddit overall retention
+    </div>
+    <div class="legend-item">
+      <div class="legend-line inbox"></div>
+      Inbox notification usage
+    </div>
+  </div>
+
+  <div class="insight-bar">
+    <svg class="insight-icon" viewBox="0 0 20 20" fill="none">
+      <path d="M10 2L12.09 7.26L18 8.27L14 12.14L14.81 18.02L10 15.27L5.19 18.02L6 12.14L2 8.27L7.91 7.26L10 2Z" stroke="#7FB5B0" stroke-width="1.5" stroke-linejoin="round" fill="none"/>
+    </svg>
+    <div class="insight-text">
+      <strong>By Day 5, inbox retention drops to 12% — while overall Reddit retention holds at 40%.</strong> This 28-point gap is the opportunity the notification strategy targets: every percentage point recovered here compounds across the full user base.
+      <span class="insight-formula">retention gap @ d5 = 40% − 12% = 28pp · 7.5m DAU = ~2.1m recoverable users</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Hover interaction
+  const xPositions = { 0:50, 1:133, 2:217, 3:300, 4:384, 5:467, 6:550, 7:634 };
+  const redditY = { 0:10, 1:57, 2:97, 3:124, 4:148, 5:166, 6:179, 7:189 };
+  const inboxY = { 0:10, 1:101, 2:161, 3:197, 4:223, 5:239, 6:247, 7:252 };
+
+  const tooltip = document.getElementById('tooltip');
+  const ttDay = document.getElementById('tt-day');
+  const ttReddit = document.getElementById('tt-reddit');
+  const ttInbox = document.getElementById('tt-inbox');
+  const dotR = document.getElementById('dot-r');
+  const dotI = document.getElementById('dot-i');
+
+  document.querySelectorAll('.hover-col').forEach(col => {
+    col.addEventListener('mouseenter', () => {
+      const d = parseInt(col.dataset.day);
+      const x = xPositions[d];
+      const ry = redditY[d];
+      const iy = inboxY[d];
+
+      ttDay.textContent = `Day ${d}`;
+      ttReddit.textContent = `Reddit: ${col.dataset.reddit}%`;
+      ttInbox.textContent = `Inbox: ${col.dataset.inbox}%`;
+
+      // Position tooltip
+      let tx = x + 12;
+      if (tx + 120 > 650) tx = x - 132;
+      tooltip.setAttribute('transform', `translate(${tx}, ${Math.min(ry, iy) - 60})`);
+      tooltip.style.opacity = '1';
+
+      // Position dots
+      dotR.setAttribute('cx', x); dotR.setAttribute('cy', ry);
+      dotI.setAttribute('cx', x); dotI.setAttribute('cy', iy);
+      dotR.style.opacity = '1'; dotI.style.opacity = '1';
+    });
+
+    col.addEventListener('mouseleave', () => {
+      tooltip.style.opacity = '0';
+      dotR.style.opacity = '0'; dotI.style.opacity = '0';
+    });
+  });
+</script>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+</body>
+</html>

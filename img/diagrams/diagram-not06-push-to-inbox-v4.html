@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOT-06 — Push-to-Inbox Continuity</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16; --card: #10121C; --elevated: #151722;
+    --text-pri: #E0DFE4; --text-sec: rgba(224,223,228,0.6); --text-ter: rgba(224,223,228,0.4); --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0; --accent-dim: rgba(127,181,176,0.12);
+    --red: #C47878; --resur: #C4B078; --new-seg: #8A9EC4;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F; display: flex; justify-content: center; padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px; background: var(--canvas); border-radius: 16px; overflow: hidden;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  }
+
+  /* ── Title ── */
+  .title-area {
+    padding: 48px 48px 0;
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+    animation-delay: calc(var(--li, 0) * 60ms);
+  }
+  .label {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); opacity: 0.8; margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 32px; font-weight: 700; color: var(--text-pri); letter-spacing: -0.03em;
+    margin-bottom: 8px; line-height: 1.15;
+  }
+  .subtitle {
+    font-size: 14px; color: var(--text-sec); line-height: 1.55; max-width: 600px;
+  }
+
+  /* ── Problem bar ── */
+  .problem-bar {
+    margin: 24px 48px 0; padding: 14px 20px;
+    background: rgba(196,120,120,0.06); border-left: 3px solid rgba(196,120,120,0.4); border-radius: 10px;
+    display: flex; align-items: center; gap: 12px;
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+    animation-delay: calc(var(--li, 0) * 60ms);
+  }
+  .problem-icon { width: 28px; height: 28px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .problem-text { font-size: 12px; color: var(--red); line-height: 1.5; }
+  .problem-text strong { font-weight: 600; }
+
+  /* ── Flow diagram ── */
+  .flow-area {
+    padding: 32px 48px 0; position: relative;
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+    animation-delay: calc(var(--li, 0) * 60ms);
+  }
+  .flow-area::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 400px 200px at 50% 50%, rgba(127,181,176,0.03) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hover-hint {
+    text-align: center; padding: 0 0 12px;
+    font-size: 10px; color: var(--text-dim);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+
+  .flow {
+    display: flex; align-items: stretch; gap: 0;
+    position: relative; z-index: 1;
+  }
+  .flow-step { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
+
+  .step-card {
+    background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 12px;
+    padding: 20px 14px; text-align: center; width: 100%;
+    position: relative; overflow: visible;
+    transition: transform 0.35s var(--spring), border-color 0.3s ease;
+    backdrop-filter: blur(8px);
+  }
+  .step-card::before {
+    content: ''; position: absolute; inset: 0;
+    box-shadow: var(--glass-highlight); border-radius: 12px; pointer-events: none;
+  }
+  .step-card:hover {
+    transform: translateY(-3px) scale(1.02);
+  }
+  .step-card.push:hover { border-color: rgba(138,158,196,0.25); }
+  .step-card.lock:hover { border-color: rgba(196,176,120,0.25); }
+  .step-card.inbox:hover { border-color: rgba(127,181,176,0.25); }
+  .step-card.history:hover { border-color: rgba(127,181,176,0.3); }
+
+  /* Illustration zones — ambient glow per card */
+  .step-card::after {
+    content: ''; position: absolute; width: 64px; height: 64px; border-radius: 50%;
+    top: -16px; left: 50%; transform: translateX(-50%);
+    pointer-events: none; opacity: 0.6;
+  }
+  .step-card.push::after {
+    background: radial-gradient(circle, rgba(138,158,196,0.12) 0%, transparent 70%);
+    animation: glowPulse 3s ease-in-out infinite;
+  }
+  .step-card.lock::after {
+    background: radial-gradient(circle, rgba(196,176,120,0.12) 0%, transparent 70%);
+    animation: glowPulse 3s ease-in-out 0.8s infinite;
+  }
+  .step-card.inbox::after {
+    background: radial-gradient(circle, rgba(127,181,176,0.12) 0%, transparent 70%);
+    animation: glowPulse 3s ease-in-out 1.6s infinite;
+  }
+  .step-card.history::after {
+    background: radial-gradient(circle, rgba(127,181,176,0.15) 0%, transparent 70%);
+    animation: glowPulse 3s ease-in-out 2.4s infinite;
+  }
+
+  .step-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 10px; position: relative; z-index: 1;
+  }
+  .push .step-icon { background: rgba(138,158,196,0.12); }
+  .lock .step-icon { background: rgba(196,176,120,0.12); }
+  .inbox .step-icon { background: rgba(127,181,176,0.12); }
+  .history .step-icon { background: rgba(127,181,176,0.15); }
+
+  .step-num {
+    font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 400;
+    opacity: 0.15; margin-bottom: 4px;
+  }
+  .push .step-num { color: var(--new-seg); }
+  .lock .step-num { color: var(--resur); }
+  .inbox .step-num, .history .step-num { color: var(--accent); }
+
+  .step-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 4px; position: relative; z-index: 1;
+  }
+  .push .step-label { color: var(--new-seg); }
+  .lock .step-label { color: var(--resur); }
+  .inbox .step-label, .history .step-label { color: var(--accent); }
+
+  .step-desc {
+    font-size: 12px; color: var(--text-sec); line-height: 1.5;
+    position: relative; z-index: 1;
+  }
+
+  /* Flow arrows with dash animation */
+  .flow-arrow {
+    width: 28px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .flow-arrow svg .dash-line {
+    stroke-dasharray: 4 3;
+    animation: dashFlow 1.5s linear infinite;
+  }
+
+  /* ── Before/After comparison ── */
+  .comparison-strip {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    padding: 28px 48px 0; position: relative;
+  }
+  .comp-card {
+    background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 10px;
+    padding: 18px; position: relative; overflow: visible;
+    transition: transform 0.35s var(--spring), border-color 0.3s ease;
+    backdrop-filter: blur(8px);
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+    animation-delay: calc(var(--li, 0) * 60ms);
+  }
+  .comp-card::before {
+    content: ''; position: absolute; inset: 0;
+    box-shadow: var(--glass-highlight); border-radius: 10px; pointer-events: none;
+  }
+  .comp-card:hover { transform: scale(1.01); }
+
+  .comp-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+  }
+  .comp-label.before { color: var(--red); }
+  .comp-label.after { color: var(--accent); }
+  .comp-label .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .comp-label.before .dot { background: var(--red); }
+  .comp-label.after .dot { background: var(--accent); }
+
+  .comp-detail {
+    font-family: 'JetBrains Mono', monospace; font-size: 9px;
+    color: var(--text-dim); letter-spacing: 0.04em; margin-left: auto;
+  }
+
+  /* Mini inbox rows */
+  .mini-rows { display: flex; flex-direction: column; gap: 6px; }
+  .mini-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 10px; border-radius: 7px;
+    font-size: 12px;
+    border: 1px solid transparent;
+    transition: border-color 0.2s ease;
+  }
+  .mini-row.active-row { background: rgba(127,181,176,0.06); border-color: rgba(127,181,176,0.12); }
+  .mini-row.faded { opacity: 0.3; }
+  .mini-row.gone { opacity: 0.15; text-decoration: line-through; }
+  .mini-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .mini-dot.rec { background: var(--resur); }
+  .mini-dot.notif { background: var(--accent); }
+  .mini-dot.ghost { background: var(--text-dim); border: 1px dashed var(--text-dim); }
+  .mini-text { color: var(--text-sec); flex: 1; font-size: 12px; }
+  .mini-text.dim { color: var(--text-dim); }
+  .mini-ts {
+    font-family: 'JetBrains Mono', monospace; font-size: 8px;
+    color: var(--text-dim); flex-shrink: 0;
+  }
+  .mini-tag {
+    font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 2px 7px; border-radius: 4px; flex-shrink: 0;
+  }
+  .mini-tag.latest { background: rgba(196,176,120,0.12); color: var(--resur); }
+  .mini-tag.kept { background: rgba(127,181,176,0.12); color: var(--accent); }
+  .mini-tag.lost { background: rgba(196,120,120,0.12); color: var(--red); }
+
+  /* Cross-highlight on hover */
+  .comparison-strip:hover .comp-card { opacity: 0.7; }
+  .comparison-strip:hover .comp-card:hover { opacity: 1; }
+
+  /* ── Outcome bar ── */
+  .outcome-bar {
+    margin: 28px 48px 48px; padding: 18px 22px;
+    background: rgba(127,181,176,0.06); border-left: 3px solid rgba(127,181,176,0.4); border-radius: 10px;
+    display: flex; align-items: flex-start; gap: 14px;
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+    animation-delay: calc(var(--li, 0) * 60ms);
+  }
+  .outcome-icon { width: 24px; height: 24px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+  .outcome-content { flex: 1; }
+  .outcome-text { font-size: 13px; color: var(--accent); line-height: 1.6; }
+  .outcome-text strong { font-weight: 600; }
+  .metric-tag {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--text-ter); margin-top: 8px; letter-spacing: 0.02em;
+  }
+
+  /* ── Keyframes ── */
+  @keyframes mount {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes dashFlow {
+    to { stroke-dashoffset: -14; }
+  }
+  @keyframes glowPulse {
+    0%, 100% { opacity: 0.4; transform: translateX(-50%) scale(1); }
+    50% { opacity: 0.7; transform: translateX(-50%) scale(1.15); }
+  }
+/* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+<div class="diagram">
+  <div class="title-area" style="--li:0">
+    <div class="label">Build Habits · Push-to-Inbox Connection</div>
+    <h1>Preserving Recommendation History</h1>
+    <p class="subtitle">Only the latest push recommendation appeared in the inbox — previous ones vanished. Users expected a history of communications, and removing it cut discovery flows mid-stream.</p>
+  </div>
+
+  <div class="problem-bar" style="--li:2">
+    <div class="problem-icon">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="var(--red)" stroke-width="1.5" fill="none"/><line x1="8" y1="5" x2="8" y2="9" stroke="var(--red)" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="11.5" r="0.8" fill="var(--red)"/></svg>
+    </div>
+    <p class="problem-text"><strong>Discovery flows broken:</strong> User taps a push recommendation → opens inbox → only sees the latest one. Previous recommendations have vanished. The inbox wasn't preserving the communication thread.</p>
+  </div>
+
+  <!-- Flow: Push → User taps → Inbox → Discovery continues -->
+  <div class="flow-area" style="--li:4">
+    <div class="hover-hint">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v4M4 3l2 2 2-2" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><rect x="1" y="6" width="10" height="5" rx="1.5" stroke="currentColor" stroke-width="1" fill="none"/></svg>
+      Hover cards to explore
+    </div>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="step-card push">
+          <div class="step-num">01</div>
+          <div class="step-icon">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <rect x="3" y="1" width="14" height="18" rx="3" stroke="var(--new-seg)" stroke-width="1.2" fill="none"/>
+              <line x1="7" y1="15" x2="13" y2="15" stroke="var(--new-seg)" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+              <rect x="5" y="4" width="10" height="4" rx="1.5" stroke="var(--new-seg)" stroke-width="1" fill="none" opacity="0.6"/>
+            </svg>
+          </div>
+          <div class="step-label">Push sent</div>
+          <div class="step-desc">Recommendation arrives on lock screen</div>
+        </div>
+      </div>
+
+      <div class="flow-arrow">
+        <svg width="20" height="12" viewBox="0 0 20 12" fill="none">
+          <line x1="0" y1="6" x2="14" y2="6" class="dash-line" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" opacity="0.4"/>
+          <path d="M13 2.5L17 6l-4 3.5" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+        </svg>
+      </div>
+
+      <div class="flow-step">
+        <div class="step-card lock">
+          <div class="step-num">02</div>
+          <div class="step-icon">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <circle cx="10" cy="10" r="8" stroke="var(--resur)" stroke-width="1.2" fill="none"/>
+              <path d="M10 6v4l2.5 1.5" stroke="var(--resur)" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="step-label">User taps</div>
+          <div class="step-desc">Opens app, lands in inbox</div>
+        </div>
+      </div>
+
+      <div class="flow-arrow">
+        <svg width="20" height="12" viewBox="0 0 20 12" fill="none">
+          <line x1="0" y1="6" x2="14" y2="6" class="dash-line" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" opacity="0.4"/>
+          <path d="M13 2.5L17 6l-4 3.5" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+        </svg>
+      </div>
+
+      <div class="flow-step">
+        <div class="step-card inbox">
+          <div class="step-num">03</div>
+          <div class="step-icon">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <rect x="3" y="4" width="14" height="12" rx="2" stroke="var(--accent)" stroke-width="1.2" fill="none"/>
+              <path d="M3 8h14" stroke="var(--accent)" stroke-width="1" opacity="0.4"/>
+              <line x1="6" y1="11" x2="14" y2="11" stroke="var(--accent)" stroke-width="1" stroke-linecap="round" opacity="0.3"/>
+              <line x1="6" y1="13.5" x2="11" y2="13.5" stroke="var(--accent)" stroke-width="1" stroke-linecap="round" opacity="0.2"/>
+            </svg>
+          </div>
+          <div class="step-label">Inbox state</div>
+          <div class="step-desc">Current + previous recommendations</div>
+        </div>
+      </div>
+
+      <div class="flow-arrow">
+        <svg width="20" height="12" viewBox="0 0 20 12" fill="none">
+          <line x1="0" y1="6" x2="14" y2="6" class="dash-line" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" opacity="0.4"/>
+          <path d="M13 2.5L17 6l-4 3.5" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+        </svg>
+      </div>
+
+      <div class="flow-step">
+        <div class="step-card history">
+          <div class="step-num">04</div>
+          <div class="step-icon">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M4 10a6 6 0 1112 0 6 6 0 01-12 0z" stroke="var(--accent)" stroke-width="1.2" fill="none"/>
+              <path d="M4 10H2M10 4V2" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" opacity="0.4"/>
+              <polyline points="8,8 10,10 13,7" stroke="var(--accent)" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="step-label">Discovery continues</div>
+          <div class="step-desc">Thread preserved, user explores further</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Before/After mini comparison -->
+  <div class="comparison-strip">
+    <div class="comp-card" style="--li:7">
+      <div class="comp-label before">
+        <span class="dot"></span>Before — Latest only
+        <span class="comp-detail">1 of 3 visible</span>
+      </div>
+      <div class="mini-rows">
+        <div class="mini-row active-row">
+          <span class="mini-dot rec"></span>
+          <span class="mini-text">Trending in r/technology</span>
+          <span class="mini-ts">2m</span>
+          <span class="mini-tag latest">Latest</span>
+        </div>
+        <div class="mini-row gone">
+          <span class="mini-dot ghost"></span>
+          <span class="mini-text dim">Popular in r/design</span>
+          <span class="mini-ts">1d</span>
+          <span class="mini-tag lost">Gone</span>
+        </div>
+        <div class="mini-row gone">
+          <span class="mini-dot ghost"></span>
+          <span class="mini-text dim">Because you follow r/ux</span>
+          <span class="mini-ts">3d</span>
+          <span class="mini-tag lost">Gone</span>
+        </div>
+      </div>
+    </div>
+    <div class="comp-card" style="--li:8">
+      <div class="comp-label after">
+        <span class="dot"></span>After — History preserved
+        <span class="comp-detail">3 of 3 visible</span>
+      </div>
+      <div class="mini-rows">
+        <div class="mini-row active-row">
+          <span class="mini-dot rec"></span>
+          <span class="mini-text">Trending in r/technology</span>
+          <span class="mini-ts">2m</span>
+          <span class="mini-tag kept">New</span>
+        </div>
+        <div class="mini-row active-row">
+          <span class="mini-dot rec"></span>
+          <span class="mini-text">Popular in r/design</span>
+          <span class="mini-ts">1d</span>
+          <span class="mini-tag kept">Kept</span>
+        </div>
+        <div class="mini-row active-row">
+          <span class="mini-dot rec"></span>
+          <span class="mini-text">Because you follow r/ux</span>
+          <span class="mini-ts">3d</span>
+          <span class="mini-tag kept">Kept</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="outcome-bar" style="--li:10">
+    <div class="outcome-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 10l4 4 8-8" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="outcome-content">
+      <p class="outcome-text">Subreddit notification alignment drove <strong>+1% push good visits</strong> by restoring the communication thread between notification and content.</p>
+      <div class="metric-tag">push tap → inbox history → continued browsing · +1% push good visits</div>
+    </div>
+  </div>
+</div>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+</body>
+</html>

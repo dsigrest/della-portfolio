@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOT-11 — Cross-Channel Model</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16; --card: #10121C; --elevated: #151722; --highest: #1A1C28;
+    --text-pri: #E0DFE4; --text-sec: rgba(224,223,228,0.6); --text-ter: rgba(224,223,228,0.4); --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0; --accent-dim: rgba(127,181,176,0.12);
+    --red: #C47878; --gold: #C4B078; --blue: #8A9EC4; --amber: #D4A574;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F; display: flex; justify-content: center; padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px; background: var(--canvas); border-radius: 16px; overflow: hidden;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  }
+
+  .title-area {
+    padding: 48px 48px 0;
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+    animation-delay: calc(var(--ai, 0) * 60ms);
+  }
+  .label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); opacity: 0.8; margin-bottom: 8px; }
+  h1 { font-size: 32px; font-weight: 700; color: var(--text-pri); letter-spacing: -0.03em; margin-bottom: 8px; line-height: 1.15; }
+  .subtitle { font-size: 14px; color: var(--text-sec); line-height: 1.55; max-width: 600px; }
+
+  .hover-hint {
+    text-align: center; padding: 14px 48px 0;
+    font-size: 10px; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+    animation-delay: calc(var(--ai, 0) * 60ms);
+  }
+
+  /* Hub-and-spokes layout */
+  .hub-area {
+    padding: 36px 48px 0; position: relative;
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+    animation-delay: calc(var(--ai, 0) * 60ms);
+  }
+  .hub-area::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 300px 300px at 50% 50%, rgba(127,181,176,0.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hub-layout {
+    width: 100%; aspect-ratio: 16 / 11; position: relative;
+  }
+
+  /* Central hub */
+  .hub {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 160px; text-align: center; z-index: 3; cursor: default;
+    transition: transform 0.35s var(--spring);
+  }
+  .hub:hover { transform: translate(-50%, -50%) scale(1.04); }
+  .hub-card {
+    background: var(--glass-bg); border: 1px solid rgba(127,181,176,0.2);
+    border-radius: 14px; padding: 20px 16px; position: relative;
+    box-shadow: var(--glass-highlight), 0 0 40px rgba(127,181,176,0.08);
+    transition: border-color 0.3s ease;
+    backdrop-filter: blur(8px);
+  }
+  .hub:hover .hub-card { border-color: rgba(127,181,176,0.35); }
+  .hub-glow {
+    position: absolute; width: 180px; height: 180px; border-radius: 50%; filter: blur(60px);
+    top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: -1;
+    background: var(--accent); opacity: 0.08;
+    animation: hubBreathe 3s ease-in-out infinite;
+  }
+  .hub-badge {
+    display: inline-block; font-family: 'JetBrains Mono', monospace;
+    font-size: 8px; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--accent); background: rgba(127,181,176,0.12); padding: 3px 8px; border-radius: 4px; margin-bottom: 10px;
+  }
+  .hub-icon { width: 36px; height: 36px; margin: 0 auto 10px; }
+  .hub-label { font-size: 14px; font-weight: 700; color: var(--text-pri); }
+  .hub-sub { font-size: 10px; color: var(--text-sec); margin-top: 4px; }
+
+  /* Spoke nodes */
+  .spoke {
+    position: absolute; width: 130px; text-align: center; z-index: 2; cursor: default;
+    transition: transform 0.35s var(--spring), opacity 0.25s ease;
+  }
+  .spoke:hover { transform: scale(1.04); }
+  .spoke.active-spoke { transform: scale(1.04); }
+
+  .spoke-card {
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    border-radius: 12px; padding: 16px 12px; position: relative; overflow: visible;
+    box-shadow: var(--glass-highlight);
+    transition: border-color 0.3s ease;
+    backdrop-filter: blur(8px);
+  }
+  .spoke:hover .spoke-card { border-color: rgba(224,223,228,0.15); }
+  .spoke-glow {
+    position: absolute; width: 100px; height: 100px; border-radius: 50%; filter: blur(40px);
+    top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: -1; opacity: 0.3;
+  }
+  .spoke-icon { width: 28px; height: 28px; margin: 0 auto 8px; }
+  .spoke-label { font-size: 11px; font-weight: 600; color: var(--text-pri); letter-spacing: -0.02em; }
+  .spoke-role {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; color: var(--text-ter); margin-top: 3px;
+  }
+
+  /* Callout */
+  .spoke-callout {
+    position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%) translateY(6px);
+    background: var(--highest); border: 1px solid rgba(224,223,228,0.12); border-radius: 8px;
+    padding: 10px 14px; font-size: 10px; color: var(--text-sec); line-height: 1.5;
+    width: 180px; text-align: left; pointer-events: none;
+    opacity: 0; transition: opacity 0.25s ease, transform 0.35s var(--spring);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 10;
+  }
+  .spoke-callout::after {
+    content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+    border: 6px solid transparent; border-top-color: rgba(224,223,228,0.12);
+  }
+  .spoke:hover .spoke-callout { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .spoke.callout-below .spoke-callout {
+    bottom: auto; top: calc(100% + 10px);
+    transform: translateX(-50%) translateY(-6px);
+  }
+  .spoke.callout-below:hover .spoke-callout { transform: translateX(-50%) translateY(0); }
+  .spoke.callout-below .spoke-callout::after {
+    top: auto; bottom: 100%; border-top-color: transparent; border-bottom-color: rgba(224,223,228,0.12);
+  }
+
+  /* Connecting lines */
+  .connections { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
+  .conn-line { stroke-dasharray: 6 10; animation: dashFlow 2s linear infinite; }
+
+  /* Platform matrix */
+  .platform-matrix {
+    margin: 24px 48px 0; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+    animation-delay: calc(var(--ai, 0) * 60ms);
+  }
+  .platform-cell {
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    border-radius: 8px; padding: 12px; text-align: center;
+    box-shadow: var(--glass-highlight);
+    transition: transform 0.35s var(--spring), border-color 0.3s ease;
+    backdrop-filter: blur(8px);
+  }
+  .platform-cell:hover { transform: translateY(-2px); border-color: rgba(224,223,228,0.15); }
+  .platform-name {
+    font-size: 10px; font-weight: 600; color: var(--text-pri);
+    letter-spacing: 0.04em; margin-bottom: 6px;
+  }
+  .platform-sub {
+    font-family: 'JetBrains Mono', monospace; font-size: 8px;
+    color: var(--text-dim); margin-bottom: 6px;
+  }
+  .channel-tags { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; }
+  .channel-tag {
+    font-size: 8px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 2px 6px; border-radius: 3px;
+  }
+  .tag-inbox { background: rgba(127,181,176,0.12); color: var(--accent); }
+  .tag-push { background: rgba(138,158,196,0.12); color: var(--blue); }
+  .tag-email { background: rgba(196,176,120,0.12); color: var(--gold); }
+  .tag-gap { background: rgba(224,223,228,0.05); color: var(--text-dim); font-style: italic; }
+
+  .outcome-bar {
+    margin: 24px 48px 48px; padding: 18px 22px;
+    background: rgba(127,181,176,0.06); border-left: 3px solid rgba(127,181,176,0.4); border-radius: 10px;
+    display: flex; align-items: flex-start; gap: 14px;
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+    animation-delay: calc(var(--ai, 0) * 60ms);
+  }
+  .outcome-icon { width: 24px; height: 24px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+  .outcome-content { flex: 1; }
+  .outcome-text { font-size: 13px; color: var(--accent); line-height: 1.6; }
+  .outcome-text strong { font-weight: 600; }
+  .metric-tag {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--text-ter); margin-top: 8px; letter-spacing: 0.02em;
+  }
+
+  /* Dim non-active spokes */
+  .hub-layout.has-active .spoke:not(.active-spoke) { opacity: 0.3; }
+
+  @keyframes mount {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes dashFlow { to { stroke-dashoffset: -20; } }
+  @keyframes hubBreathe {
+    0%, 100% { opacity: 0.06; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 0.1; transform: translate(-50%, -50%) scale(1.1); }
+  }
+  .impact-anchor { font-size: 11px; font-weight: 600; color: var(--accent); letter-spacing: 0.04em; margin-top: 12px; opacity: 0.85; }
+/* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+<div class="diagram">
+  <div class="title-area" style="--ai:0">
+    <div class="label">Enable Curation · Cross-Channel Coordination</div>
+    <h1>Channel Relationship Model</h1>
+    <p class="subtitle">I defined the relationship between channels: inbox as source of truth, push and email as delivery and re-engagement. The system accounted for platform gaps so users had control regardless of surface.</p>
+  </div>
+
+  <div class="hover-hint" style="--ai:2">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v4M4 3l2 2 2-2" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><rect x="1" y="6" width="10" height="5" rx="1.5" stroke="currentColor" stroke-width="1" fill="none"/></svg>
+    Hover channels for role detail
+  </div>
+
+  <div class="hub-area" style="--ai:3">
+    <div class="hub-layout" id="hubLayout">
+
+      <svg class="connections" viewBox="0 0 664 456" fill="none" preserveAspectRatio="xMidYMid meet">
+        <path class="conn-line" d="M310 210 Q 200 150, 130 120" stroke="var(--blue)" stroke-width="1.2" opacity="0.35"/>
+        <path class="conn-line" d="M360 210 Q 470 150, 540 120" stroke="var(--gold)" stroke-width="1.2" opacity="0.35" style="animation-delay:0.5s"/>
+        <path class="conn-line" d="M180 80 Q 332 20, 490 80" stroke="rgba(224,223,228,0.15)" stroke-width="1" opacity="0.3" style="animation-delay:1s"/>
+      </svg>
+
+      <!-- Hub: Inbox -->
+      <div class="hub">
+        <div class="hub-glow"></div>
+        <div class="hub-card">
+          <div class="hub-badge">Source of Truth</div>
+          <svg class="hub-icon" viewBox="0 0 36 36" fill="none">
+            <rect x="6" y="6" width="24" height="24" rx="4" stroke="var(--accent)" stroke-width="1.2" fill="none"/>
+            <path d="M6 14h24" stroke="var(--accent)" stroke-width="1" opacity="0.3"/>
+            <line x1="10" y1="19" x2="20" y2="19" stroke="var(--accent)" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+            <line x1="10" y1="23" x2="16" y2="23" stroke="var(--accent)" stroke-width="1" stroke-linecap="round" opacity="0.3"/>
+          </svg>
+          <div class="hub-label">Inbox</div>
+          <div class="hub-sub">Persistent, complete record</div>
+        </div>
+      </div>
+
+      <!-- Spoke: Push -->
+      <div class="spoke callout-below" data-spoke="push" style="top: 5%; left: 4%;">
+        <div class="spoke-glow" style="background: var(--blue);"></div>
+        <div class="spoke-card">
+          <svg class="spoke-icon" viewBox="0 0 28 28" fill="none">
+            <rect x="6" y="2" width="16" height="24" rx="3" stroke="var(--blue)" stroke-width="1.2" fill="none"/>
+            <line x1="12" y1="22" x2="16" y2="22" stroke="var(--blue)" stroke-width="0.8" stroke-linecap="round" opacity="0.4"/>
+            <rect x="3" y="6" width="10" height="6" rx="2" stroke="var(--blue)" stroke-width="1" fill="none" opacity="0.5"/>
+            <line x1="5" y1="9" x2="11" y2="9" stroke="var(--blue)" stroke-width="0.6" stroke-linecap="round" opacity="0.3"/>
+          </svg>
+          <div class="spoke-label">Push</div>
+          <div class="spoke-role">delivery + re-engage</div>
+        </div>
+        <div class="spoke-callout">Real-time delivery channel. Drives re-engagement back to the inbox. Not available on all platforms — the system adapts.</div>
+      </div>
+
+      <!-- Spoke: Email -->
+      <div class="spoke callout-below" data-spoke="email" style="top: 5%; right: 4%;">
+        <div class="spoke-glow" style="background: var(--gold);"></div>
+        <div class="spoke-card">
+          <svg class="spoke-icon" viewBox="0 0 28 28" fill="none">
+            <rect x="3" y="6" width="22" height="16" rx="3" stroke="var(--gold)" stroke-width="1.2" fill="none"/>
+            <path d="M3 9l11 7 11-7" stroke="var(--gold)" stroke-width="1" fill="none" opacity="0.4"/>
+          </svg>
+          <div class="spoke-label">Email</div>
+          <div class="spoke-role">digest + re-engage</div>
+        </div>
+        <div class="spoke-callout">Digest and re-engagement channel. Reaches users who've left the app. Frequency tied to inbox notification preferences.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Platform availability matrix -->
+  <div class="platform-matrix" style="--ai:6">
+    <div class="platform-cell">
+      <div class="platform-name">Native Mobile</div>
+      <div class="platform-sub">iOS + Android</div>
+      <div class="channel-tags">
+        <span class="channel-tag tag-inbox">Inbox</span>
+        <span class="channel-tag tag-push">Push</span>
+        <span class="channel-tag tag-email">Email</span>
+      </div>
+    </div>
+    <div class="platform-cell">
+      <div class="platform-name">Mobile Web</div>
+      <div class="platform-sub">m.reddit.com</div>
+      <div class="channel-tags">
+        <span class="channel-tag tag-inbox">Inbox</span>
+        <span class="channel-tag tag-gap">No push</span>
+        <span class="channel-tag tag-email">Email</span>
+      </div>
+    </div>
+    <div class="platform-cell">
+      <div class="platform-name">Desktop</div>
+      <div class="platform-sub">reddit.com</div>
+      <div class="channel-tags">
+        <span class="channel-tag tag-inbox">Inbox</span>
+        <span class="channel-tag tag-gap">No push</span>
+        <span class="channel-tag tag-email">Email</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="outcome-bar" style="--ai:8">
+    <div class="outcome-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 10l4 4 8-8" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="outcome-content">
+      <p class="outcome-text">Not all channels existed on all platforms — <strong>the system accounted for those gaps</strong> so users had control regardless of surface.</p>
+      <div class="metric-tag">inbox = source of truth · push + email = delivery · platform-aware gaps</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const layout = document.getElementById('hubLayout');
+  const spokes = document.querySelectorAll('.spoke');
+  spokes.forEach(s => {
+    s.addEventListener('mouseenter', () => {
+      layout.classList.add('has-active');
+      s.classList.add('active-spoke');
+    });
+    s.addEventListener('mouseleave', () => {
+      layout.classList.remove('has-active');
+      s.classList.remove('active-spoke');
+    });
+  });
+</script>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+</body>
+</html>

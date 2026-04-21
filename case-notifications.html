@@ -83,8 +83,14 @@
 
       <p>Users had a <strong>bias for action</strong> in the inbox. The more content was framed as personally actionable, the more likely they were to engage. The inbox wasn&rsquo;t a destination&mdash;it was a switchboard that guided users through their session.</p>
 
-      <div class="case-img-full">
-        <div class="img-placeholder">Segmentation framework&mdash;two-axis matrix mapping signal (low to high) against tenure (new to established), with notification type priorities mapped to each quadrant. Or: three inbox states (Discovery, Following, Conversation) showing how content shifts by user profile</div>
+      <div class="case-img-full diagram-embed" data-diagram="not-01">
+        <iframe
+          src="img/diagrams/diagram-not01-segmentation-matrix-v4.html"
+          loading="lazy"
+          scrolling="no"
+          title="Segmentation framework — signal × tenure matrix with notification priorities per quadrant"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
       </div>
 
       <h2>Foundation</h2>
@@ -105,8 +111,14 @@
 
       <p>I rebuilt the unread system around <strong>progressive disclosure</strong>: a single numeric badge at the inbox level, a dot indicator at the tab level, typography plus subtle color at the row level. Every badge mapped 1:1 to a visible item&mdash;users never had to do math.</p>
 
-      <div class="case-img-full">
-        <div class="img-placeholder">Unread hierarchy&mdash;inbox-level numeric badge, tab-level dot indicator, row-level typography + color treatment showing 1:1 mapping between count and visible items</div>
+      <div class="case-img-full diagram-embed" data-diagram="not-04">
+        <iframe
+          src="img/diagrams/diagram-not04-unread-hierarchy-v4.html"
+          loading="lazy"
+          scrolling="no"
+          title="Unread hierarchy — progressive disclosure from badge to dot to row treatment"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
       </div>
 
       <p>The migration introduced a <strong>less prominent unread color</strong> and click-through dropped. I used the data to identify the cause, partnered with the design systems team to adjust, and the fix influenced design system usage beyond the inbox.</p>
@@ -141,8 +153,14 @@
 
       <p>Only the latest push recommendation appeared in the inbox. Users expected a <strong>history of communications</strong>&mdash;removing older recommendations cut off discovery flows mid-stream. I restored that connection. Push good visits climbed <strong>+1%</strong> across 15 million daily receives.</p>
 
-      <div class="case-img-full">
-        <div class="img-placeholder">Push-to-inbox continuity&mdash;inbox preserving recommendation history that previously disappeared after the latest push</div>
+      <div class="case-img-full diagram-embed" data-diagram="not-06">
+        <iframe
+          src="img/diagrams/diagram-not06-push-to-inbox-v4.html"
+          loading="lazy"
+          scrolling="no"
+          title="Push-to-inbox continuity — preserving recommendation history in the inbox"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
       </div>
 
       <h2>2. Enable Curation</h2>
@@ -159,8 +177,14 @@
 
       <p>The back end couldn&rsquo;t define what updates a user could receive from a subreddit. Options were <strong>off, low, and frequent</strong>&mdash;even internally, the team couldn&rsquo;t explain what those meant because they were wrapped in algorithmic metrics. I worked with the engineering lead through <strong>weekly syncs on capacity and feasibility</strong> to rearchitect preferences: <strong>no updates, popular posts, all posts</strong>. Eng held deep knowledge of system behavior and limitations&mdash;every conversation surfaced another constraint, but each one guided us toward a more precise model.</p>
 
-      <div class="case-img-full">
-        <div class="img-placeholder">Preference architecture&mdash;before (off/low/frequent with undefined behavior) vs. after (no updates/popular posts/all posts with concrete delivery expectations)</div>
+      <div class="case-img-full diagram-embed" data-diagram="not-07">
+        <iframe
+          src="img/diagrams/diagram-not07-preference-architecture-v4.html"
+          loading="lazy"
+          scrolling="no"
+          title="Preference architecture — vague controls vs. concrete delivery expectations"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
       </div>
 
       <p>I then surfaced these preferences <strong>on the subreddit page itself</strong> and simplified subscription management in global settings&mdash;point of decision, not buried three screens deep.</p>
@@ -169,8 +193,14 @@
         <div class="img-placeholder">Before and after&mdash;subreddit header showing notification preference on-ramps where users make subscription decisions</div>
       </div>
 
-      <div class="case-img-full">
-        <div class="img-placeholder">Before and after&mdash;global notification settings UI with simplified preference controls</div>
+      <div class="case-img-full diagram-embed" data-diagram="not-09">
+        <iframe
+          src="img/diagrams/diagram-not09-global-settings-v4.html"
+          loading="lazy"
+          scrolling="no"
+          title="Global notification settings — before nested hierarchy vs. after flat unified view"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
       </div>
 
       <h3>Feedback loops</h3>
@@ -185,8 +215,14 @@
 
       <p>I defined the <strong>relationship between channels</strong>: inbox as source of truth, push and email as delivery and re-engagement. Not all channels existed on all platforms&mdash;the system accounted for those gaps so users had control regardless of surface.</p>
 
-      <div class="case-img-full">
-        <div class="img-placeholder">Cross-channel model&mdash;inbox (source of truth), push (delivery/re-engagement), email (delivery/re-engagement) mapped across native mobile, mobile web, desktop</div>
+      <div class="case-img-full diagram-embed" data-diagram="not-11">
+        <iframe
+          src="img/diagrams/diagram-not11-cross-channel-v4.html"
+          loading="lazy"
+          scrolling="no"
+          title="Cross-channel model — inbox as source of truth with push and email delivery"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
       </div>
 
       <h2>3. Create Focus</h2>
@@ -314,6 +350,35 @@
 
     imageElements.forEach(el => observer.observe(el));
     headingElements.forEach(el => observer.observe(el));
+  </script>
+
+  <script>
+  // Auto-resize diagram iframes to their content height
+  function resizeDiagramIframes() {
+    document.querySelectorAll('.diagram-embed iframe').forEach(iframe => {
+      function setHeight() {
+        try {
+          const diagram = iframe.contentDocument.querySelector('.diagram');
+          if (diagram) {
+            iframe.style.height = diagram.offsetHeight + 'px';
+          }
+        } catch(e) {
+          // Cross-origin — fall back to 600px
+          iframe.style.height = '600px';
+        }
+      }
+      if (iframe.contentDocument && iframe.contentDocument.readyState === 'complete') {
+        setHeight();
+      }
+      iframe.addEventListener('load', setHeight);
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', resizeDiagramIframes);
+  } else {
+    resizeDiagramIframes();
+  }
+  window.addEventListener('load', resizeDiagramIframes);
   </script>
 </body>
 </html>

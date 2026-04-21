@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOT-E5 — Notification Taxonomy</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16; --card: #10121C;
+    --text-pri: #E0DFE4; --text-sec: rgba(224,223,228,0.6); --text-ter: rgba(224,223,228,0.4); --text-dim: rgba(224,223,228,0.2);
+    --accent: #7FB5B0; --accent-dim: rgba(127,181,176,0.12);
+    --gold: #C4B078; --warm: #D4A574; --red: #C47878; --blue: #8A9EC4;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F; display: flex; justify-content: center; padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px; background: var(--canvas); border-radius: 16px; overflow: hidden; position: relative;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  }
+
+  .title-area {
+    padding: 48px 48px 0;
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+  }
+  .label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); opacity: 0.8; margin-bottom: 8px; }
+  h1 { font-size: 28px; font-weight: 700; color: var(--text-pri); letter-spacing: -0.025em; margin-bottom: 8px; line-height: 1.15; }
+  .subtitle { font-size: 13px; color: var(--text-sec); line-height: 1.55; max-width: 580px; }
+
+  .hover-hint {
+    padding: 16px 48px 0;
+    font-size: 10px; color: var(--text-dim);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    display: flex; align-items: center; gap: 6px;
+    opacity: 0; animation: mount 0.5s var(--spring) 0.1s forwards;
+  }
+
+  /* ── Category rows ── */
+  .categories {
+    padding: 20px 48px 48px;
+    display: flex; flex-direction: column; gap: 12px;
+    opacity: 0; animation: mount 0.5s var(--spring) 0.15s forwards;
+  }
+
+  .category-row {
+    display: flex; align-items: stretch; gap: 16px;
+    transition: transform 0.3s var(--spring);
+  }
+  .category-row:hover { transform: translateX(4px); }
+  .category-row:hover .example-card { border-color: rgba(224,223,228,0.12); }
+
+  /* Left: category info */
+  .category-info {
+    width: 200px; flex-shrink: 0;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 16px 0;
+  }
+  .category-icon-name {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 8px;
+  }
+  .category-icon {
+    width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+  }
+  .category-name {
+    font-size: 16px; font-weight: 700; letter-spacing: -0.01em;
+  }
+  .category-row.discovery .category-name { color: var(--gold); }
+  .category-row.following .category-name { color: var(--warm); }
+  .category-row.conversation .category-name { color: var(--accent); }
+
+  .category-desc {
+    font-size: 12px; color: var(--text-ter); line-height: 1.5;
+  }
+
+  /* Right: example cards */
+  .examples {
+    flex: 1; display: flex; gap: 10px;
+  }
+  .example-card {
+    flex: 1;
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    border-radius: 10px; padding: 16px;
+    position: relative; overflow: hidden;
+    backdrop-filter: blur(8px);
+    transition: border-color 0.3s ease, transform 0.3s var(--spring);
+    cursor: default;
+  }
+  .example-card::before {
+    content: ''; position: absolute; inset: 0;
+    box-shadow: var(--glass-highlight); border-radius: 10px; pointer-events: none;
+  }
+  .example-card:hover { transform: translateY(-2px); }
+
+  /* Colored left accent stripe */
+  .example-card::after {
+    content: ''; position: absolute; left: 0; top: 8px; bottom: 8px;
+    width: 2px; border-radius: 1px;
+  }
+  .discovery .example-card::after { background: rgba(196,176,120,0.4); }
+  .following .example-card::after { background: rgba(212,165,116,0.4); }
+  .conversation .example-card::after { background: rgba(127,181,176,0.4); }
+
+  .example-title {
+    font-size: 13px; font-weight: 600; color: var(--text-pri);
+    margin-bottom: 6px; line-height: 1.35;
+  }
+  .example-type {
+    font-size: 10px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .discovery .example-type { color: rgba(196,176,120,0.6); }
+  .following .example-type { color: rgba(212,165,116,0.6); }
+  .conversation .example-type { color: rgba(127,181,176,0.6); }
+
+  /* Dividers between rows */
+  .category-row + .category-row {
+    border-top: 1px solid rgba(224,223,228,0.04);
+    padding-top: 12px;
+  }
+
+  /* Stagger */
+  .category-row:nth-child(1) { opacity: 0; animation: mountRow 0.5s var(--spring) 0.2s forwards; }
+  .category-row:nth-child(2) { opacity: 0; animation: mountRow 0.5s var(--spring) 0.35s forwards; }
+  .category-row:nth-child(3) { opacity: 0; animation: mountRow 0.5s var(--spring) 0.5s forwards; }
+
+  @keyframes mount { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes mountRow { from { opacity:0; transform:translateX(-8px); } to { opacity:1; transform:translateX(0); } }
+/* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+<div class="diagram">
+
+  <div class="title-area">
+    <div class="label">Notification Taxonomy</div>
+    <h1>Three Categories of Notifications</h1>
+    <p class="subtitle">Every notification maps to one of three categories — each serving a distinct purpose in the user relationship.</p>
+  </div>
+
+  <div class="hover-hint">
+    <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M2 8h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Hover a row to highlight examples
+  </div>
+
+  <div class="categories">
+
+    <!-- Discovery -->
+    <div class="category-row discovery">
+      <div class="category-info">
+        <div class="category-icon-name">
+          <div class="category-icon">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <circle cx="9.5" cy="9.5" r="6.5" stroke="#C4B078" stroke-width="1.5"/>
+              <path d="M14.5 14.5L19 19" stroke="#C4B078" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="category-name">Discovery</div>
+        </div>
+        <div class="category-desc">Surface new content aligned to interests</div>
+      </div>
+      <div class="examples">
+        <div class="example-card">
+          <div class="example-title">Because you joined r/houseplants</div>
+          <div class="example-type">Trending</div>
+        </div>
+        <div class="example-card">
+          <div class="example-title">NASA delays the first Artemis moonshot</div>
+          <div class="example-type">Breaking news</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Following -->
+    <div class="category-row following">
+      <div class="category-info">
+        <div class="category-icon-name">
+          <div class="category-icon">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <path d="M5 11l4 4L18 6" stroke="#D4A574" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M5 6l4 4" stroke="#D4A574" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.4"/>
+            </svg>
+          </div>
+          <div class="category-name">Following</div>
+        </div>
+        <div class="category-desc">Updates from explicitly followed content</div>
+      </div>
+      <div class="examples">
+        <div class="example-card">
+          <div class="example-title">Now in AskReddit</div>
+          <div class="example-type">Subreddit update</div>
+        </div>
+        <div class="example-card">
+          <div class="example-title">Popular in Aww</div>
+          <div class="example-type">Subreddit update</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conversation -->
+    <div class="category-row conversation">
+      <div class="category-info">
+        <div class="category-icon-name">
+          <div class="category-icon">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <path d="M3 4h12a2 2 0 012 2v6a2 2 0 01-2 2H7l-4 3V6a2 2 0 012-2z" stroke="#7FB5B0" stroke-width="1.5" stroke-linejoin="round"/>
+              <circle cx="7" cy="9" r="1" fill="#7FB5B0" opacity="0.5"/>
+              <circle cx="10" cy="9" r="1" fill="#7FB5B0" opacity="0.5"/>
+              <circle cx="13" cy="9" r="1" fill="#7FB5B0" opacity="0.5"/>
+            </svg>
+          </div>
+          <div class="category-name">Conversation</div>
+        </div>
+        <div class="category-desc">Engagement on user-created content</div>
+      </div>
+      <div class="examples">
+        <div class="example-card">
+          <div class="example-title">u/MalcomLila replied to your post</div>
+          <div class="example-type">Post reply</div>
+        </div>
+        <div class="example-card">
+          <div class="example-title">u/NorWren replied to your comment</div>
+          <div class="example-type">Comment reply</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+</body>
+</html>

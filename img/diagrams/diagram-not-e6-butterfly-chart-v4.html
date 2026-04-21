@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOT-E6 — Butterfly Chart</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16; --card: #10121C; --elevated: #151722;
+    --text-pri: #E0DFE4; --text-sec: rgba(224,223,228,0.6); --text-ter: rgba(224,223,228,0.4); --text-dim: rgba(224,223,228,0.2);
+    --accent: #7FB5B0; --accent-dim: rgba(127,181,176,0.12);
+    --gold: #C4B078; --red: #C47878; --blue: #8A9EC4; --warm: #D4A574;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F; display: flex; justify-content: center; padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px; background: var(--canvas); border-radius: 16px; overflow: hidden; position: relative;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  }
+
+  /* ── Title ── */
+  .title-area {
+    padding: 48px 48px 0;
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+  }
+  .label {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); opacity: 0.8; margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 28px; font-weight: 700; color: var(--text-pri); letter-spacing: -0.025em;
+    margin-bottom: 8px; line-height: 1.15;
+  }
+  .subtitle { font-size: 13px; color: var(--text-sec); line-height: 1.55; }
+
+  /* ── Legend ── */
+  .legend {
+    padding: 16px 48px 0;
+    display: flex; gap: 20px;
+    opacity: 0; animation: mount 0.5s var(--spring) 0.05s forwards;
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; color: var(--text-sec);
+  }
+  .legend-bar {
+    width: 16px; height: 10px; border-radius: 2px;
+  }
+  .legend-bar.sent { opacity: 0.85; }
+  .legend-bar.read { opacity: 0.35; }
+
+  /* ── Chart ── */
+  .chart-area {
+    padding: 24px 48px 0; position: relative;
+    opacity: 0; animation: mount 0.5s var(--spring) 0.1s forwards;
+  }
+  .chart-area::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 400px 200px at 50% 50%, rgba(127,181,176,0.025) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .chart-container { position: relative; width: 100%; }
+  .chart-svg { width: 100%; height: auto; overflow: visible; }
+
+  /* Side labels */
+  .side-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  }
+
+  /* Metric labels */
+  .metric-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 9px;
+    fill: var(--text-dim);
+  }
+
+  /* Bars */
+  .bar-group { cursor: default; }
+  .bar-group rect { transition: opacity 0.25s ease; }
+  .bar-group:hover .bar-sent { opacity: 1 !important; }
+  .bar-group:hover .bar-read { opacity: 0.55 !important; }
+
+  /* Notif card mockups on baseline */
+  .notif-card {
+    font-family: 'Inter', sans-serif;
+  }
+  .notif-card-bg {
+    fill: var(--card); stroke: var(--glass-border); stroke-width: 1; rx: 6;
+  }
+  .notif-card-icon {
+    font-size: 10px;
+  }
+  .notif-card-title {
+    font-family: 'Inter', sans-serif; font-size: 9px; font-weight: 600;
+  }
+  .notif-card-sub {
+    font-family: 'Inter', sans-serif; font-size: 8px;
+    fill: var(--text-dim);
+  }
+
+  /* Hover value labels */
+  .bar-val {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600;
+    opacity: 0; transition: opacity 0.2s ease; pointer-events: none;
+  }
+  .bar-group:hover .bar-val { opacity: 1; }
+
+  /* ── Insight bar ── */
+  .insight-bar {
+    margin: 24px 48px 48px; padding: 20px 24px;
+    background: rgba(127,181,176,0.06);
+    border-left: 3px solid rgba(127,181,176,0.4);
+    border-radius: 10px;
+    display: flex; align-items: flex-start; gap: 14px;
+    opacity: 0; animation: mount 0.5s var(--spring) 0.2s forwards;
+  }
+  .insight-icon { width: 20px; height: 20px; flex-shrink: 0; margin-top: 1px; }
+  .insight-text { font-size: 13px; color: var(--text-sec); line-height: 1.55; }
+  .insight-text strong { color: var(--accent); font-weight: 600; }
+
+  @keyframes mount { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+/* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+<div class="diagram">
+
+  <div class="title-area">
+    <div class="label">Performance Comparison</div>
+    <h1>Notification Performance by Type</h1>
+    <p class="subtitle">Sent volume vs. read rate for each notification type — revealing which types drive engagement and which drive fatigue.</p>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-bar sent" style="background: var(--text-pri);"></div> Sent / received</div>
+    <div class="legend-item"><div class="legend-bar read" style="background: var(--text-pri);"></div> Read / clicked</div>
+  </div>
+
+  <div class="chart-area">
+    <div class="chart-container">
+      <!--
+        Layout: viewBox 0 0 664 480
+        Baseline at y=240 (center)
+        Sent bars grow UP from y=240
+        Read bars grow DOWN from y=240
+        4 notification types evenly spaced
+        Each type: 2 bars (sent + read) + notif card mockup at baseline
+        Colors per type: Comment Reply = teal, Upvote = gold, Trending = blue, Following = warm
+      -->
+      <svg class="chart-svg" viewBox="0 0 664 480" preserveAspectRatio="xMidYMid meet">
+        <!-- Baseline -->
+        <line x1="60" y1="240" x2="620" y2="240" stroke="rgba(224,223,228,0.1)" stroke-width="1"/>
+
+        <!-- Side labels -->
+        <text class="side-label" x="16" y="120" fill="rgba(224,223,228,0.25)">SENT</text>
+        <text class="side-label" x="16" y="370" fill="rgba(224,223,228,0.25)">READ</text>
+
+        <!-- Grid hints -->
+        <line x1="60" y1="120" x2="620" y2="120" stroke="rgba(224,223,228,0.04)" stroke-width="1" stroke-dasharray="4 6"/>
+        <line x1="60" y1="360" x2="620" y2="360" stroke="rgba(224,223,228,0.04)" stroke-width="1" stroke-dasharray="4 6"/>
+
+        <!-- Scale labels -->
+        <text class="metric-label" x="638" y="124">High</text>
+        <text class="metric-label" x="638" y="244">0</text>
+        <text class="metric-label" x="638" y="364">High</text>
+
+        <!-- ═══ Comment Reply ═══ -->
+        <g class="bar-group">
+          <!-- Sent bar (up from baseline) — high volume -->
+          <rect class="bar-sent" x="96" y="90" width="56" height="150" rx="4" fill="#7FB5B0" opacity="0.8"/>
+          <!-- Read bar (down from baseline) — high engagement -->
+          <rect class="bar-read" x="96" y="240" width="56" height="120" rx="4" fill="#7FB5B0" opacity="0.35"/>
+          <!-- Value labels on hover -->
+          <text class="bar-val" x="124" y="82" text-anchor="middle" fill="#7FB5B0">2.4M sent</text>
+          <text class="bar-val" x="124" y="374" text-anchor="middle" fill="#7FB5B0">68% read</text>
+        </g>
+
+        <!-- Notif card mockup — Comment Reply -->
+        <g class="notif-card" transform="translate(80, 226)">
+          <rect class="notif-card-bg" x="0" y="0" width="88" height="28" rx="6"/>
+          <text class="notif-card-title" x="10" y="12" fill="#7FB5B0">💬</text>
+          <text class="notif-card-title" x="26" y="13" fill="var(--text-sec)">Reply</text>
+          <text class="notif-card-sub" x="26" y="23">comment reply</text>
+        </g>
+
+        <!-- ═══ Upvote ═══ -->
+        <g class="bar-group">
+          <!-- Sent bar — highest volume -->
+          <rect class="bar-sent" x="236" y="60" width="56" height="180" rx="4" fill="#C4B078" opacity="0.8"/>
+          <!-- Read bar — lower engagement -->
+          <rect class="bar-read" x="236" y="240" width="56" height="72" rx="4" fill="#C4B078" opacity="0.35"/>
+          <text class="bar-val" x="264" y="52" text-anchor="middle" fill="#C4B078">4.1M sent</text>
+          <text class="bar-val" x="264" y="326" text-anchor="middle" fill="#C4B078">31% read</text>
+        </g>
+
+        <!-- Notif card mockup — Upvote -->
+        <g class="notif-card" transform="translate(220, 226)">
+          <rect class="notif-card-bg" x="0" y="0" width="88" height="28" rx="6"/>
+          <text class="notif-card-title" x="10" y="12" fill="#C4B078">⬆</text>
+          <text class="notif-card-title" x="26" y="13" fill="var(--text-sec)">Upvote</text>
+          <text class="notif-card-sub" x="26" y="23">post upvoted</text>
+        </g>
+
+        <!-- ═══ Trending ═══ -->
+        <g class="bar-group">
+          <!-- Sent bar — medium volume -->
+          <rect class="bar-sent" x="376" y="110" width="56" height="130" rx="4" fill="#8A9EC4" opacity="0.8"/>
+          <!-- Read bar — moderate engagement -->
+          <rect class="bar-read" x="376" y="240" width="56" height="90" rx="4" fill="#8A9EC4" opacity="0.35"/>
+          <text class="bar-val" x="404" y="102" text-anchor="middle" fill="#8A9EC4">1.8M sent</text>
+          <text class="bar-val" x="404" y="344" text-anchor="middle" fill="#8A9EC4">42% read</text>
+        </g>
+
+        <!-- Notif card mockup — Trending -->
+        <g class="notif-card" transform="translate(360, 226)">
+          <rect class="notif-card-bg" x="0" y="0" width="88" height="28" rx="6"/>
+          <text class="notif-card-title" x="10" y="12" fill="#8A9EC4">🔥</text>
+          <text class="notif-card-title" x="26" y="13" fill="var(--text-sec)">Trending</text>
+          <text class="notif-card-sub" x="26" y="23">trending post</text>
+        </g>
+
+        <!-- ═══ Following ═══ -->
+        <g class="bar-group">
+          <!-- Sent bar — lower volume -->
+          <rect class="bar-sent" x="516" y="140" width="56" height="100" rx="4" fill="#D4A574" opacity="0.8"/>
+          <!-- Read bar — highest engagement rate -->
+          <rect class="bar-read" x="516" y="240" width="56" height="108" rx="4" fill="#D4A574" opacity="0.35"/>
+          <text class="bar-val" x="544" y="132" text-anchor="middle" fill="#D4A574">0.9M sent</text>
+          <text class="bar-val" x="544" y="362" text-anchor="middle" fill="#D4A574">54% read</text>
+        </g>
+
+        <!-- Notif card mockup — Following -->
+        <g class="notif-card" transform="translate(500, 226)">
+          <rect class="notif-card-bg" x="0" y="0" width="88" height="28" rx="6"/>
+          <text class="notif-card-title" x="10" y="12" fill="#D4A574">👤</text>
+          <text class="notif-card-title" x="26" y="13" fill="var(--text-sec)">Following</text>
+          <text class="notif-card-sub" x="26" y="23">user posted</text>
+        </g>
+
+        <!-- Type labels below -->
+        <text class="metric-label" x="124" y="430" text-anchor="middle" style="font-size: 11px; fill: rgba(224,223,228,0.4);">Comment reply</text>
+        <text class="metric-label" x="264" y="430" text-anchor="middle" style="font-size: 11px; fill: rgba(224,223,228,0.4);">Upvote</text>
+        <text class="metric-label" x="404" y="430" text-anchor="middle" style="font-size: 11px; fill: rgba(224,223,228,0.4);">Trending</text>
+        <text class="metric-label" x="544" y="430" text-anchor="middle" style="font-size: 11px; fill: rgba(224,223,228,0.4);">Following</text>
+
+        <!-- Efficiency arrows — connecting sent to read ratio -->
+        <g opacity="0.15">
+          <path d="M152,180 Q168,240 152,300" fill="none" stroke="#7FB5B0" stroke-width="1" stroke-dasharray="3 3"/>
+          <path d="M292,180 Q308,240 292,290" fill="none" stroke="#C4B078" stroke-width="1" stroke-dasharray="3 3"/>
+          <path d="M432,200 Q448,240 432,310" fill="none" stroke="#8A9EC4" stroke-width="1" stroke-dasharray="3 3"/>
+          <path d="M572,200 Q588,240 572,320" fill="none" stroke="#D4A574" stroke-width="1" stroke-dasharray="3 3"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <div class="insight-bar">
+    <svg class="insight-icon" viewBox="0 0 20 20" fill="none">
+      <path d="M10 2L12.09 7.26L18 8.27L14 12.14L14.81 18.02L10 15.27L5.19 18.02L6 12.14L2 8.27L7.91 7.26L10 2Z" stroke="#7FB5B0" stroke-width="1.5" stroke-linejoin="round" fill="none"/>
+    </svg>
+    <div class="insight-text">
+      <strong>Comment replies have the highest read rate (68%)</strong> despite moderate volume — while upvotes dominate volume but see only 31% reads. This inversion reveals which types create genuine value vs. notification fatigue.
+    </div>
+  </div>
+
+</div>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+</body>
+</html>

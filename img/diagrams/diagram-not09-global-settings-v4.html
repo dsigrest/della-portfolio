@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOT-09 — Global Settings Rebuild</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16; --card: #10121C; --elevated: #151722;
+    --text-pri: #E0DFE4; --text-sec: rgba(224,223,228,0.6); --text-ter: rgba(224,223,228,0.4); --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0; --accent-dim: rgba(127,181,176,0.12);
+    --red: #C47878; --resur: #C4B078; --new-seg: #8A9EC4;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F; display: flex; justify-content: center; padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px; background: var(--canvas); border-radius: 16px; overflow: hidden;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  }
+
+  /* ── Title ── */
+  .title-area {
+    padding: 48px 48px 0;
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+    animation-delay: calc(var(--ai, 0) * 60ms);
+  }
+  .label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); opacity: 0.8; margin-bottom: 8px; }
+  h1 { font-size: 32px; font-weight: 700; color: var(--text-pri); letter-spacing: -0.03em; margin-bottom: 8px; line-height: 1.15; }
+  .subtitle { font-size: 14px; color: var(--text-sec); line-height: 1.55; max-width: 580px; }
+
+  /* ── Problem bar ── */
+  .problem-bar {
+    margin: 24px 48px 0; padding: 14px 20px;
+    background: rgba(196,120,120,0.06); border-left: 3px solid rgba(196,120,120,0.4); border-radius: 10px;
+    display: flex; align-items: center; gap: 12px;
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+    animation-delay: calc(var(--ai, 0) * 60ms);
+  }
+  .problem-icon { width: 28px; height: 28px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .problem-text { font-size: 12px; color: var(--red); line-height: 1.5; }
+  .problem-text strong { font-weight: 600; }
+
+  /* ── Hover hint ── */
+  .hover-hint {
+    text-align: center; padding: 28px 48px 0;
+    font-size: 10px; color: var(--text-dim);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+
+  /* ── Before/After comparison ── */
+  .compare-area {
+    padding: 12px 48px 0; position: relative;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+  }
+  .compare-area::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 400px 250px at 50% 50%, rgba(127,181,176,0.03) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .settings-panel {
+    background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 12px;
+    padding: 18px; position: relative; overflow: hidden;
+    transition: transform 0.35s var(--spring), border-color 0.3s ease;
+    backdrop-filter: blur(8px);
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+    animation-delay: calc(var(--ai, 0) * 60ms);
+  }
+  .settings-panel::before {
+    content: ''; position: absolute; inset: 0;
+    box-shadow: var(--glass-highlight); border-radius: 12px; pointer-events: none;
+  }
+  .settings-panel:hover { transform: translateY(-2px) scale(1.01); }
+  .settings-panel.before:hover { border-color: rgba(196,120,120,0.2); }
+  .settings-panel.after:hover { border-color: rgba(127,181,176,0.25); }
+
+  .panel-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 14px; display: flex; align-items: center; gap: 6px;
+  }
+  .panel-label .dot { width: 5px; height: 5px; border-radius: 50%; }
+  .panel-label.before-label { color: var(--red); }
+  .panel-label.before-label .dot { background: var(--red); }
+  .panel-label.after-label { color: var(--accent); }
+  .panel-label.after-label .dot { background: var(--accent); }
+
+  /* Before: nested tree */
+  .tree {
+    font-size: 11px; color: var(--text-ter);
+    padding-left: 0;
+  }
+  .tree-node {
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 8px; border-radius: 5px;
+    margin-bottom: 2px;
+    transition: background 0.2s ease;
+  }
+  .tree-node:hover { background: rgba(196,120,120,0.04); }
+  .tree-node .tree-icon { width: 14px; text-align: center; flex-shrink: 0; }
+  .tree-node .tree-text { flex: 1; }
+  .tree-node .tree-badge {
+    font-family: 'JetBrains Mono', monospace; font-size: 8px;
+    color: var(--text-dim); background: rgba(196,120,120,0.06);
+    padding: 1px 5px; border-radius: 3px;
+  }
+  .tree-children { padding-left: 18px; border-left: 1px dashed rgba(196,120,120,0.12); margin-left: 7px; }
+  .tree-node.active { color: var(--red); background: rgba(196,120,120,0.06); }
+
+  /* Toggle mockup */
+  .toggle-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 5px 8px; font-size: 10px; color: var(--text-dim);
+  }
+  .toggle-track {
+    width: 24px; height: 13px; border-radius: 7px;
+    background: rgba(196,120,120,0.15); position: relative;
+    flex-shrink: 0;
+  }
+  .toggle-thumb {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--text-dim); position: absolute;
+    top: 2px; left: 2px;
+  }
+  .toggle-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; }
+
+  /* After: flat unified list */
+  .flat-list { display: flex; flex-direction: column; gap: 6px; }
+  .flat-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; border-radius: 8px;
+    background: rgba(0,0,0,0.2); border: 1px solid var(--border-normal);
+    transition: all 0.2s ease;
+  }
+  .flat-row:hover { border-color: rgba(127,181,176,0.15); }
+  .flat-row-icon {
+    width: 24px; height: 24px; border-radius: 6px;
+    background: rgba(127,181,176,0.08);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .flat-row-content { flex: 1; min-width: 0; }
+  .flat-row-title { font-size: 11px; font-weight: 600; color: var(--text-pri); }
+  .flat-row-desc {
+    font-size: 9px; color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Mini segmented control */
+  .flat-seg {
+    display: flex; gap: 0; border-radius: 5px; overflow: hidden;
+    border: 1px solid var(--glass-border); flex-shrink: 0;
+  }
+  .flat-seg-opt {
+    padding: 3px 6px; font-size: 8px; font-weight: 500;
+    color: var(--text-dim); text-align: center;
+    border-right: 1px solid var(--glass-border);
+    transition: all 0.2s ease;
+  }
+  .flat-seg-opt:last-child { border-right: none; }
+  .flat-seg-opt.active {
+    background: rgba(127,181,176,0.12); color: var(--accent); font-weight: 600;
+  }
+
+  /* Structure stat strip */
+  .stat-strip {
+    margin: 20px 48px 0;
+    display: flex; gap: 16px; justify-content: center;
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+    animation-delay: calc(var(--ai, 0) * 60ms);
+  }
+  .stat-item {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 10px 16px;
+    background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 8px;
+    backdrop-filter: blur(8px);
+    transition: transform 0.35s var(--spring);
+  }
+  .stat-item:hover { transform: translateY(-2px); }
+  .stat-before {
+    font-family: 'JetBrains Mono', monospace; font-size: 14px;
+    color: var(--red); opacity: 0.6; text-decoration: line-through;
+  }
+  .stat-after {
+    font-family: 'JetBrains Mono', monospace; font-size: 14px;
+    color: var(--accent); font-weight: 600;
+  }
+  .stat-label {
+    font-size: 9px; color: var(--text-dim); text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* Cross-highlight */
+  .compare-area:hover .settings-panel { opacity: 0.7; }
+  .compare-area:hover .settings-panel:hover { opacity: 1; }
+
+  /* ── Annotations ── */
+  .annotations {
+    padding: 24px 48px 0;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .ann-card {
+    background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 10px;
+    padding: 14px 18px; position: relative;
+    transition: transform 0.35s var(--spring), border-color 0.3s ease;
+    backdrop-filter: blur(8px);
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+    animation-delay: calc(var(--ai, 0) * 60ms);
+  }
+  .ann-card::before {
+    content: ''; position: absolute; inset: 0;
+    box-shadow: var(--glass-highlight); border-radius: 10px; pointer-events: none;
+  }
+  .ann-card:hover { transform: translateX(4px); border-color: rgba(127,181,176,0.2); }
+  .ann-content { display: flex; flex-direction: column; gap: 3px; }
+  .ann-title {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--accent);
+  }
+  .ann-detail { font-size: 12px; color: var(--text-sec); line-height: 1.55; }
+  .ann-detail .mono {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--text-ter); background: rgba(127,181,176,0.06);
+    padding: 1px 5px; border-radius: 3px;
+  }
+
+  /* ── Outcome bar ── */
+  .outcome-bar {
+    margin: 24px 48px 48px; padding: 18px 22px;
+    background: rgba(127,181,176,0.06); border-left: 3px solid rgba(127,181,176,0.4); border-radius: 10px;
+    display: flex; align-items: flex-start; gap: 14px;
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+    animation-delay: calc(var(--ai, 0) * 60ms);
+  }
+  .outcome-icon { width: 24px; height: 24px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+  .outcome-content { flex: 1; }
+  .outcome-text { font-size: 13px; color: var(--accent); line-height: 1.6; }
+  .outcome-text strong { font-weight: 600; }
+  .metric-tag {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--text-ter); margin-top: 8px; letter-spacing: 0.02em;
+  }
+
+  @keyframes mount {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+/* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+<div class="diagram">
+  <div class="title-area" style="--ai:0">
+    <div class="label">Design Change · Settings Architecture</div>
+    <h1>Global Settings Rebuild</h1>
+    <p class="subtitle">Rebuilt subscription management from a complex, multi-screen hierarchy into a single, clear view with consistent tiered options.</p>
+  </div>
+
+  <div class="problem-bar" style="--ai:2">
+    <div class="problem-icon">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="var(--red)" stroke-width="1.5" fill="none"/><line x1="8" y1="5" x2="8" y2="9" stroke="var(--red)" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="11.5" r="0.8" fill="var(--red)"/></svg>
+    </div>
+    <p class="problem-text"><strong>Settings scattered across screens:</strong> Nested folders, binary toggles with no context, technical language, and controls for the same content type living in different places.</p>
+  </div>
+
+  <div class="hover-hint" style="--ai:3">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v4M4 3l2 2 2-2" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><rect x="1" y="6" width="10" height="5" rx="1.5" stroke="currentColor" stroke-width="1" fill="none"/></svg>
+    Hover to compare structure
+  </div>
+
+  <!-- Before/After settings mockups -->
+  <div class="compare-area">
+    <!-- Before: nested tree + toggles -->
+    <div class="settings-panel before" style="--ai:5">
+      <div class="panel-label before-label"><span class="dot"></span>Before — Nested hierarchy</div>
+
+      <div class="tree">
+        <div class="tree-node">
+          <span class="tree-icon">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 3h8v5.5a1 1 0 01-1 1H2a1 1 0 01-1-1V3z" stroke="var(--text-dim)" stroke-width="0.8" fill="none"/><path d="M1 3V2.5a1 1 0 011-1h2.5l1 1.5H8a1 1 0 011 1" stroke="var(--text-dim)" stroke-width="0.8" fill="none"/></svg>
+          </span>
+          <span class="tree-text">Settings</span>
+        </div>
+        <div class="tree-children">
+          <div class="tree-node">
+            <span class="tree-icon">
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 3h8v5.5a1 1 0 01-1 1H2a1 1 0 01-1-1V3z" stroke="var(--text-dim)" stroke-width="0.8" fill="none"/><path d="M1 3V2.5a1 1 0 011-1h2.5l1 1.5H8a1 1 0 011 1" stroke="var(--text-dim)" stroke-width="0.8" fill="none"/></svg>
+            </span>
+            <span class="tree-text">Notifications</span>
+          </div>
+          <div class="tree-children">
+            <div class="tree-node">
+              <span class="tree-icon">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 3h8v5.5a1 1 0 01-1 1H2a1 1 0 01-1-1V3z" stroke="var(--text-dim)" stroke-width="0.8" fill="none"/><path d="M1 3V2.5a1 1 0 011-1h2.5l1 1.5H8a1 1 0 011 1" stroke="var(--text-dim)" stroke-width="0.8" fill="none"/></svg>
+              </span>
+              <span class="tree-text">Subscriptions</span>
+            </div>
+            <div class="tree-children">
+              <div class="tree-node active">
+                <span class="tree-icon">⚙</span>
+                <span class="tree-text">Subreddit prefs</span>
+                <span class="tree-badge">deep</span>
+              </div>
+              <div class="tree-node">
+                <span class="tree-icon">⚙</span>
+                <span class="tree-text">Advanced</span>
+              </div>
+            </div>
+          </div>
+          <div class="tree-children" style="border-color: rgba(196,120,120,0.08);">
+            <div class="tree-node">
+              <span class="tree-icon">⚙</span>
+              <span class="tree-text">Feature toggles</span>
+              <span class="tree-badge">separate</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(196,120,120,0.1);">
+        <div class="toggle-row">
+          <div class="toggle-track"><div class="toggle-thumb"></div></div>
+          <span class="toggle-label">Enable PushToInbox</span>
+        </div>
+        <div class="toggle-row">
+          <div class="toggle-track"><div class="toggle-thumb"></div></div>
+          <span class="toggle-label">Digest frequency</span>
+        </div>
+        <div class="toggle-row">
+          <div class="toggle-track"><div class="toggle-thumb"></div></div>
+          <span class="toggle-label">Notification cohort</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- After: flat unified list with tiered options -->
+    <div class="settings-panel after" style="--ai:6">
+      <div class="panel-label after-label"><span class="dot"></span>After — Flat, unified view</div>
+
+      <div class="flat-list">
+        <div class="flat-row">
+          <div class="flat-row-icon">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4-2.5L10 4v4l-4 2.5L2 8V4z" stroke="var(--accent)" stroke-width="1" fill="none" opacity="0.6"/></svg>
+          </div>
+          <div class="flat-row-content">
+            <div class="flat-row-title">Breaking news</div>
+            <div class="flat-row-desc">major events</div>
+          </div>
+          <div class="flat-seg">
+            <div class="flat-seg-opt">Off</div>
+            <div class="flat-seg-opt active">Popular</div>
+            <div class="flat-seg-opt">All</div>
+          </div>
+        </div>
+
+        <div class="flat-row">
+          <div class="flat-row-icon">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="4" stroke="var(--accent)" stroke-width="1" fill="none" opacity="0.6"/><path d="M6 3.5v3l2 1" stroke="var(--accent)" stroke-width="0.8" stroke-linecap="round" opacity="0.5"/></svg>
+          </div>
+          <div class="flat-row-content">
+            <div class="flat-row-title">Recommendations</div>
+            <div class="flat-row-desc">trending + for you</div>
+          </div>
+          <div class="flat-seg">
+            <div class="flat-seg-opt">Off</div>
+            <div class="flat-seg-opt">Popular</div>
+            <div class="flat-seg-opt active">All</div>
+          </div>
+        </div>
+
+        <div class="flat-row">
+          <div class="flat-row-icon">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="2" y="3" width="8" height="6" rx="1" stroke="var(--accent)" stroke-width="1" fill="none" opacity="0.6"/><path d="M2 4.5h8" stroke="var(--accent)" stroke-width="0.8" opacity="0.4"/></svg>
+          </div>
+          <div class="flat-row-content">
+            <div class="flat-row-title">Subreddit updates</div>
+            <div class="flat-row-desc">per community</div>
+          </div>
+          <div class="flat-seg">
+            <div class="flat-seg-opt">Off</div>
+            <div class="flat-seg-opt active">Popular</div>
+            <div class="flat-seg-opt">All</div>
+          </div>
+        </div>
+
+        <div class="flat-row">
+          <div class="flat-row-icon">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 3h8v6a1 1 0 01-1 1H3a1 1 0 01-1-1V3z" stroke="var(--accent)" stroke-width="1" fill="none" opacity="0.6"/><path d="M2 3l4 3 4-3" stroke="var(--accent)" stroke-width="0.8" opacity="0.5"/></svg>
+          </div>
+          <div class="flat-row-content">
+            <div class="flat-row-title">Messages</div>
+            <div class="flat-row-desc">DMs + chat</div>
+          </div>
+          <div class="flat-seg">
+            <div class="flat-seg-opt">Off</div>
+            <div class="flat-seg-opt">Popular</div>
+            <div class="flat-seg-opt active">All</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Structure stats -->
+  <div class="stat-strip" style="--ai:8">
+    <div class="stat-item">
+      <span class="stat-before">4</span>
+      <span class="stat-after">1</span>
+      <span class="stat-label">Screens</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-before">binary</span>
+      <span class="stat-after">tiered</span>
+      <span class="stat-label">Controls</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-before">technical</span>
+      <span class="stat-after">plain</span>
+      <span class="stat-label">Language</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-before">scattered</span>
+      <span class="stat-after">unified</span>
+      <span class="stat-label">Channels</span>
+    </div>
+  </div>
+
+  <!-- Annotations -->
+  <div class="annotations">
+    <div class="ann-card" style="--ai:10">
+      <div class="ann-content">
+        <div class="ann-title">Hierarchy Flattening</div>
+        <div class="ann-detail">Moved from nested folders to a single-screen view. No more <span class="mono">Settings › Notifications › Subscriptions › Advanced</span>. All preference types visible on one page.</div>
+      </div>
+    </div>
+    <div class="ann-card" style="--ai:11">
+      <div class="ann-content">
+        <div class="ann-title">Toggles → Tiered Options</div>
+        <div class="ann-detail">Replaced binary on/off switches with 3 concrete levels: <span class="mono">Off</span> · <span class="mono">Popular</span> · <span class="mono">All</span>. Same structure for every notification type — one pattern, every preference.</div>
+      </div>
+    </div>
+    <div class="ann-card" style="--ai:12">
+      <div class="ann-content">
+        <div class="ann-title">Language Maps to Behavior</div>
+        <div class="ann-detail">Changed from technical terms (<span class="mono">Enable PushToInbox</span>, <span class="mono">Digest frequency</span>) to user-facing language. Each label states the notification type; each option explains delivery behavior.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="outcome-bar" style="--ai:14">
+    <div class="outcome-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 10l4 4 8-8" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="outcome-content">
+      <p class="outcome-text">Simplified subscription management — <strong>fewer screens, clearer language, predictable delivery</strong>. Every notification type uses the same 3-level structure.</p>
+      <div class="metric-tag">4 screens → 1 · binary → tiered · technical → plain language</div>
+    </div>
+  </div>
+</div>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+</body>
+</html>
