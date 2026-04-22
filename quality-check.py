@@ -136,8 +136,13 @@ def check_internal_links(content, filepath):
     errors = []
     filedir = os.path.dirname(filepath) or "."
 
+    # Strip script and style blocks so JS template literals (e.g. `href="${x}"`)
+    # and CSS content aren't treated as HTML attributes.
+    scrubbed = re.sub(r'<script\b[^>]*>.*?</script>', '', content, flags=re.DOTALL | re.IGNORECASE)
+    scrubbed = re.sub(r'<style\b[^>]*>.*?</style>', '', scrubbed, flags=re.DOTALL | re.IGNORECASE)
+
     # Find all href attributes
-    hrefs = re.findall(r'href=["\']([^"\'#]+)', content, re.IGNORECASE)
+    hrefs = re.findall(r'href=["\']([^"\'#]+)', scrubbed, re.IGNORECASE)
     for href in hrefs:
         if href.startswith(("http", "mailto:", "tel:", "javascript:", "data:", "//")):
             continue
