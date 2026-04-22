@@ -282,6 +282,26 @@
     .tab { padding: 8px 10px; font-size: 10px; }
   }
 
+  @media (max-width: 480px) {
+    .tab-bar, .machine-center, .machine-label, .dimension-row { padding-left: 20px; padding-right: 20px; }
+    /* Keep top padding generous — tabs wrap to 2 rows and mobile browser URL bar can overlay the top */
+    .tab-bar { flex-wrap: wrap; gap: 6px 8px; padding-top: 40px; padding-bottom: 8px; row-gap: 8px; }
+    .tab { padding: 6px 10px; font-size: 10px; gap: 6px; line-height: 1.1; }
+    .connector-section, .connector-section-bottom { display: none; }
+    .machine-center { padding-top: 20px; }
+    .machine-hub, .machine-hub svg { width: 90px; height: 90px; }
+    .machine-glow { width: 140px; height: 140px; }
+    .dimension-row { grid-template-columns: repeat(2, 1fr); gap: 10px; padding-bottom: 28px; }
+    .dim-card { padding: 12px 8px; }
+    .dim-icon { width: 24px; height: 24px; margin-bottom: 8px; }
+  }
+
+  @media (max-width: 375px) {
+    .tab-bar { padding-top: 44px; }
+    .tab { padding: 5px 8px; font-size: 9.5px; gap: 5px; }
+    .tab-dot { width: 5px; height: 5px; }
+  }
+
   @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
