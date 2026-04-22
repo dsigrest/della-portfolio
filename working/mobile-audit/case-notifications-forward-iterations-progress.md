@@ -28,11 +28,11 @@
 | B4 | NOT-12 | `678:3020` | 840 | L243 ("Inbox layout experiments") | |
 | B5 | NOT-14 | `709:1010` | 1761 | L259 ("Navigation before and after") | Address "ring shouldn't be visible through the cards" issue during translation |
 
-### On hold (pending Della decision)
+### Resolved (decisions made)
 
-| Family | Status | Question |
+| Family | Status | Decision |
 |---|---|---|
-| NOT-07A | HOLD | B-version of NOT-07 (push-to-inbox continuity); Della undecided which version to ship |
+| NOT-07A | ARCHIVED 2026-04-22 | Full-screen variant of NOT-07 preference architecture. Della chose NOT-07 (partial/row-level) as what ships — the row-level version isolates the label-design insight (vague labels → concrete labels) and scans in 5 seconds. Full-screen version dilutes the point by burying the label change inside full phone mockups. NOT-07A stays in Figma as exploration artifact; not deployed. |
 
 ### Deferred to separate thread
 
@@ -49,14 +49,14 @@ Each diagram gets a row when work starts. Status progresses: `not started` → `
 
 | # | Family | Status | Canonical node | HTML output file | Verification | Notes |
 |---|---|---|---|---|---|---|
-| B1 | NOT-02 | verifying | `707:112` | `working/diagrams/v5/diagram-not02-inbox-row-unit-v5.html` | rendered at 760px, diffed vs Figma — structure + content match; CSS-recreated mocks pending PNG swap (Figma CDN 403) | Sample; awaiting Della quality greenlight. See `figma-refs/not02-sample-verification.md` |
-| B2 | NOT-03 | not started | `709:283` | `img/diagrams/diagram-not03-{slug}-v5.html` | — | |
-| B3 | NOT-08 | not started | `709:668` | `img/diagrams/diagram-not08-{slug}-v5.html` | — | |
-| B4 | NOT-12 | not started | `678:3020` | `img/diagrams/diagram-not12-{slug}-v5.html` | — | |
-| B5 | NOT-14 | not started | `709:1010` | `img/diagrams/diagram-not14-{slug}-v5.html` | — | Ring visibility fix |
-| R1 | NOT-01 | not started | — | (remove iframe L86–94) | — | |
-| R2 | NOT-05 | not started | — | (remove placeholder L130–132) | — | |
-| R3 | NOT-13 | not started | — | (remove placeholder L250–252) | — | Check if H3+p also removed |
+| B1 | NOT-02 | deployed | `707:112` | `diagram-not02-inbox-row-unit-v5.html` | Della greenlit; PNGs in place | Embedded at case-notifications.html L94 |
+| B2 | NOT-03 | deployed | `709:283` | `diagram-not03-full-inbox-redesign-v5.html` | quality-check pass; structural diff vs Figma matches | Embedded at L104; PNGs pending (see `pending-png-transfers.md`) |
+| B3 | NOT-08 | deployed | `709:668` | `diagram-not08-subreddit-onramps-v5.html` | quality-check pass | Embedded at L192; PNGs pending |
+| B4 | NOT-12 | deployed | `678:3020` | `diagram-not12-inbox-layout-experiments-v5.html` | quality-check pass; no PNG dependency | Embedded at L248 — pure HTML/CSS/SVG |
+| B5 | NOT-14 | deployed | `709:1010` | `diagram-not14-navigation-simplification-v5.html` | quality-check pass; ring-through-cards fix applied via z-index + isolation | Embedded at L266; PNGs pending |
+| R1 | NOT-01 | deployed | — | (removed iframe L86–94) | Grep confirmed removal | — |
+| R2 | NOT-05 | deployed | — | (removed placeholder L130–132) | Grep confirmed removal | — |
+| R3 | NOT-13 | deployed | — | (removed placeholder L250–252) | H3 + paragraph kept; only placeholder div removed | Judgment call — accomplishment narrative preserved |
 
 ---
 
@@ -79,7 +79,7 @@ For every new build, follow the `figma-to-html` skill's Step 0–8 process:
 ## Cross-thread coordination notes
 
 - **Mobile pairing**: All 5 new builds (NOT-02, 03, 08, 12, 14) will need mobile pairs in a later thread. Flag in handoff brief.
-- **NOT-07A**: Still needs Della's version B/A decision before any work.
+- **NOT-07A**: RESOLVED 2026-04-22 — archived. NOT-07 (partial) ships as-is.
 - **E-series**: Placement recommendation written; actual builds + structural edits to case-notifications.html deferred to separate thread.
 - **NOT-06 ring visibility**: Della noted issue exists in both Figma and HTML; will need HTML fix when NOT-06 next iterates (not part of this batch — NOT-06 is current).
 
@@ -90,7 +90,7 @@ For every new build, follow the `figma-to-html` skill's Step 0–8 process:
 | Date | Decision | Rationale |
 |---|---|---|
 | 2026-04-22 | Retire NOT-01, NOT-05, NOT-13 | Della confirmed after discovery; NOT-01 duplicates NOT-E4 |
-| 2026-04-22 | NOT-07A held | Della undecided on A/B variant |
+| 2026-04-22 | NOT-07A archived | Della chose NOT-07 (partial/row-level) — isolates label-design insight, scans in 5s; full-screen variant dilutes the point |
 | 2026-04-22 | L211 placeholder = NOT-E1 | Della confirmed |
 | 2026-04-22 | E-series placement = separate thread | Requires structural edits to case study, too much scope |
 | 2026-04-22 | Sample-first on NOT-02 | Smallest scope of the 5 new builds |

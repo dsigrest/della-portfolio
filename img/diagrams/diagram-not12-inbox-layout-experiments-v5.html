@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="figma-source" content="node:678:3020 page:29:43 file:TArUrZsBUocaAsqetjXq7V">
+<title>NOT-12 — Inbox Layout Experiments</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card-bg: rgba(224,223,228,0.04);
+    --callout: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.08);
+    --divider: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-08: rgba(127,181,176,0.08);
+    --accent-15: rgba(127,181,176,0.15);
+    --accent-20: rgba(127,181,176,0.2);
+    --red: #C47878;
+    --gold: #C4B078;
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 48px 0;
+  }
+
+  /* ── Hover hint ── */
+  .hover-hint-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 14px 48px 0;
+  }
+  .hover-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .hover-hint svg { opacity: 0.5; }
+
+  /* ── Three-up grid ── */
+  .three-up {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+    padding: 28px 48px 0;
+  }
+
+  .card {
+    position: relative;
+    border: 1px solid var(--border-normal);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--card-bg);
+    display: flex;
+    flex-direction: column;
+    transition: opacity 0.25s ease, transform 0.35s var(--spring);
+  }
+  .card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: var(--glass-highlight);
+    pointer-events: none;
+  }
+
+  /* ── Placeholder (schematic "screenshot slot") ── */
+  .placeholder {
+    padding: 30px 12px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+  }
+  .card.chronological .placeholder { background: rgba(138,158,196,0.05); }
+  .card.nested        .placeholder { background: rgba(196,176,120,0.05); }
+  .card.tabbed        .placeholder { background: rgba(127,181,176,0.05); }
+
+  .layout-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.55;
+  }
+  .layout-icon svg { display: block; }
+
+  .layout-name {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-ter);
+    text-align: center;
+  }
+  .slot-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-align: center;
+  }
+  .winner-badge {
+    background: var(--accent-15);
+    border: 1px solid var(--accent-20);
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  /* ── Divider ── */
+  .divider {
+    height: 1px;
+    background: var(--divider);
+  }
+
+  /* ── Content block ── */
+  .content {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .content-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-pri);
+  }
+  .trait {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .trait-icon {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+  }
+  .trait-text {
+    font-size: 9px;
+    line-height: 1.3;
+    flex: 1;
+  }
+  .trait.good .trait-text { color: var(--accent); }
+  .trait.bad  .trait-text { color: var(--red); }
+
+  /* ── Callout ── */
+  .callout {
+    margin: 0 14px 14px;
+    background: var(--callout);
+    border: 1px solid rgba(224,223,228,0.12);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 10px;
+    line-height: 1.5;
+    color: var(--text-sec);
+  }
+
+  /* ── Hover interaction ── */
+  .three-up.has-active .card:not(.active) {
+    opacity: 0.35;
+  }
+  .card.active {
+    transform: translateY(-2px);
+    border-color: rgba(224,223,228,0.18);
+  }
+  .card.tabbed.active {
+    border-color: var(--accent-20);
+    box-shadow: 0 0 32px rgba(127,181,176,0.08);
+  }
+
+  /* ── Load animation ── */
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .hover-hint-wrap { animation: fadeSlideIn 0.5s ease-out 0ms forwards; }
+  .card.chronological { animation: fadeSlideIn 0.55s ease-out 120ms both; }
+  .card.nested        { animation: fadeSlideIn 0.55s ease-out 180ms both; }
+  .card.tabbed        { animation: fadeSlideIn 0.55s ease-out 240ms both; }
+</style>
+</head>
+<body>
+<div class="diagram" data-diagram-id="not12">
+
+  <div class="hover-hint-wrap">
+    <span class="hover-hint">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+        <path d="M6 2.5v7M6 9.5l2-2M6 9.5l-2-2" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Hover each layout for trade-offs
+    </span>
+  </div>
+
+  <div class="three-up" id="threeUp">
+
+    <!-- ── Chronological ── -->
+    <div class="card chronological" data-layout="chronological" tabindex="0">
+      <div class="placeholder">
+        <div class="layout-icon" aria-hidden="true">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <rect x="6"  y="9"  width="20" height="3" rx="1" fill="rgba(224,223,228,0.35)"/>
+            <rect x="6"  y="15" width="20" height="3" rx="1" fill="rgba(224,223,228,0.28)"/>
+            <rect x="6"  y="21" width="20" height="3" rx="1" fill="rgba(224,223,228,0.2)"/>
+          </svg>
+        </div>
+        <div class="layout-name">Chronological layout</div>
+        <div class="slot-label">Screenshot slot</div>
+      </div>
+      <div class="divider"></div>
+      <div class="content">
+        <div class="content-title">Chronological</div>
+        <div class="trait good">
+          <span class="trait-icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <polyline points="3,6.5 5.2,8.5 9,4.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </span>
+          <span class="trait-text">Simple time-based mental model</span>
+        </div>
+        <div class="trait bad">
+          <span class="trait-icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M3.8 3.8l4.4 4.4M8.2 3.8l-4.4 4.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="trait-text">Priority items buried under noise</span>
+        </div>
+      </div>
+      <div class="callout">
+        Simplest mental model &mdash; everything in time order. But high-priority items get buried under noise. Users missed replies to their own posts.
+      </div>
+    </div>
+
+    <!-- ── Nested ── -->
+    <div class="card nested" data-layout="nested" tabindex="0">
+      <div class="placeholder">
+        <div class="layout-icon" aria-hidden="true">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <rect x="4"  y="8"  width="24" height="3" rx="1" fill="rgba(224,223,228,0.35)"/>
+            <rect x="9"  y="14" width="19" height="3" rx="1" fill="rgba(224,223,228,0.28)"/>
+            <rect x="9"  y="20" width="19" height="3" rx="1" fill="rgba(224,223,228,0.22)"/>
+          </svg>
+        </div>
+        <div class="layout-name">Nested layout</div>
+        <div class="slot-label">Screenshot slot</div>
+      </div>
+      <div class="divider"></div>
+      <div class="content">
+        <div class="content-title">Nested</div>
+        <div class="trait good">
+          <span class="trait-icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <polyline points="3,6.5 5.2,8.5 9,4.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </span>
+          <span class="trait-text">Groups related threads together</span>
+        </div>
+        <div class="trait bad">
+          <span class="trait-icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M3.8 3.8l4.4 4.4M8.2 3.8l-4.4 4.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="trait-text">Cognitive load from grouping logic</span>
+        </div>
+      </div>
+      <div class="callout">
+        Groups related notifications (reply threads). Reduces row count but adds cognitive load &mdash; users had to learn the grouping logic. Slow scan speed.
+      </div>
+    </div>
+
+    <!-- ── Tabbed (BEST FIT) ── -->
+    <div class="card tabbed" data-layout="tabbed" tabindex="0">
+      <div class="placeholder">
+        <div class="winner-badge">Best fit</div>
+        <div class="layout-icon" aria-hidden="true">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <rect x="4"  y="7"  width="10" height="4" rx="1" fill="rgba(127,181,176,0.55)"/>
+            <rect x="16" y="7"  width="10" height="4" rx="1" fill="rgba(224,223,228,0.2)"/>
+            <rect x="6"  y="15" width="20" height="3" rx="1" fill="rgba(224,223,228,0.35)"/>
+            <rect x="6"  y="21" width="20" height="3" rx="1" fill="rgba(224,223,228,0.28)"/>
+          </svg>
+        </div>
+        <div class="layout-name">Tabbed layout</div>
+        <div class="slot-label">Screenshot slot</div>
+      </div>
+      <div class="divider"></div>
+      <div class="content">
+        <div class="content-title">Tabbed</div>
+        <div class="trait good">
+          <span class="trait-icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <polyline points="3,6.5 5.2,8.5 9,4.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </span>
+          <span class="trait-text">Fastest scan &mdash; know where to look</span>
+        </div>
+        <div class="trait good">
+          <span class="trait-icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <polyline points="3,6.5 5.2,8.5 9,4.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </span>
+          <span class="trait-text">Inbox as switchboard &mdash; scan, act, leave</span>
+        </div>
+      </div>
+      <div class="callout">
+        Separates notification types into tabs users can ignore or dive into. Fastest scan speed &mdash; users know exactly where to look.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const threeUp = document.getElementById('threeUp');
+  const cards = threeUp.querySelectorAll('.card');
+  let activeLayout = null;
+
+  function setActive(layoutId) {
+    if (activeLayout === layoutId) return;
+    activeLayout = layoutId;
+    threeUp.classList.toggle('has-active', !!layoutId);
+    cards.forEach(el => {
+      el.classList.toggle('active', el.dataset.layout === layoutId);
+    });
+  }
+  function clearActive() {
+    activeLayout = null;
+    threeUp.classList.remove('has-active');
+    cards.forEach(el => el.classList.remove('active'));
+  }
+
+  cards.forEach(el => {
+    el.addEventListener('mouseenter', () => setActive(el.dataset.layout));
+    el.addEventListener('focus',      () => setActive(el.dataset.layout));
+    el.addEventListener('mouseleave', clearActive);
+    el.addEventListener('blur',       clearActive);
+  });
+</script>
+</body>
+</html>

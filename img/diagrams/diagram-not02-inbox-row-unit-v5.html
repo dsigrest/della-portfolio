@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="figma-source" content="node:707:112 page:29:43 file:TArUrZsBUocaAsqetjXq7V">
+<title>NOT-02 — Inbox Row Component: Before & After</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --accent-15: rgba(127,181,176,0.15);
+    --red: #C47878;
+    --red-dim: rgba(196,120,120,0.12);
+    --red-15: rgba(196,120,120,0.15);
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* ── Hover hint (top) ── */
+  .hover-hint-wrap {
+    padding: 20px 48px 0;
+    display: flex;
+    justify-content: center;
+  }
+  .hover-hint {
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ── Comparison ── */
+  .comparison-wrap {
+    padding: 8px 48px 48px;
+  }
+  .comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+  .col {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .col-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .col-label.before { color: var(--red); }
+  .col-label.after { color: var(--accent); }
+  .col-label .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .col-label.before .dot { background: var(--red); }
+  .col-label.after .dot { background: var(--accent); }
+
+  /* ── Screenshot frame ── */
+  .screenshot {
+    position: relative;
+    padding: 16px 8px;
+  }
+  .screenshot .mock {
+    position: relative;
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  /* Reddit inbox row mocks — actual Figma-exported PNGs, cropped to just the
+     inbox-row strip via absolute positioning (mirrors Figma's clipping transform).
+     Canonical Figma node 707:112 · page 29:43 · file TArUrZsBUocaAsqetjXq7V */
+  .mock.before-mock,
+  .mock.after-mock {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    background: #F6F6F6;
+  }
+  .mock.before-mock { aspect-ratio: 1170 / 247; }
+  .mock.after-mock  { aspect-ratio: 520 / 112; }
+
+  .mock.before-mock img,
+  .mock.after-mock img {
+    position: absolute;
+    display: block;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+  /* Source export: 1170×2532 full phone screen. Show the inbox-row strip. */
+  .mock.before-mock img {
+    left: 0;
+    top: -229.15%;
+    width: 100%;
+    height: 1025.1%;
+  }
+  /* Source export: 1206×2622 full phone screen. */
+  .mock.after-mock img {
+    left: -0.02%;
+    top: -175.89%;
+    width: 100.04%;
+    height: 1009.82%;
+  }
+
+  /* ── Hotspot overlays ── */
+  .hotspot-layer {
+    position: absolute; inset: 16px 8px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .hotspot-layer.active { opacity: 1; }
+  .hotspot {
+    position: absolute;
+    border-radius: 4px;
+    pointer-events: none;
+  }
+  .hotspot.problem {
+    border: 1.5px dashed rgba(196,120,120,0.5);
+    background: rgba(196,120,120,0.06);
+    box-shadow: 0 0 16px rgba(196,120,120,0.15);
+  }
+  .hotspot.solution {
+    border: 1.5px dashed rgba(127,181,176,0.5);
+    background: rgba(127,181,176,0.06);
+    box-shadow: 0 0 16px rgba(127,181,176,0.15);
+  }
+  .hotspot.whole-row { border-radius: 8px; }
+
+  /* ── Annotations ── */
+  .annotations {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .annotation {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    transition: background 0.25s ease, opacity 0.25s ease, transform 0.35s var(--spring);
+    cursor: default;
+  }
+  .annotation .ann-num {
+    width: 14px; height: 14px;
+    border-radius: 7px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    line-height: 1;
+    padding-top: 1px;
+  }
+  .annotation.problem .ann-num {
+    background: var(--red-15);
+    color: rgba(196,120,120,0.8);
+  }
+  .annotation.solution .ann-num {
+    background: var(--accent-15);
+    color: rgba(127,181,176,0.8);
+  }
+  .annotation .ann-icon {
+    width: 18px; height: 18px;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .annotation .ann-content {
+    display: flex; flex-direction: column; gap: 2px;
+    min-width: 0; flex: 1;
+  }
+  .annotation .ann-title {
+    font-size: 11px; font-weight: 600; line-height: 1.3;
+  }
+  .annotation .ann-desc {
+    font-size: 10px; font-weight: 400; line-height: 1.4;
+    opacity: 0.7;
+  }
+  .annotation.problem { color: var(--red); }
+  .annotation.solution { color: var(--accent); }
+
+  /* Hover states — pairing */
+  .annotation.active-pair {
+    transform: translateX(4px);
+  }
+  .annotation.problem.active-pair {
+    background: rgba(196,120,120,0.08);
+  }
+  .annotation.solution.active-pair {
+    background: rgba(127,181,176,0.08);
+  }
+  .annotations.has-active .annotation:not(.active-pair) {
+    opacity: 0.28;
+  }
+
+  /* ── Load animations ── */
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hover-hint-wrap {
+    animation: fadeSlideIn 0.5s ease-out 0ms forwards;
+  }
+  .col.before {
+    animation: fadeSlideIn 0.5s ease-out 120ms forwards;
+    opacity: 0;
+  }
+  .col.after {
+    animation: fadeSlideIn 0.5s ease-out 180ms forwards;
+    opacity: 0;
+  }
+</style>
+</head>
+<body>
+<div class="diagram" data-diagram-id="not02">
+
+  <!-- Hover hint header -->
+  <div class="hover-hint-wrap">
+    <p class="hover-hint">Hover annotations to see linked changes</p>
+  </div>
+
+  <!-- Comparison -->
+  <div class="comparison-wrap">
+    <div class="comparison">
+
+      <!-- ── BEFORE ── -->
+      <div class="col before">
+        <div class="col-label before"><span class="dot"></span>Before — One-off builds</div>
+
+        <div class="screenshot">
+          <!-- Legacy Reddit inbox row — Figma PNG export (node 709:662) -->
+          <div class="mock before-mock" id="beforeMock" aria-label="Legacy inbox row — r/AmIOverreacting post notification">
+            <img src="assets/not02-legacy-inbox.png" alt="Legacy Reddit inbox row showing a post notification from r/AmIOverreacting" width="1170" height="2532">
+          </div>
+
+          <!-- Hotspot overlays — positioned over content regions -->
+          <div class="hotspot-layer" id="hl-before-system">
+            <div class="hotspot problem whole-row" style="top:0; left:0; right:0; bottom:0;"></div>
+          </div>
+          <div class="hotspot-layer" id="hl-before-meta">
+            <div class="hotspot problem" style="top:12px; left:58px; width:62px; height:16px;"></div>
+          </div>
+          <div class="hotspot-layer" id="hl-before-overflow">
+            <div class="hotspot problem" style="top:12px; right:8px; width:24px; height:18px;"></div>
+          </div>
+          <div class="hotspot-layer" id="hl-before-icons">
+            <div class="hotspot problem" style="top:12px; left:12px; width:22px; height:22px; border-radius:50%;"></div>
+          </div>
+        </div>
+
+        <div class="annotations" id="beforeAnnotations">
+          <div class="annotation problem" data-pair="icons">
+            <div class="ann-num">1</div>
+            <div class="ann-icon">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+                <path d="M4.5 4.5l5 5M9.5 4.5l-5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="ann-content">
+              <div class="ann-title">Icon-based type indicator</div>
+              <div class="ann-desc">Low comprehension — users couldn&rsquo;t parse type at a glance</div>
+            </div>
+          </div>
+
+          <div class="annotation problem" data-pair="overflow">
+            <div class="ann-num">2</div>
+            <div class="ann-icon">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+                <path d="M4.5 4.5l5 5M9.5 4.5l-5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="ann-content">
+              <div class="ann-title">Overflow menu for actions</div>
+              <div class="ann-desc">Extra tap to reach secondary actions</div>
+            </div>
+          </div>
+
+          <div class="annotation problem" data-pair="meta">
+            <div class="ann-num">3</div>
+            <div class="ann-icon">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+                <path d="M4.5 4.5l5 5M9.5 4.5l-5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="ann-content">
+              <div class="ann-title">Inline meta-data</div>
+              <div class="ann-desc">Difficult to parse quickly; not scalable for multiple pieces of metadata</div>
+            </div>
+          </div>
+
+          <div class="annotation problem" data-pair="system">
+            <div class="ann-num">4</div>
+            <div class="ann-icon">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+                <path d="M4.5 4.5l5 5M9.5 4.5l-5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="ann-content">
+              <div class="ann-title">One-off build</div>
+              <div class="ann-desc">No design system — each new type from scratch</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── AFTER ── -->
+      <div class="col after">
+        <div class="col-label after"><span class="dot"></span>After — Reusable component</div>
+
+        <div class="screenshot">
+          <!-- Unified Reddit inbox row — Figma PNG export (node 707:247) -->
+          <div class="mock after-mock" id="afterMock" aria-label="Unified inbox row — message notification from r/AmIOverreacting">
+            <img src="assets/not02-unified-inbox.png" alt="Unified Reddit inbox row — message notification from r/AmIOverreacting with trailing preview thumbnail" width="1206" height="2622">
+          </div>
+
+          <div class="hotspot-layer" id="hl-after-system">
+            <div class="hotspot solution whole-row" style="top:0; left:0; right:0; bottom:0;"></div>
+          </div>
+          <div class="hotspot-layer" id="hl-after-meta">
+            <div class="hotspot solution" style="bottom:16px; left:50px; width:90px; height:14px;"></div>
+          </div>
+          <div class="hotspot-layer" id="hl-after-overflow">
+            <div class="hotspot solution" style="top:14px; right:12px; width:56px; height:56px;"></div>
+          </div>
+          <div class="hotspot-layer" id="hl-after-icons">
+            <div class="hotspot solution" style="top:24px; left:50px; width:140px; height:18px;"></div>
+          </div>
+        </div>
+
+        <div class="annotations" id="afterAnnotations">
+          <div class="annotation solution" data-pair="icons">
+            <div class="ann-num">1</div>
+            <div class="ann-icon">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+                <polyline points="4,7.5 6.2,9.5 10,4.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              </svg>
+            </div>
+            <div class="ann-content">
+              <div class="ann-title">Embedded copy replaces icons</div>
+              <div class="ann-desc">Type communicated through language, not iconography</div>
+            </div>
+          </div>
+
+          <div class="annotation solution" data-pair="overflow">
+            <div class="ann-num">2</div>
+            <div class="ann-icon">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+                <polyline points="4,7.5 6.2,9.5 10,4.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              </svg>
+            </div>
+            <div class="ann-content">
+              <div class="ann-title">Swipe &amp; long press</div>
+              <div class="ann-desc">Platform-native patterns for secondary actions make room for a flex trailing element</div>
+            </div>
+          </div>
+
+          <div class="annotation solution" data-pair="meta">
+            <div class="ann-num">3</div>
+            <div class="ann-icon">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+                <polyline points="4,7.5 6.2,9.5 10,4.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              </svg>
+            </div>
+            <div class="ann-content">
+              <div class="ann-title">Scalable meta-data</div>
+              <div class="ann-desc">Pulling out meta data makes it easier to parse &amp; accommodate different use cases</div>
+            </div>
+          </div>
+
+          <div class="annotation solution" data-pair="system">
+            <div class="ann-num">4</div>
+            <div class="ann-icon">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+                <polyline points="4,7.5 6.2,9.5 10,4.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              </svg>
+            </div>
+            <div class="ann-content">
+              <div class="ann-title">On design system</div>
+              <div class="ann-desc">Scalable, reusable unit — new types in hours, not weeks</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ── Cross-highlight interaction ──
+  const pairs = ['icons', 'overflow', 'meta', 'system'];
+  const beforeAnns = document.getElementById('beforeAnnotations');
+  const afterAnns = document.getElementById('afterAnnotations');
+  let activePair = null;
+
+  function setActive(pairId) {
+    if (activePair === pairId) return;
+    activePair = pairId;
+
+    beforeAnns.classList.toggle('has-active', !!pairId);
+    afterAnns.classList.toggle('has-active', !!pairId);
+
+    document.querySelectorAll('.annotation').forEach(el => {
+      el.classList.toggle('active-pair', el.dataset.pair === pairId);
+    });
+
+    pairs.forEach(p => {
+      const show = p === pairId;
+      const hlBefore = document.getElementById(`hl-before-${p}`);
+      const hlAfter  = document.getElementById(`hl-after-${p}`);
+      if (hlBefore) hlBefore.classList.toggle('active', show);
+      if (hlAfter)  hlAfter.classList.toggle('active', show);
+    });
+  }
+
+  function clearActive() {
+    activePair = null;
+    beforeAnns.classList.remove('has-active');
+    afterAnns.classList.remove('has-active');
+    document.querySelectorAll('.annotation').forEach(el => el.classList.remove('active-pair'));
+    document.querySelectorAll('.hotspot-layer').forEach(el => el.classList.remove('active'));
+  }
+
+  document.querySelectorAll('.annotation[data-pair]').forEach(el => {
+    el.addEventListener('mouseenter', () => setActive(el.dataset.pair));
+    el.addEventListener('focus',      () => setActive(el.dataset.pair));
+    el.addEventListener('mouseleave', clearActive);
+    el.addEventListener('blur',       clearActive);
+    el.setAttribute('tabindex', '0');
+  });
+</script>
+</body>
+</html>

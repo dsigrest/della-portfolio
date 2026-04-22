@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="figma-source" content="node:709:1010 page:29:43 file:TArUrZsBUocaAsqetjXq7V">
+<title>NOT-14 — Navigation Simplification: Before & After</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --accent-15: rgba(127,181,176,0.15);
+    --red: #C47878;
+    --red-dim: rgba(196,120,120,0.12);
+    --red-15: rgba(196,120,120,0.15);
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    /* Fix: clip watermarks to the canvas so they can't bleed through cards */
+    isolation: isolate;
+  }
+
+  /* ── Hover hint ── */
+  .hover-hint-wrap {
+    padding: 20px 48px 0;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    z-index: 5;
+  }
+  .hover-hint {
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ── Comparison wrap ── */
+  .comparison-wrap {
+    padding: 8px 48px 48px;
+    position: relative;
+    z-index: 2;
+  }
+  .comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
+    position: relative;
+  }
+  .col {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ── Watermark count ── */
+  /* Fix for "ring shouldn't be visible through the cards":
+     watermark is rendered BEHIND the screenshot card using z-index + isolation,
+     and the screenshot has an opaque/glassy backdrop so the number can't ghost
+     through the card surface. */
+  .watermark {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 140px;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.08;
+    user-select: none;
+  }
+  .col.before .watermark { color: var(--red); }
+  .col.after .watermark { color: var(--accent); }
+
+  .col-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 3;
+  }
+  .col-label.before { color: var(--red); }
+  .col-label.after { color: var(--accent); }
+  .col-label .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .col-label.before .dot { background: var(--red); }
+  .col-label.after .dot { background: var(--accent); }
+
+  /* ── Full-phone screenshot ── */
+  .screenshot {
+    position: relative;
+    padding: 12px 24px;
+    z-index: 3;
+  }
+  .mock {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 322 / 697;
+    border-radius: 20px;
+    overflow: hidden;
+    /* Opaque fallback bg ensures watermark can't bleed through */
+    background: #F6F6F6;
+    box-shadow:
+      0 1px 3px rgba(0,0,0,0.3),
+      0 8px 24px rgba(0,0,0,0.25);
+  }
+  .mock img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  /* ── Hotspot overlays ── */
+  .hotspot-layer {
+    position: absolute;
+    inset: 12px 24px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .hotspot-layer.active { opacity: 1; }
+  .hotspot {
+    position: absolute;
+    border-radius: 4px;
+    pointer-events: none;
+  }
+  .hotspot.problem {
+    border: 1.5px dashed rgba(196,120,120,0.5);
+    background: rgba(196,120,120,0.06);
+    box-shadow: 0 0 16px rgba(196,120,120,0.15);
+  }
+  .hotspot.solution {
+    border: 1.5px dashed rgba(127,181,176,0.5);
+    background: rgba(127,181,176,0.06);
+    box-shadow: 0 0 16px rgba(127,181,176,0.15);
+  }
+
+  /* ── Annotations ── */
+  .annotations {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    position: relative;
+    z-index: 3;
+  }
+  .annotation {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    transition: background 0.25s ease, opacity 0.25s ease, transform 0.35s var(--spring);
+    cursor: default;
+    /* Make sure annotation backgrounds occlude the watermark */
+    background: var(--canvas);
+  }
+  .annotation .ann-num {
+    width: 14px; height: 14px;
+    border-radius: 7px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    line-height: 1;
+    padding-top: 1px;
+  }
+  .annotation.problem .ann-num {
+    background: var(--red-15);
+    color: rgba(196,120,120,0.8);
+  }
+  .annotation.solution .ann-num {
+    background: var(--accent-15);
+    color: rgba(127,181,176,0.8);
+  }
+  .annotation .ann-icon {
+    width: 18px; height: 18px;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .annotation .ann-content {
+    display: flex; flex-direction: column; gap: 2px;
+    min-width: 0; flex: 1;
+  }
+  .annotation .ann-title {
+    font-size: 11px; font-weight: 600; line-height: 1.3;
+  }
+  .annotation .ann-desc {
+    font-size: 10px; font-weight: 400; line-height: 1.4;
+    opacity: 0.7;
+  }
+  .annotation.problem { color: var(--red); }
+  .annotation.solution { color: var(--accent); }
+
+  /* Hover states */
+  .annotation.active-pair {
+    transform: translateX(4px);
+  }
+  .annotation.problem.active-pair {
+    background: rgba(196,120,120,0.08);
+  }
+  .annotation.solution.active-pair {
+    background: rgba(127,181,176,0.08);
+  }
+  .annotations.has-active .annotation:not(.active-pair) {
+    opacity: 0.28;
+  }
+
+  /* ── Count caption under watermark ── */
+  .count-caption {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 4px 0 0;
+    position: relative;
+    z-index: 3;
+  }
+  .col.before .count-caption { color: rgba(196,120,120,0.7); }
+  .col.after .count-caption { color: rgba(127,181,176,0.7); }
+
+  /* ── Load animations ── */
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes watermarkFade {
+    from { opacity: 0; }
+    to { opacity: 0.08; }
+  }
+  .hover-hint-wrap { animation: fadeSlideIn 0.5s ease-out 0ms forwards; }
+  .col.before { animation: fadeSlideIn 0.5s ease-out 120ms forwards; opacity: 0; }
+  .col.after { animation: fadeSlideIn 0.5s ease-out 180ms forwards; opacity: 0; }
+  .watermark {
+    animation: watermarkFade 0.8s ease-out 260ms forwards;
+    opacity: 0;
+  }
+</style>
+</head>
+<body>
+<div class="diagram" data-diagram-id="not14">
+
+  <div class="hover-hint-wrap">
+    <p class="hover-hint">Hover annotations to see linked navigation changes</p>
+  </div>
+
+  <div class="comparison-wrap">
+    <div class="comparison">
+
+      <!-- ── BEFORE ── -->
+      <div class="col before">
+        <div class="watermark" aria-hidden="true">5</div>
+        <div class="col-label before"><span class="dot"></span>Before — 5 nav destinations</div>
+
+        <div class="screenshot">
+          <div class="mock" aria-label="Legacy Reddit bottom nav with 5 destinations">
+            <img src="assets/not14-legacy-nav.png" alt="Legacy Reddit mobile with 5 bottom-nav destinations including inbox and chat split">
+          </div>
+
+          <!-- Hotspot overlays -->
+          <div class="hotspot-layer" id="hl-before-split">
+            <div class="hotspot problem" style="bottom:2%; left:4%; width:92%; height:8%;"></div>
+          </div>
+          <div class="hotspot-layer" id="hl-before-badges">
+            <div class="hotspot problem" style="bottom:3%; left:40%; width:14%; height:7%;"></div>
+            <div class="hotspot problem" style="bottom:3%; left:58%; width:14%; height:7%;"></div>
+          </div>
+          <div class="hotspot-layer" id="hl-before-overflow">
+            <div class="hotspot problem" style="bottom:3%; left:76%; width:14%; height:7%;"></div>
+          </div>
+        </div>
+
+        <p class="count-caption">Destinations in bottom nav</p>
+
+        <div class="annotations" id="beforeAnnotations">
+          <div class="annotation problem" data-pair="split">
+            <div class="ann-num">1</div>
+            <div class="ann-icon">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+                <path d="M4.5 4.5L9.5 9.5M9.5 4.5L4.5 9.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="ann-content">
+              <div class="ann-title">Split inbox and chat</div>
+              <div class="ann-desc">Two separate destinations for overlapping updates</div>
+            </div>
+          </div>
+
+          <div class="annotation problem" data-pair="badges">
+            <div class="ann-num">2</div>
+            <div class="ann-icon">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+                <path d="M4.5 4.5L9.5 9.5M9.5 4.5L4.5 9.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="ann-content">
+              <div class="ann-title">Competing badge signals</div>
+              <div class="ann-desc">Unread counts fight across two tabs</div>
+            </div>
+          </div>
+
+          <div class="annotation problem" data-pair="overflow">
+            <div class="ann-num">3</div>
+            <div class="ann-icon">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+                <path d="M4.5 4.5L9.5 9.5M9.5 4.5L4.5 9.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="ann-content">
+              <div class="ann-title">Overflow absorbs growth</div>
+              <div class="ann-desc">New destinations hide behind a "more" slot</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── AFTER ── -->
+      <div class="col after">
+        <div class="watermark" aria-hidden="true">3–4</div>
+        <div class="col-label after"><span class="dot"></span>After — 3–4 nav destinations</div>
+
+        <div class="screenshot">
+          <div class="mock" aria-label="Redesigned Reddit bottom nav with 3–4 consolidated destinations">
+            <img src="assets/not14-unified-nav.png" alt="Redesigned Reddit mobile with 3–4 bottom-nav destinations and unified inbox">
+          </div>
+
+          <!-- Hotspot overlays -->
+          <div class="hotspot-layer" id="hl-after-split">
+            <div class="hotspot solution" style="bottom:2%; left:4%; width:92%; height:8%;"></div>
+          </div>
+          <div class="hotspot-layer" id="hl-after-badges">
+            <div class="hotspot solution" style="bottom:3%; left:55%; width:18%; height:7%;"></div>
+          </div>
+          <div class="hotspot-layer" id="hl-after-overflow">
+            <div class="hotspot solution" style="bottom:3%; left:4%; width:92%; height:8%;"></div>
+          </div>
+        </div>
+
+        <p class="count-caption">Destinations in bottom nav</p>
+
+        <div class="annotations" id="afterAnnotations">
+          <div class="annotation solution" data-pair="split">
+            <div class="ann-num">1</div>
+            <div class="ann-icon">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+                <path d="M4 7.5L6 9.5L10 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="ann-content">
+              <div class="ann-title">Unified inbox</div>
+              <div class="ann-desc">One destination, chat nested inside</div>
+            </div>
+          </div>
+
+          <div class="annotation solution" data-pair="badges">
+            <div class="ann-num">2</div>
+            <div class="ann-icon">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+                <path d="M4 7.5L6 9.5L10 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="ann-content">
+              <div class="ann-title">One badge, one signal</div>
+              <div class="ann-desc">Unread count speaks with a single voice</div>
+            </div>
+          </div>
+
+          <div class="annotation solution" data-pair="overflow">
+            <div class="ann-num">3</div>
+            <div class="ann-icon">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+                <path d="M4 7.5L6 9.5L10 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="ann-content">
+              <div class="ann-title">Room to grow</div>
+              <div class="ann-desc">Space reserved for one future destination</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+  (function() {
+    const allAnnotations = document.querySelectorAll('.annotation');
+    const allLayers = document.querySelectorAll('.hotspot-layer');
+    const beforeAnnotations = document.getElementById('beforeAnnotations');
+    const afterAnnotations = document.getElementById('afterAnnotations');
+
+    function setActive(pairId) {
+      allLayers.forEach(l => l.classList.remove('active'));
+      allAnnotations.forEach(a => a.classList.remove('active-pair'));
+      beforeAnnotations.classList.add('has-active');
+      afterAnnotations.classList.add('has-active');
+
+      document.getElementById('hl-before-' + pairId)?.classList.add('active');
+      document.getElementById('hl-after-' + pairId)?.classList.add('active');
+      document.querySelectorAll('[data-pair="' + pairId + '"]').forEach(el => el.classList.add('active-pair'));
+    }
+
+    function clearActive() {
+      allLayers.forEach(l => l.classList.remove('active'));
+      allAnnotations.forEach(a => a.classList.remove('active-pair'));
+      beforeAnnotations.classList.remove('has-active');
+      afterAnnotations.classList.remove('has-active');
+    }
+
+    allAnnotations.forEach(ann => {
+      const pairId = ann.dataset.pair;
+      ann.setAttribute('tabindex', '0');
+      ann.addEventListener('mouseenter', () => setActive(pairId));
+      ann.addEventListener('focus', () => setActive(pairId));
+      ann.addEventListener('mouseleave', clearActive);
+      ann.addEventListener('blur', clearActive);
+    });
+  })();
+</script>
+</body>
+</html>
