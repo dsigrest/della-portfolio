@@ -89,21 +89,25 @@
 
     .content {
       padding: 56px 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
     }
 
-    .hub-container {
+    /* ── Hub (top) ── */
+    .hub-wrapper {
       position: relative;
-      height: 520px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 56px;
+      padding: 16px 0 8px;
     }
 
     .glow-bg {
       position: absolute;
-      width: 500px;
-      height: 500px;
+      width: 280px;
+      height: 280px;
       background: radial-gradient(circle, rgba(127,181,176,0.08) 0%, transparent 70%);
       border-radius: 50%;
       top: 50%;
@@ -127,13 +131,13 @@
     .hub-center {
       position: relative;
       z-index: 10;
-      width: 220px;
+      width: 240px;
       background: var(--glass-bg);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
       border-radius: 12px;
-      padding: 20px;
+      padding: 24px;
       box-shadow: var(--glass-highlight), 0 0 24px rgba(127,181,176,0.1);
       text-align: center;
       opacity: 0;
@@ -162,7 +166,7 @@
     }
 
     .hub-label {
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 600;
       color: var(--text-pri);
       margin-bottom: 4px;
@@ -173,31 +177,58 @@
       color: var(--text-ter);
     }
 
-    .spokes-container {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 100%;
-      height: 100%;
+    /* ── Down connector ── */
+    .down-connector {
+      width: 1px;
+      height: 24px;
+      background: linear-gradient(180deg, var(--accent) 0%, transparent 100%);
+      opacity: 0.4;
+      margin: -8px 0 -8px;
     }
 
-    .spoke {
-      position: absolute;
+    /* ── Platform grid (3×2 desktop, 2×3 mobile) ── */
+    .platform-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      width: 100%;
+      max-width: 540px;
+    }
+
+    .platform-cell {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 12px;
+      padding: 20px 16px;
+      background: var(--card);
+      border: 1px solid var(--border-normal);
+      border-radius: 10px;
       opacity: 0;
-      animation: fadeUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      animation: fadeUp 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      position: relative;
+      overflow: hidden;
     }
 
-    .spoke-1 { top: 0%; left: 50%; transform: translateX(-50%); animation-delay: 0.6s; }
-    .spoke-2 { top: 50%; right: 0%; transform: translateY(-50%); animation-delay: 0.75s; }
-    .spoke-3 { bottom: 0%; left: 50%; transform: translateX(-50%); animation-delay: 0.9s; }
-    .spoke-4 { top: 50%; left: 0%; transform: translateY(-50%); animation-delay: 1.05s; }
+    .platform-cell:nth-child(1) { animation-delay: 0.6s; }
+    .platform-cell:nth-child(2) { animation-delay: 0.7s; }
+    .platform-cell:nth-child(3) { animation-delay: 0.8s; }
+    .platform-cell:nth-child(4) { animation-delay: 0.9s; }
+    .platform-cell:nth-child(5) { animation-delay: 1.0s; }
+    .platform-cell:nth-child(6) { animation-delay: 1.1s; }
 
-    .spoke-icon {
+    .platform-cell::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
+      opacity: 0.4;
+    }
+
+    .platform-icon {
       width: 44px;
       height: 44px;
       background: var(--elevated);
@@ -210,7 +241,7 @@
       position: relative;
     }
 
-    .spoke-icon svg {
+    .platform-icon svg {
       width: 22px;
       height: 22px;
       stroke: var(--accent);
@@ -218,14 +249,16 @@
       fill: none;
     }
 
-    .spoke-icon::after {
+    .platform-icon::after {
       content: '';
       position: absolute;
+      top: -4px;
+      right: -4px;
       width: 8px;
       height: 8px;
       background: var(--accent);
       border-radius: 50%;
-      box-shadow: 0 0 8px rgba(127,181,176,0.3);
+      box-shadow: 0 0 8px rgba(127,181,176,0.4);
       animation: ping 2s cubic-bezier(0,0,0.2,1) infinite;
     }
 
@@ -236,13 +269,14 @@
       }
     }
 
-    .spoke-label {
-      font-size: 11px;
+    .platform-label {
+      font-size: 12px;
       font-weight: 600;
       color: var(--text-pri);
       text-align: center;
     }
 
+    /* ── Stat bar ── */
     .stat-bar {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -250,6 +284,7 @@
       background: var(--border-normal);
       border-radius: 12px;
       overflow: hidden;
+      width: 100%;
     }
 
     .stat-item {
@@ -308,6 +343,7 @@
 
       .content {
         padding: 40px 28px;
+        gap: 28px;
       }
 
       h1 {
@@ -323,24 +359,25 @@
         font-size: 14px;
       }
 
-      .hub-container {
-        height: 380px;
-      }
-
       .glow-bg {
-        width: 320px;
-        height: 320px;
+        width: 220px;
+        height: 220px;
       }
 
       .hub-center {
-        width: 180px;
-        padding: 16px;
+        width: 200px;
+        padding: 20px;
       }
 
-      .spoke-1 { top: 5%; }
-      .spoke-2 { right: 8%; }
-      .spoke-3 { bottom: 5%; }
-      .spoke-4 { left: 8%; }
+      .platform-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        max-width: 100%;
+      }
+
+      .platform-cell {
+        padding: 18px 12px;
+      }
 
       .stat-bar {
         grid-template-columns: 1fr;
@@ -349,7 +386,7 @@
 
       .stat-item {
         border-radius: 0;
-        padding: 20px 16px;
+        padding: 18px 16px;
       }
 
       .stat-item:first-child {
@@ -370,28 +407,15 @@
 
       .content {
         padding: 32px 20px;
-      }
-
-      .hub-container {
-        height: 340px;
-      }
-
-      .glow-bg {
-        width: 260px;
-        height: 260px;
+        gap: 24px;
       }
 
       .hub-center {
-        width: 160px;
-        padding: 14px;
+        width: 180px;
+        padding: 18px;
       }
-
-      .spoke-1 { top: 2%; }
-      .spoke-2 { right: 4%; }
-      .spoke-3 { bottom: 2%; }
-      .spoke-4 { left: 4%; }
     }
-  
+
   /* Embed mode: strip body chrome when loaded in iframe */
   body.embedded {
     padding: 0;
@@ -416,9 +440,8 @@
     </div>
 
     <div class="content">
-      <div class="hub-container">
+      <div class="hub-wrapper">
         <div class="glow-bg"></div>
-        
         <div class="hub-center">
           <div class="hub-icon">
             <svg viewBox="0 0 24 24">
@@ -429,52 +452,71 @@
           <div class="hub-label">Reddit Post</div>
           <div class="hub-sub">Preview component</div>
         </div>
+      </div>
 
-        <div class="spokes-container">
-          <div class="spoke spoke-1">
-            <div class="spoke-icon">
-              <svg viewBox="0 0 24 24">
-                <rect x="4" y="4" width="16" height="16" rx="2"></rect>
-                <path d="M8 9h8M8 12h8M8 15h4"></path>
-              </svg>
-            </div>
-            <div class="spoke-label">iMessage</div>
-          </div>
+      <div class="down-connector"></div>
 
-          <div class="spoke spoke-2">
-            <div class="spoke-icon">
-              <svg viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"></path>
-                <path d="M12.5 7H11v6l5.2 3.2.8-1.3-4.5-2.7z"></path>
-              </svg>
-            </div>
-            <div class="spoke-label">WhatsApp</div>
+      <div class="platform-grid">
+        <div class="platform-cell">
+          <div class="platform-icon">
+            <svg viewBox="0 0 24 24">
+              <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+              <path d="M8 9h8M8 12h8M8 15h4"></path>
+            </svg>
           </div>
+          <div class="platform-label">iMessage</div>
+        </div>
 
-          <div class="spoke spoke-3">
-            <div class="spoke-icon">
-              <svg viewBox="0 0 24 24">
-                <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2s9 5 20 5a9.5 9.5 0 00-9-5c4 2 8 2 8 2"></path>
-              </svg>
-            </div>
-            <div class="spoke-label">Twitter/X</div>
+        <div class="platform-cell">
+          <div class="platform-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M20.52 3.48A11.84 11.84 0 0012.04 0C5.5 0 .19 5.31.19 11.85c0 2.09.55 4.13 1.59 5.93L.09 24l6.4-1.68a11.84 11.84 0 005.55 1.41h.01c6.54 0 11.85-5.31 11.85-11.85 0-3.16-1.23-6.14-3.38-8.4z"></path>
+            </svg>
           </div>
+          <div class="platform-label">WhatsApp</div>
+        </div>
 
-          <div class="spoke spoke-4">
-            <div class="spoke-icon">
-              <svg viewBox="0 0 24 24">
-                <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"></path>
-                <circle cx="4" cy="4" r="2"></circle>
-              </svg>
-            </div>
-            <div class="spoke-label">LinkedIn</div>
+        <div class="platform-cell">
+          <div class="platform-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2s9 5 20 5a9.5 9.5 0 00-9-5c4 2 8 2 8 2"></path>
+            </svg>
           </div>
+          <div class="platform-label">Twitter/X</div>
+        </div>
+
+        <div class="platform-cell">
+          <div class="platform-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"></path>
+              <circle cx="4" cy="4" r="2"></circle>
+            </svg>
+          </div>
+          <div class="platform-label">LinkedIn</div>
+        </div>
+
+        <div class="platform-cell">
+          <div class="platform-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M21.5 4.5L2.5 12.5l5.5 2L18 7l-7 9 8 4z" stroke-linejoin="round" stroke-linecap="round"></path>
+            </svg>
+          </div>
+          <div class="platform-label">Telegram</div>
+        </div>
+
+        <div class="platform-cell">
+          <div class="platform-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"></path>
+            </svg>
+          </div>
+          <div class="platform-label">SMS</div>
         </div>
       </div>
 
       <div class="stat-bar">
         <div class="stat-item">
-          <div class="stat-value">6+ Platforms</div>
+          <div class="stat-value">6 Platforms</div>
           <div class="stat-label">One preview component</div>
         </div>
         <div class="stat-item">
