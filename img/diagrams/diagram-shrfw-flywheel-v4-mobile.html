@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHR-FW (mobile) — Share, Engage, Trust Flywheel</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --canvas: #0A0C16;
+    --elevated: #151722;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --warm: #D4A574;
+    --warm-dim: rgba(212,165,116,0.12);
+    --blue: #8A9EC4;
+    --blue-dim: rgba(138,158,196,0.12);
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  body {
+    background: #08090F;
+    display: flex; justify-content: center;
+    padding: 16px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    color: var(--text-pri);
+  }
+  .diagram {
+    width: 100%;
+    max-width: 480px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+  .diagram::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 280px 240px at 50% 50%, rgba(127,181,176,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .loop-area {
+    padding: 24px 20px 28px;
+    position: relative; z-index: 1;
+  }
+
+  /* Header — promoted center-badge */
+  .loop-header {
+    display: flex; justify-content: center;
+    margin-bottom: 20px;
+    opacity: 0;
+    transition: opacity 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .loop-header.in-view { opacity: 1; }
+  .loop-badge {
+    padding: 6px 14px;
+    background: rgba(127,181,176,0.1);
+    border: 1px solid rgba(127,181,176,0.2);
+    border-radius: 8px;
+    font-size: 9px; font-weight: 500;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  /* Loop column — cards stacked with a left rail visualization */
+  .loop-column {
+    position: relative;
+    padding-left: 36px;          /* room for rail + return arc */
+  }
+
+  /* Vertical rail spine — segmented gradient through Share/Engage/Trust accents */
+  .rail-spine {
+    position: absolute;
+    left: 14px;
+    top: 12px;
+    bottom: 60px;                /* leaves room for the return arc */
+    width: 2px;
+    background: linear-gradient(
+      to bottom,
+      var(--accent) 0%,
+      var(--accent) 30%,
+      var(--warm) 50%,
+      var(--warm) 65%,
+      var(--blue) 85%,
+      var(--blue) 100%
+    );
+    border-radius: 1px;
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin: top center;
+    transition: opacity 0.6s ease-out, transform 0.8s cubic-bezier(0.6, 0.05, 0.3, 1);
+    transition-delay: 0.1s;
+  }
+  .rail-spine.in-view { opacity: 1; transform: scaleY(1); }
+
+  /* Cards */
+  .fw-card {
+    position: relative;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-highlight);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    opacity: 0; transform: translateY(12px);
+    transition: opacity 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+                transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .fw-card.in-view { opacity: 1; transform: translateY(0); }
+  .fw-card--share   { transition-delay: 0.20s; }
+  .fw-card--engage  { transition-delay: 0.40s; }
+  .fw-card--trust   { transition-delay: 0.60s; }
+
+  /* Top accent bar on each card (matches desktop ::before) */
+  .fw-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    border-radius: 12px 12px 0 0;
+  }
+  .fw-card--share::before  { background: var(--accent); }
+  .fw-card--engage::before { background: var(--warm); }
+  .fw-card--trust::before  { background: var(--blue); }
+
+  /* Rail node — circle marker on the spine, aligned to card center */
+  .rail-node {
+    position: absolute;
+    left: -29px;                 /* offsets back into rail column */
+    top: 50%;
+    transform: translateY(-50%) scale(0.6);
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--canvas);
+    border: 2px solid currentColor;
+    opacity: 0;
+    transition: opacity 0.4s ease-out, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .fw-card.in-view .rail-node { opacity: 1; transform: translateY(-50%) scale(1); }
+  .fw-card--share  .rail-node { color: var(--accent); transition-delay: 0.25s; }
+  .fw-card--engage .rail-node { color: var(--warm);   transition-delay: 0.45s; }
+  .fw-card--trust  .rail-node { color: var(--blue);   transition-delay: 0.65s; }
+
+  .fw-card__head {
+    display: flex; align-items: baseline;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .fw-card__num {
+    font-size: 22px; font-weight: 400;
+    letter-spacing: -0.03em; line-height: 1;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .fw-card__name {
+    font-size: 13px; font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text-pri); line-height: 1.2;
+  }
+  .fw-card--share  .fw-card__num { color: var(--accent); }
+  .fw-card--engage .fw-card__num { color: var(--warm); }
+  .fw-card--trust  .fw-card__num { color: var(--blue); }
+  .fw-card__desc {
+    font-size: 11px; color: var(--text-sec);
+    line-height: 1.5;
+  }
+
+  /* Transition label — inline arc-label equivalent, sits between cards */
+  .transition {
+    position: relative;
+    margin: 4px 0 4px 4px;
+    padding: 4px 0 4px 0;
+    font-size: 8px; font-weight: 500;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--text-ter);
+    opacity: 0;
+    transition: opacity 0.4s ease-out;
+  }
+  .transition.in-view { opacity: 1; }
+  .transition--share-engage { transition-delay: 0.50s; color: rgba(212,165,116,0.55); }
+  .transition--engage-trust { transition-delay: 0.70s; color: rgba(138,158,196,0.55); }
+  .transition--trust-share  { transition-delay: 0.90s; color: rgba(127,181,176,0.55); }
+
+  /* Return arc — "loop back to start" indicator after card 3.
+     A short curved hook from the rail end down-and-left, then the
+     caption "↺ Removes friction · returns to Share" sells the loop. */
+  .return-arc {
+    position: relative;
+    margin: 6px 0 2px -22px;     /* shift left so the hook anchors on the rail */
+    padding-left: 22px;
+    display: flex; align-items: center; gap: 10px;
+    opacity: 0;
+    transition: opacity 0.6s ease-out;
+    transition-delay: 0.85s;
+    color: rgba(127,181,176,0.7);
+  }
+  .return-arc.in-view { opacity: 1; }
+  .return-arc svg {
+    width: 44px; height: 28px;
+    flex-shrink: 0;
+  }
+  .return-arc .arc-path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-dasharray: 3 3;
+    opacity: 0.7;
+  }
+  .return-arc .arc-arrow {
+    fill: currentColor;
+    opacity: 0.85;
+  }
+  .return-arc .arc-caption {
+    font-size: 8px; font-weight: 500;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: rgba(127,181,176,0.7);
+    white-space: nowrap;
+  }
+  .return-arc .arc-caption .accent {
+    color: rgba(224,223,228,0.4);
+    margin: 0 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .loop-header, .rail-spine, .fw-card, .rail-node,
+    .transition, .return-arc {
+      opacity: 1; transform: none; transition: none;
+    }
+    .rail-spine { transform: scaleY(1); }
+    .fw-card { transform: none; }
+    .rail-node { transform: translateY(-50%) scale(1); }
+  }
+
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    max-width: none;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram" id="flywheel-mobile">
+
+    <div class="loop-area">
+
+      <div class="loop-header">
+        <span class="loop-badge">Growth Loop</span>
+      </div>
+
+      <div class="loop-column">
+
+        <div class="rail-spine"></div>
+
+        <div class="fw-card fw-card--share">
+          <span class="rail-node"></span>
+          <div class="fw-card__head">
+            <span class="fw-card__num">1</span>
+            <span class="fw-card__name">Share</span>
+          </div>
+          <p class="fw-card__desc">Frictionless sharing surfaces — contextual buttons, standardized overflow, screenshot-to-share.</p>
+        </div>
+
+        <div class="transition transition--share-engage">↓ Drives discovery</div>
+
+        <div class="fw-card fw-card--engage">
+          <span class="rail-node"></span>
+          <div class="fw-card__head">
+            <span class="fw-card__num">2</span>
+            <span class="fw-card__name">Engage</span>
+          </div>
+          <p class="fw-card__desc">Rich previews drive clicks — branded cards, text post previews, cross-platform consistency.</p>
+        </div>
+
+        <div class="transition transition--engage-trust">↓ Builds confidence</div>
+
+        <div class="fw-card fw-card--trust">
+          <span class="rail-node"></span>
+          <div class="fw-card__head">
+            <span class="fw-card__num">3</span>
+            <span class="fw-card__name">Trust</span>
+          </div>
+          <p class="fw-card__desc">Privacy controls build confidence — live previews, username protection, user consent.</p>
+        </div>
+
+        <div class="return-arc">
+          <svg viewBox="0 0 44 28" preserveAspectRatio="xMidYMid meet">
+            <!-- Hook: down from rail end → curve right → arrow head pointing right -->
+            <path class="arc-path"
+                  d="M 8 0 L 8 12 Q 8 22 18 22 L 34 22"/>
+            <polygon class="arc-arrow" points="32,18 40,22 32,26"/>
+          </svg>
+          <span class="arc-caption">
+            ↺ Removes friction <span class="accent">·</span> returns to Share
+          </span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function() {
+    var wrap = document.getElementById('flywheel-mobile');
+    if (!wrap) return;
+
+    var io = new IntersectionObserver(function(entries) {
+      if (!entries[0].isIntersecting) return;
+      wrap.querySelector('.loop-header').classList.add('in-view');
+      wrap.querySelector('.rail-spine').classList.add('in-view');
+      wrap.querySelectorAll('.fw-card').forEach(function(c) { c.classList.add('in-view'); });
+      wrap.querySelectorAll('.transition').forEach(function(t) { t.classList.add('in-view'); });
+      wrap.querySelector('.return-arc').classList.add('in-view');
+      io.disconnect();
+    }, { threshold: 0.2 });
+    io.observe(wrap);
+  })();
+  </script>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</body>
+</html>
