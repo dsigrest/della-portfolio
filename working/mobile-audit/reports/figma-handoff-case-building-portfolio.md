@@ -1,8 +1,10 @@
 # Figma Handoff — case-building-portfolio
 
-**Date:** April 21, 2026 (fixes) → **April 22, 2026 (verification complete)**
-**Scope:** Mobile responsive audit + fixes for 5 port diagrams (case-building-portfolio meta case study)
-**Status:** ✅ All 5 fixes verified Apr 22 via fresh screenshots. Tracker flipped to `status=verified`. Figma pairing ready to invoke — this doc is the entry point for the `html-to-figma` thread.
+**Date:** April 21, 2026 (fixes) → **April 22, 2026 (verification + Figma pairing complete)**
+**Scope:** Mobile responsive audit + fixes + Figma mobile pairing for **all 5** port diagrams (case-building-portfolio meta case study)
+**Status:** ✅ All 5 fixes verified. ✅ All 5 mobile frames translated into Figma (native layers, CSS-selector names). Tracker updated with `figma_mobile_node_id` for every row.
+
+**Scope expansion note (Apr 22):** Original handoff doc (below) scoped Figma pairing to 4 diagrams (port-02c, port-03a, port-04a, port-05), excluding port-01b because it was L0 / already responsive. Della expanded the scope to all 5 during the html-to-figma thread — port-01b still needs a Figma mobile frame for pairing consistency, even though the HTML didn't need changes. All 5 now have mobile frames.
 
 ---
 
@@ -111,31 +113,26 @@ Output lands in `working/mobile-audit/screenshots-fixed/{width}/`. Compare again
 
 ---
 
-## Figma handoff (when ready to pair)
+## Figma handoff — COMPLETE (Apr 22, 2026)
 
-**Target Figma page:** `case-building-portfolio` (same page used for existing port-* desktop frames).
+**Target Figma file:** `TArUrZsBUocaAsqetjXq7V`
+**Target page:** `5. Building this portfolio`
+**Translation mode:** **Native** (not image-fill). Every frame is editable — auto-layout, text nodes, shape nodes, SVG imports, CSS-selector layer names.
+**Mobile cluster anchor:** x = −1325 (same y as each diagram's desktop counterpart)
 
-**Mobile frames to create** (in the left mobile cluster, same row as the corresponding desktop frame):
-1. `port-02c-mobile` — render `diagram-port02c-research-synthesis-v4.html` at 375px wide
-2. `port-03a-mobile` — render `diagram-port03a-thumbnails-v4.html` at 375px wide
-3. `port-04a-mobile` — render `diagram-port04a-governance-v4-mobile.html` at 375px wide (this is the NEW L3 file, not the desktop version)
-4. `port-05-mobile` — render `diagram-port05-recruiter-panel-v4.html` at 375px wide
+| Diagram | Figma node ID | Position | Dimensions | Source file |
+|---|---|---|---|---|
+| port-01b-mobile | `849:14` | x=−1325, y=320 | 375 × 674 | `diagram-port01b-insights.html` |
+| port-02c-mobile | `849:35` | x=−1325, y=3970 | 375 × 635 | `diagram-port02c-research-synthesis-v4.html` |
+| port-03a-mobile | `838:14` | x=−1325, y=6350 | 375 × 765 | `diagram-port03a-thumbnails-v4.html` |
+| port-04a-mobile | `852:14` | x=−1325, y=9354 | 375 × 954 | `diagram-port04a-governance-v4-mobile.html` (L3 mobile variant) |
+| port-05-mobile | `852:95` | x=−1325, y=10607 | 375 × 941 | `diagram-port05-recruiter-panel-v4.html` |
 
-port-01b does not need a mobile frame — already responsive (L0), same desktop file renders correctly at 375.
+**Quality pattern verified on port-03a (mid-complexity), then batched:** after greenlight on diagram 1, port-01b + port-02c translated in batch 1, port-04a + port-05 in batch 2. All 5 visually verified via `get_screenshot` — no collapsed columns, no oversized frames, layer trees clean.
 
-**Invocation when ready:**
-```
-html-to-figma push port-02c,port-03a,port-04a,port-05 \
-  --page case-building-portfolio \
-  --width 375 \
-  --cluster mobile
-```
+**Why native, not image-fill:** the `html-to-figma` skill v1.0.0 was invoked with the native path. Image-fill would have been faster but Della wanted polish-in-Figma capability — that requires real layers.
 
-The html-to-figma skill will:
-- Take a live rendered screenshot of each HTML file at 375px
-- Create a new frame in the mobile cluster on the case-building-portfolio page
-- Position it on the same row as the existing desktop frame
-- Never reposition or modify the existing desktop cluster (per Della's tidyPage exception note for case-study pages)
+**No `tidyPage` was run.** Case-study pages on this file use hand-curated cluster anchors (desktop left, mobile at x=−1325). The global tidyPage rule is suspended for these pages — additive writes only, no repositioning of existing frames.
 
 ---
 
@@ -173,12 +170,16 @@ Verification screenshots: `working/mobile-audit/screenshots/{width}/` (captured 
 
 ~1. Run `screenshot-diagrams.py` locally~ — **✅ DONE Apr 22 08:24**
 ~2. Eyeball the 480/375/320 + 1440/1024/768 outputs~ — **✅ DONE Apr 22 (all 5 verified)**
-3. **→ NEXT:** invoke `html-to-figma push port-02c,port-03a,port-04a,port-05 --page case-building-portfolio --width 375 --cluster mobile` in a fresh thread to populate Figma mobile frames (port-01b not needed, L0).
-4. Polish in Figma → `figma-to-html` → `diagram-deploy` → site live with mobile-responsive case-building-portfolio.
+~3. Invoke `html-to-figma` to populate Figma mobile frames~ — **✅ DONE Apr 22 (all 5 translated native)**
+4. **→ NEXT:** Polish the 5 mobile frames in Figma (typography, spacing, color refinements as desired).
+5. When polish is complete: open a fresh Cowork thread using **`portfolio-site/working/mobile-audit/resume-prompt-case-building-portfolio-figma-to-html.md`** as the entry prompt. That doc handles `figma-to-html` (Figma polish → HTML edits) → local verification → git push. All 5 embeds are already live in `case-building-portfolio.html`, so `diagram-deploy` is a no-op unless a new embed is added — `git push` ships the HTML to Vercel directly.
 
-## Notes for the html-to-figma thread
+## Skill patch recommendations (for `html-to-figma` v1.0.0 → v1.1.0)
 
-- **Target case study page** on Figma file `TArUrZsBUocaAsqetjXq7V`: find the `case-building-portfolio` page (same page used for existing port-* desktop frames).
-- **Byte-array transport, not base64.** Known `atob` failure in Figma plugin runtime (validated twice on case-notifications + case-ai threads). Render JPEG → dump raw bytes as JSON int array → inline as `Uint8Array` in the `use_figma` script → `figma.createImage(bytes)`.
-- **No `tidyPage` on the case study page.** Desktop cluster is never modified. Mobile frames go into the left mobile cluster at the same y as their desktop counterpart. Mobile cluster anchor pattern: `leftmost_top_level_x − 1300` (validated on case-ai session 4).
-- **port-04a source is the `-v4-mobile.html` file, not the desktop.** This is the only L3 — make sure the render uses the mobile variant.
+Based on this 5-diagram batch, two tightening opportunities for the skill:
+
+1. **Default to `layoutSizingHorizontal: 'FILL'` + `layoutSizingVertical: 'HUG'` after every `appendChild`.** The initial translator set these at creation time but Figma auto-layout silently dropped them on some children, causing collapsed columns (port-01b on first pass: h=1397 with ~100px text columns wrapping to 12+ lines each). The fix is always: walk the tree post-creation and reassert sizing on every auto-layout descendant. Suggest adding a `reassertSizing(frame)` helper to the skill and calling it at the end of every translation.
+
+2. **TEXT nodes don't expose `layoutMode`.** Any code that filters descendants by `n.layoutMode !== 'NONE'` throws `TypeError: Cannot read property 'layoutMode' of undefined` on text children. The guard must be `'layoutMode' in n && n.layoutMode !== 'NONE'`. Worth baking into the skill's default tree-walker.
+
+Both fixes are non-destructive — they just make the first-pass translation correct more often, reducing surgical post-passes.

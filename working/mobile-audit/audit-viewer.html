@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Responsive Audit Viewer</title>
+    <style>
+        body { font-family: system-ui; padding: 20px; background: #f5f5f5; }
+        .diagram-set { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; }
+        .diagram-set h2 { margin-top: 0; color: #333; }
+        .breakpoints { display: flex; gap: 10px; flex-wrap: wrap; }
+        .bp-button { padding: 8px 12px; border: 1px solid #ccc; background: white; cursor: pointer; border-radius: 4px; }
+        .bp-button.active { background: #007bff; color: white; border-color: #0056b3; }
+        .screenshot-container { margin-top: 15px; }
+        .screenshot-container img { max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 4px; }
+        .meta { font-size: 12px; color: #666; margin-top: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Case-Notifications Diagrams — Responsive Audit</h1>
+    <p>Click breakpoint buttons to view screenshots at that width.</p>
+    
+    <div id="diagrams"></div>
+    
+    <script>
+        const diagrams = [
+            { id: "not01", name: "Segmentation Matrix", type: "matrix", folder: "case-notifications" },
+            { id: "not04", name: "Unread Hierarchy", type: "hierarchy", folder: "case-notifications" },
+            { id: "not06", name: "Push to Inbox", type: "flow", folder: "case-notifications" },
+            { id: "not07", name: "Preference Architecture", type: "architecture", folder: "case-notifications" },
+            { id: "not09", name: "Global Settings", type: "ui", folder: "case-notifications" },
+            { id: "not11", name: "Cross-Channel", type: "matrix", folder: "case-notifications" },
+        ];
+        
+        const breakpoints = [1440, 1024, 768, 480, 375, 320];
+        const container = document.getElementById("diagrams");
+        
+        diagrams.forEach(diagram => {
+            const div = document.createElement("div");
+            div.className = "diagram-set";
+            
+            let html = `<h2>${diagram.id} — ${diagram.name}</h2>`;
+            html += `<div class="breakpoints">`;
+            
+            breakpoints.forEach(bp => {
+                const btnId = `btn-${diagram.id}-${bp}`;
+                html += `<button class="bp-button" id="${btnId}" data-diagram="${diagram.id}" data-bp="${bp}">${bp}px</button>`;
+            });
+            
+            html += `</div><div class="screenshot-container" id="img-${diagram.id}"></div>`;
+            
+            div.innerHTML = html;
+            container.appendChild(div);
+            
+            // Add click handlers
+            breakpoints.forEach(bp => {
+                document.getElementById(`btn-${diagram.id}-${bp}`).addEventListener("click", (e) => {
+                    showScreenshot(diagram, bp);
+                    updateActiveButton(diagram.id, bp);
+                });
+            });
+            
+            // Show 1440 by default
+            showScreenshot(diagram, 1440);
+            updateActiveButton(diagram.id, 1440);
+        });
+        
+        function showScreenshot(diagram, bp) {
+            const path = `../screenshots/${bp}/${diagram.folder}/${diagram.id}-segmentation-matrix-v5.png`;
+            // Map IDs to actual filenames
+            const fileMap = {
+                "not01": "not01-segmentation-matrix-v5",
+                "not04": "not04-unread-hierarchy-v5",
+                "not06": "not06-push-to-inbox-v5",
+                "not07": "not07-preference-architecture-v5",
+                "not09": "not09-global-settings-v5",
+                "not11": "not11-cross-channel-v5",
+            };
+            
+            const filename = fileMap[diagram.id] || diagram.id;
+            const imgPath = `../screenshots/${bp}/${diagram.folder}/${filename}.png`;
+            const container = document.getElementById(`img-${diagram.id}`);
+            container.innerHTML = "";
+            const img = document.createElement("img");
+            img.src = imgPath;
+            img.alt = `${diagram.name} at ${bp}px`;
+            const meta = document.createElement("div");
+            meta.className = "meta";
+            meta.textContent = `${diagram.name} at ${bp}px`;
+            container.appendChild(img);
+            container.appendChild(meta);
+        }
+        
+        function updateActiveButton(diagramId, bp) {
+            document.querySelectorAll(".bp-button").forEach(btn => {
+                btn.classList.remove("active");
+            });
+            document.getElementById(`btn-${diagramId}-${bp}`).classList.add("active");
+        }
+    </script>
+</body>
+</html>

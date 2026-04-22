@@ -159,3 +159,23 @@ After the Figma thread completes both pairings:
 ## Version
 
 - 2026-04-21 — initial. Source: case-sharing responsive-audit, Phase 2 batch.
+- 2026-04-22 — **pairing executed, scope expanded to all 8 diagrams** (native-layer only, no image fills per Della's hard constraint). All 8 diagrams now have editable Figma frames on page `29:41`, positioned at x=-1300 with y matching each desktop counterpart. Tracker column `figma_mobile_node_id` populated for all 8.
+
+### Executed mobile node IDs (page 29:41)
+
+| Diagram | Mobile node ID | Notes |
+|---|---|---|
+| shr03 — research overview | `851:8` | Native translation of hub-and-spoke; 2 L0 bonus (scope expansion) |
+| shr04 — research methodology | `873:8` | L2 required; vertical flow of 4 cards, track labels intact |
+| shr05 — behavioral model | `881:8` | 3 spoke cards stacked vertically with static illustration zones |
+| shr09 — screenshot to share | `899:8` | 4 numbered circles vertical with connector lines between |
+| shr13 — brand expression spectrum | `833:8` | L0 first-built; established CSS-selector naming pattern |
+| shr14 — privacy barrier | `903:8` | "Privacy" word + 3 static red rings + 3 red-accent cards |
+| shre1 — feedback engine | `906:8` | 3 step-circles w/ colored dots, vertical connector arrows, loop label |
+| shrfw — flywheel | `911:8` | L3 required; rail-spine gradient (teal→warm→blue), 3 cards with rail-nodes, return-arc hook + caption |
+
+**Hard constraint honored:** every frame is fully editable native Figma layers (frames, ellipses, rectangles, text, vectors). No image fills. Della can finesse mobile presentation without roundtripping to HTML first.
+
+**Layer naming:** CSS-selector convention maintained (`.fw-card.fw-card--share`, `.rail-node`, `.spoke-badge.motivators`, etc.) so figma-to-html roundtrip works.
+
+**Not yet done (Della's safety-net pass):** 6 L0 rows still `status=audited`; moves to `verified` after screenshot regression confirms no visual drift.
