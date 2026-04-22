@@ -381,9 +381,12 @@
         });
     </script>
     <script>
-    // Auto-resize diagram iframes to their content height
+    // Auto-resize diagram iframes to their content height.
+    // Tracks inner reflows via ResizeObserver so viewport-driven media-query
+    // restacks (desktop → mobile stacked layout) grow the iframe instead of clipping.
     function resizeDiagramIframes() {
       document.querySelectorAll('.diagram-embed iframe').forEach(iframe => {
+        let observer = null;
         function setHeight() {
           try {
             const diagram = iframe.contentDocument.querySelector('.diagram');
@@ -395,10 +398,21 @@
             iframe.style.height = '600px';
           }
         }
-        if (iframe.contentDocument && iframe.contentDocument.readyState === 'complete') {
+        function onLoad() {
           setHeight();
+          try {
+            const diagram = iframe.contentDocument.querySelector('.diagram');
+            if (diagram && window.ResizeObserver) {
+              if (observer) observer.disconnect();
+              observer = new ResizeObserver(setHeight);
+              observer.observe(diagram);
+            }
+          } catch(e) { /* cross-origin — fallback height already set */ }
         }
-        iframe.addEventListener('load', setHeight);
+        if (iframe.contentDocument && iframe.contentDocument.readyState === 'complete') {
+          onLoad();
+        }
+        iframe.addEventListener('load', onLoad);
       });
     }
     if (document.readyState === 'loading') {
