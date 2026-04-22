@@ -38,7 +38,8 @@
     -webkit-font-smoothing: antialiased;
   }
   .diagram {
-    width: 760px;
+    width: 100%;
+    max-width: 760px;
     background: var(--canvas);
     border-radius: 16px;
     overflow: hidden;
@@ -251,6 +252,21 @@
   .col.after {
     animation: fadeSlideIn 0.5s ease-out 180ms forwards;
     opacity: 0;
+  }
+
+  /* ─ Mobile fit — keep 2-col, slim outer padding so columns have room ─ */
+  @media (max-width: 768px) {
+    body { padding: 16px; }
+    .hover-hint-wrap { padding: 14px 16px 0; }
+    .comparison-wrap { padding: 8px 16px 20px; }
+    .comparison { gap: 12px; }
+  }
+  @media (max-width: 400px) {
+    body { padding: 10px; }
+    .hover-hint-wrap { padding: 12px 10px 0; }
+    .comparison-wrap { padding: 6px 10px 16px; }
+    .comparison { gap: 8px; }
+    .screenshot { padding: 10px 4px; }
   }
 </style>
 </head>
