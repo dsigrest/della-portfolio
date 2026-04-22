@@ -1,8 +1,92 @@
 # Figma Handoff — case-building-portfolio
 
-**Date:** April 21, 2026 (fixes) → **April 22, 2026 (verification + Figma pairing complete)**
-**Scope:** Mobile responsive audit + fixes + Figma mobile pairing for **all 5** port diagrams (case-building-portfolio meta case study)
-**Status:** ✅ All 5 fixes verified. ✅ All 5 mobile frames translated into Figma (native layers, CSS-selector names). Tracker updated with `figma_mobile_node_id` for every row.
+**Date:** April 21, 2026 (fixes) → April 22, 2026 (Session 9 Figma pairing + Session 15 scope expansion)
+**Scope:** Mobile responsive audit + fixes + Figma mobile pairing — originally 5 port diagrams, expanded to **12** across two html-to-figma threads.
+**Status:**
+- Session 9 (Apr 22 AM): ✅ All 5 original fixes verified + all 5 mobile frames translated native (`port-01b`, `port-02c`, `port-03a`, `port-04a`, `port-05`).
+- Session 15 (Apr 22 PM): 🟡 **2 of 7** new mobile frames landed (`port-01d-implication` → node `975:14`, `port-03b-principles` → node `975:24`). 5 pending (`port-01a-grid`, `port-01a-carousel`, `port-03a1-thumbnails`, `port-03c-design-system`, `port-04b-governance`). Figma MCP write channel broke mid-session — pending frames deferred to session 16.
+
+---
+
+## Session 15 Extension — scope expansion to 12 mobile frames
+
+**Why this extension exists:** Session 9 paired the 5 diagrams that had mobile-audit severity fixes. But the case-building-portfolio desktop page has **7 more diagrams** that need mobile Figma pairs for polish-in-Figma roundtrip parity — diagrams that were already mobile-responsive but had no dedicated Figma frame. Session 15 opened to close that gap.
+
+### The 7 new diagrams
+
+| # | Diagram | File | y-anchor (page 29:2) | Session 15 status |
+|---|---|---|---|---|
+| 1 | port-01a-grid | `working/diagrams/v3/diagram-port01a-company-grid.html` | 1051 | **pending** — Figma write channel blocked |
+| 2 | port-01a-carousel | `working/diagrams/v3/diagram-port01a-carousel.html` **(new HTML this session)** | 2791 | **pending** — Figma write channel blocked |
+| 3 | port-01d-implication | `working/diagrams/v3/diagram-port01d-implication.html` | 4531 | ✅ **built** — Figma node `975:14` |
+| 4 | port-03a1-thumbnails | `working/diagrams/v3/diagram-port03a1-thumbnails-gallery.html` | 6109 | **pending** — Figma write channel blocked |
+| 5 | port-03b-principles | `working/diagrams/v3/diagram-port03b-principles.html` | **6849 (intended)** / **7408 (actual)** | ✅ **built** — Figma node `975:24` — **misplaced, needs reposition** |
+| 6 | port-03c-design-system | `working/diagrams/v3/diagram-port03c-design-system.html` | 7938 | **pending** — Figma write channel blocked |
+| 7 | port-04b-governance | `working/diagrams/v3/diagram-port04b-governance-ring.html` | ≈11600 | **pending** — Figma write channel blocked |
+
+Mobile cluster anchor stays at `x=−1325` (same as Session 9's 5 frames). Each new frame stacks at its own y-position in the cluster.
+
+### What's new this session (port-01a-carousel HTML)
+
+`port-01a-carousel` is a **brand-new HTML diagram** written this session — it did not exist before. It complements the existing company grid (`port-01a-grid`) with an interactive carousel navigator showing each of the 6 target companies' weight profiles across 5 dimensions:
+
+- Ramp: 10/15/15/30/30
+- Anthropic: 15/20/15/25/25
+- Meta: 20/20/25/25/10
+- Figma: 15/30/20/20/15
+- OpenAI: 20/20/20/20/20 (max across)
+- Cursor: 20/20/20/20/20 (max across)
+
+Figma linkage embedded via `<meta name="figma-source" content="node:659:1166 page:29:2 file:TArUrZsBUocaAsqetjXq7V">`. `@media (max-width: 680px)` reflow included. **Can deploy to the live site via `diagram-deploy` without needing the Figma pair** — the Figma frame is optional polish surface.
+
+### Figma MCP write channel failure (Session 15)
+
+Reads kept working — `get_metadata` returned a full 245k-char snapshot of file `TArUrZsBUocaAsqetjXq7V` page `29:2`. Writes silently no-op'd: every `use_figma` script returned `"Code executed with no return value"` but produced zero changes on canvas. Rename-existing-node sentinel test confirmed asymmetry (rename of node `975:14` to `'WRITE_TEST_RENAME'` did not stick). Persisted through Figma desktop quit + reopen. Root cause not isolated.
+
+**Session 16 must sentinel-test writes before queuing a batch:**
+
+```javascript
+// use_figma — sentinel test
+const target = await figma.getNodeByIdAsync('975:14');
+const oldName = target.name;
+target.name = 'WRITE_TEST_' + Date.now();
+// read back on canvas, then restore:
+target.name = oldName;
+```
+
+If the sentinel name doesn't appear on the canvas, do not queue work. Stop and troubleshoot the channel first (or surface to Della and pivot).
+
+### Outstanding work for Session 16
+
+1. **Sentinel-test Figma write channel** (above). If broken, pivot — do not re-burn a session on Figma tool diagnosis.
+2. **Reposition `port-03b-principles` (975:24)** from y=7408 → y=6849. One-line Figma write.
+3. **Build 5 pending mobile frames** at their planned y-anchors (see table above). Each is a single `use_figma` call following the Session 9 pattern (auto-layout HUG reassert, CSS-selector layer names, Inter font tokens, native-layer vectors — no image fills).
+4. **Deploy `port-01a-carousel` HTML to the live site via `diagram-deploy`** — does not require Figma; can run in parallel with any Figma work.
+5. **Update tracker** after each build: flip `status` from `figma-mobile-pending` → `figma-mobile-built`, write `figma_mobile_node_id`.
+
+### Per-diagram translator notes (Session 16 pickup)
+
+**port-01a-grid** (L3, responsive desktop → 375px mobile): Stacked company cards with weight bars. Each card ~200h. 6 cards stacked + header ≈ 1400px total. Reuse the `glassCard` helper pattern from Session 9.
+
+**port-01a-carousel** (new this session): Simpler than the grid — single-card carousel with nav dots. At 375px the card fills most of the width. Use the `<meta>` node ID (`659:1166`) as the Figma source.
+
+**port-01d-implication** ✅ **already built** as `975:14` at `y=4531`. L2, no follow-up needed.
+
+**port-03a1-thumbnails** (L2, 12-card gallery): At 375px, 2-column grid. Thumbnails are abstract color blocks — same safe-collapse logic as port-03a. ~10 rows × ~140h ≈ 1400px.
+
+**port-03b-principles** ✅ **already built** as `975:24`, but **needs reposition** from y=7408 → y=6849 to close the gap between it and `port-03a1-thumbnails`.
+
+**port-03c-design-system** (L3, tallest): Palette (7 swatches, 44×44 on mobile per CSS) + type scale (4 rows: 32/17/14/11px examples) + spacing blocks (3: Tight 4-8, Comfortable 16-24, Generous 48-80) + signature interaction (5 micro-bars at heights [18,28,22,36,30] + "Staggered reveals" title + desc). Largest frame — budget ~1100px height on mobile. Batch 2 use_figma helper functions (`rgb`, `fill`, `text`, `vframe`, `hframe`, `border`, `fixFrame`) were already drafted this session; see BUILD-LOG session 15 for the code sketch.
+
+**port-04b-governance** (L2, governance ring): Desktop is a visual ring — mobile reflows to a vertical stacked list with connector ticks (not a ring — linear sequence). Same pattern as port-04a's desktop-ring→mobile-linear translation from Session 9.
+
+---
+
+## Session 9 (original) — 5 diagrams paired native
+
+Below this point is the original Session 9 handoff content, preserved verbatim for reference.
+
+---
 
 **Scope expansion note (Apr 22):** Original handoff doc (below) scoped Figma pairing to 4 diagrams (port-02c, port-03a, port-04a, port-05), excluding port-01b because it was L0 / already responsive. Della expanded the scope to all 5 during the html-to-figma thread — port-01b still needs a Figma mobile frame for pairing consistency, even though the HTML didn't need changes. All 5 now have mobile frames.
 
