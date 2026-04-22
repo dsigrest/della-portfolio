@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="figma-source" content="node:659:1166 page:29:2 file:TArUrZsBUocaAsqetjXq7V">
+<title>PORT-01a — Dimension Weights Carousel</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card-bg: rgba(224,223,228,0.03);
+    --card-border: rgba(224,223,228,0.08);
+    --tab-bg: #151722;
+    --tab-border: rgba(224,223,228,0.07);
+    --bar-bg: #151722;
+    --bar-border: rgba(224,223,228,0.07);
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --accent: #7FB5B0;
+    --accent-shadow: rgba(127,181,176,0.3);
+    --accent-inner: rgba(127,181,176,0.4);
+    --company-ramp: #7FB5B0;
+    --company-anthropic: #D4A574;
+    --company-meta: #8A9EC4;
+    --company-figma: #C4B078;
+    --company-openai: rgba(224, 223, 228, 0.35);
+    --company-cursor: #C47878;
+  }
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+
+  .diagram {
+    width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    padding: 48px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-out 0.1s forwards;
+  }
+
+  .sp-8 { height: 8px; flex-shrink: 0; }
+  .sp-32 { height: 32px; flex-shrink: 0; }
+
+  /* Tab bar */
+  .tab-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .tab {
+    background: var(--tab-bg);
+    border: 1px solid var(--tab-border);
+    border-radius: 8px;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: border-color 0.18s ease, background 0.18s ease;
+    font-family: inherit;
+    color: var(--text-sec);
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .tab:hover { border-color: rgba(224,223,228,0.2); }
+  .tab.active { border-color: var(--accent); color: var(--accent); }
+  .tab-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: var(--dot-color, var(--text-sec));
+  }
+  .tab[data-company="ramp"] { --dot-color: var(--company-ramp); }
+  .tab[data-company="anthropic"] { --dot-color: var(--company-anthropic); }
+  .tab[data-company="meta"] { --dot-color: var(--company-meta); }
+  .tab[data-company="figma"] { --dot-color: var(--company-figma); }
+  .tab[data-company="openai"] { --dot-color: var(--company-openai); }
+  .tab[data-company="cursor"] { --dot-color: var(--company-cursor); }
+
+  /* Card */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+  }
+  .card-title {
+    color: var(--text-pri);
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  .dim {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+  .dim-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-sec);
+    line-height: 1;
+  }
+  .bar-bg {
+    position: relative;
+    height: 24px;
+    background: var(--bar-bg);
+    border: 1px solid var(--bar-border);
+    border-radius: 6px;
+    overflow: hidden;
+    width: 100%;
+  }
+  .bar-fill {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    background: var(--accent);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 0;
+    transition: width 0.45s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+  .bar-fill.glow {
+    box-shadow:
+      0 0 8px 0 var(--accent-shadow),
+      inset 0 0 16px 0 var(--accent-inner);
+  }
+  .bar-pct {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-pri);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s ease 0.3s;
+  }
+  .bar-fill.glow .bar-pct { opacity: 1; }
+
+  /* Card swap animation */
+  .card-swap-enter { opacity: 0; transform: translateY(6px); }
+  .card-swap-visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.22s ease, transform 0.22s ease;
+  }
+
+  /* Mobile-first responsive — let @media reflow handle narrower viewports */
+  @media (max-width: 680px) {
+    body { padding: 16px; }
+    .diagram { width: 100%; padding: 24px; }
+    .tab-bar { gap: 6px; }
+    .tab { padding: 8px 12px; font-size: 11px; }
+    .card { padding: 20px; gap: 16px; }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+  <div class="diagram" role="region" aria-label="Dimension weights carousel">
+    <div class="sp-8"></div>
+
+    <div class="tab-bar" role="tablist" aria-label="Select company">
+      <button class="tab active" data-company="ramp" role="tab" aria-selected="true">
+        <span class="tab-dot"></span>Ramp
+      </button>
+      <button class="tab" data-company="anthropic" role="tab" aria-selected="false">
+        <span class="tab-dot"></span>Anthropic
+      </button>
+      <button class="tab" data-company="meta" role="tab" aria-selected="false">
+        <span class="tab-dot"></span>Meta
+      </button>
+      <button class="tab" data-company="figma" role="tab" aria-selected="false">
+        <span class="tab-dot"></span>Figma
+      </button>
+      <button class="tab" data-company="openai" role="tab" aria-selected="false">
+        <span class="tab-dot"></span>OpenAI
+      </button>
+      <button class="tab" data-company="cursor" role="tab" aria-selected="false">
+        <span class="tab-dot"></span>Cursor
+      </button>
+    </div>
+
+    <div class="sp-32"></div>
+
+    <div class="card" id="card" role="tabpanel" aria-live="polite">
+      <!-- populated by JS -->
+    </div>
+  </div>
+
+  <script>
+    const companies = [
+      { name: 'Ramp',      key: 'ramp',      weights: { portfolio: 10, craft: 15, scope: 15, collab: 30, impact: 30 }, max: ['collab','impact'] },
+      { name: 'Anthropic', key: 'anthropic', weights: { portfolio: 15, craft: 20, scope: 15, collab: 25, impact: 25 }, max: ['collab','impact'] },
+      { name: 'Meta',      key: 'meta',      weights: { portfolio: 20, craft: 20, scope: 25, collab: 25, impact: 10 }, max: ['scope','collab'] },
+      { name: 'Figma',     key: 'figma',     weights: { portfolio: 15, craft: 30, scope: 20, collab: 20, impact: 15 }, max: ['craft'] },
+      { name: 'OpenAI',    key: 'openai',    weights: { portfolio: 20, craft: 20, scope: 20, collab: 20, impact: 20 }, max: ['portfolio','craft','scope','collab','impact'] },
+      { name: 'Cursor',    key: 'cursor',    weights: { portfolio: 20, craft: 20, scope: 20, collab: 20, impact: 20 }, max: ['portfolio','craft','scope','collab','impact'] }
+    ];
+
+    const dimensions = [
+      { key: 'portfolio', label: 'Portfolio' },
+      { key: 'craft',     label: 'Craft' },
+      { key: 'scope',     label: 'Scope' },
+      { key: 'collab',    label: 'Tech + Collaboration' },
+      { key: 'impact',    label: 'Impact' }
+    ];
+
+    const card = document.getElementById('card');
+
+    function renderCard(company) {
+      card.classList.remove('card-swap-visible');
+      card.classList.add('card-swap-enter');
+
+      const rows = dimensions.map(dim => {
+        const pct = company.weights[dim.key];
+        const isMax = company.max.includes(dim.key);
+        return `
+          <div class="dim" data-dim="${dim.key}">
+            <div class="dim-label">${dim.label}</div>
+            <div class="bar-bg">
+              <div class="bar-fill ${isMax ? 'glow' : ''}" data-pct="${pct}">
+                <span class="bar-pct">${pct}%</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      card.innerHTML = `
+        <div class="card-title">${company.name}</div>
+        ${rows}
+      `;
+
+      // Kick off width animations after reflow
+      requestAnimationFrame(() => {
+        card.querySelectorAll('.bar-fill').forEach(el => {
+          const pct = parseFloat(el.dataset.pct);
+          el.style.width = pct + '%';
+        });
+        card.classList.remove('card-swap-enter');
+        card.classList.add('card-swap-visible');
+      });
+    }
+
+    function setActive(index) {
+      document.querySelectorAll('.tab').forEach((tab, i) => {
+        const active = i === index;
+        tab.classList.toggle('active', active);
+        tab.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+      renderCard(companies[index]);
+    }
+
+    document.querySelectorAll('.tab').forEach((tab, i) => {
+      tab.addEventListener('click', () => setActive(i));
+    });
+
+    document.addEventListener('keydown', (e) => {
+      const active = document.querySelector('.tab.active');
+      const i = Array.from(document.querySelectorAll('.tab')).indexOf(active);
+      if (e.key === 'ArrowRight') { e.preventDefault(); setActive((i + 1) % companies.length); }
+      if (e.key === 'ArrowLeft')  { e.preventDefault(); setActive((i - 1 + companies.length) % companies.length); }
+    });
+
+    // Initialize
+    setActive(0);
+  </script>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+</body>
+</html>
