@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHR-12 — Text Post Previews</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --red: #C47878;
+    --red-dim: rgba(196,120,120,0.12);
+    --casual: #D4A574;
+    --casual-dim: rgba(212,165,116,0.12);
+    --new-seg: #8A9EC4;
+    --new-seg-dim: rgba(138,158,196,0.12);
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    color: var(--text-pri);
+  }
+  .diagram {
+    width: 100%;
+    max-width: 760px;
+    min-width: 0;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ── Title ── */
+  .title-area {
+    padding: 48px 48px 0;
+    position: relative;
+    z-index: 1;
+  }
+  .label {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 10px;
+    opacity: 0; animation: fadeUp 600ms cubic-bezier(0.34, 1.56, 0.64, 1) 100ms forwards;
+  }
+  h1 {
+    font-size: clamp(24px, 4vw, 32px); font-weight: 700;
+    color: var(--text-pri); letter-spacing: -0.025em;
+    margin-bottom: 10px; line-height: 1.15;
+    opacity: 0; animation: fadeUp 600ms cubic-bezier(0.34, 1.56, 0.64, 1) 200ms forwards;
+  }
+  .subtitle {
+    font-size: 14px; color: var(--text-sec);
+    line-height: 1.55; max-width: 580px;
+    opacity: 0; animation: fadeUp 600ms cubic-bezier(0.34, 1.56, 0.64, 1) 300ms forwards;
+  }
+
+  /* ── Comparison ── */
+  .content {
+    padding: 36px 48px 48px;
+    position: relative;
+    z-index: 1;
+  }
+  .comparison-wrapper {
+    position: relative;
+    display: flex;
+    gap: 48px;
+    align-items: stretch;
+  }
+  .comparison-wrapper::before,
+  .comparison-wrapper::after {
+    content: '';
+    position: absolute;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .comparison-wrapper::before {
+    left: -60px;
+    background: radial-gradient(circle, rgba(196,120,120,0.04) 0%, transparent 70%);
+  }
+  .comparison-wrapper::after {
+    right: -60px;
+    background: radial-gradient(circle, rgba(127,181,176,0.04) 0%, transparent 70%);
+  }
+
+  .comparison-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    position: relative;
+    z-index: 1;
+    opacity: 0; transform: translateY(16px);
+  }
+  .comparison-column.before { animation: fadeUp 600ms cubic-bezier(0.34, 1.56, 0.64, 1) 350ms forwards; }
+  .comparison-column.after { animation: fadeUp 600ms cubic-bezier(0.34, 1.56, 0.64, 1) 500ms forwards; }
+
+  .column-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .label-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .label-dot.red { background: var(--red); }
+  .label-dot.teal { background: var(--accent); }
+  .column-label.before { color: var(--red); }
+  .column-label.after { color: var(--accent); }
+
+  /* ── Preview mockups ── */
+  .preview-mockup {
+    width: 100%;
+    max-width: 200px;
+    aspect-ratio: 3 / 4;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    gap: 6px;
+    position: relative;
+  }
+  .before .preview-mockup {
+    background: linear-gradient(135deg, rgba(196,120,120,0.06) 0%, rgba(224,223,228,0.02) 100%);
+    border: 1.5px dashed rgba(196,120,120,0.25);
+  }
+  .after .preview-mockup {
+    background: linear-gradient(135deg, rgba(127,181,176,0.06) 0%, rgba(224,223,228,0.02) 100%);
+    border: 1.5px dashed rgba(127,181,176,0.25);
+  }
+  .mock-line {
+    height: 3px;
+    border-radius: 2px;
+    opacity: 0.5;
+  }
+  .before .mock-line {
+    background: var(--text-dim);
+  }
+  .before .mock-line:nth-child(1) { width: 88%; }
+  .before .mock-line:nth-child(2) { width: 94%; }
+  .before .mock-line:nth-child(3) { width: 76%; }
+  .before .mock-line:nth-child(4) { width: 90%; }
+  .before .mock-line:nth-child(5) { width: 93%; }
+  .before .mock-line:nth-child(6) { width: 68%; }
+  .before .mock-line:nth-child(7) { width: 85%; }
+  .before .mock-line:nth-child(8) { width: 79%; }
+  .before .mock-line:nth-child(9) { width: 60%; }
+  .before .mock-line:nth-child(10) { width: 72%; }
+
+  .after .mock-line {
+    background: var(--accent);
+    opacity: 0.6;
+  }
+  .after .mock-line:nth-child(1) { width: 90%; height: 5px; opacity: 0.8; }
+  .after .mock-line:nth-child(2) { width: 70%; height: 5px; opacity: 0.8; margin-bottom: 4px; }
+  .after .mock-line:nth-child(3) { width: 95%; }
+  .after .mock-line:nth-child(4) { width: 80%; }
+
+  .mock-label {
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-dim);
+    text-align: center;
+    margin-top: auto;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── Annotation ── */
+  .annotation {
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.5;
+    text-align: center;
+    padding: 10px 14px;
+    border-radius: 8px;
+    max-width: 200px;
+  }
+  .annotation.before {
+    color: var(--red);
+    background: var(--red-dim);
+    border: 1px solid rgba(196,120,120,0.15);
+  }
+  .annotation.after {
+    color: var(--accent);
+    background: var(--accent-dim);
+    border: 1px solid rgba(127,181,176,0.15);
+  }
+
+  /* ── Arrow ── */
+  .arrow-connector {
+    position: absolute;
+    width: 36px; height: 36px;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    border-radius: 50%;
+    background: var(--canvas);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-highlight);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    animation: fadeInArrow 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 600ms forwards;
+  }
+  .arrow-icon {
+    width: 18px; height: 18px;
+    color: var(--text-sec);
+  }
+
+  /* ── Stat bar ── */
+  .stat-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border-normal);
+    margin-top: 32px;
+    border-radius: 10px;
+    overflow: hidden;
+    opacity: 0; animation: fadeUp 600ms cubic-bezier(0.34, 1.56, 0.64, 1) 750ms forwards;
+  }
+  .stat-item {
+    background: var(--card);
+    padding: 16px;
+    text-align: center;
+  }
+  .stat-value {
+    font-size: 14px; font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.01em;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-desc {
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-ter);
+    line-height: 1.35;
+  }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeInArrow {
+    from { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
+    to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 20px; }
+    .title-area { padding: 32px 24px 0; }
+    .title-area, .content { padding-left: 24px; padding-right: 24px; }
+    .comparison-wrapper {
+      flex-direction: column;
+      gap: 32px;
+    }
+    .comparison-wrapper::before,
+    .comparison-wrapper::after { display: none; }
+    .arrow-connector {
+      position: relative;
+      top: auto; left: auto;
+      transform: rotate(90deg);
+      margin: -8px auto;
+    }
+    @keyframes fadeInArrow {
+      from { opacity: 0; transform: rotate(90deg) scale(0.7); }
+      to { opacity: 1; transform: rotate(90deg) scale(1); }
+    }
+    .stat-bar { grid-template-columns: 1fr; }
+    h1 { font-size: 24px; }
+  }
+
+  @media (max-width: 360px) {
+    body { padding: 16px; }
+    .title-area { padding: 28px 20px 0; }
+    .title-area, .content { padding-left: 20px; padding-right: 20px; }
+  }
+
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="title-area">
+      <div class="label">02 · Text Post Previews</div>
+      <h1>From Illegible to Inviting</h1>
+      <p class="subtitle">Text posts — the majority of Reddit content — had no thumbnails at all. Our first attempt generated full desktop-page screenshots, which were illegible at mobile preview scale.</p>
+    </div>
+
+    <div class="content">
+      <div class="comparison-wrapper">
+        <!-- Before -->
+        <div class="comparison-column before">
+          <div class="column-label before">
+            <div class="label-dot red"></div>
+            Before
+          </div>
+          <div class="preview-mockup">
+            <div class="mock-line"></div>
+            <div class="mock-line"></div>
+            <div class="mock-line"></div>
+            <div class="mock-line"></div>
+            <div class="mock-line"></div>
+            <div class="mock-line"></div>
+            <div class="mock-line"></div>
+            <div class="mock-line"></div>
+            <div class="mock-line"></div>
+            <div class="mock-line"></div>
+            <div class="mock-label">Full desktop page screenshot</div>
+          </div>
+          <div class="annotation before">Full desktop page at mobile scale — illegible text, no hierarchy</div>
+        </div>
+
+        <!-- Arrow -->
+        <div class="arrow-connector">
+          <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </div>
+
+        <!-- After -->
+        <div class="comparison-column after">
+          <div class="column-label after">
+            <div class="label-dot teal"></div>
+            After
+          </div>
+          <div class="preview-mockup">
+            <div class="mock-line"></div>
+            <div class="mock-line"></div>
+            <div class="mock-line"></div>
+            <div class="mock-line"></div>
+            <div class="mock-label">Isolated title + body</div>
+          </div>
+          <div class="annotation after">Stripped chrome, isolated text body — crisp at any scale</div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stat-bar">
+        <div class="stat-item">
+          <div class="stat-value">Majority</div>
+          <div class="stat-desc">Text posts had no previews</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">Mobile-first</div>
+          <div class="stat-desc">Designed for preview scale</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">Title + body</div>
+          <div class="stat-desc">Isolated what matters</div>
+        </div>
+      </div>
+    </div>
+  </div>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</body>
+</html>

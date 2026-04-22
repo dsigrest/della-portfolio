@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHR-01 — Before: Default Share Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --red: #C47878;
+    --red-dim: rgba(196,120,120,0.12);
+    --casual: #D4A574;
+    --casual-dim: rgba(212,165,116,0.12);
+    --new-seg: #8A9EC4;
+    --new-seg-dim: rgba(138,158,196,0.12);
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    color: var(--text-pri);
+  }
+  .diagram {
+    width: 100%;
+    max-width: 760px;
+    min-width: 0;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ── Title ── */
+  .title-area { padding: 48px 48px 0; }
+  .label {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--red); margin-bottom: 10px;
+    opacity: 0; animation: fadeUp 600ms cubic-bezier(0.34, 1.56, 0.64, 1) 100ms forwards;
+  }
+  h1 {
+    font-size: clamp(24px, 4vw, 32px); font-weight: 700;
+    color: var(--text-pri); letter-spacing: -0.025em;
+    margin-bottom: 10px; line-height: 1.15;
+    opacity: 0; animation: fadeUp 600ms cubic-bezier(0.34, 1.56, 0.64, 1) 200ms forwards;
+  }
+  .subtitle {
+    font-size: 14px; color: var(--text-sec);
+    line-height: 1.55; max-width: 580px;
+    opacity: 0; animation: fadeUp 600ms cubic-bezier(0.34, 1.56, 0.64, 1) 300ms forwards;
+  }
+
+  /* ── Main layout: phone + annotations ── */
+  .content-area {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 32px;
+    padding: 36px 48px 40px;
+    position: relative;
+    align-items: start;
+  }
+  .content-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 240px 280px at 25% 50%, rgba(196,120,120,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Phone placeholder (NOT-03 pattern) ── */
+  .phone-placeholder {
+    position: relative;
+    z-index: 1;
+    opacity: 0; animation: fadeUp 600ms cubic-bezier(0.34, 1.56, 0.64, 1) 350ms forwards;
+  }
+  .screenshot-placeholder {
+    aspect-ratio: 9 / 16;
+    max-height: 420px;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(196,120,120,0.06) 0%, rgba(224,223,228,0.02) 100%);
+    border: 1.5px dashed rgba(196,120,120,0.25);
+  }
+  /* Notch */
+  .screenshot-placeholder::before {
+    content: '';
+    position: absolute;
+    top: 8px; left: 50%;
+    transform: translateX(-50%);
+    width: 80px; height: 20px;
+    background: var(--elevated);
+    border-radius: 10px;
+    z-index: 3;
+  }
+  .placeholder-inner {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .placeholder-inner svg {
+    width: 28px; height: 28px;
+    color: var(--text-dim);
+  }
+  .placeholder-inner span {
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-dim);
+    letter-spacing: 0.02em;
+  }
+
+  /* ── Hotspot overlays ── */
+  .hotspot {
+    position: absolute;
+    border-radius: 4px;
+    border: 1.5px solid rgba(196,120,120,0.6);
+    background: rgba(196,120,120,0.08);
+    box-shadow: 0 0 12px rgba(196,120,120,0.15);
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .hotspot.visible { opacity: 1; }
+  .hotspot-label {
+    position: absolute;
+    top: 3px; left: 5px;
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--red);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  /* Hotspot positions (mapped to iOS share sheet regions) */
+  .hotspot-url { top: 9%; left: 5%; right: 5%; height: 10%; }
+  .hotspot-contacts { top: 22%; left: 5%; right: 5%; height: 14%; }
+  .hotspot-apps { top: 39%; left: 5%; right: 5%; height: 14%; }
+  .hotspot-actions { top: 56%; left: 5%; right: 5%; height: 28%; }
+
+  /* ── Annotations (linked to hotspots) ── */
+  .annotations {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .annotations.has-active .annotation:not(.active-pair) {
+    opacity: 0.25;
+  }
+  .annotation {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-highlight);
+    border-radius: 10px;
+    padding: 14px 16px;
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    opacity: 0; transform: translateY(12px);
+  }
+  .annotation:nth-child(1) { animation: fadeUp 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 450ms forwards; }
+  .annotation:nth-child(2) { animation: fadeUp 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 530ms forwards; }
+  .annotation:nth-child(3) { animation: fadeUp 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 610ms forwards; }
+  .annotation:nth-child(4) { animation: fadeUp 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 690ms forwards; }
+
+  .annotation.active-pair {
+    transform: translateX(4px);
+  }
+  .annotation::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 2px;
+    background: var(--red);
+  }
+  .annotation-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+  }
+  .annotation-num {
+    font-size: 9px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--red);
+    width: 18px; height: 18px;
+    border-radius: 4px;
+    background: var(--red-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .annotation-label {
+    font-size: 11px; font-weight: 600;
+    color: var(--text-pri);
+    letter-spacing: -0.01em;
+  }
+  .annotation-text {
+    font-size: 11px;
+    color: var(--text-sec);
+    line-height: 1.45;
+    padding-left: 26px;
+  }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Stat bar ── */
+  .stat-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border-normal);
+    margin: 0 48px 48px;
+    border-radius: 10px;
+    overflow: hidden;
+    opacity: 0; animation: fadeUp 600ms cubic-bezier(0.34, 1.56, 0.64, 1) 800ms forwards;
+  }
+  .stat-item {
+    background: var(--card);
+    padding: 16px;
+    text-align: center;
+  }
+  .stat-value {
+    font-size: 22px; font-weight: 700;
+    color: var(--red);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-desc {
+    font-size: 10px;
+    color: var(--text-ter);
+    line-height: 1.35;
+  }
+
+  /* ── Mobile (<600px): stack phone over annotations, center phone, tighten padding ── */
+  @media (max-width: 600px) {
+    body { padding: 20px; }
+    .title-area { padding: 32px 24px 0; }
+    .content-area {
+      grid-template-columns: 1fr;
+      padding: 28px 24px 32px;
+      gap: 24px;
+    }
+    .phone-placeholder {
+      display: flex;
+      justify-content: center;
+    }
+    /* Phone uses aspect-ratio + max-height for natural sizing.
+       max-width: 100% ensures it shrinks to fit any container width
+       (prevents the diagram's overflow: hidden from clipping the phone
+       at viewports below ~280px). */
+    .screenshot-placeholder {
+      width: 100%;
+      max-width: 190px;
+      max-height: 340px;
+    }
+    .stat-bar {
+      margin: 0 24px 32px;
+      grid-template-columns: 1fr;
+    }
+    .stat-item { padding: 14px; }
+    h1 { font-size: 24px; }
+  }
+
+  /* Very narrow viewports (<360px): further tighten padding */
+  @media (max-width: 360px) {
+    body { padding: 16px; }
+    .title-area { padding: 28px 20px 0; }
+    .content-area { padding: 24px 20px 28px; }
+    .stat-bar { margin: 0 20px 24px; }
+  }
+
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+
+    <div class="title-area">
+      <div class="label">Before</div>
+      <h1>Default iOS Share Sheet</h1>
+      <p class="subtitle">Raw URLs, no preview, no branding. Seven-figure daily volume flowing through a generic system sheet with zero Reddit identity.</p>
+    </div>
+
+    <div class="content-area">
+      <!-- Phone placeholder with hotspots -->
+      <div class="phone-placeholder">
+        <div class="screenshot-placeholder">
+          <div class="placeholder-inner">
+            <svg viewBox="0 0 28 28" fill="none">
+              <rect x="3" y="3" width="22" height="22" rx="4" stroke="currentColor" stroke-width="1.1"/>
+              <path d="M10 18l4-5 3 3 4-5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="10" cy="10" r="2" stroke="currentColor" stroke-width="1.1"/>
+            </svg>
+            <span>iOS share sheet</span>
+          </div>
+
+          <!-- Hotspot overlays -->
+          <div class="hotspot hotspot-url" data-pair="1">
+            <span class="hotspot-label">1</span>
+          </div>
+          <div class="hotspot hotspot-apps" data-pair="2">
+            <span class="hotspot-label">2</span>
+          </div>
+          <div class="hotspot hotspot-actions" data-pair="3">
+            <span class="hotspot-label">3</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Annotations -->
+      <div class="annotations" id="annotations">
+        <div class="annotation" data-pair="1">
+          <div class="annotation-header">
+            <div class="annotation-num">1</div>
+            <span class="annotation-label">Raw URL, no preview</span>
+          </div>
+          <p class="annotation-text">Recipients see a cryptic reddit.com link with no title, image, or context. No reason to tap.</p>
+        </div>
+
+        <div class="annotation" data-pair="2">
+          <div class="annotation-header">
+            <div class="annotation-num">2</div>
+            <span class="annotation-label">Zero brand presence</span>
+          </div>
+          <p class="annotation-text">Generic system sheet — no Reddit logo, no visual identity. Content leaves the platform with no attribution.</p>
+        </div>
+
+        <div class="annotation" data-pair="3">
+          <div class="annotation-header">
+            <div class="annotation-num">3</div>
+            <span class="annotation-label">No sharing intelligence</span>
+          </div>
+          <p class="annotation-text">Same generic action list for every post type. No contextual suggestions, no engagement data, no smart ordering.</p>
+        </div>
+
+        <div class="annotation" data-pair="0">
+          <div class="annotation-header">
+            <div class="annotation-num">
+              <svg viewBox="0 0 10 10" fill="none" style="width:10px;height:10px"><path d="M2 5h6" stroke="var(--red)" stroke-width="1.3" stroke-linecap="round"/></svg>
+            </div>
+            <span class="annotation-label">Screenshot workaround</span>
+          </div>
+          <p class="annotation-text">Users screenshotted posts instead of sharing — stripping context, engagement data, and platform links entirely.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-bar">
+      <div class="stat-item">
+        <div class="stat-value">0</div>
+        <div class="stat-desc">Share entry points in feed</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">0</div>
+        <div class="stat-desc">Preview infrastructure</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">0</div>
+        <div class="stat-desc">Brand presence off-platform</div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // Linked annotation ↔ hotspot highlighting
+  const annotations = document.getElementById('annotations');
+  const allAnnotations = annotations.querySelectorAll('.annotation');
+  const allHotspots = document.querySelectorAll('.hotspot');
+
+  allAnnotations.forEach(ann => {
+    const pair = ann.dataset.pair;
+    ann.addEventListener('mouseenter', () => {
+      annotations.classList.add('has-active');
+      ann.classList.add('active-pair');
+      allHotspots.forEach(h => {
+        h.classList.toggle('visible', h.dataset.pair === pair);
+      });
+    });
+    ann.addEventListener('mouseleave', () => {
+      annotations.classList.remove('has-active');
+      ann.classList.remove('active-pair');
+      allHotspots.forEach(h => h.classList.remove('visible'));
+    });
+  });
+</script>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</body>
+</html>

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHR-07 — Contextual Share Controls</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --red: #C47878;
+    --red-dim: rgba(196,120,120,0.12);
+    --casual: #D4A574;
+    --casual-dim: rgba(212,165,116,0.12);
+    --new-seg: #8A9EC4;
+    --new-seg-dim: rgba(138,158,196,0.12);
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 100%;
+    max-width: 760px;
+    min-width: 0;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+  .diagram::before {
+    content: '';
+    position: absolute;
+    top: 40%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px; height: 300px;
+    background: radial-gradient(ellipse 400px 300px at 50% 50%, rgba(127,181,176,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Title ── */
+  .title-area {
+    padding: 48px 48px 0;
+    position: relative;
+    z-index: 1;
+  }
+  .label {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 10px;
+    opacity: 0; animation: fadeUp 600ms cubic-bezier(0.34, 1.56, 0.64, 1) 100ms forwards;
+  }
+  h1 {
+    font-size: clamp(24px, 4vw, 32px); font-weight: 700;
+    color: var(--text-pri); letter-spacing: -0.025em;
+    margin-bottom: 10px; line-height: 1.15;
+    opacity: 0; animation: fadeUp 600ms cubic-bezier(0.34, 1.56, 0.64, 1) 200ms forwards;
+  }
+  .subtitle {
+    font-size: 14px; color: var(--text-sec);
+    line-height: 1.55; max-width: 620px;
+    margin-bottom: 36px;
+    opacity: 0; animation: fadeUp 600ms cubic-bezier(0.34, 1.56, 0.64, 1) 300ms forwards;
+  }
+
+  /* ── Scrollable cards ── */
+  .content {
+    padding: 0 48px 48px;
+    position: relative;
+    z-index: 1;
+  }
+  .scroll-container {
+    position: relative;
+    margin-bottom: 24px;
+  }
+  .cards-row {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .cards-row::-webkit-scrollbar { display: none; }
+  .scroll-container::after {
+    content: '';
+    position: absolute;
+    right: 0; top: 0;
+    width: 60px; height: calc(100% - 8px);
+    background: linear-gradient(90deg, transparent 0%, var(--canvas) 100%);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* ── Card ── */
+  .card {
+    flex: 0 0 240px;
+    scroll-snap-align: start;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-highlight);
+    border-top: 2px solid var(--accent);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    opacity: 0; transform: translateY(16px);
+  }
+  .card:nth-child(1) { animation: fadeUp 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 400ms forwards; }
+  .card:nth-child(2) { animation: fadeUp 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 500ms forwards; }
+  .card:nth-child(3) { animation: fadeUp 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 600ms forwards; }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── UI Placeholder ── */
+  .ui-placeholder {
+    height: 130px;
+    background: var(--elevated);
+    border-radius: 8px;
+    border: 1.5px dashed rgba(127,181,176,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .placeholder-icon {
+    width: 22px; height: 22px;
+    color: var(--text-dim);
+  }
+  .placeholder-text {
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-dim);
+    letter-spacing: 0.02em;
+  }
+
+  /* ── Card content ── */
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .card-icon {
+    width: 26px; height: 26px;
+    background: var(--accent-dim);
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .card-icon svg {
+    width: 13px; height: 13px;
+    color: var(--accent);
+  }
+  .card-title {
+    font-size: 12px; font-weight: 600;
+    color: var(--text-pri);
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  .card-description {
+    font-size: 11px;
+    color: var(--text-sec);
+    line-height: 1.45;
+  }
+
+  /* ── Comparison strip ── */
+  .comparison {
+    display: flex;
+    gap: 12px;
+  }
+  .comparison-item {
+    flex: 1;
+    padding: 14px 16px;
+    border-radius: 10px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0; animation: fadeUp 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 750ms forwards;
+  }
+  .comparison-item .comp-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .comparison-item .comp-value {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-left: 8px;
+  }
+  .comparison-before {
+    background: var(--red-dim);
+    border: 1px solid rgba(196,120,120,0.2);
+  }
+  .comparison-before .comp-label { color: var(--red); }
+  .comparison-before .comp-value { color: var(--red); }
+  .comparison-after {
+    background: var(--accent-dim);
+    border: 1px solid rgba(127,181,176,0.2);
+  }
+  .comparison-after .comp-label { color: var(--accent); }
+  .comparison-after .comp-value { color: var(--accent); }
+
+  @media (max-width: 600px) {
+    body { padding: 20px; }
+    .title-area { padding: 32px 24px 0; }
+    .title-area, .content { padding-left: 24px; padding-right: 24px; }
+    .card { flex: 0 0 220px; }
+    h1 { font-size: 24px; }
+  }
+
+  @media (max-width: 360px) {
+    body { padding: 16px; }
+    .title-area { padding: 28px 20px 0; }
+    .title-area, .content { padding-left: 20px; padding-right: 20px; }
+    .card { flex: 0 0 200px; }
+  }
+
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="title-area">
+      <div class="label">01 · Streamline Sharing — After</div>
+      <h1>Share Where the Intent Is</h1>
+      <p class="subtitle">I surfaced share controls at contextual trigger points — eliminating unnecessary navigation and bringing sharing into the moment of engagement.</p>
+    </div>
+
+    <div class="content">
+      <div class="scroll-container">
+        <div class="cards-row">
+          <!-- Card 1: Feed -->
+          <div class="card">
+            <div class="ui-placeholder">
+              <svg class="placeholder-icon" viewBox="0 0 22 22" fill="none">
+                <rect x="2" y="2" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.1"/>
+                <line x1="6" y1="8" x2="16" y2="8" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+                <line x1="6" y1="11" x2="16" y2="11" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+                <line x1="6" y1="14" x2="12" y2="14" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+              </svg>
+              <div class="placeholder-text">Feed with share button</div>
+            </div>
+            <div class="card-header">
+              <div class="card-icon">
+                <svg viewBox="0 0 13 13" fill="none"><rect x="1" y="1" width="11" height="2" rx="0.5" stroke="currentColor" stroke-width="1.1"/><rect x="1" y="5" width="11" height="2" rx="0.5" stroke="currentColor" stroke-width="1.1"/><rect x="1" y="9" width="11" height="2" rx="0.5" stroke="currentColor" stroke-width="1.1"/></svg>
+              </div>
+              <div class="card-title">Feed: Inline Share</div>
+            </div>
+            <p class="card-description">Share button added directly in the post action bar — visible on every card without opening the post. One tap from feed to share sheet.</p>
+          </div>
+
+          <!-- Card 2: PDP -->
+          <div class="card">
+            <div class="ui-placeholder">
+              <svg class="placeholder-icon" viewBox="0 0 22 22" fill="none">
+                <rect x="2" y="2" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.1"/>
+                <line x1="6" y1="6" x2="16" y2="6" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+                <line x1="6" y1="9" x2="16" y2="9" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+                <line x1="6" y1="12" x2="14" y2="12" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+                <line x1="6" y1="15" x2="10" y2="15" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+              </svg>
+              <div class="placeholder-text">Post detail page</div>
+            </div>
+            <div class="card-header">
+              <div class="card-icon">
+                <svg viewBox="0 0 13 13" fill="none"><rect x="1.5" y="1.5" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1.1"/><line x1="4" y1="4.5" x2="9" y2="4.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><line x1="4" y1="7" x2="9" y2="7" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+              </div>
+              <div class="card-title">PDP: Persistent Control</div>
+            </div>
+            <p class="card-description">Share control surfaced at the top of the post detail page — always visible while reading. Placed at the peak engagement moment.</p>
+          </div>
+
+          <!-- Card 3: Comments -->
+          <div class="card">
+            <div class="ui-placeholder">
+              <svg class="placeholder-icon" viewBox="0 0 22 22" fill="none">
+                <path d="M3 5C3 3.9 3.9 3 5 3H17C18.1 3 19 3.9 19 5V14C19 15.1 18.1 16 17 16H6L3 19V5Z" stroke="currentColor" stroke-width="1.1" fill="none"/>
+              </svg>
+              <div class="placeholder-text">Comment with share</div>
+            </div>
+            <div class="card-header">
+              <div class="card-icon">
+                <svg viewBox="0 0 13 13" fill="none"><path d="M1.5 3C1.5 2.2 2.2 1.5 3 1.5H10C10.8 1.5 11.5 2.2 11.5 3V8.5C11.5 9.3 10.8 10 10 10H4L1.5 12V3Z" stroke="currentColor" stroke-width="1.1"/></svg>
+              </div>
+              <div class="card-title">Comments: Per-Comment</div>
+            </div>
+            <p class="card-description">Individual comments became shareable with their own entry point — deep-linking to a specific reply instead of screenshotting the thread.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="comparison">
+        <div class="comparison-item comparison-before">
+          <span class="comp-label">Before</span>
+          <span class="comp-value">3+ taps</span>
+        </div>
+        <div class="comparison-item comparison-after">
+          <span class="comp-label">After</span>
+          <span class="comp-value">1 tap</span>
+        </div>
+      </div>
+    </div>
+  </div>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</body>
+</html>

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preview component anatomy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --canvas: #0A0C16;
+      --card: #10121C;
+      --elevated: #151722;
+      --highest: #1A1C28;
+      --text-pri: #E0DFE4;
+      --text-sec: rgba(224,223,228,0.6);
+      --text-ter: rgba(224,223,228,0.4);
+      --text-dim: rgba(224,223,228,0.2);
+      --border-normal: rgba(224,223,228,0.07);
+      --accent: #7FB5B0;
+      --accent-dim: rgba(127,181,176,0.12);
+      --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+      --glass-border: rgba(224,223,228,0.08);
+      --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #08090F;
+      color: var(--text-pri);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      padding: 40px 20px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .diagram {
+      max-width: 760px;
+      min-width: 0;
+      margin: 0 auto;
+    }
+
+    .title-area {
+      margin-bottom: 48px;
+      opacity: 0;
+      animation: fadeUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s forwards;
+    }
+
+    .title-area h1 {
+      font-size: clamp(24px, 5vw, 32px);
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .title-area p {
+      color: var(--text-sec);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .diagram-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .callouts-top {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      opacity: 0;
+      animation: fadeUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s forwards;
+    }
+
+    .preview-center {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      min-height: 320px;
+      opacity: 0;
+      animation: fadeUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.45s forwards;
+    }
+
+    .preview-glow {
+      position: absolute;
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(127, 181, 176, 0.08) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .preview-component {
+      position: relative;
+      width: 280px;
+      background: var(--card);
+      border: 1px solid var(--border-normal);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      z-index: 10;
+    }
+
+    .preview-image-area {
+      width: 100%;
+      height: 140px;
+      background: linear-gradient(135deg, var(--elevated) 0%, var(--highest) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .preview-image-area::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, transparent 30%, rgba(127, 181, 176, 0.1) 50%, transparent 70%);
+      animation: shimmer 3s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .image-icon {
+      width: 40px;
+      height: 40px;
+      stroke: var(--accent);
+      stroke-width: 1.1px;
+      fill: none;
+      position: relative;
+      z-index: 1;
+    }
+
+    .preview-content {
+      padding: 12px;
+    }
+
+    .preview-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-pri);
+      margin-bottom: 6px;
+      height: 14px;
+      background: linear-gradient(90deg, var(--text-pri) 0%, var(--text-pri) 60%, transparent 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      overflow: hidden;
+    }
+
+    .preview-description {
+      font-size: 11px;
+      color: var(--text-sec);
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .preview-description-line {
+      height: 10px;
+      background: var(--text-sec);
+      border-radius: 2px;
+      margin-bottom: 4px;
+      opacity: 0.4;
+    }
+
+    .preview-description-line:last-child {
+      width: 80%;
+      margin-bottom: 0;
+    }
+
+    .preview-stats {
+      display: flex;
+      gap: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-normal);
+      font-size: 11px;
+      color: var(--text-ter);
+    }
+
+    .preview-stat {
+      flex: 1;
+      text-align: center;
+    }
+
+    .preview-stat-value {
+      color: var(--text-pri);
+      font-weight: 600;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .preview-link {
+      display: block;
+      margin-top: 8px;
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    .hotspot {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--canvas);
+      z-index: 20;
+      box-shadow: 0 0 0 6px var(--accent-dim);
+      animation: hotspotPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes hotspotPulse {
+      0%, 100% {
+        box-shadow: 0 0 0 6px var(--accent-dim), 0 0 0 10px rgba(127, 181, 176, 0);
+      }
+      50% {
+        box-shadow: 0 0 0 6px var(--accent-dim), 0 0 0 16px rgba(127, 181, 176, 0.05);
+      }
+    }
+
+    .hotspot-1 {
+      top: 10px;
+      right: 12px;
+    }
+
+    .hotspot-2 {
+      bottom: 12px;
+      right: 10px;
+    }
+
+    .hotspot-3 {
+      bottom: 30px;
+      left: 12px;
+    }
+
+    .callouts-bottom {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      opacity: 0;
+      animation: fadeUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.6s forwards;
+    }
+
+    .callout-card {
+      background: var(--elevated);
+      border: 1px solid var(--border-normal);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .callout-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-ter);
+      margin-bottom: 6px;
+    }
+
+    .callout-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-pri);
+      margin-bottom: 8px;
+    }
+
+    .callout-description {
+      font-size: 13px;
+      color: var(--text-sec);
+      line-height: 1.5;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 100%;
+      }
+
+      .callouts-top {
+        grid-template-columns: 1fr;
+      }
+
+      .title-area {
+        margin-bottom: 32px;
+      }
+
+      .title-area h1 {
+        font-size: 24px;
+      }
+
+      .diagram-wrapper {
+        gap: 32px;
+      }
+
+      .preview-component {
+        width: 100%;
+        max-width: 280px;
+      }
+
+      .preview-glow {
+        width: 240px;
+        height: 240px;
+        max-width: 90%;
+      }
+    }
+
+    @media (max-width: 360px) {
+      body {
+        padding: 16px;
+      }
+
+      .preview-center {
+        min-height: 260px;
+      }
+
+      .preview-glow {
+        width: 180px;
+        height: 180px;
+      }
+    }
+  
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="title-area">
+      <h1>Preview component anatomy</h1>
+      <p>The Reddit post preview uses four key signals to drive engagement across platforms.</p>
+    </div>
+
+    <div class="diagram-wrapper">
+      <div class="callouts-top">
+        <div class="callout-card">
+          <div class="callout-label">Signal</div>
+          <div class="callout-title">Brand anchor</div>
+          <div class="callout-description">
+            Subreddit logo and name establish community context immediately.
+          </div>
+        </div>
+
+        <div class="callout-card">
+          <div class="callout-label">Signal</div>
+          <div class="callout-title">Content signal</div>
+          <div class="callout-description">
+            Image or media preview shows what users will see.
+          </div>
+        </div>
+      </div>
+
+      <div class="preview-center">
+        <div class="preview-glow"></div>
+        <div class="preview-component">
+          <div class="preview-image-area">
+            <svg class="image-icon" viewBox="0 0 24 24">
+              <rect x="4" y="4" width="16" height="14" rx="1"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="4,16 8,11 12,14 20,6"></polyline>
+            </svg>
+            <div class="hotspot hotspot-1">1</div>
+          </div>
+
+          <div class="preview-content">
+            <div class="preview-title">Post title with truncation</div>
+            <div class="preview-description">
+              <div class="preview-description-line"></div>
+              <div class="preview-description-line"></div>
+            </div>
+
+            <div class="preview-stats">
+              <div class="preview-stat">
+                <span class="preview-stat-value">2.1K</span>
+                <span>Upvotes</span>
+              </div>
+              <div class="preview-stat">
+                <span class="preview-stat-value">340</span>
+                <span>Comments</span>
+              </div>
+              <div class="preview-stat">
+                <span class="preview-stat-value">52</span>
+                <span>Shares</span>
+              </div>
+            </div>
+
+            <div class="hotspot hotspot-2">2</div>
+
+            <a href="#" class="preview-link">View on Reddit →</a>
+          </div>
+
+          <div class="hotspot hotspot-3" style="position: absolute;"></div>
+        </div>
+      </div>
+
+      <div class="callouts-bottom">
+        <div class="callout-card">
+          <div class="callout-label">Signal</div>
+          <div class="callout-title">Social proof</div>
+          <div class="callout-description">
+            Upvotes, comments, and shares show momentum. Users engage with posts gaining traction.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</body>
+</html>
