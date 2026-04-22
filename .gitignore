@@ -1,1 +1,26 @@
 img/_*
+
+# Sandbox infrastructure — never commit
+mnt/
+sessions/
+
+# macOS metadata
+.DS_Store
+**/.DS_Store
+
+# Editor / OS cruft
+*.swp
+*~
+
+# Python
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+
+# Local only
+.vercel/
+.env
+.env.local
+working/diagram-viewer.html
