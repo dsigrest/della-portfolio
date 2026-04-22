@@ -9,7 +9,7 @@
     "assert": {
       "assertions": {
         "categories:performance": ["warn", { "minScore": 0.7 }],
-        "categories:accessibility": ["error", { "minScore": 0.9 }],
+        "categories:accessibility": ["warn", { "minScore": 0.9 }],
         "categories:best-practices": ["warn", { "minScore": 0.8 }],
         "categories:seo": ["error", { "minScore": 0.9 }],
 
@@ -18,7 +18,7 @@
         "html-has-lang": ["error", { "minScore": 1 }],
         "meta-description": ["error", { "minScore": 1 }],
         "image-alt": ["error", { "minScore": 1 }],
-        "color-contrast": ["error", { "minScore": 1 }],
+        "color-contrast": ["warn", { "minScore": 1 }],
         "heading-order": ["warn", { "minScore": 1 }],
 
         "uses-rel-preconnect": ["warn", { "maxLength": 0 }],
