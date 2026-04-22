@@ -233,6 +233,71 @@
     width: 100%;
     border-radius: 0;
   }
+
+  /* Responsive: below 768px, collapse 3-column to single column */
+  @media (max-width: 768px) {
+    body { padding: 24px; }
+    .diagram { width: 100%; }
+    .title-area { padding: 32px 24px 0; }
+    h1 { font-size: 26px; }
+    .subtitle { font-size: 13px; }
+    .problem-bar { margin: 16px 24px 0; }
+    .hover-hint { padding: 20px 24px 0; }
+    .transform-area { padding: 16px 24px 0; }
+    /* Collapse 3-col (before · arrow · after) to single column; arrow decorative, hide */
+    .pref-columns { grid-template-columns: 1fr; gap: 12px; }
+    .transform-arrow { display: none; }
+    .pref-side { gap: 8px; }
+    .pref-row { padding: 12px 14px; }
+    .annotations { padding: 20px 24px 0; gap: 8px; }
+    .ann-card { padding: 12px 14px; }
+    .outcome-bar { margin: 16px 24px 32px; }
+  }
+
+  /* Below 480px: tighter padding + compact rows to reduce total height */
+  @media (max-width: 480px) {
+    body { padding: 12px; }
+    h1 { font-size: 22px; letter-spacing: -0.02em; }
+    .subtitle { font-size: 12px; line-height: 1.5; }
+    .title-area { padding: 24px 16px 0; }
+    .problem-bar { margin: 16px 16px 0; padding: 10px 14px; }
+    .problem-text { font-size: 11px; }
+    .hover-hint { padding: 16px 16px 0; }
+    .transform-area { padding: 12px 16px 0; }
+    .pref-columns { gap: 10px; }
+    .pref-side { gap: 8px; }
+    .pref-side-label { font-size: 9px; margin-bottom: 2px; }
+    .pref-row { padding: 10px 12px; }
+    .pref-row-header { gap: 8px; margin-bottom: 8px; }
+    .pref-icon-box { width: 24px; height: 24px; }
+    .pref-row-title { font-size: 12px; }
+    .seg-option { padding: 6px 3px; font-size: 9px; }
+    .seg-question { font-size: 7px; }
+    .annotations { padding: 16px 16px 0; gap: 6px; }
+    .ann-card { padding: 10px 12px; }
+    .ann-card:hover { transform: none; }
+    .ann-title { font-size: 10px; }
+    .ann-detail { font-size: 11px; line-height: 1.5; }
+    .ann-detail .mono { font-size: 10px; }
+    .outcome-bar { margin: 16px 16px 24px; padding: 14px 16px; }
+    .outcome-text { font-size: 12px; }
+  }
+
+  /* Below 320px floor: minimal padding, smallest legible fonts */
+  @media (max-width: 320px) {
+    body { padding: 8px; }
+    h1 { font-size: 20px; }
+    .subtitle { font-size: 11px; }
+    .title-area { padding: 20px 12px 0; }
+    .problem-bar { margin: 12px 12px 0; padding: 9px 12px; }
+    .hover-hint { padding: 12px 12px 0; }
+    .transform-area { padding: 10px 12px 0; }
+    .pref-row { padding: 9px 10px; }
+    .seg-option { padding: 5px 2px; font-size: 8px; }
+    .annotations { padding: 12px 12px 0; }
+    .ann-card { padding: 9px 11px; }
+    .outcome-bar { margin: 12px 12px 16px; padding: 12px 14px; }
+  }
 </style>
 </head>
 <body>

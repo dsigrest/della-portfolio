@@ -306,6 +306,56 @@
     width: 100%;
     border-radius: 0;
   }
+
+  /* Responsive: below 768px, stack the 2x2 matrix into a single column and tighten spacing */
+  @media (max-width: 768px) {
+    body { padding: 24px; }
+    .diagram { width: 100%; }
+    .title-area { padding: 32px 24px 0; }
+    .matrix-wrap { padding: 24px 24px 0; }
+    h1 { font-size: 26px; }
+    .subtitle { font-size: 13px; }
+    .matrix-body { flex-direction: column; }
+    .y-axis { display: none; }  /* Y-axis labels no longer meaningful when grid is vertical */
+    .grid {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+      gap: 8px;
+    }
+    .axis-row { padding-left: 0; }
+    .quad { padding: 16px; }
+    .illus-zone { height: 44px; margin-bottom: 10px; }
+    .quad-strategy { font-size: 12px; }
+    .insight-bar { padding: 16px 24px 24px; }
+  }
+
+  /* Below 480px: even tighter */
+  @media (max-width: 480px) {
+    body { padding: 12px; }
+    .title-area { padding: 24px 16px 0; }
+    .matrix-wrap { padding: 16px 16px 0; }
+    h1 { font-size: 22px; letter-spacing: -0.02em; }
+    .subtitle { font-size: 12px; line-height: 1.5; }
+    .quad { padding: 14px; }
+    .quad-name { font-size: 13px; }
+    .quad-strategy { font-size: 11px; line-height: 1.4; }
+    .quad-metric { font-size: 10px; }
+    .priority-tag { font-size: 9px; }
+    .insight-bar { padding: 14px 16px 16px; }
+    .insight-text { font-size: 12px; line-height: 1.45; }
+    .axis-end { font-size: 8px; padding: 0 6px; }
+  }
+
+  /* Below 320px floor: minimal padding, smallest legible fonts */
+  @media (max-width: 320px) {
+    body { padding: 8px; }
+    .title-area { padding: 20px 12px 0; }
+    .matrix-wrap { padding: 12px 12px 0; }
+    h1 { font-size: 20px; }
+    .subtitle { font-size: 11px; }
+    .quad { padding: 12px; }
+    .grid { gap: 6px; }
+  }
 </style>
 </head>
 <body>

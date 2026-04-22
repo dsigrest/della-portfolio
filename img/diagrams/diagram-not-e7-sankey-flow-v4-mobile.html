@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NOT-E7 — Sankey Flow (Mobile)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --canvas: #0A0C16; --card: #10121C; --elevated: #151722;
+    --text-pri: #E0DFE4; --text-sec: rgba(224,223,228,0.6); --text-ter: rgba(224,223,228,0.4); --text-dim: rgba(224,223,228,0.2);
+    --accent: #7FB5B0;
+    --gold: #C4B078; --red: #C47878; --blue: #8A9EC4;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #08090F; padding: 24px;
+    font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 100%; background: var(--canvas); border-radius: 16px; overflow: hidden; position: relative;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    padding: 20px 16px 24px;
+  }
+
+  /* ── Legend (segment key) ── */
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 8px 12px;
+    padding: 4px 4px 16px;
+    border-bottom: 1px solid var(--glass-border);
+    margin-bottom: 16px;
+    opacity: 0; animation: mount 0.5s var(--spring) 0.1s forwards;
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 10px; color: var(--text-ter);
+    letter-spacing: 0.02em;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .legend-dot.core { background: var(--accent); }
+  .legend-dot.casual { background: var(--gold); }
+  .legend-dot.resurrected { background: var(--red); }
+  .legend-dot.new { background: var(--blue); }
+
+  /* ── Funnel column ── */
+  .funnel { display: flex; flex-direction: column; gap: 0; }
+
+  /* Stage card */
+  .stage {
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    border-radius: 12px; padding: 16px;
+    position: relative; backdrop-filter: blur(8px);
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+  }
+  .stage::before {
+    content: ''; position: absolute; inset: 0;
+    box-shadow: var(--glass-highlight); border-radius: 12px; pointer-events: none;
+  }
+  .stage:nth-of-type(odd) { animation-delay: 0.2s; }
+  .stage:nth-of-type(3)   { animation-delay: 0.4s; }
+  .stage:nth-of-type(5)   { animation-delay: 0.6s; }
+
+  .stage-header {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 10px; margin-bottom: 14px;
+  }
+  .stage-name {
+    font-size: 13px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text-ter);
+  }
+  .stage-metric {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px; font-weight: 700;
+    color: var(--text-pri);
+    letter-spacing: -0.01em;
+  }
+  .stage-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--text-dim);
+    letter-spacing: 0.04em; margin-top: 2px;
+  }
+
+  /* Segment breakdown bar */
+  .segments-bar {
+    height: 10px; border-radius: 5px; overflow: hidden;
+    display: flex; margin-bottom: 10px;
+    background: rgba(0,0,0,0.35);
+  }
+  .seg {
+    height: 100%;
+    transition: opacity 0.2s ease;
+  }
+  .seg.core { background: var(--accent); }
+  .seg.casual { background: var(--gold); }
+  .seg.resurrected { background: var(--red); }
+  .seg.new { background: var(--blue); }
+
+  /* Segment rows (breakdown detail) */
+  .segment-rows {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4px 14px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--text-sec);
+  }
+  .seg-row {
+    display: flex; align-items: center; gap: 6px;
+    line-height: 1.5;
+  }
+  .seg-row-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .seg-row-dot.core { background: var(--accent); }
+  .seg-row-dot.casual { background: var(--gold); }
+  .seg-row-dot.resurrected { background: var(--red); }
+  .seg-row-dot.new { background: var(--blue); }
+  .seg-row-label { flex: 1; color: var(--text-ter); }
+  .seg-row-pct { color: var(--text-pri); font-weight: 600; }
+
+  /* ── Dropout connector ── */
+  .dropout {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 16px;
+    margin: 8px 20px;
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+  }
+  .dropout:nth-of-type(2) { animation-delay: 0.3s; }
+  .dropout:nth-of-type(4) { animation-delay: 0.5s; }
+  .dropout-track {
+    width: 1px; height: 22px;
+    background: linear-gradient(to bottom,
+      rgba(196,120,120,0.45),
+      rgba(196,120,120,0.08));
+    flex-shrink: 0;
+  }
+  .dropout-icon {
+    color: var(--red); opacity: 0.6;
+    flex-shrink: 0; margin-left: -6px;
+  }
+  .dropout-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--red); opacity: 0.75;
+  }
+  .dropout-text strong { font-weight: 700; opacity: 1; }
+
+  @keyframes mount {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Embed mode */
+  body.embedded { padding: 0; min-height: auto; display: block; background: transparent; overflow: hidden; }
+  body.embedded .diagram { border-radius: 0; }
+
+  /* Small floor */
+  @media (max-width: 340px) {
+    body { padding: 12px; }
+    .diagram { padding: 16px 12px 20px; }
+    .stage { padding: 14px; }
+    .stage-metric { font-size: 16px; }
+    .segment-rows { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="diagram">
+
+  <!-- Segment key -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot core"></div> Core</div>
+    <div class="legend-item"><div class="legend-dot casual"></div> Casual</div>
+    <div class="legend-item"><div class="legend-dot resurrected"></div> Resurrected</div>
+    <div class="legend-item"><div class="legend-dot new"></div> New</div>
+  </div>
+
+  <div class="funnel">
+
+    <!-- Stage 1: DAU -->
+    <div class="stage">
+      <div class="stage-header">
+        <div>
+          <div class="stage-name">Inbox DAU</div>
+          <div class="stage-sub">Daily active, saw notifications</div>
+        </div>
+        <div class="stage-metric">7.5m</div>
+      </div>
+      <!-- Source: desktop sankey comment block — Col 1 proportions -->
+      <div class="segments-bar">
+        <div class="seg core" style="width: 85%"></div>
+        <div class="seg casual" style="width: 8%"></div>
+        <div class="seg resurrected" style="width: 5%"></div>
+        <div class="seg new" style="width: 2%"></div>
+      </div>
+      <div class="segment-rows">
+        <div class="seg-row"><span class="seg-row-dot core"></span><span class="seg-row-label">Core</span><span class="seg-row-pct">85%</span></div>
+        <div class="seg-row"><span class="seg-row-dot casual"></span><span class="seg-row-label">Casual</span><span class="seg-row-pct">8%</span></div>
+        <div class="seg-row"><span class="seg-row-dot resurrected"></span><span class="seg-row-label">Resurrected</span><span class="seg-row-pct">5%</span></div>
+        <div class="seg-row"><span class="seg-row-dot new"></span><span class="seg-row-label">New</span><span class="seg-row-pct">2%</span></div>
+      </div>
+    </div>
+
+    <!-- Dropout: DAU → Clickers -->
+    <div class="dropout">
+      <div class="dropout-track"></div>
+      <svg class="dropout-icon" fill="none" height="14" viewBox="0 0 14 14" width="14">
+        <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+      </svg>
+      <div class="dropout-text"><strong>53% drop off</strong> — didn't click through</div>
+    </div>
+
+    <!-- Stage 2: Clickers -->
+    <div class="stage">
+      <div class="stage-header">
+        <div>
+          <div class="stage-name">Clickers</div>
+          <div class="stage-sub">Tapped into a notification</div>
+        </div>
+        <div class="stage-metric">3.2m</div>
+      </div>
+      <!-- Source: derived from per-segment click rates (core 48%, casual 35%, resur 39%, new 50%) in desktop sankey comments -->
+      <div class="segments-bar">
+        <div class="seg core" style="width: 88%"></div>
+        <div class="seg casual" style="width: 6%"></div>
+        <div class="seg resurrected" style="width: 4%"></div>
+        <div class="seg new" style="width: 2%"></div>
+      </div>
+      <div class="segment-rows">
+        <div class="seg-row"><span class="seg-row-dot core"></span><span class="seg-row-label">Core</span><span class="seg-row-pct">88%</span></div>
+        <div class="seg-row"><span class="seg-row-dot casual"></span><span class="seg-row-label">Casual</span><span class="seg-row-pct">6%</span></div>
+        <div class="seg-row"><span class="seg-row-dot resurrected"></span><span class="seg-row-label">Resurrected</span><span class="seg-row-pct">4%</span></div>
+        <div class="seg-row"><span class="seg-row-dot new"></span><span class="seg-row-label">New</span><span class="seg-row-pct">2%</span></div>
+      </div>
+    </div>
+
+    <!-- Dropout: Clickers → Contributors -->
+    <div class="dropout">
+      <div class="dropout-track"></div>
+      <svg class="dropout-icon" fill="none" height="14" viewBox="0 0 14 14" width="14">
+        <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+      </svg>
+      <div class="dropout-text"><strong>25% drop off</strong> — clicked but didn't contribute</div>
+    </div>
+
+    <!-- Stage 3: Contributors -->
+    <div class="stage">
+      <div class="stage-header">
+        <div>
+          <div class="stage-name">Contributors</div>
+          <div class="stage-sub">Posted, commented, or voted</div>
+        </div>
+        <div class="stage-metric">2.4m</div>
+      </div>
+      <!-- Source: bar-height proportions at x=630 in desktop sankey (core 115px / casual 8 / resur 6 / new 4) -->
+      <div class="segments-bar">
+        <div class="seg core" style="width: 87%"></div>
+        <div class="seg casual" style="width: 6%"></div>
+        <div class="seg resurrected" style="width: 4%"></div>
+        <div class="seg new" style="width: 3%"></div>
+      </div>
+      <div class="segment-rows">
+        <div class="seg-row"><span class="seg-row-dot core"></span><span class="seg-row-label">Core</span><span class="seg-row-pct">87%</span></div>
+        <div class="seg-row"><span class="seg-row-dot casual"></span><span class="seg-row-label">Casual</span><span class="seg-row-pct">6%</span></div>
+        <div class="seg-row"><span class="seg-row-dot resurrected"></span><span class="seg-row-label">Resurrected</span><span class="seg-row-pct">4%</span></div>
+        <div class="seg-row"><span class="seg-row-dot new"></span><span class="seg-row-label">New</span><span class="seg-row-pct">3%</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+</body>
+</html>

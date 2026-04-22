@@ -275,6 +275,65 @@
     width: 100%;
     border-radius: 0;
   }
+
+  /* Responsive: below 768px, stack flow horizontally to vertically */
+  @media (max-width: 768px) {
+    body { padding: 24px; }
+    .diagram { width: 100%; }
+    .title-area { padding: 32px 24px 0; }
+    h1 { font-size: 26px; }
+    .subtitle { font-size: 13px; }
+    .problem-bar { margin: 16px 24px 0; padding: 12px 16px; }
+    .problem-text { font-size: 11px; }
+    .flow-area { padding: 24px 24px 0; }
+    .flow { flex-direction: column; gap: 12px; }
+    .step-card { padding: 16px 12px; }
+    .flow-arrow { display: none; }
+    .hover-hint { font-size: 9px; padding: 0 0 8px; }
+    /* Collapse before/after grid to single column so cards don't crush */
+    .comparison-strip { grid-template-columns: 1fr; gap: 12px; padding: 20px 24px 0; }
+    .outcome-bar { margin: 20px 24px 32px; }
+  }
+
+  /* Below 480px: even tighter */
+  @media (max-width: 480px) {
+    body { padding: 12px; }
+    .title-area { padding: 24px 16px 0; }
+    h1 { font-size: 22px; letter-spacing: -0.02em; }
+    .subtitle { font-size: 12px; line-height: 1.5; }
+    .problem-bar { margin: 12px 16px 0; padding: 10px 12px; }
+    .problem-icon { width: 24px; height: 24px; }
+    .problem-text { font-size: 10px; }
+    .flow-area { padding: 16px 16px 0; }
+    .step-card { padding: 14px 10px; }
+    .step-card:hover { transform: none; }
+    .step-label { font-size: 10px; }
+    .step-desc { font-size: 11px; }
+    .comparison-strip { padding: 16px 16px 0; gap: 10px; }
+    .comp-card { padding: 14px; }
+    .comp-card:hover { transform: none; }
+    .comp-label { font-size: 9px; margin-bottom: 12px; }
+    .mini-row { padding: 6px 8px; gap: 8px; }
+    .mini-text { font-size: 11px; }
+    .outcome-bar { margin: 16px 16px 24px; padding: 14px 16px; }
+    .outcome-text { font-size: 12px; }
+  }
+
+  /* Below 320px floor: minimal padding, smallest legible fonts */
+  @media (max-width: 320px) {
+    body { padding: 8px; }
+    .title-area { padding: 20px 12px 0; }
+    h1 { font-size: 20px; }
+    .subtitle { font-size: 11px; }
+    .problem-bar { margin: 10px 12px 0; }
+    .flow-area { padding: 12px 12px 0; }
+    .step-card { padding: 12px 8px; }
+    .comparison-strip { padding: 12px 12px 0; gap: 8px; }
+    .comp-card { padding: 12px; }
+    .mini-row { padding: 5px 7px; gap: 6px; }
+    .mini-text { font-size: 10px; }
+    .outcome-bar { margin: 12px 12px 16px; padding: 12px 14px; }
+  }
 </style>
 </head>
 <body>

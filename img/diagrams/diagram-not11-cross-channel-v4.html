@@ -218,6 +218,73 @@
     width: 100%;
     border-radius: 0;
   }
+    @media (max-width: 768px) {
+      body { padding: 24px; }
+      .diagram { width: 100%; }
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 12px; }
+
+      /* Desktop-only interaction hint — hover doesn't work on touch */
+      .hover-hint { display: none; }
+
+      /* Break hub-and-spokes out of absolute positioning into a vertical stack */
+      .hub-area { padding: 20px 16px 0; }
+      .hub-area::before { display: none; }
+      .hub-layout {
+        aspect-ratio: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        align-items: stretch;
+      }
+
+      /* Connecting SVG is coordinate-mapped to desktop geometry */
+      .connections { display: none; }
+
+      .hub,
+      .spoke {
+        position: static;
+        transform: none;
+        width: 100%;
+        top: auto; left: auto; right: auto; bottom: auto;
+      }
+      .hub:hover,
+      .spoke:hover,
+      .spoke.active-spoke { transform: none; }
+
+      .hub-glow,
+      .spoke-glow { display: none; }
+
+      /* Callouts render inline beneath each spoke at mobile */
+      .spoke-callout {
+        position: static;
+        opacity: 1;
+        transform: none;
+        width: auto;
+        margin-top: 8px;
+        text-align: center;
+        pointer-events: auto;
+      }
+      .spoke-callout::after { display: none; }
+      .spoke.callout-below .spoke-callout,
+      .spoke:hover .spoke-callout,
+      .spoke.callout-below:hover .spoke-callout { transform: none; }
+
+      /* Platform matrix stacks to single column */
+      .platform-matrix {
+        margin: 20px 16px 0;
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+    }
+
+    @media (max-width: 320px) {
+      body { padding: 8px; }
+      .hub-area { padding: 16px 12px 0; }
+      .platform-matrix { margin: 16px 12px 0; }
+    }
 </style>
 </head>
 <body>

@@ -141,6 +141,47 @@
     width: 100%;
     border-radius: 0;
   }
+
+  /* Responsive: butterfly chart — tighten spacing, scale text, ensure bars and labels remain legible */
+  @media (max-width: 768px) {
+    body { padding: 24px; }
+    .diagram { width: 100%; }
+    h1 { font-size: 22px; }
+    .legend { padding: 16px 24px 0; flex-wrap: wrap; gap: 16px; }
+    .chart-area { padding: 16px 20px 0; }
+    .insight-bar { margin: 20px 24px 32px; padding: 16px 18px; }
+    .insight-text { font-size: 12px; line-height: 1.5; }
+  }
+
+  @media (max-width: 480px) {
+    body { padding: 12px; }
+    h1 { font-size: 20px; }
+    .subtitle { font-size: 12px; }
+    .legend { padding: 14px 16px 0; gap: 12px; font-size: 11px; }
+    .chart-area { padding: 14px 12px 0; }
+    .insight-bar { margin: 16px 16px 24px; padding: 14px 16px; gap: 12px; }
+    .insight-text { font-size: 12px; line-height: 1.5; }
+    /* Bump SVG text so labels remain legible when chart shrinks */
+    .side-label { font-size: 14px; }
+    .metric-label { font-size: 13px; }
+    .notif-card-title { font-size: 13px; }
+    .notif-card-sub { font-size: 11px; }
+    .bar-val { font-size: 13px; }
+  }
+
+  @media (max-width: 320px) {
+    body { padding: 8px; }
+    h1 { font-size: 18px; }
+    .legend { padding: 10px 12px 0; gap: 8px; font-size: 10px; }
+    .chart-area { padding: 10px 10px 0; }
+    .insight-bar { margin: 12px 12px 16px; padding: 12px 14px; }
+    .insight-text { font-size: 11px; line-height: 1.45; }
+    .side-label { font-size: 16px; }
+    .metric-label { font-size: 15px; }
+    .notif-card-title { font-size: 15px; }
+    .notif-card-sub { font-size: 13px; }
+    .bar-val { font-size: 15px; }
+  }
 </style>
 </head>
 <body>

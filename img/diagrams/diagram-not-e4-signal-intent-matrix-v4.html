@@ -182,6 +182,62 @@
     width: 100%;
     border-radius: 0;
   }
+
+  /* ── L2 RESPONSIVE: 768px (tablet) ── */
+  @media (max-width: 768px) {
+    body { padding: 24px; }
+    .diagram { width: 100%; }
+    .title-area { padding: 32px 24px 0; }
+    h1 { font-size: 24px; }
+    .subtitle { font-size: 12px; }
+    .matrix-area { padding: 24px 24px 32px; }
+    /* Hide axis labels — they only make spatial sense at 2x2 grid; stack breaks the mapping */
+    .col-headers { display: none; }
+    .matrix-body { flex-direction: column; }
+    .y-axis { display: none; }
+    /* Collapse 2x2 grid to single column — 4 persona cards stacked */
+    .grid { grid-template-columns: 1fr; grid-template-rows: auto; gap: 12px; }
+    .quad { padding: 20px 18px; }
+    .quad:hover { transform: none; }
+    /* Inline axis label inside each quad so matrix concept is preserved */
+    .persona-header::after {
+      font-family: 'JetBrains Mono', monospace; font-size: 9px;
+      color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase;
+      margin-left: auto; padding-left: 8px; text-align: right;
+    }
+    .quad.lurker .persona-header::after      { content: "low signal × low engage"; }
+    .quad.subscriber .persona-header::after  { content: "high signal × low engage"; }
+    .quad.contributor .persona-header::after { content: "low signal × high engage"; }
+    .quad.superfan .persona-header::after    { content: "high signal × high engage"; }
+  }
+  /* ── L2 RESPONSIVE: 480px (mobile large) ── */
+  @media (max-width: 480px) {
+    body { padding: 12px; }
+    .title-area { padding: 24px 16px 0; }
+    h1 { font-size: 22px; }
+    .subtitle { font-size: 11px; line-height: 1.4; }
+    .matrix-area { padding: 16px 16px 24px; }
+    .grid { gap: 10px; }
+    .quad { padding: 16px 14px; }
+    .persona { font-size: 15px; }
+    .persona-icon { width: 26px; height: 26px; }
+    .strategy { font-size: 11px; }
+    .persona-header::after { font-size: 8px; }
+  }
+  /* ── L2 RESPONSIVE: 320px (mobile small) ── */
+  @media (max-width: 320px) {
+    body { padding: 8px; }
+    .title-area { padding: 20px 12px 0; }
+    h1 { font-size: 20px; }
+    .subtitle { font-size: 10px; }
+    .matrix-area { padding: 12px 12px 20px; }
+    .grid { gap: 8px; }
+    .quad { padding: 14px 12px; }
+    .persona { font-size: 14px; }
+    .strategy { font-size: 10px; }
+    .persona-header::after { display: none; }
+  }
+
 </style>
 </head>
 <body>

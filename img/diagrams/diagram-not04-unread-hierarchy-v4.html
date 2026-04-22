@@ -350,6 +350,47 @@
     width: 100%;
     border-radius: 0;
   }
+
+  /* Responsive: below 768px, collapse 3-column grid to single column */
+  @media (max-width: 768px) {
+    body { padding: 24px; }
+    .diagram { width: 100%; }
+    .title-area { padding: 32px 24px 0; }
+    h1 { font-size: 26px; }
+    .subtitle { font-size: 13px; }
+    .levels-flow { padding: 24px 24px 0; }
+    .level-labels { grid-template-columns: 1fr; gap: 8px; }
+    .levels-grid { grid-template-columns: 1fr; gap: 8px; }
+    .level-card { padding: 14px; }
+    .hover-hint { padding: 12px 24px 0; font-size: 9px; }
+  }
+
+  /* Below 480px: even tighter */
+  @media (max-width: 480px) {
+    body { padding: 12px; }
+    .diagram { width: 100%; }
+    .title-area { padding: 24px 16px 0; }
+    h1 { font-size: 22px; letter-spacing: -0.02em; }
+    .subtitle { font-size: 12px; line-height: 1.5; }
+    .levels-flow { padding: 16px 16px 0; }
+    .level-labels { gap: 6px; }
+    .level-name { font-size: 9px; }
+    .level-num { font-size: 14px; }
+    .levels-grid { gap: 6px; }
+    .level-card { padding: 12px; }
+    .hover-hint { padding: 10px 16px 0; font-size: 8px; }
+  }
+
+  /* Below 320px floor: minimal padding, smallest legible fonts */
+  @media (max-width: 320px) {
+    body { padding: 8px; }
+    .title-area { padding: 20px 12px 0; }
+    h1 { font-size: 20px; }
+    .subtitle { font-size: 11px; }
+    .levels-flow { padding: 12px 12px 0; }
+    .level-card { padding: 10px; }
+    .levels-grid { gap: 4px; }
+  }
 </style>
 </head>
 <body>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NOT-E2 — Strategy Flywheel (Mobile)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --canvas: #0A0C16; --card: #10121C;
+    --text-pri: #E0DFE4; --text-sec: rgba(224,223,228,0.6); --text-ter: rgba(224,223,228,0.4); --text-dim: rgba(224,223,228,0.2);
+    --accent: #7FB5B0; --accent-dim: rgba(127,181,176,0.12);
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #08090F; padding: 24px;
+    font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 100%; background: var(--canvas); border-radius: 16px; overflow: hidden; position: relative;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    padding: 24px 20px 28px;
+  }
+
+  /* ── Sequence container ── */
+  .sequence {
+    display: flex; flex-direction: column; gap: 0;
+    position: relative;
+  }
+
+  /* Stage card */
+  .stage {
+    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    border-radius: 12px; padding: 18px;
+    position: relative; backdrop-filter: blur(8px);
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+  }
+  .stage::before {
+    content: ''; position: absolute; inset: 0;
+    box-shadow: var(--glass-highlight); border-radius: 12px; pointer-events: none;
+  }
+  .stage:nth-of-type(1) { animation-delay: 0.2s; }
+  .stage:nth-of-type(3) { animation-delay: 0.4s; }
+  .stage:nth-of-type(5) { animation-delay: 0.6s; }
+
+  .stage-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 12px;
+  }
+  .stage-num {
+    display: flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; border-radius: 9px;
+    background: var(--accent-dim); color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .stage-title {
+    font-size: 16px; font-weight: 700; color: var(--text-pri);
+    letter-spacing: -0.01em;
+  }
+
+  .stage-items {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--text-sec);
+  }
+  .stage-item {
+    display: flex; align-items: baseline; gap: 6px;
+    line-height: 1.5;
+  }
+  .stage-item::before {
+    content: ''; display: block;
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--accent); opacity: 0.5;
+    flex-shrink: 0; margin-top: 5px;
+  }
+
+  /* ── Transition between stages ── */
+  .transition {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 20px 10px 16px;
+    margin-left: 16px;
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+  }
+  .transition:nth-of-type(2) { animation-delay: 0.3s; }
+  .transition:nth-of-type(4) { animation-delay: 0.5s; }
+  .transition:nth-of-type(6) { animation-delay: 0.7s; }
+
+  .transition-arrow {
+    width: 1px; height: 20px;
+    background: linear-gradient(to bottom, rgba(127,181,176,0.45), rgba(127,181,176,0.15));
+    flex-shrink: 0;
+  }
+  .transition-chevron {
+    color: var(--accent); opacity: 0.55;
+    flex-shrink: 0;
+    margin-left: -6px;
+  }
+  .transition-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text-ter);
+  }
+
+  /* ── Loop-back (final transition — back to stage 1) ── */
+  .loop-back {
+    display: flex; align-items: center; gap: 12px;
+    margin-top: 8px;
+    padding: 14px 18px;
+    background: rgba(127,181,176,0.05);
+    border: 1px dashed rgba(127,181,176,0.25);
+    border-radius: 10px;
+    opacity: 0; animation: mount 0.5s var(--spring) 0.75s forwards;
+  }
+  .loop-icon {
+    width: 28px; height: 28px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent);
+    animation: loopSpin 6s linear infinite;
+  }
+  @keyframes loopSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  .loop-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); opacity: 0.85;
+    line-height: 1.5;
+  }
+  .loop-text strong { color: var(--text-sec); font-weight: 600; letter-spacing: 0.06em; }
+
+  @keyframes mount {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+  }
+  body.embedded .diagram {
+    border-radius: 0;
+  }
+
+  /* Very small widths — collapse to single column items */
+  @media (max-width: 340px) {
+    body { padding: 12px; }
+    .diagram { padding: 20px 16px 24px; }
+    .stage { padding: 16px; }
+    .stage-num { width: 28px; height: 28px; font-size: 13px; }
+    .stage-title { font-size: 14px; }
+    .stage-items { grid-template-columns: 1fr; gap: 5px; font-size: 10px; }
+    .transition-text { font-size: 9px; }
+    .loop-text { font-size: 9px; }
+  }
+</style>
+</head>
+<body>
+<div class="diagram">
+<div class="sequence">
+
+  <!-- Stage 1: Leverage signal -->
+  <div class="stage">
+    <div class="stage-header">
+      <div class="stage-num">1</div>
+      <div class="stage-title">Leverage signal</div>
+    </div>
+    <div class="stage-items">
+      <div class="stage-item">Geo recs</div>
+      <div class="stage-item">Search</div>
+      <div class="stage-item">Good visits</div>
+      <div class="stage-item">Post views</div>
+      <div class="stage-item">Contribution</div>
+    </div>
+  </div>
+
+  <!-- Transition 1 → 2 -->
+  <div class="transition">
+    <div class="transition-arrow"></div>
+    <svg class="transition-chevron" fill="none" height="14" viewBox="0 0 14 14" width="14">
+      <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+    </svg>
+    <div class="transition-text">Signal feeds value</div>
+  </div>
+
+  <!-- Stage 2: Deliver value -->
+  <div class="stage">
+    <div class="stage-header">
+      <div class="stage-num">2</div>
+      <div class="stage-title">Deliver value</div>
+    </div>
+    <div class="stage-items">
+      <div class="stage-item">User following</div>
+      <div class="stage-item">Keyword following</div>
+      <div class="stage-item">Post following</div>
+      <div class="stage-item">Replies</div>
+      <div class="stage-item">Activity insights</div>
+    </div>
+  </div>
+
+  <!-- Transition 2 → 3 -->
+  <div class="transition">
+    <div class="transition-arrow"></div>
+    <svg class="transition-chevron" fill="none" height="14" viewBox="0 0 14 14" width="14">
+      <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+    </svg>
+    <div class="transition-text">Value refines tuning</div>
+  </div>
+
+  <!-- Stage 3: Tune experience -->
+  <div class="stage">
+    <div class="stage-header">
+      <div class="stage-num">3</div>
+      <div class="stage-title">Tune experience</div>
+    </div>
+    <div class="stage-items">
+      <div class="stage-item">App upsell</div>
+      <div class="stage-item">Enable push</div>
+      <div class="stage-item">Follow suggestions</div>
+      <div class="stage-item">Event reminders</div>
+    </div>
+  </div>
+
+  <!-- Loop-back: stage 3 feeds back into stage 1 (preserves flywheel concept) -->
+  <div class="loop-back">
+    <svg class="loop-icon" fill="none" height="24" viewBox="0 0 24 24" width="24">
+      <path d="M19.5 9.5a8 8 0 0 0-14.5 -2" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path>
+      <path d="M4.5 14.5a8 8 0 0 0 14.5 2" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path>
+      <path d="M16 4l3.5 3.5 -3.5 3.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+      <path d="M8 20l-3.5 -3.5 3.5 -3.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+    </svg>
+    <div class="loop-text">
+      <strong>Tuning strengthens signal</strong><br/>
+      Cycle continues — back to stage 1
+    </div>
+  </div>
+
+</div>
+</div>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+</body>
+</html>

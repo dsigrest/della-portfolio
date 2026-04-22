@@ -169,6 +169,138 @@
     width: 100%;
     border-radius: 0;
   }
+
+  /* ── L2 RESPONSIVE ── */
+  @media (max-width: 768px) {
+    body {
+      padding: 24px;
+    }
+    .diagram {
+      width: 100%;
+    }
+    .title-area {
+      padding: 32px 24px 0;
+    }
+    h1 {
+      font-size: 24px;
+    }
+    .subtitle {
+      font-size: 13px;
+    }
+    .flywheel-area {
+      padding: 16px 0 32px;
+    }
+    .flywheel {
+      width: 100%;
+      height: auto;
+      max-height: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+    .ring-svg {
+      max-width: 100%;
+      height: auto;
+      max-height: 350px;
+    }
+    .arc-label {
+      display: none;
+    }
+    .flywheel-card {
+      position: static;
+      width: 100%;
+      margin-bottom: 16px;
+      transform: none !important;
+    }
+    .card-1 {
+      transform: none !important;
+    }
+    .card-1:hover {
+      transform: scale(1.02) !important;
+    }
+    .card-2, .card-3 {
+      transform: none !important;
+    }
+  }
+
+  @media (max-width: 480px) {
+    body {
+      padding: 16px;
+    }
+    .title-area {
+      padding: 24px 16px 0;
+    }
+    h1 {
+      font-size: 20px;
+    }
+    .subtitle {
+      font-size: 12px;
+    }
+    .flywheel-area {
+      padding: 12px 0 24px;
+    }
+    .flywheel {
+      max-height: 400px;
+    }
+    .ring-svg {
+      max-height: 280px;
+    }
+    .flywheel-card {
+      margin-bottom: 12px;
+    }
+    .card-title {
+      font-size: 14px;
+    }
+    .card-items {
+      font-size: 11px;
+    }
+    .card-num {
+      width: 24px;
+      height: 24px;
+      font-size: 12px;
+    }
+  }
+
+  @media (max-width: 320px) {
+    body {
+      padding: 12px;
+    }
+    .title-area {
+      padding: 16px 12px 0;
+    }
+    h1 {
+      font-size: 18px;
+    }
+    .subtitle {
+      font-size: 11px;
+    }
+    .flywheel-area {
+      padding: 8px 0 16px;
+    }
+    .flywheel {
+      max-height: 350px;
+    }
+    .ring-svg {
+      max-height: 240px;
+    }
+    .flywheel-card {
+      padding: 16px;
+      margin-bottom: 10px;
+    }
+    .card-title {
+      font-size: 13px;
+    }
+    .card-items {
+      font-size: 10px;
+    }
+    .card-num {
+      width: 22px;
+      height: 22px;
+      font-size: 11px;
+      margin-bottom: 6px;
+    }
+  }
 </style>
 </head>
 <body>

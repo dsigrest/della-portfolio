@@ -173,6 +173,45 @@
     width: 100%;
     border-radius: 0;
   }
+
+  /* ── Responsive: Below 768px ── */
+  @media (max-width: 768px) {
+    body { padding: 24px; }
+    .diagram { width: 100%; }
+    .title-area { padding: 32px 24px 0; }
+    h1 { font-size: 24px; }
+    /* Extra top padding so first pillar's pulse animation isn't flush against diagram edge */
+    .pillars { padding: 32px 24px 32px; grid-template-columns: 1fr; gap: 14px; }
+    .pillar { padding: 24px 18px; overflow: visible; }
+    .pillar-title { font-size: 16px; }
+    .pillar-desc { font-size: 13px; }
+  }
+
+  /* ── Responsive: Below 480px ── */
+  @media (max-width: 480px) {
+    body { padding: 12px; }
+    .title-area { padding: 24px 16px 0; }
+    h1 { font-size: 22px; letter-spacing: -0.02em; }
+    /* Generous top padding keeps the first pillar from hugging the diagram top; prevents clipping of pulse rings */
+    .pillars { padding: 28px 16px 28px; gap: 12px; }
+    .pillar { padding: 22px 16px; }
+    .pillar:hover { transform: none; }
+    .icon-zone { width: 52px; height: 52px; margin-bottom: 14px; }
+    .pillar-title { font-size: 15px; }
+    .pillar-desc { font-size: 12px; line-height: 1.55; }
+  }
+
+  /* ── Responsive: Below 320px ── */
+  @media (max-width: 320px) {
+    body { padding: 8px; }
+    .title-area { padding: 20px 12px 0; }
+    h1 { font-size: 20px; }
+    .pillars { padding: 24px 12px 24px; gap: 10px; }
+    .pillar { padding: 18px 14px; }
+    .icon-zone { width: 48px; height: 48px; margin-bottom: 12px; }
+    .pillar-title { font-size: 14px; }
+    .pillar-desc { font-size: 11px; }
+  }
 </style>
 </head>
 <body>
