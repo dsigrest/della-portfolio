@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="figma-source" content="node:772:8 page:301:2 file:TArUrZsBUocaAsqetjXq7V">
+<title>Attribution Comparison (mobile)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --panel-bg: rgba(224,223,228,0.03);
+    --panel-border: rgba(224,223,228,0.08);
+    --header-bg: rgba(21,23,34,0.4);
+    --accent: #7FB5B0;
+    --accent-winner-bg: rgba(127,181,176,0.06);
+    --resur: #D4A574;
+    --red: #C47878;
+    --bar-track: #151722;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 16px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 100%;
+    max-width: 420px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    padding: 18px 10px;
+  }
+
+  .comparison-table {
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: minmax(60px, 68px) repeat(3, 1fr) minmax(48px, 58px);
+    border-bottom: 1px solid var(--border-normal);
+    min-height: 32px;
+  }
+  .row:last-child { border-bottom: 0; }
+  .row > * { border-right: 1px solid var(--border-normal); }
+  .row > *:last-child { border-right: 0; }
+
+  /* header */
+  .row.header {
+    background: var(--header-bg);
+  }
+  .row.header > div {
+    padding: 10px 4px;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: var(--text-ter);
+    text-align: center;
+    line-height: 1.2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .row.header .col-pattern {
+    justify-content: flex-start;
+    padding-left: 8px;
+  }
+
+  /* pattern label cell */
+  .pattern-cell {
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-sec);
+  }
+
+  /* grade bar cell */
+  .grade-cell {
+    padding: 6px 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 3px;
+  }
+  .grade-bar {
+    width: 100%;
+    max-width: 48px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--bar-track);
+    position: relative;
+    overflow: hidden;
+  }
+  .grade-bar .fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-radius: 2px;
+  }
+  .grade-bar .fill.teal { background: var(--accent); }
+  .grade-bar .fill.yellow { background: var(--resur); }
+  .grade-bar .fill.red { background: var(--red); }
+
+  .grade-label {
+    font-size: 7px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    line-height: 1;
+  }
+  .grade-label.teal { color: var(--accent); }
+  .grade-label.yellow { color: var(--resur); }
+  .grade-label.red { color: var(--red); }
+
+  /* verdict cell */
+  .verdict {
+    padding: 6px 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    font-size: 8px;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-align: center;
+  }
+  .verdict.winner {
+    background: var(--accent-winner-bg);
+    color: var(--accent);
+  }
+  .verdict .check {
+    font-size: 9px;
+    line-height: 1;
+  }
+
+  /* smaller breakpoint */
+  @media (max-width: 360px) {
+    .diagram { padding: 14px 8px; }
+    .row { grid-template-columns: 52px repeat(3, 1fr) 44px; }
+    .row.header > div { font-size: 7px; padding: 8px 2px; }
+    .pattern-cell { font-size: 9px; padding: 6px; }
+    .grade-cell { padding: 5px 4px; gap: 2px; }
+    .grade-bar { max-width: 32px; }
+    .grade-label { font-size: 6px; }
+    .verdict { font-size: 7px; padding: 5px 2px; gap: 2px; }
+  }
+
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    max-width: none;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="comparison-table">
+      <div class="row header">
+        <div class="col-pattern">PATTERN</div>
+        <div>TRUST</div>
+        <div>VISIBILITY</div>
+        <div>SPACE</div>
+        <div>VERDICT</div>
+      </div>
+
+      <div class="row">
+        <div class="pattern-cell">Hyperlinks</div>
+        <div class="grade-cell">
+          <div class="grade-bar"><div class="fill teal" style="width: 90%;"></div></div>
+          <div class="grade-label teal">High</div>
+        </div>
+        <div class="grade-cell">
+          <div class="grade-bar"><div class="fill teal" style="width: 85%;"></div></div>
+          <div class="grade-label teal">High</div>
+        </div>
+        <div class="grade-cell">
+          <div class="grade-bar"><div class="fill yellow" style="width: 65%;"></div></div>
+          <div class="grade-label yellow">Med</div>
+        </div>
+        <div class="verdict winner">
+          <span class="check">&#10003;</span>
+          <span>Winner</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="pattern-cell">Pills</div>
+        <div class="grade-cell">
+          <div class="grade-bar"><div class="fill yellow" style="width: 55%;"></div></div>
+          <div class="grade-label yellow">Med</div>
+        </div>
+        <div class="grade-cell">
+          <div class="grade-bar"><div class="fill red" style="width: 35%;"></div></div>
+          <div class="grade-label red">Low</div>
+        </div>
+        <div class="grade-cell">
+          <div class="grade-bar"><div class="fill teal" style="width: 80%;"></div></div>
+          <div class="grade-label teal">High</div>
+        </div>
+        <div class="verdict">Noisy</div>
+      </div>
+
+      <div class="row">
+        <div class="pattern-cell">Collapsible</div>
+        <div class="grade-cell">
+          <div class="grade-bar"><div class="fill red" style="width: 30%;"></div></div>
+          <div class="grade-label red">Low</div>
+        </div>
+        <div class="grade-cell">
+          <div class="grade-bar"><div class="fill red" style="width: 25%;"></div></div>
+          <div class="grade-label red">Low</div>
+        </div>
+        <div class="grade-cell">
+          <div class="grade-bar"><div class="fill teal" style="width: 92%;"></div></div>
+          <div class="grade-label teal">High</div>
+        </div>
+        <div class="verdict">Hidden</div>
+      </div>
+    </div>
+  </div>
+</body>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</html>

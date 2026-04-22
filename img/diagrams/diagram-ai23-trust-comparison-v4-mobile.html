@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trust Spectrum (mobile)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --resur: #C4B078;
+    --red: #C47878;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 16px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 100%;
+    max-width: 420px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .spectrum-area {
+    padding: 28px 20px 24px;
+    position: relative;
+  }
+  .spectrum-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 200px 180px at 50% 15%, rgba(127,181,176,0.05) 0%, transparent 70%),
+      radial-gradient(ellipse 200px 180px at 50% 85%, rgba(196,120,120,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Vertical spectrum layout */
+  .spectrum-body {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    column-gap: 12px;
+  }
+
+  /* The track: vertical bar on the left */
+  .track {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .track-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1.2;
+    width: 100%;
+  }
+  .track-label.high { color: var(--accent); margin-bottom: 8px; }
+  .track-label.low  { color: var(--red); margin-top: 8px; }
+  .track-bar {
+    width: 6px;
+    flex: 1;
+    min-height: 420px;
+    border-radius: 3px;
+    background: linear-gradient(
+      to bottom,
+      rgba(127,181,176,0.55),
+      rgba(127,181,176,0.22) 38%,
+      rgba(196,176,120,0.25) 50%,
+      rgba(196,120,120,0.22) 62%,
+      rgba(196,120,120,0.55)
+    );
+    position: relative;
+  }
+  .track-bar::after {
+    content: '';
+    position: absolute;
+    inset: -6px -10px;
+    background: radial-gradient(ellipse 40px 120px at 50% 20%, rgba(127,181,176,0.08) 0%, transparent 70%);
+    animation: track-ambient 5s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes track-ambient {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 0.85; }
+  }
+  .tick {
+    position: absolute;
+    left: -4px;
+    width: 14px;
+    height: 1px;
+    background: rgba(224,223,228,0.14);
+  }
+
+  /* Tag column */
+  .signal-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 6px;
+    min-height: 420px;
+  }
+
+  .signal-tag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.35;
+    position: relative;
+  }
+  .signal-tag::before {
+    content: '';
+    position: absolute;
+    left: -12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.25;
+  }
+  .tag-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .signal-tag.high {
+    background: rgba(127,181,176,0.08);
+    border: 1px solid rgba(127,181,176,0.18);
+    color: var(--text-sec);
+  }
+  .signal-tag.high .tag-dot { background: rgba(127,181,176,0.55); }
+  .signal-tag.high::before  { background: rgba(127,181,176,0.35); }
+
+  .signal-tag.med {
+    background: rgba(196,176,120,0.06);
+    border: 1px solid rgba(196,176,120,0.15);
+    color: var(--text-sec);
+  }
+  .signal-tag.med .tag-dot { background: rgba(196,176,120,0.55); }
+  .signal-tag.med::before  { background: rgba(196,176,120,0.3); }
+
+  .signal-tag.low {
+    background: rgba(196,120,120,0.06);
+    border: 1px solid rgba(196,120,120,0.15);
+    color: var(--text-sec);
+  }
+  .signal-tag.low .tag-dot { background: rgba(196,120,120,0.55); }
+  .signal-tag.low::before  { background: rgba(196,120,120,0.35); }
+
+  @media (max-width: 360px) {
+    .spectrum-area { padding: 22px 14px 20px; }
+    .spectrum-body { grid-template-columns: 32px 1fr; column-gap: 10px; }
+    .signal-tag { font-size: 10px; padding: 7px 10px; }
+    .track-label { font-size: 8px; }
+  }
+
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    max-width: none;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="spectrum-area">
+      <div class="spectrum-body">
+        <div class="track">
+          <div class="track-label high">High<br>Trust</div>
+          <div class="track-bar">
+            <div class="tick" style="top: 25%;"></div>
+            <div class="tick" style="top: 50%;"></div>
+            <div class="tick" style="top: 75%;"></div>
+          </div>
+          <div class="track-label low">Low<br>Trust</div>
+        </div>
+
+        <div class="signal-column">
+          <div class="signal-tag high">
+            <span class="tag-dot"></span>
+            Specific attribution to source posts
+          </div>
+          <div class="signal-tag high">
+            <span class="tag-dot"></span>
+            Community voice preserved in synthesis
+          </div>
+          <div class="signal-tag med">
+            <span class="tag-dot"></span>
+            Accurate but decontextualized
+          </div>
+          <div class="signal-tag med">
+            <span class="tag-dot"></span>
+            Correct facts, generic framing
+          </div>
+          <div class="signal-tag low">
+            <span class="tag-dot"></span>
+            Broad claims without evidence
+          </div>
+          <div class="signal-tag low">
+            <span class="tag-dot"></span>
+            No anchoring to real voices
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="figma-source" content="node:774:8 page:301:2 file:TArUrZsBUocaAsqetjXq7V">
+<title>Evaluation Matrix (mobile)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --border-soft: rgba(224,223,228,0.03);
+    --panel-bg: rgba(224,223,228,0.03);
+    --panel-border: rgba(224,223,228,0.08);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.04);
+    --accent-winner: rgba(127,181,176,0.06);
+    --resur: #C4B078;
+    --resur-dot: rgba(196,176,120,0.9);
+    --red: #C47878;
+    --red-dot: rgba(196,120,120,0.9);
+    --dot-gray: rgba(224,223,228,0.18);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 16px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 100%;
+    max-width: 420px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    padding: 18px 12px 16px;
+  }
+
+  .matrix-table {
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .matrix-row {
+    display: grid;
+    grid-template-columns: minmax(78px, 82px) repeat(4, 1fr);
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .matrix-row:last-child { border-bottom: 0; }
+
+  /* header row */
+  .matrix-row.header {
+    background: rgba(224,223,228,0.02);
+    border-bottom: 1px solid var(--border-normal);
+  }
+  .matrix-row.header > div {
+    padding: 10px 4px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--text-ter);
+    text-align: center;
+    line-height: 1.2;
+  }
+  .matrix-row.header .col-param {
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--accent);
+    text-align: left;
+    padding-left: 8px;
+  }
+  .matrix-row.header .col-winner {
+    color: var(--accent);
+    background: var(--accent-winner);
+  }
+
+  /* data rows */
+  .matrix-row.data {
+    min-height: 56px;
+  }
+  .matrix-row.data .col-winner {
+    background: rgba(127,181,176,0.03);
+  }
+
+  .param-cell {
+    padding: 10px 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    overflow: hidden;
+  }
+  .param-name {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-pri);
+    line-height: 1.25;
+  }
+  .param-detail {
+    font-size: 9px;
+    font-weight: 400;
+    color: rgba(224,223,228,0.35);
+    line-height: 1.35;
+  }
+
+  .dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 8px 4px;
+  }
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: var(--dot-gray);
+  }
+  .dot.red { background: var(--red-dot); }
+  .dot.yellow { background: var(--resur-dot); }
+  .dot.teal { background: var(--accent); }
+
+  /* legend */
+  .legend {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 4px 0;
+    flex-wrap: wrap;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .legend-item .dot {
+    width: 8px;
+    height: 8px;
+  }
+  .legend-item span {
+    font-size: 9px;
+    font-weight: 500;
+    color: var(--text-ter);
+  }
+
+  /* smaller breakpoint */
+  @media (max-width: 360px) {
+    .diagram { padding: 14px 8px 12px; }
+    .matrix-row { grid-template-columns: 70px repeat(4, 1fr); }
+    .param-cell { padding: 8px 6px; }
+    .param-name { font-size: 9px; }
+    .param-detail { font-size: 8px; }
+    .dots { gap: 1px; padding: 6px 2px; }
+    .dot { width: 5px; height: 5px; }
+    .matrix-row.header > div { font-size: 8px; padding: 8px 2px; }
+    .legend { gap: 10px; }
+    .legend-item span { font-size: 8px; }
+  }
+
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    max-width: none;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="matrix-table">
+      <div class="matrix-row header">
+        <div class="col-param">PARAMETER</div>
+        <div>PROMPT A</div>
+        <div>PROMPT B</div>
+        <div>PROMPT C</div>
+        <div class="col-winner">PROMPT D</div>
+      </div>
+
+      <div class="matrix-row data">
+        <div class="param-cell">
+          <div class="param-name">Sentence structure</div>
+          <div class="param-detail">Variation, not mechanical</div>
+        </div>
+        <div class="dots"><span class="dot red"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="dots"><span class="dot yellow"></span><span class="dot yellow"></span><span class="dot"></span></div>
+        <div class="dots"><span class="dot teal"></span><span class="dot teal"></span><span class="dot"></span></div>
+        <div class="dots col-winner"><span class="dot teal"></span><span class="dot teal"></span><span class="dot teal"></span></div>
+      </div>
+
+      <div class="matrix-row data">
+        <div class="param-cell">
+          <div class="param-name">Accuracy to source</div>
+          <div class="param-detail">Reference, don&rsquo;t replicate</div>
+        </div>
+        <div class="dots"><span class="dot yellow"></span><span class="dot yellow"></span><span class="dot"></span></div>
+        <div class="dots"><span class="dot teal"></span><span class="dot teal"></span><span class="dot"></span></div>
+        <div class="dots"><span class="dot teal"></span><span class="dot teal"></span><span class="dot teal"></span></div>
+        <div class="dots col-winner"><span class="dot teal"></span><span class="dot teal"></span><span class="dot"></span></div>
+      </div>
+
+      <div class="matrix-row data">
+        <div class="param-cell">
+          <div class="param-name">Novel synthesis</div>
+          <div class="param-detail">Info across posts, not just one</div>
+        </div>
+        <div class="dots"><span class="dot red"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="dots"><span class="dot red"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="dots"><span class="dot yellow"></span><span class="dot yellow"></span><span class="dot"></span></div>
+        <div class="dots col-winner"><span class="dot teal"></span><span class="dot teal"></span><span class="dot"></span></div>
+      </div>
+
+      <div class="matrix-row data">
+        <div class="param-cell">
+          <div class="param-name">Length adherence</div>
+          <div class="param-detail">Within target bounds</div>
+        </div>
+        <div class="dots"><span class="dot teal"></span><span class="dot teal"></span><span class="dot"></span></div>
+        <div class="dots"><span class="dot yellow"></span><span class="dot yellow"></span><span class="dot"></span></div>
+        <div class="dots"><span class="dot teal"></span><span class="dot teal"></span><span class="dot"></span></div>
+        <div class="dots col-winner"><span class="dot teal"></span><span class="dot teal"></span><span class="dot teal"></span></div>
+      </div>
+
+      <div class="matrix-row data">
+        <div class="param-cell">
+          <div class="param-name">Tone</div>
+          <div class="param-detail">Like a friend &mdash; not cold</div>
+        </div>
+        <div class="dots"><span class="dot red"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="dots"><span class="dot yellow"></span><span class="dot yellow"></span><span class="dot"></span></div>
+        <div class="dots"><span class="dot yellow"></span><span class="dot yellow"></span><span class="dot"></span></div>
+        <div class="dots col-winner"><span class="dot teal"></span><span class="dot teal"></span><span class="dot"></span></div>
+      </div>
+
+      <div class="matrix-row data">
+        <div class="param-cell">
+          <div class="param-name">SEO signals</div>
+          <div class="param-detail">Keywords, connected links</div>
+        </div>
+        <div class="dots"><span class="dot teal"></span><span class="dot teal"></span><span class="dot"></span></div>
+        <div class="dots"><span class="dot teal"></span><span class="dot teal"></span><span class="dot"></span></div>
+        <div class="dots"><span class="dot yellow"></span><span class="dot yellow"></span><span class="dot"></span></div>
+        <div class="dots col-winner"><span class="dot teal"></span><span class="dot teal"></span><span class="dot teal"></span></div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><span class="dot red"></span><span>Needs work</span></div>
+      <div class="legend-item"><span class="dot yellow"></span><span>Acceptable</span></div>
+      <div class="legend-item"><span class="dot teal"></span><span>Strong</span></div>
+    </div>
+  </div>
+</body>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</html>
