@@ -267,6 +267,53 @@
         content: "0.0";
       }
     }
+
+    /* Responsive: collapse score-card grid on narrow viewports */
+    @media (max-width: 680px) {
+      .diagram { width: 100%; padding: 32px 24px; }
+      h1 { font-size: 26px; }
+      .subtitle { font-size: 13px; }
+      .score-card { padding: 14px; gap: 14px; }
+    }
+
+    @media (max-width: 480px) {
+      .diagram { padding: 28px 18px; border-radius: 12px; }
+      h1 { font-size: 22px; }
+      .subtitle { font-size: 12px; line-height: 1.45; }
+      .dashboard { gap: 10px; margin-top: 24px; }
+
+      /* Stack company-info / dimensions / score vertically */
+      .score-card {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding: 14px;
+        text-align: left;
+      }
+      .company-info { min-width: 0; }
+      .company-name { font-size: 13px; }
+
+      /* Dimensions stay as a 5-bar flex row but with tighter gaps */
+      .dimensions-container { gap: 5px; }
+      .dimension-label { font-size: 8px; }
+
+      /* Score moves inline under company name */
+      .score-display {
+        flex-direction: row;
+        align-items: baseline;
+        gap: 8px;
+      }
+      .score-number { font-size: 22px; min-height: 0; }
+
+      .score-note { font-size: 10px; margin-top: 20px; padding-top: 16px; }
+    }
+
+    @media (max-width: 375px) {
+      .diagram { padding: 24px 14px; }
+      h1 { font-size: 20px; }
+      .score-card { padding: 12px; gap: 8px; }
+      .dimension-label { font-size: 7.5px; letter-spacing: 0.02em; }
+      .dimensions-container { gap: 4px; }
+    }
   </style>
 </head>
 <body>

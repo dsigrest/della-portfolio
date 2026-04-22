@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PORT-04 — Human-AI Governance Loop (Mobile)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --casual: #D4A574;
+    --resur: #C4B078;
+    --blue: #8A9EC4;
+    --red: #C47878;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 20px 12px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 100%;
+    max-width: 480px;
+    background: var(--canvas);
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+    opacity: 0;
+    animation: fadeIn 0.7s ease-out 0.1s forwards;
+  }
+  /* Embed mode */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    max-width: none;
+    border-radius: 0;
+  }
+  .diagram::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 280px 400px at 50% 50%, rgba(127,181,176,0.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .title-area {
+    padding: 24px 20px 0;
+    position: relative;
+    z-index: 1;
+  }
+  .section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.8;
+    margin-bottom: 6px;
+  }
+  h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-pri);
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+  .subtitle {
+    font-size: 12.5px;
+    color: var(--text-sec);
+    line-height: 1.5;
+  }
+
+  /* Flow container */
+  .flow {
+    padding: 24px 20px 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .node {
+    position: relative;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    box-shadow: var(--glass-highlight);
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+  .node:hover { border-color: rgba(224,223,228,0.16); }
+  .node.expanded { border-color: rgba(127,181,176,0.35); }
+  .node.della  { border-left: 2px solid var(--red); }
+  .node.claude { border-left: 2px solid var(--accent); }
+  .node.both   { border-left: 2px solid var(--resur); }
+
+  .node-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .node-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background: rgba(224,223,228,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--text-sec);
+  }
+  .node-icon svg { width: 14px; height: 14px; }
+  .node-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-pri);
+    letter-spacing: -0.01em;
+  }
+  .node-desc {
+    font-size: 11.5px;
+    color: var(--text-sec);
+    margin-top: 6px;
+    line-height: 1.45;
+  }
+  .node-detail {
+    font-size: 11px;
+    color: var(--text-ter);
+    margin-top: 8px;
+    line-height: 1.5;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.3s ease, opacity 0.2s ease, margin-top 0.2s ease;
+  }
+  .node.expanded .node-detail {
+    max-height: 200px;
+    opacity: 1;
+    margin-top: 10px;
+  }
+
+  /* Connector between sequential nodes */
+  .connector {
+    width: 2px;
+    height: 20px;
+    background: linear-gradient(to bottom, rgba(127,181,176,0.4), rgba(127,181,176,0.15));
+    margin: 0 auto;
+    position: relative;
+  }
+  .connector::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -3px;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    border-right: 2px solid rgba(127,181,176,0.5);
+    border-bottom: 2px solid rgba(127,181,176,0.5);
+    transform: translateX(-50%) rotate(45deg);
+  }
+
+  /* Branch at Decision Gate */
+  .branch {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    position: relative;
+  }
+  .branch::before {
+    /* Horizontal splitter line above the two columns */
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 25%;
+    right: 25%;
+    height: 2px;
+    background: rgba(127,181,176,0.25);
+  }
+  .branch-col {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .branch-label {
+    font-size: 9px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-ter);
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .branch-label.pass  { color: var(--accent); }
+  .branch-label.fail  { color: var(--red); }
+
+  .terminal-node {
+    border: 1px solid rgba(127,181,176,0.22);
+    border-radius: 10px;
+    padding: 14px 10px;
+    background: rgba(127,181,176,0.04);
+    text-align: center;
+  }
+  .terminal-node .node-icon {
+    margin: 0 auto 8px;
+    background: rgba(127,181,176,0.1);
+    color: var(--accent);
+  }
+  .terminal-node .node-title {
+    color: var(--accent);
+    font-size: 13px;
+  }
+  .terminal-node .node-desc {
+    text-align: center;
+    font-size: 10.5px;
+    margin-top: 4px;
+  }
+
+  /* Loop-back indicator after Redirect */
+  .loopback {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
+    border: 1px dashed rgba(196,120,120,0.35);
+    border-radius: 8px;
+    background: rgba(196,120,120,0.04);
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.04em;
+    color: var(--red);
+    justify-content: center;
+  }
+  .loopback svg {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+  }
+
+  .legend {
+    padding: 20px;
+    border-top: 1px solid var(--border-normal);
+    margin-top: 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10.5px;
+    color: var(--text-sec);
+  }
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Sub-480 tightening */
+  @media (max-width: 375px) {
+    .title-area { padding: 20px 16px 0; }
+    .flow { padding: 20px 16px 0; }
+    h1 { font-size: 20px; }
+    .subtitle { font-size: 11.5px; }
+    .node { padding: 11px 12px; }
+    .node-title { font-size: 12px; }
+    .node-desc { font-size: 11px; }
+    .branch { gap: 8px; }
+    .legend { padding: 16px; gap: 10px; }
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="title-area">
+      <div class="section-label">PORT-04 — Governance</div>
+      <h1>Human-AI Governance Loop</h1>
+      <p class="subtitle">Intent to ship, with refinement as a feature — not a failure state.</p>
+    </div>
+
+    <div class="flow">
+      <div class="node della">
+        <div class="node-header">
+          <div class="node-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 10v6M4.22 4.22l4.24 4.24m7.07 7.07l4.24 4.24M1 12h6m10 0h6M4.22 19.78l4.24-4.24m7.07-7.07l4.24-4.24"/></svg>
+          </div>
+          <div class="node-title">Set Intent</div>
+        </div>
+        <div class="node-desc">Goals, constraints, voice rules, target company</div>
+        <div class="node-detail">Every task starts with explicit intent — what company this targets, what voice register to use, what the success criteria are.</div>
+      </div>
+
+      <div class="connector"></div>
+
+      <div class="node both">
+        <div class="node-header">
+          <div class="node-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <div class="node-title">Brief</div>
+        </div>
+        <div class="node-desc">Design brief, skill invocation, codesign step 0</div>
+        <div class="node-detail">Structured briefs load pattern libraries, design references, and quality benchmarks before generation begins.</div>
+      </div>
+
+      <div class="connector"></div>
+
+      <div class="node claude">
+        <div class="node-header">
+          <div class="node-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+          <div class="node-title">Generate</div>
+        </div>
+        <div class="node-desc">Content, code, diagrams, case study copy</div>
+        <div class="node-detail">HTML diagrams, case study narrative, resume variants, outreach emails — all generated from verified source material.</div>
+      </div>
+
+      <div class="connector"></div>
+
+      <div class="node claude">
+        <div class="node-header">
+          <div class="node-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </div>
+          <div class="node-title">Self-Check</div>
+        </div>
+        <div class="node-desc">Voice lint, quality gate, render and verify</div>
+        <div class="node-detail">Automated checks: banned-patterns.yaml scan, verified-facts-registry check, PDF render for page counts, visual QA.</div>
+      </div>
+
+      <div class="connector"></div>
+
+      <div class="node both">
+        <div class="node-header">
+          <div class="node-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="node-title" style="color: var(--resur);">Decision Gate</div>
+        </div>
+        <div class="node-desc">Della reviews. Approves → ship. Issues → redirect back through the loop.</div>
+        <div class="node-detail">Human judgment as the final gate — checking voice, accuracy, and whether the output actually solves the original intent.</div>
+      </div>
+
+      <div class="branch">
+        <div class="branch-col">
+          <div class="branch-label fail">Redirect</div>
+          <div class="node della">
+            <div class="node-header">
+              <div class="node-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+              </div>
+              <div class="node-title">Redirect</div>
+            </div>
+            <div class="node-desc">Refined constraints, back to intent</div>
+            <div class="node-detail">Not failure — refinement. Each redirect narrows the solution space with better constraints from what was learned.</div>
+          </div>
+          <div class="loopback">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+            returns to Intent
+          </div>
+        </div>
+
+        <div class="branch-col">
+          <div class="branch-label pass">Pass</div>
+          <div class="terminal-node">
+            <div class="node-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="node-title">Ship</div>
+            <div class="node-desc">Passes all checks</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background: var(--red);"></div>Della leads</div>
+      <div class="legend-item"><div class="legend-dot" style="background: var(--accent);"></div>Claude leads</div>
+      <div class="legend-item"><div class="legend-dot" style="background: var(--resur);"></div>Joint</div>
+    </div>
+  </div>
+
+<script>
+  // Click-to-expand nodes (matches desktop behavior)
+  document.querySelectorAll('.node').forEach(node => {
+    node.addEventListener('click', (e) => {
+      const wasExpanded = node.classList.contains('expanded');
+      document.querySelectorAll('.node.expanded').forEach(n => n.classList.remove('expanded'));
+      if (!wasExpanded) node.classList.add('expanded');
+    });
+  });
+  document.querySelector('.diagram').addEventListener('click', (e) => {
+    if (!e.target.closest('.node')) {
+      document.querySelectorAll('.node.expanded').forEach(n => n.classList.remove('expanded'));
+    }
+  });
+</script>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+</body>
+</html>

@@ -289,6 +289,25 @@
     body { padding: 16px; }
   }
 
+  @media (max-width: 480px) {
+    .title-area, .stats-bar, .grid-area { padding-left: 20px; padding-right: 20px; }
+    h1 { font-size: 28px; }
+    .subtitle { font-size: 14px; }
+    .stats-bar { gap: 12px 20px; flex-wrap: wrap; padding-top: 20px; }
+    .stat-num { font-size: 20px; }
+    .stat-text { font-size: 11px; }
+    .portfolio-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .grid-area { padding-top: 20px; padding-bottom: 32px; }
+    .legend { gap: 14px; flex-wrap: wrap; }
+  }
+
+  @media (max-width: 375px) {
+    h1 { font-size: 24px; }
+    .stats-bar { gap: 8px 16px; }
+    .stat { gap: 6px; }
+    .stat-num { font-size: 18px; }
+  }
+
   @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
