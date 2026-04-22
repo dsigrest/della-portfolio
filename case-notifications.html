@@ -83,28 +83,30 @@
 
       <p>Users had a <strong>bias for action</strong> in the inbox. The more content was framed as personally actionable, the more likely they were to engage. The inbox wasn&rsquo;t a destination&mdash;it was a switchboard that guided users through their session.</p>
 
-      <div class="case-img-full diagram-embed" data-diagram="not-01">
-        <iframe
-          src="img/diagrams/diagram-not01-segmentation-matrix-v5.html"
-          loading="lazy"
-          scrolling="no"
-          title="Segmentation framework — signal × tenure matrix with notification priorities per quadrant"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-      </div>
-
       <h2>Foundation</h2>
 
       <h3>Design system migration</h3>
 
       <p>The inbox wasn&rsquo;t on Reddit&rsquo;s design system. Every component was a <strong>one-off engineer build</strong>&mdash;growing technical debt, no quality assurance, and each new feature built from scratch. I designed the inbox row component as a scalable, reusable unit intended for distributed messaging surfaces across the platform, then migrated the full surface to the design system. Every project ran through a <strong>technical kickoff with the eng IC</strong> picking up the work&mdash;pressure-testing edge cases, building buy-in, and aligning on decisions before a line of code was written.</p>
 
-      <div class="case-img-full">
-        <div class="img-placeholder">Inbox row unit&mdash;before and after, showing legacy one-off notification row vs. new reusable component with contextual copy and visual hierarchy</div>
+      <div class="case-img-full diagram-embed" data-diagram="not-02">
+        <iframe
+          src="img/diagrams/diagram-not02-inbox-row-unit-v5.html"
+          loading="lazy"
+          scrolling="no"
+          title="Inbox row unit — before/after comparison of legacy one-off row vs reusable component with contextual copy"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
       </div>
 
-      <div class="case-img-full">
-        <div class="img-placeholder">Full-screen before and after&mdash;legacy inbox list vs. redesigned inbox on the platform design system</div>
+      <div class="case-img-full diagram-embed" data-diagram="not-03">
+        <iframe
+          src="img/diagrams/diagram-not03-full-inbox-redesign-v5.html"
+          loading="lazy"
+          scrolling="no"
+          title="Full inbox redesign — legacy fragmented inbox vs redesigned unified inbox on the platform design system"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
       </div>
 
       <h3>Unread system redesign</h3>
@@ -126,10 +128,6 @@
       <h3>Inbox simplification</h3>
 
       <p>I removed the <strong>overflow menu, icon-based message type indicators</strong>, and segmented inbox sections that pushed content below the fold. Icons had low comprehension&mdash;I replaced them with clear, embedded copy. Swipe actions and long press handled secondary options. Engagement held steady.</p>
-
-      <div class="case-img-full">
-        <div class="img-placeholder">Inbox simplification&mdash;removed overflow menu, icon indicators, segmented sections. Shows swipe-to-act, long press menu, embedded copy replacing icons</div>
-      </div>
 
       <h2>1. Build Habits</h2>
 
@@ -189,8 +187,14 @@
 
       <p>I then surfaced these preferences <strong>on the subreddit page itself</strong> and simplified subscription management in global settings&mdash;point of decision, not buried three screens deep.</p>
 
-      <div class="case-img-full">
-        <div class="img-placeholder">Before and after&mdash;subreddit header showing notification preference on-ramps where users make subscription decisions</div>
+      <div class="case-img-full diagram-embed" data-diagram="not-08">
+        <iframe
+          src="img/diagrams/diagram-not08-subreddit-onramps-v5.html"
+          loading="lazy"
+          scrolling="no"
+          title="Subreddit header on-ramps — before/after showing the shift from one-off banners to a reusable notification on-ramp"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
       </div>
 
       <div class="case-img-full diagram-embed" data-diagram="not-09">
@@ -239,24 +243,32 @@
 
       <p>I tested <strong>chronological, nested, and tabbed layouts</strong>. Users wanted to navigate the inbox as little as possible&mdash;scan, act, leave. The inbox was a switchboard: know where to go next and get there directly.</p>
 
-      <div class="case-img-full">
-        <div class="img-placeholder">Inbox layout experiments&mdash;chronological vs. nested vs. tabbed, showing trade-offs in scan speed and content discovery</div>
+      <div class="case-img-full diagram-embed" data-diagram="not-12">
+        <iframe
+          src="img/diagrams/diagram-not12-inbox-layout-experiments-v5.html"
+          loading="lazy"
+          scrolling="no"
+          title="Inbox layout experiments — chronological vs nested vs tabbed, with trade-offs in scan speed and content discovery"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
       </div>
 
       <h3>Pinned contributions</h3>
 
       <p>I designed a system that <strong>pins contributions to the top</strong> of the inbox&mdash;enough context to know what happened, then a direct path there. Subscriptions and discovery notifications that drove DAU stayed accessible below.</p>
 
-      <div class="case-img-full">
-        <div class="img-placeholder">Pinned content model&mdash;contributions pinned at top with remaining notifications accessible below</div>
-      </div>
-
       <h3>Navigation simplification</h3>
 
       <p>The unified inbox <strong>freed a slot in the bottom tab bar</strong>. Reddit used that space to experiment with new product surfaces and validate navigation models&mdash;a simplified 3&ndash;4 tab structure. Impact that extended well beyond the inbox.</p>
 
-      <div class="case-img-full">
-        <div class="img-placeholder">Navigation before and after&mdash;tab bar with multiple messaging entry points vs. simplified 3&ndash;4 tab model with freed slot for new product surfaces</div>
+      <div class="case-img-full diagram-embed" data-diagram="not-14">
+        <iframe
+          src="img/diagrams/diagram-not14-navigation-simplification-v5.html"
+          loading="lazy"
+          scrolling="no"
+          title="Navigation simplification — legacy 5-tab bar vs simplified 3–4 tab model with a freed slot for growth"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
       </div>
 
       <h2>Results</h2>
