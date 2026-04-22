@@ -292,6 +292,38 @@
     body { padding: 16px; }
     .examples-grid { grid-template-columns: 1fr; }
   }
+
+  /* === Mobile responsive (responsive-audit v0.2.1) === */
+  @media (max-width: 768px) {
+    .diagram { width: 100%; max-width: 760px; }
+    .spectrum-area { padding: 32px 20px 24px; }
+    .spec-label-left, .spec-label-right, .spec-label-center {
+      font-size: 9px;
+      letter-spacing: 0.04em;
+    }
+    .spectrum-bar { margin-bottom: 22px; }
+  }
+  @media (max-width: 480px) {
+    .spectrum-area { padding: 24px 14px 20px; }
+    .spec-label-left, .spec-label-right, .spec-label-center {
+      font-size: 8px;
+      letter-spacing: 0.03em;
+    }
+    .spectrum-top-labels { margin-bottom: 10px; }
+    .spectrum-bar { height: 6px; margin-bottom: 18px; }
+    .sweet-marker { width: 12px; height: 12px; }
+    .example-card { padding: 12px; }
+    .example-label { font-size: 9px; margin-bottom: 6px; }
+    .example-desc { font-size: 10px; margin-top: 8px; }
+    .connectors { display: none; }
+  }
+  @media (max-width: 320px) {
+    .spectrum-area { padding: 20px 10px 18px; }
+    .spec-label-left, .spec-label-right, .spec-label-center {
+      font-size: 7px;
+    }
+    .example-card { padding: 10px; }
+  }
   /* Embed mode: strip body chrome when loaded in iframe */
   body.embedded {
     padding: 0;

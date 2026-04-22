@@ -256,6 +256,44 @@
     body { padding: 16px; }
   }
   .impact-anchor { font-size: 11px; font-weight: 600; color: var(--accent); letter-spacing: 0.04em; margin-top: 12px; opacity: 0.85; }
+
+  /* === Mobile responsive (responsive-audit v0.2.1) === */
+  @media (max-width: 768px) {
+    .diagram { width: 100%; max-width: 760px; }
+    .matrix-area { padding: 24px 18px; }
+    .matrix-header,
+    .matrix-row { grid-template-columns: 110px repeat(4, 1fr); }
+    .matrix-param { padding: 10px 8px; }
+    .param-name { font-size: 11px; }
+    .param-desc { font-size: 10px; }
+    .matrix-score { padding: 10px 4px; gap: 4px; }
+    .matrix-header-cell { padding: 12px 4px; font-size: 9px; letter-spacing: 0.05em; }
+    .score-label { display: none; }
+    .score-dot { width: 7px; height: 7px; }
+    .score-indicator { gap: 2px; }
+    .legend { gap: 14px; flex-wrap: wrap; }
+  }
+  @media (max-width: 480px) {
+    .matrix-area { padding: 18px 12px; }
+    .matrix-header,
+    .matrix-row { grid-template-columns: 90px repeat(4, 1fr); }
+    .matrix-param { padding: 8px 6px; }
+    .param-name { font-size: 10px; line-height: 1.25; }
+    .param-desc { font-size: 9px; }
+    .matrix-score { padding: 8px 2px; }
+    .matrix-header-cell { font-size: 8px; padding: 10px 2px; letter-spacing: 0.03em; }
+    .score-dot { width: 6px; height: 6px; }
+    .legend-label { font-size: 9px; }
+  }
+  @media (max-width: 320px) {
+    .matrix-area { padding: 14px 8px; }
+    .matrix-header,
+    .matrix-row { grid-template-columns: 78px repeat(4, 1fr); }
+    .matrix-param { padding: 7px 4px; }
+    .matrix-header-cell { font-size: 7px; padding: 8px 1px; }
+    .param-name { font-size: 9px; }
+    .param-desc { font-size: 8px; }
+  }
   /* Embed mode: strip body chrome when loaded in iframe */
   body.embedded {
     padding: 0;

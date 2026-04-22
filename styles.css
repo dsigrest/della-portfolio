@@ -367,6 +367,15 @@
       }
     }
 
+    /* Diagram-pair: desktop/mobile iframe swap for L3 responsive fixes
+       (responsive-audit v0.2.1). One rule covers every paired diagram. */
+    .diagram-pair .mobile-variant  { display: none; }
+    .diagram-pair .desktop-variant { display: block; }
+    @media (max-width: 768px) {
+      .diagram-pair .desktop-variant { display: none; }
+      .diagram-pair .mobile-variant  { display: block; }
+    }
+
     .img-placeholder {
       background: var(--surface-1);
       border: 1px solid var(--border-subtle);
