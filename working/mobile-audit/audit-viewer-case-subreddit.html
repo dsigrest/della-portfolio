@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Case-Subreddit — Post-Fix Audit Viewer</title>
 <style>
   :root {
@@ -310,9 +311,18 @@
   function showScreenshot(diagram, bp) {
     const imgPath = `screenshots/${bp}/${folder}/${diagram.id}.png?t=${Date.now()}`;
     const containerEl = document.getElementById(`img-${diagram.id}`);
-    containerEl.innerHTML = `
-      <img src="${imgPath}" alt="${diagram.name} at ${bp}px" onerror="this.parentElement.innerHTML='<div class=&quot;missing&quot;>Screenshot not found: ${bp}/${diagram.id}.png</div>'">
-    `;
+    containerEl.innerHTML = '';
+    const img = document.createElement('img');
+    img.setAttribute('src', imgPath);
+    img.setAttribute('alt', `${diagram.name} at ${bp}px`);
+    img.addEventListener('error', function () {
+      const missing = document.createElement('div');
+      missing.className = 'missing';
+      missing.textContent = `Screenshot not found: ${bp}/${diagram.id}.png`;
+      containerEl.innerHTML = '';
+      containerEl.appendChild(missing);
+    });
+    containerEl.appendChild(img);
     const meta = document.createElement("div");
     meta.className = "meta";
     meta.textContent = `${diagram.name} · ${bp}px viewport`;
