@@ -275,6 +275,19 @@
       width: 100%;
       border-radius: 0;
     }
+
+    @media (max-width: 768px) {
+      .diagram { padding: 28px 20px; }
+      .bets-container { flex-direction: column; gap: 12px; margin-bottom: 18px; }
+      .bet-card { padding: 16px 18px; }
+      .badge-text { white-space: normal; text-align: center; line-height: 1.35; }
+      .connector-badge { padding: 10px 14px; }
+    }
+    @media (max-width: 480px) {
+      .diagram { padding: 24px 16px; }
+      .bet-card { padding: 14px 16px; }
+      .bet-title { font-size: 14px; }
+    }
   </style>
 </head>
 <body>

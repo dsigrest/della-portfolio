@@ -318,6 +318,31 @@
       width: 100%;
       border-radius: 0;
     }
+
+    /* ──────────────────────────────────────────────────────────────
+       Mobile: collapse 5-stage row to single-column stack (Pattern C)
+       ────────────────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .diagram {
+        padding: 28px 20px;
+      }
+      .stages-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      .stage-card {
+        padding: 14px 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .diagram {
+        padding: 24px 16px;
+      }
+      .stage-card {
+        padding: 12px 14px;
+      }
+    }
   </style>
 </head>
 <body>

@@ -173,6 +173,34 @@
     .diagram { width: 100%; }
   }
 
+  @media (max-width: 768px) {
+    /* Pattern B: fixed-height container + xMidYMid meet SVG was letterboxing into empty space at narrow widths. Swap to aspect-ratio so the chart box scales proportionally with the SVG's viewBox (660:200). */
+    .chart-area {
+      height: auto;
+      aspect-ratio: 660 / 200;
+    }
+  }
+
+  @media (max-width: 480px) {
+    /* SVG-internal text scales with the SVG's rendered size. At narrow widths the scale factor crushes font-size=9 to sub-4px. Bump user-unit font-size so labels stay legible. */
+    .chart-area svg text { font-size: 16px; }
+    /* Rebalance hierarchy: shrink competing stat-row + tighten card so chart dominates. */
+    .curve-card { padding: 18px; }
+    .curve-header { margin-bottom: 14px; }
+    .curve-title { font-size: 13px; }
+    .curve-period { font-size: 9px; }
+    .stat-row { gap: 10px; margin-top: 14px; padding-top: 12px; }
+    .stat-big { font-size: 22px; }
+    .stat-label { font-size: 11px; line-height: 1.35; }
+  }
+
+  @media (max-width: 320px) {
+    .chart-area svg text { font-size: 19px; }
+    .curve-card { padding: 14px; }
+    .stat-big { font-size: 20px; }
+    .stat-label { font-size: 10px; }
+  }
+
   /* Embed mode */
   body.embedded {
     padding: 0;

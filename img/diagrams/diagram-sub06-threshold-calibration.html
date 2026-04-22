@@ -249,6 +249,33 @@
         opacity: 1;
       }
     }
+
+    @media (max-width: 768px) {
+      .diagram { padding: 28px 20px; }
+      .chart-card { padding: 20px; margin-bottom: 20px; }
+      .chart-container { height: auto; aspect-ratio: 640 / 280; }
+      .chart-header { flex-direction: column; align-items: flex-start; gap: 10px; margin-bottom: 14px; }
+      .legend { gap: 12px; flex-wrap: wrap; }
+      .detail-card { flex: 0 1 calc(33.333% - 6px); }
+    }
+    @media (max-width: 480px) {
+      .diagram { padding: 24px 16px; }
+      .chart-card { padding: 16px; }
+      /* Rebalance hierarchy: bigger chart share by shrinking surrounding elements. */
+      .detail-card { flex: 0 1 calc(50% - 4px); padding: 8px; }
+      .detail-title { font-size: 8px; }
+      .detail-label { font-size: 9px; }
+      .detail-icon { width: 20px; height: 20px; margin-bottom: 4px; }
+      .chart-container svg text { font-size: 16px; }
+      .chart-title { font-size: 12px; }
+      .legend { font-size: 9px; gap: 10px; }
+      .hint-text { display: none; }
+    }
+    @media (max-width: 320px) {
+      .chart-container svg text { font-size: 19px; }
+      .detail-cards { gap: 6px; }
+      .detail-card { padding: 6px; }
+    }
   </style>
 </head>
 <body>
@@ -318,27 +345,57 @@
 
     <div class="detail-cards">
       <div class="detail-card" data-stage="s1">
-        <div class="detail-icon">🎨</div>
+        <div class="detail-icon">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3c-4.97 0-9 3.58-9 8 0 2.21 1.79 4 4 4h1.5c.83 0 1.5.67 1.5 1.5v.5c0 1.38 1.12 2.5 2.5 2.5h.5c4.42 0 8-3.58 8-8 0-4.42-4.03-8.5-9-8.5z"/>
+            <circle cx="7.5" cy="11" r="0.8"/>
+            <circle cx="10" cy="7.5" r="0.8"/>
+            <circle cx="15" cy="7.5" r="0.8"/>
+            <circle cx="17" cy="11" r="0.8"/>
+          </svg>
+        </div>
         <div class="detail-label">S1</div>
         <div class="detail-title">Visual identity + category</div>
       </div>
       <div class="detail-card" data-stage="s2">
-        <div class="detail-icon">✍️</div>
+        <div class="detail-icon">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 3l4 4L9 19H5v-4L17 3z"/>
+            <path d="M14 6l4 4"/>
+          </svg>
+        </div>
         <div class="detail-label">S2</div>
         <div class="detail-title">Content in first week</div>
       </div>
       <div class="detail-card" data-stage="s3">
-        <div class="detail-icon">📈</div>
+        <div class="detail-icon">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 17 9 11 13 15 21 7"/>
+            <polyline points="15 7 21 7 21 13"/>
+          </svg>
+        </div>
         <div class="detail-label">S3</div>
         <div class="detail-title">Initial member growth</div>
       </div>
       <div class="detail-card" data-stage="s4">
-        <div class="detail-icon">👥</div>
+        <div class="detail-icon">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="9" r="3"/>
+            <circle cx="16" cy="10.5" r="2.5"/>
+            <path d="M3 19.5c0-3 2.7-5 6-5s6 2 6 5"/>
+            <path d="M15 19.5c0-2 1.6-3.5 3.5-3.5s3.5 1.5 3.5 3.5"/>
+          </svg>
+        </div>
         <div class="detail-label">S4</div>
         <div class="detail-title">Mod team formation</div>
       </div>
       <div class="detail-card" data-stage="s5">
-        <div class="detail-icon">✨</div>
+        <div class="detail-icon">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 4v4M12 16v4M4 12h4M16 12h4"/>
+            <path d="M12 8c0 2.5 1.5 4 4 4-2.5 0-4 1.5-4 4 0-2.5-1.5-4-4-4 2.5 0 4-1.5 4-4z"/>
+          </svg>
+        </div>
         <div class="detail-label">S5</div>
         <div class="detail-title">Sustained engagement</div>
       </div>

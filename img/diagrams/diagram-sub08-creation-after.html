@@ -155,6 +155,26 @@
       width: 100%;
       border-radius: 0;
     }
+
+    @media (max-width: 480px) {
+      .flow-steps {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        gap: 10px;
+        margin-bottom: 24px;
+      }
+      .step-arrow {
+        transform: rotate(90deg);
+        margin-top: 0;
+        font-size: 16px;
+      }
+      .step-line { width: 100px; }
+      .annotation-card { padding: 16px; }
+    }
+    @media (max-width: 320px) {
+      .diagram { padding: 20px 14px; }
+      .step-line { width: 80px; }
+    }
   </style>
 </head>
 <body>

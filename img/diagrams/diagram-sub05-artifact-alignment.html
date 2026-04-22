@@ -326,6 +326,16 @@
         opacity: 1;
       }
     }
+
+    @media (max-width: 768px) {
+      .diagram { padding: 28px 20px; }
+      .cards-grid { grid-template-columns: 1fr; gap: 10px; }
+      .card { padding: 16px 18px; }
+    }
+    @media (max-width: 480px) {
+      .diagram { padding: 24px 16px; }
+      .card { padding: 14px 16px; }
+    }
   </style>
 </head>
 <body>
@@ -334,7 +344,13 @@
       <!-- Card 1: Research Findings -->
       <div class="card">
         <div class="card-header">
-          <div class="card-icon">📊</div>
+          <div class="card-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="13" width="4" height="7" rx="0.5"/>
+              <rect x="10" y="9" width="4" height="11" rx="0.5"/>
+              <rect x="16" y="5" width="4" height="15" rx="0.5"/>
+            </svg>
+          </div>
           <div class="card-meta">
             <div class="card-number">01</div>
             <div class="card-title">Research Findings</div>
@@ -357,7 +373,15 @@
       <!-- Card 2: Feasibility Tradeoffs -->
       <div class="card">
         <div class="card-header">
-          <div class="card-icon">⚖️</div>
+          <div class="card-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="4" x2="12" y2="20"/>
+              <line x1="6" y1="20" x2="18" y2="20"/>
+              <line x1="5" y1="10" x2="19" y2="10"/>
+              <path d="M3 14c0-2 1-4 2-4s2 2 2 4"/>
+              <path d="M17 14c0-2 1-4 2-4s2 2 2 4"/>
+            </svg>
+          </div>
           <div class="card-meta">
             <div class="card-number">02</div>
             <div class="card-title">Feasibility Tradeoffs</div>
@@ -377,7 +401,13 @@
       <!-- Card 3: Prioritization Logic -->
       <div class="card">
         <div class="card-header">
-          <div class="card-icon">🎯</div>
+          <div class="card-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"/>
+              <circle cx="12" cy="12" r="5.5"/>
+              <circle cx="12" cy="12" r="2"/>
+            </svg>
+          </div>
           <div class="card-meta">
             <div class="card-number">03</div>
             <div class="card-title">Prioritization Logic</div>
@@ -409,7 +439,14 @@
       <!-- Card 4: Design Patterns -->
       <div class="card">
         <div class="card-header">
-          <div class="card-icon">🎨</div>
+          <div class="card-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="8" height="8" rx="1"/>
+              <rect x="13" y="3" width="8" height="8" rx="1"/>
+              <rect x="3" y="13" width="8" height="8" rx="1"/>
+              <rect x="13" y="13" width="8" height="8" rx="1"/>
+            </svg>
+          </div>
           <div class="card-meta">
             <div class="card-number">04</div>
             <div class="card-title">Design Patterns</div>

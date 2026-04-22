@@ -317,6 +317,46 @@
       width: 100%;
       border-radius: 0;
     }
+
+    /* ──────────────────────────────────────────────────────────────
+       Mobile: stack card body above impact row (Pattern D)
+       Below 480px, the fixed 50px .impact-section crushes .card-body.
+       Switch .stage-card to column flex; impact flows below tags.
+       ────────────────────────────────────────────────────────────── */
+    @media (max-width: 480px) {
+      .diagram {
+        padding: 28px 18px;
+      }
+      .stage-row {
+        gap: 12px;
+      }
+      .stage-card {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding: 14px 16px;
+      }
+      .impact-section {
+        width: 100%;
+        margin-left: 0;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 8px;
+      }
+      .impact-label {
+        margin-bottom: 0;
+      }
+    }
+
+    @media (max-width: 320px) {
+      .diagram {
+        padding: 24px 14px;
+      }
+      .stage-card {
+        padding: 12px 14px;
+      }
+    }
   </style>
 </head>
 <body>

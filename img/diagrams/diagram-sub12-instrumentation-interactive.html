@@ -256,6 +256,35 @@
       width: 100%;
       border-radius: 0;
     }
+
+    @media (max-width: 768px) {
+      .diagram { padding: 28px 20px; }
+      .heatmap-row-label,
+      .heatmap-grid .heatmap-row:first-child > div:first-child { width: 60px; }
+      .heatmap-row-label { font-size: 9px; }
+      .heatmap-col-header { width: auto; flex: 1; padding: 0 2px; font-size: 7px; letter-spacing: 0.2px; }
+      .heatmap-cell { height: 32px; font-size: 8px; }
+      .heatmap-header { padding-bottom: 18px; margin-bottom: 18px; }
+      .heatmap-title { font-size: 14px; }
+    }
+    @media (max-width: 480px) {
+      .diagram { padding: 24px 14px; }
+      .heatmap-row-label,
+      .heatmap-grid .heatmap-row:first-child > div:first-child { width: 50px; }
+      .heatmap-row-label { font-size: 8px; }
+      .heatmap-col-header { font-size: 6px; padding: 0 1px; }
+      .heatmap-cell { height: 28px; font-size: 7px; border-radius: 3px; }
+      .heatmap-grid { gap: 2px; }
+      .heatmap-row { gap: 2px; }
+      .heatmap-row-data { gap: 2px; }
+      .legend { flex-wrap: wrap; gap: 8px; }
+    }
+    @media (max-width: 320px) {
+      .heatmap-row-label,
+      .heatmap-grid .heatmap-row:first-child > div:first-child { width: 44px; }
+      .heatmap-row-label { font-size: 7px; }
+      .heatmap-cell { font-size: 6px; height: 24px; }
+    }
   </style>
 </head>
 <body>

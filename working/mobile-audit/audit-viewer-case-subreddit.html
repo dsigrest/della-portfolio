@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Case-Subreddit — Post-Fix Audit Viewer</title>
+<style>
+  :root {
+    --bg: #0f1116;
+    --card: #1a1d27;
+    --border: #2a2e3c;
+    --text: #e4e4eb;
+    --muted: #8b8fa0;
+    --accent: #7fb5b0;
+    --accent-dim: rgba(127,181,176,0.15);
+    --new: #c4b078;
+    --new-dim: rgba(196,176,120,0.18);
+    --r2: #d4a574;
+    --r2-dim: rgba(212,165,116,0.20);
+    --r2-border: rgba(212,165,116,0.45);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 0 0 80px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .header {
+    position: sticky;
+    top: 0;
+    background: rgba(15,17,22,0.96);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    z-index: 100;
+  }
+  .header h1 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .header .sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .global-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-size: 12px;
+  }
+  .global-controls span { color: var(--muted); }
+  .global-controls button {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .global-controls button:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .chips {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+  .chip {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.15s;
+  }
+  .chip:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .chip.is-new {
+    background: var(--new-dim);
+    border-color: rgba(196,176,120,0.4);
+    color: var(--new);
+  }
+  .chip.is-r2 {
+    background: var(--r2-dim);
+    border-color: var(--r2-border);
+    color: var(--r2);
+  }
+  .content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+  .diagram-set {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+  .diagram-set h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .diagram-set .id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 3px 7px;
+    border-radius: 3px;
+  }
+  .badge.new {
+    background: var(--new-dim);
+    color: var(--new);
+    border: 1px solid rgba(196,176,120,0.3);
+  }
+  .badge.earlier {
+    background: var(--accent-dim);
+    color: var(--accent);
+    border: 1px solid rgba(127,181,176,0.25);
+  }
+  .badge.r2 {
+    background: var(--r2-dim);
+    color: var(--r2);
+    border: 1px solid var(--r2-border);
+  }
+  .fix-summary {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+  .breakpoints {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .bp-button {
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .bp-button:hover { border-color: var(--accent); }
+  .bp-button.active {
+    background: var(--accent);
+    color: #0f1116;
+    border-color: var(--accent);
+    font-weight: 700;
+  }
+  .screenshot-container {
+    background: #08090F;
+    border-radius: 6px;
+    overflow: hidden;
+    min-height: 120px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+  }
+  .screenshot-container img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+  .meta {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 8px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .missing {
+    padding: 40px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>Case-Subreddit — Post-Fix Audit Viewer</h1>
+  <div class="sub">10 diagrams · 6 breakpoints · <strong style="color: var(--r2);">Round 2</strong> (chart hierarchy + SVG icons): sub01, sub05, sub06, sub09 · Round 1 CSS fixes: sub02, 03, 04, 08, 11, 12</div>
+  <div class="global-controls">
+    <span>Set all:</span>
+    <button data-bp="1440">1440</button>
+    <button data-bp="1024">1024</button>
+    <button data-bp="768">768</button>
+    <button data-bp="480">480</button>
+    <button data-bp="375">375</button>
+    <button data-bp="320">320</button>
+    <span style="margin-left: 12px;">· Default = 375 (primary mobile target)</span>
+  </div>
+  <div class="chips" id="chips"></div>
+</div>
+
+<div class="content" id="diagrams"></div>
+
+<script>
+  const diagrams = [
+    { id: "sub01-survival-curve",             name: "Survival Curve",             status: "r2",      fix: "R2: chart hierarchy — shrink stat-big (32→22px @480, 20px @320), tighten curve-card padding, bump SVG text (14→16 @480, 16→19 @320) so the curve dominates visually." },
+    { id: "sub02-lifecycle-framework",        name: "Lifecycle Framework",        status: "earlier", fix: "R1: Pattern C (5-col → 1fr @768). No R2 changes." },
+    { id: "sub03-milestone-model",            name: "Milestone Model",            status: "earlier", fix: "R1: Pattern D (.stage-card flex-column @480). No R2 changes." },
+    { id: "sub04-strategic-starting-points",  name: "Strategic Starting Points",  status: "earlier", fix: "R1: Pattern C (.bets-container column @768 + badge wrap). Reference diagram for canonical SVG icon style." },
+    { id: "sub05-artifact-alignment",         name: "Artifact Alignment",         status: "r2",      fix: "R1: Pattern C (.cards-grid 2×2 → 1fr @768). R2: replaced 4 emojis (📊⚖🎯🎨) with inline SVG icons — bars, scales, target, swatch grid." },
+    { id: "sub06-threshold-calibration",      name: "Threshold Calibration",      status: "r2",      fix: "R1: Pattern B (aspect-ratio 640/280 + 5→3→2-up details). R2: replaced 5 emojis (🎨✍📈👥✨) with SVG icons; shrunk detail cards, hid hint text @480, bumped SVG text (14→16 @480, 16→19 @320) to give chart more share." },
+    { id: "sub08-creation-after",             name: "Creation After",             status: "earlier", fix: "R1: vertical stack .flow-steps + rotated ↓ arrows @480. No R2 changes." },
+    { id: "sub09-distribution-loop",          name: "Distribution Loop",          status: "r2",      fix: "R1: Pattern C (.flow-row column @768 + rotate inline arrows; hide return-arc SVG). R2: replaced 4 emojis (📢❤🛡⛔) with SVG icons — megaphone, heart, shield+check, circle+slash." },
+    { id: "sub11-text-bars",                  name: "Text Bars (Three Pillars)",  status: "earlier", fix: "R1: Pattern C (.pillars-grid 3-col → 1fr @768). No R2 changes." },
+    { id: "sub12-instrumentation-interactive", name: "Instrumentation Heatmap",   status: "earlier", fix: "R1: flex:1 .heatmap-col-header @768; tighter cells @480/@320. No R2 changes." }
+  ];
+
+  const breakpoints = [1440, 1024, 768, 480, 375, 320];
+  const defaultBp = 375;
+  const folder = "case-subreddit";
+
+  // Build chips
+  const chipsEl = document.getElementById("chips");
+  diagrams.forEach(d => {
+    const a = document.createElement("a");
+    let cls = "chip";
+    if (d.status === "r2") cls += " is-r2";
+    else if (d.status === "new") cls += " is-new";
+    a.className = cls;
+    a.href = `#${d.id}`;
+    a.textContent = d.id.split("-")[0];
+    a.title = d.name;
+    chipsEl.appendChild(a);
+  });
+
+  // Build diagram cards
+  const container = document.getElementById("diagrams");
+  diagrams.forEach(diagram => {
+    const section = document.createElement("section");
+    section.className = "diagram-set";
+    section.id = diagram.id;
+
+    const badgeHTML =
+      diagram.status === "r2"      ? '<span class="badge r2">Round 2 — charts + icons</span>' :
+      diagram.status === "new"     ? '<span class="badge new">Just fixed</span>' :
+                                     '<span class="badge earlier">R1 only</span>';
+
+    let html = `
+      <h2><span class="id">${diagram.id.split("-")[0]}</span> ${diagram.name} ${badgeHTML}</h2>
+      <div class="fix-summary">${diagram.fix}</div>
+      <div class="breakpoints">
+    `;
+    breakpoints.forEach(bp => {
+      html += `<button class="bp-button" data-diagram="${diagram.id}" data-bp="${bp}">${bp}px</button>`;
+    });
+    html += `</div><div class="screenshot-container" id="img-${diagram.id}"></div>`;
+    section.innerHTML = html;
+    container.appendChild(section);
+
+    // per-diagram bp click
+    section.querySelectorAll(".bp-button").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const bp = parseInt(e.currentTarget.dataset.bp);
+        showScreenshot(diagram, bp);
+        setActive(diagram.id, bp);
+      });
+    });
+
+    // default
+    showScreenshot(diagram, defaultBp);
+    setActive(diagram.id, defaultBp);
+  });
+
+  // Global "set all"
+  document.querySelectorAll(".global-controls button").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      const bp = parseInt(e.currentTarget.dataset.bp);
+      diagrams.forEach(d => {
+        showScreenshot(d, bp);
+        setActive(d.id, bp);
+      });
+    });
+  });
+
+  function showScreenshot(diagram, bp) {
+    const imgPath = `screenshots/${bp}/${folder}/${diagram.id}.png?t=${Date.now()}`;
+    const containerEl = document.getElementById(`img-${diagram.id}`);
+    containerEl.innerHTML = `
+      <img src="${imgPath}" alt="${diagram.name} at ${bp}px" onerror="this.parentElement.innerHTML='<div class=&quot;missing&quot;>Screenshot not found: ${bp}/${diagram.id}.png</div>'">
+    `;
+    const meta = document.createElement("div");
+    meta.className = "meta";
+    meta.textContent = `${diagram.name} · ${bp}px viewport`;
+    containerEl.parentElement.querySelector(".meta")?.remove();
+    containerEl.parentElement.appendChild(meta);
+  }
+
+  function setActive(diagramId, bp) {
+    document.querySelectorAll(`[data-diagram="${diagramId}"]`).forEach(btn => {
+      btn.classList.toggle("active", parseInt(btn.dataset.bp) === bp);
+    });
+  }
+</script>
+</body>
+</html>
