@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="figma-source" content="pending:ai10-mobile page:29:42 file:TArUrZsBUocaAsqetjXq7V">
+<title>Graceful Degradation (mobile)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --casual: #D4A574;
+    --red: #C47878;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 16px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 100%;
+    max-width: 420px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    padding: 20px 16px 20px;
+  }
+
+  /* Title */
+  .title-area { margin-bottom: 18px; }
+  .label {
+    font-size: 9px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); opacity: 0.8; margin-bottom: 6px;
+  }
+  h1 {
+    font-size: 22px; font-weight: 700;
+    color: var(--text-pri); letter-spacing: -0.02em;
+    margin-bottom: 6px; line-height: 1.15;
+  }
+  .subtitle {
+    font-size: 12px; color: var(--text-sec);
+    line-height: 1.5;
+  }
+
+  /* Comparison — stacked */
+  .comparison-area {
+    position: relative;
+    margin-bottom: 14px;
+  }
+  .comparison-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 180px 220px at 20% 25%, rgba(196,120,120,0.05) 0%, transparent 70%),
+      radial-gradient(ellipse 180px 220px at 80% 75%, rgba(127,181,176,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .comparison {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .state-col {
+    display: grid;
+    grid-template-columns: 132px 1fr;
+    gap: 12px;
+    align-items: start;
+  }
+
+  .state-head {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .state-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 16px;
+    white-space: nowrap;
+  }
+  .state-label.degraded {
+    color: var(--red);
+    background: rgba(196,120,120,0.08);
+    border: 1px solid rgba(196,120,120,0.18);
+  }
+  .state-label.full {
+    color: var(--accent);
+    background: var(--accent-dim);
+    border: 1px solid rgba(127,181,176,0.18);
+  }
+
+  /* Phone mocks — smaller */
+  .phone-mock {
+    aspect-ratio: 9 / 16;
+    width: 100%;
+    max-width: 132px;
+    border-radius: 14px;
+    position: relative;
+    overflow: hidden;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .phone-mock.degraded {
+    background: linear-gradient(135deg, rgba(196,120,120,0.06) 0%, rgba(224,223,228,0.02) 100%);
+    border: 1.5px dashed rgba(196,120,120,0.25);
+  }
+  .phone-mock.full-exp {
+    background: linear-gradient(135deg, rgba(127,181,176,0.06) 0%, rgba(224,223,228,0.02) 100%);
+    border: 1.5px dashed rgba(127,181,176,0.25);
+  }
+
+  .ph-status-bar {
+    height: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2px;
+  }
+  .ph-time { width: 16px; height: 3px; border-radius: 1.5px; background: rgba(224,223,228,0.15); }
+  .ph-icons { width: 22px; height: 3px; border-radius: 1.5px; background: rgba(224,223,228,0.1); }
+
+  .ph-search {
+    height: 14px;
+    border-radius: 7px;
+    background: rgba(224,223,228,0.04);
+    border: 1px solid rgba(224,223,228,0.06);
+    display: flex;
+    align-items: center;
+    padding: 0 6px;
+    gap: 3px;
+  }
+  .ph-search-icon {
+    width: 5px; height: 5px; border-radius: 50%;
+    border: 1px solid rgba(224,223,228,0.15);
+  }
+  .ph-search-text {
+    height: 2px; width: 50%; border-radius: 1px;
+    background: rgba(224,223,228,0.1);
+  }
+
+  .ph-synthesis {
+    border-radius: 6px;
+    padding: 7px;
+    min-height: 42px;
+    position: relative;
+  }
+  .ph-synthesis.suppressed {
+    background: rgba(196,120,120,0.04);
+    border: 1px dashed rgba(196,120,120,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ph-synthesis.active {
+    background: rgba(127,181,176,0.06);
+    border: 1px solid rgba(127,181,176,0.12);
+  }
+
+  .suppressed-x {
+    width: 14px; height: 14px;
+    position: relative;
+    opacity: 0.35;
+  }
+  .suppressed-x::before, .suppressed-x::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 10px; height: 1.2px;
+    background: var(--red);
+    border-radius: 1px;
+  }
+  .suppressed-x::before { transform: translate(-50%, -50%) rotate(45deg); }
+  .suppressed-x::after { transform: translate(-50%, -50%) rotate(-45deg); }
+
+  .ph-synth-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .ph-synth-line {
+    height: 2px;
+    border-radius: 1px;
+    background: rgba(127,181,176,0.25);
+  }
+  .ph-synth-line:nth-child(1) { width: 90%; }
+  .ph-synth-line:nth-child(2) { width: 75%; }
+  .ph-synth-line:nth-child(3) { width: 82%; }
+  .ph-synth-line:nth-child(4) { width: 55%; }
+
+  .ph-synthesis.active .ph-synth-line {
+    animation: synth-dance 4s ease-in-out infinite;
+  }
+  .ph-synthesis.active .ph-synth-line:nth-child(1) { animation-delay: 0s; }
+  .ph-synthesis.active .ph-synth-line:nth-child(2) { animation-delay: 0.3s; }
+  .ph-synthesis.active .ph-synth-line:nth-child(3) { animation-delay: 0.6s; }
+  .ph-synthesis.active .ph-synth-line:nth-child(4) { animation-delay: 0.15s; }
+  @keyframes synth-dance {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.8; }
+  }
+
+  .ph-posts {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+  }
+  .ph-post {
+    border-radius: 4px;
+    padding: 5px;
+    background: rgba(224,223,228,0.02);
+    border: 1px solid rgba(224,223,228,0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .ph-post-header {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .ph-avatar {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: rgba(224,223,228,0.08);
+  }
+  .ph-username {
+    height: 2px; width: 22px; border-radius: 1px;
+    background: rgba(224,223,228,0.1);
+  }
+  .ph-post-line {
+    height: 1.5px; border-radius: 1px;
+    background: rgba(224,223,228,0.06);
+  }
+
+  .ph-post.cited { border-color: rgba(127,181,176,0.08); }
+  .ph-post.cited .ph-avatar { background: rgba(127,181,176,0.15); }
+  .ph-cite-dot {
+    width: 3px; height: 3px; border-radius: 50%;
+    background: rgba(127,181,176,0.4);
+    margin-left: auto;
+  }
+
+  .phone-mock.degraded .ph-post { opacity: 0.6; }
+
+  .hotspot { position: absolute; border-radius: 3px; pointer-events: none; }
+  .hotspot.problem {
+    border: 1px solid rgba(196,120,120,0.5);
+    background: rgba(196,120,120,0.06);
+  }
+  .hotspot.solution {
+    border: 1px solid rgba(127,181,176,0.5);
+    background: rgba(127,181,176,0.06);
+  }
+
+  /* Annotations — next to phone on mobile */
+  .annotations {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 4px;
+  }
+  .annotation {
+    font-size: 10px;
+    line-height: 1.35;
+    padding: 6px 8px;
+    border-radius: 6px;
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+  }
+  .annotation.problem {
+    color: var(--red);
+    background: rgba(196,120,120,0.06);
+    border: 1px solid rgba(196,120,120,0.12);
+  }
+  .annotation.solution {
+    color: var(--accent);
+    background: rgba(127,181,176,0.06);
+    border: 1px solid rgba(127,181,176,0.12);
+  }
+  .ann-marker {
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+  .ann-marker.problem { background: var(--red); }
+  .ann-marker.solution { background: var(--accent); }
+
+  /* Threshold divider between stacked states */
+  .threshold-divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 2px 2px;
+  }
+  .threshold-divider .line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(196,120,120,0.2), rgba(224,223,228,0.1), rgba(127,181,176,0.2));
+  }
+  .threshold-divider .label-inline {
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  /* Insight callout */
+  .insight {
+    padding: 12px 14px;
+    background: rgba(212,165,116,0.06);
+    border: 1px solid rgba(212,165,116,0.12);
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+  .insight p {
+    font-size: 11px;
+    color: var(--text-sec);
+    line-height: 1.5;
+  }
+  .insight strong {
+    color: var(--casual);
+    font-weight: 600;
+  }
+
+  /* Outcome */
+  .outcome {
+    background: var(--accent-dim);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .outcome-arrow {
+    font-size: 14px; color: var(--accent);
+    opacity: 0.55; flex-shrink: 0;
+    line-height: 1.2;
+  }
+  .outcome p {
+    font-size: 11px; font-weight: 500;
+    color: var(--text-sec); line-height: 1.5;
+  }
+
+  /* Very small breakpoint */
+  @media (max-width: 360px) {
+    .diagram { padding: 16px 12px; }
+    h1 { font-size: 20px; }
+    .subtitle { font-size: 11px; }
+    .state-col { grid-template-columns: 112px 1fr; gap: 10px; }
+    .phone-mock { max-width: 112px; }
+    .annotation { font-size: 9px; padding: 5px 7px; }
+  }
+
+  /* Embed mode — strip chrome when in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+  }
+  body.embedded .diagram {
+    max-width: none;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="title-area">
+      <div class="label">Failure States</div>
+      <h1>Graceful Degradation</h1>
+      <p class="subtitle">When synthesis dips below threshold, the page falls back to sourced answers — it doesn't break</p>
+    </div>
+
+    <div class="comparison-area">
+      <div class="comparison">
+        <!-- Below Threshold -->
+        <div class="state-col">
+          <div class="state-head">
+            <div class="state-label degraded">Below Threshold</div>
+            <div class="phone-mock degraded">
+              <div class="ph-status-bar">
+                <div class="ph-time"></div>
+                <div class="ph-icons"></div>
+              </div>
+              <div class="ph-search">
+                <div class="ph-search-icon"></div>
+                <div class="ph-search-text"></div>
+              </div>
+              <div class="ph-synthesis suppressed">
+                <div class="suppressed-x"></div>
+                <div class="hotspot problem" style="inset: 0;"></div>
+              </div>
+              <div class="ph-posts">
+                <div class="ph-post">
+                  <div class="ph-post-header"><div class="ph-avatar"></div><div class="ph-username"></div></div>
+                  <div class="ph-post-line" style="width: 85%;"></div>
+                  <div class="ph-post-line" style="width: 60%;"></div>
+                </div>
+                <div class="ph-post">
+                  <div class="ph-post-header"><div class="ph-avatar"></div><div class="ph-username"></div></div>
+                  <div class="ph-post-line" style="width: 78%;"></div>
+                  <div class="ph-post-line" style="width: 50%;"></div>
+                </div>
+                <div class="ph-post">
+                  <div class="ph-post-header"><div class="ph-avatar"></div><div class="ph-username"></div></div>
+                  <div class="ph-post-line" style="width: 70%;"></div>
+                  <div class="ph-post-line" style="width: 45%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="annotations">
+            <div class="annotation problem">
+              <div class="ann-marker problem"></div>
+              Synthesis suppressed — quality below confidence threshold
+            </div>
+            <div class="annotation problem">
+              <div class="ann-marker problem"></div>
+              Raw source posts surface as fallback
+            </div>
+          </div>
+        </div>
+
+        <!-- Threshold divider -->
+        <div class="threshold-divider">
+          <div class="line"></div>
+          <span class="label-inline">threshold</span>
+          <div class="line"></div>
+        </div>
+
+        <!-- Above Threshold -->
+        <div class="state-col">
+          <div class="state-head">
+            <div class="state-label full">Above Threshold</div>
+            <div class="phone-mock full-exp">
+              <div class="ph-status-bar">
+                <div class="ph-time"></div>
+                <div class="ph-icons"></div>
+              </div>
+              <div class="ph-search">
+                <div class="ph-search-icon"></div>
+                <div class="ph-search-text"></div>
+              </div>
+              <div class="ph-synthesis active">
+                <div class="ph-synth-lines">
+                  <div class="ph-synth-line"></div>
+                  <div class="ph-synth-line"></div>
+                  <div class="ph-synth-line"></div>
+                  <div class="ph-synth-line"></div>
+                </div>
+                <div class="hotspot solution" style="inset: 0;"></div>
+              </div>
+              <div class="ph-posts">
+                <div class="ph-post cited">
+                  <div class="ph-post-header"><div class="ph-avatar"></div><div class="ph-username"></div><div class="ph-cite-dot"></div></div>
+                  <div class="ph-post-line" style="width: 85%;"></div>
+                  <div class="ph-post-line" style="width: 60%;"></div>
+                </div>
+                <div class="ph-post cited">
+                  <div class="ph-post-header"><div class="ph-avatar"></div><div class="ph-username"></div><div class="ph-cite-dot"></div></div>
+                  <div class="ph-post-line" style="width: 78%;"></div>
+                  <div class="ph-post-line" style="width: 50%;"></div>
+                </div>
+                <div class="ph-post">
+                  <div class="ph-post-header"><div class="ph-avatar"></div><div class="ph-username"></div></div>
+                  <div class="ph-post-line" style="width: 70%;"></div>
+                  <div class="ph-post-line" style="width: 45%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="annotations">
+            <div class="annotation solution">
+              <div class="ann-marker solution"></div>
+              AI synthesis visible above fold with citations
+            </div>
+            <div class="annotation solution">
+              <div class="ann-marker solution"></div>
+              Source posts linked as cited references
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="insight">
+      <p><strong>Design principle:</strong> Degradation is not failure. Suppress low-confidence synthesis — the fallback (threaded sources) is the reliable baseline.</p>
+    </div>
+
+    <div class="outcome">
+      <span class="outcome-arrow">&#8627;</span>
+      <p>Users always get a functional page — the floor is original Reddit threads, not a broken experience</p>
+    </div>
+  </div>
+</body>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</html>

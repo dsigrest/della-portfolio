@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A System, Not a Solution</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --casual: #D4A574;
+    --resur: #C4B078;
+    --new-seg: #8A9EC4;
+    --red: #C47878;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .title-area { padding: 48px 48px 0; }
+  .label {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); opacity: 0.8; margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 36px; font-weight: 700;
+    color: var(--text-pri); letter-spacing: -0.025em;
+    margin-bottom: 8px; line-height: 1.15;
+  }
+  .subtitle {
+    font-size: 15px; color: var(--text-sec);
+    line-height: 1.55; max-width: 580px;
+  }
+
+  /* Surfaces area — 2×2 phone mocks */
+  .surfaces-area {
+    padding: 36px 48px 24px;
+    position: relative;
+  }
+  .surfaces-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 200px 200px at 25% 40%, rgba(127,181,176,0.04) 0%, transparent 70%),
+      radial-gradient(ellipse 200px 200px at 75% 60%, rgba(138,158,196,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .surfaces-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .surface-card {
+    text-align: center;
+  }
+
+  .surface-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+  }
+
+  /* Mini screen mocks */
+  .screen-mock {
+    width: 100%;
+    aspect-ratio: 9 / 14;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(224,223,228,0.03) 0%, rgba(224,223,228,0.01) 100%);
+    border: 1.5px dashed rgba(127,181,176,0.2);
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Status bar */
+  .mock-status {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 2px;
+    margin-bottom: 2px;
+  }
+  .mock-time { width: 16px; height: 2px; border-radius: 1px; background: rgba(224,223,228,0.1); }
+  .mock-icons { width: 20px; height: 2px; border-radius: 1px; background: rgba(224,223,228,0.06); }
+
+  /* AI identification badge — the persistent element */
+  .mock-ai-badge {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    padding: 4px 6px;
+    border-radius: 4px;
+    background: rgba(127,181,176,0.08);
+    border: 1px solid rgba(127,181,176,0.18);
+  }
+  .badge-dot {
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: rgba(127,181,176,0.5);
+  }
+  .badge-text {
+    height: 2px; width: 14px;
+    border-radius: 1px;
+    background: rgba(127,181,176,0.3);
+  }
+
+  /* Content lines */
+  .mock-line {
+    height: 2px; border-radius: 1px;
+    background: rgba(224,223,228,0.05);
+  }
+  .mock-line.w80 { width: 80%; }
+  .mock-line.w60 { width: 60%; }
+  .mock-line.w70 { width: 70%; }
+  .mock-line.w50 { width: 50%; }
+  .mock-line.w40 { width: 40%; }
+
+  /* Teal left border — visual separation element */
+  .mock-separator {
+    width: 2px;
+    position: absolute;
+    left: 0; top: 28px; bottom: 40%;
+    background: rgba(127,181,176,0.25);
+    border-radius: 1px;
+  }
+
+  /* Search result variant */
+  .mock-search-bar {
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(224,223,228,0.04);
+    border: 1px solid rgba(224,223,228,0.06);
+    margin-bottom: 2px;
+  }
+
+  /* Feed card variant */
+  .mock-card {
+    padding: 5px;
+    border-radius: 4px;
+    background: rgba(224,223,228,0.02);
+    border: 1px solid rgba(224,223,228,0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  /* Reply variant */
+  .mock-reply-indent {
+    margin-left: 10px;
+    padding-left: 6px;
+    border-left: 1px solid rgba(224,223,228,0.06);
+  }
+
+  /* Hotspot highlight on AI badge area */
+  .badge-hotspot {
+    position: absolute;
+    border-radius: 4px;
+    border: 1px solid rgba(127,181,176,0.4);
+    background: rgba(127,181,176,0.04);
+    pointer-events: none;
+  }
+
+  /* Persistent elements bar */
+  .persistent-area {
+    padding: 0 48px 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .persistent-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .persistent-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .persistent-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-highlight);
+    border-radius: 20px;
+  }
+
+  .persistent-item .p-icon {
+    width: 14px; height: 14px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .persistent-item .p-text {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-sec);
+  }
+
+  /* Connection lines from screens to persistent bar */
+  .connectors {
+    display: flex;
+    justify-content: space-around;
+    padding: 0 80px;
+    height: 20px;
+    position: relative;
+    z-index: 1;
+  }
+  .conn-v {
+    width: 1px;
+    height: 20px;
+    background: linear-gradient(180deg, rgba(127,181,176,0.15), rgba(127,181,176,0.05));
+  }
+
+  /* SHR-05 ambient — badge shimmer */
+  .badge-shimmer {
+    animation: badge-ambient 4.5s ease-in-out infinite;
+  }
+  .surface-card:nth-child(2) .badge-shimmer { animation-delay: 0.5s; }
+  .surface-card:nth-child(3) .badge-shimmer { animation-delay: 1.0s; }
+  .surface-card:nth-child(4) .badge-shimmer { animation-delay: 1.5s; }
+  @keyframes badge-ambient {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+
+  /* Outcome */
+  .outcome {
+    margin: 0 48px 48px;
+    background: var(--accent-dim);
+    border-radius: 10px;
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .outcome-arrow {
+    font-size: 16px; color: var(--accent);
+    opacity: 0.55; flex-shrink: 0;
+  }
+  .outcome p {
+    font-size: 13px; font-weight: 500;
+    color: var(--text-sec); line-height: 1.5;
+  }
+
+  @media (max-width: 680px) {
+    .title-area, .surfaces-area, .persistent-area, .outcome { padding-left: 24px; padding-right: 24px; }
+    body { padding: 16px; }
+    .surfaces-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="title-area">
+      <div class="label">Transparency — Final</div>
+      <h1>A System, Not a Solution</h1>
+      <p class="subtitle">Same color, same name, always separated — the identification system flexes by surface but stays consistent in identity</p>
+    </div>
+
+    <div class="surfaces-area">
+      <div class="surfaces-grid">
+        <!-- KLP Page -->
+        <div class="surface-card">
+          <div class="surface-label">KLP Page</div>
+          <div class="screen-mock">
+            <div class="mock-status"><span class="mock-time"></span><span class="mock-icons"></span></div>
+            <div class="mock-separator"></div>
+            <div class="mock-ai-badge badge-shimmer">
+              <span class="badge-dot"></span>
+              <span class="badge-text"></span>
+            </div>
+            <div class="mock-line w80"></div>
+            <div class="mock-line w60"></div>
+            <div class="mock-line w70"></div>
+            <div style="height: 1px; background: rgba(224,223,228,0.04); margin: 3px 0;"></div>
+            <div class="mock-line w50"></div>
+            <div class="mock-line w40"></div>
+            <div class="mock-line w60"></div>
+          </div>
+        </div>
+
+        <!-- Search Results -->
+        <div class="surface-card">
+          <div class="surface-label">Search</div>
+          <div class="screen-mock">
+            <div class="mock-status"><span class="mock-time"></span><span class="mock-icons"></span></div>
+            <div class="mock-search-bar"></div>
+            <div class="mock-card">
+              <div class="mock-line w70"></div>
+              <div class="mock-line w50"></div>
+              <div class="mock-ai-badge badge-shimmer" style="margin-top: 2px;">
+                <span class="badge-dot"></span>
+                <span class="badge-text" style="width: 10px;"></span>
+              </div>
+            </div>
+            <div class="mock-card" style="opacity: 0.5;">
+              <div class="mock-line w60"></div>
+              <div class="mock-line w40"></div>
+            </div>
+            <div class="mock-card" style="opacity: 0.3;">
+              <div class="mock-line w70"></div>
+              <div class="mock-line w50"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Community Feed -->
+        <div class="surface-card">
+          <div class="surface-label">Feed</div>
+          <div class="screen-mock">
+            <div class="mock-status"><span class="mock-time"></span><span class="mock-icons"></span></div>
+            <div class="mock-card">
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <div style="width: 8px; height: 8px; border-radius: 50%; background: rgba(224,223,228,0.08);"></div>
+                <div class="mock-line w40"></div>
+              </div>
+              <div class="mock-line w80"></div>
+              <div class="mock-line w60"></div>
+            </div>
+            <div class="mock-card">
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <div style="width: 8px; height: 8px; border-radius: 50%; background: rgba(224,223,228,0.08);"></div>
+                <div class="mock-line w40"></div>
+              </div>
+              <div class="mock-line w70"></div>
+              <div class="mock-ai-badge badge-shimmer" style="margin-top: 2px;">
+                <span class="badge-dot"></span>
+                <span class="badge-text" style="width: 18px;"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reply Context -->
+        <div class="surface-card">
+          <div class="surface-label">Reply</div>
+          <div class="screen-mock">
+            <div class="mock-status"><span class="mock-time"></span><span class="mock-icons"></span></div>
+            <div class="mock-card">
+              <div class="mock-line w70"></div>
+              <div class="mock-line w50"></div>
+            </div>
+            <div class="mock-reply-indent">
+              <div class="mock-ai-badge badge-shimmer" style="margin-bottom: 3px;">
+                <span class="badge-dot"></span>
+                <span class="badge-text" style="width: 12px;"></span>
+              </div>
+              <div class="mock-line w60"></div>
+              <div class="mock-line w40"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="connectors">
+      <div class="conn-v"></div>
+      <div class="conn-v"></div>
+      <div class="conn-v"></div>
+      <div class="conn-v"></div>
+    </div>
+
+    <div class="persistent-area">
+      <div class="persistent-label">Persistent Across All Surfaces</div>
+      <div class="persistent-row">
+        <div class="persistent-item">
+          <div class="p-icon">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <circle cx="7" cy="7" r="5" stroke="rgba(127,181,176,0.4)" stroke-width="1" fill="rgba(127,181,176,0.12)"/>
+            </svg>
+          </div>
+          <span class="p-text">Color</span>
+        </div>
+        <div class="persistent-item">
+          <div class="p-icon">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <rect x="2" y="4" width="10" height="6" rx="2" stroke="rgba(127,181,176,0.4)" stroke-width="1" fill="none"/>
+              <text x="7" y="9" text-anchor="middle" font-size="4.5" font-weight="600" font-family="Inter" fill="rgba(127,181,176,0.45)">AI</text>
+            </svg>
+          </div>
+          <span class="p-text">Name</span>
+        </div>
+        <div class="persistent-item">
+          <div class="p-icon">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <line x1="7" y1="2" x2="7" y2="12" stroke="rgba(127,181,176,0.35)" stroke-width="1"/>
+              <line x1="3" y1="5" x2="3" y2="9" stroke="rgba(224,223,228,0.15)" stroke-width="0.6"/>
+              <line x1="11" y1="5" x2="11" y2="9" stroke="rgba(224,223,228,0.15)" stroke-width="0.6"/>
+            </svg>
+          </div>
+          <span class="p-text">Separation</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="outcome">
+      <span class="outcome-arrow">↳</span>
+      <p>One identification system, four surfaces — flexible enough to adapt, consistent enough to build recognition</p>
+    </div>
+  </div>
+</body>
+</html>
