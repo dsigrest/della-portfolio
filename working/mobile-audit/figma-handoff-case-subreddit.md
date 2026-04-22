@@ -168,3 +168,30 @@ After the Figma thread completes all 10 pairings:
 ## Version
 
 - 2026-04-22 — initial. Source: case-subreddit responsive-audit, Rounds 1 + 2 complete.
+- 2026-04-22 — **COMPLETE**. All 10 mobile Figma frames built via `use_figma` native-layer translation (no image fills; CSS-selector layer names for deterministic roundtrip). All tracker rows populated with `figma_mobile_node_id`. Page 29:40 was NOT tidied — Della's desktop cluster preserved exactly as-is.
+
+### Final node IDs (all 10 paired)
+
+| Diagram | Mobile node ID | desktop_y (from page 29:40) |
+|---|---|---|
+| sub01 — survival curve | `943:26` | (same row as SUB-01 desktop) |
+| sub02 — lifecycle framework | `915:26` | (same row as SUB-02 desktop) |
+| sub03 — milestone model | `922:26` | (same row as SUB-03 desktop) |
+| sub04 — strategic starting points | `887:26` | (same row as SUB-04 desktop) |
+| sub05 — artifact alignment | `925:26` | (same row as SUB-05 desktop) |
+| sub06 — threshold calibration | `936:26` | (same row as SUB-06 desktop) |
+| sub08 — creation after | `946:26` | (same row as SUB-08 desktop) |
+| sub09 — distribution loop | `948:26` | (same row as SUB-09 desktop) |
+| sub11 — text bars (three pillars) | `951:26` | (same row as SUB-11 desktop) |
+| sub12 — instrumentation heatmap | `954:26` | (same row as SUB-12 desktop) |
+
+All frames at `x = -1634` (mobile cluster anchor), width 375, native-rendered (no image fills). Screenshot-verified via `get_screenshot` on each node ID.
+
+**What got built (technique notes for future reference):**
+- All frames use auto-layout with `layoutMode = "VERTICAL"` and absolute-positioned children only where required (e.g., SVG overlays, badges)
+- Cubic bezier curves manually pre-computed with midpoint control points for SUB-01's survival curve and SUB-06's threshold calibration (original HTML used JS generation)
+- Font loading order mandatory: Inter (Regular/Medium/Semi Bold/Bold) + JetBrains Mono (Regular/Bold) — note space in "Semi Bold"
+- Layer names match CSS selectors exactly (`.heatmap-cell.stall`, `.pillar-card.accent`, etc.) for deterministic figma-to-html roundtrip
+- `primaryAxisSizingMode = "FIXED"` + `resizeWithoutConstraints(w, h)` before appending + `layoutAlign = "STRETCH"` is the stable sizing pattern
+- Text pattern: `textAutoResize = "HEIGHT"` + `resize(w, currentHeight)` + `layoutAlign = "STRETCH"`
+- Append child BEFORE setting x/y — auto-layout override otherwise stomps position
