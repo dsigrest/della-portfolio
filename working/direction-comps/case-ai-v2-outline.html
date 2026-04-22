@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reddit Answers MVP — Della Sigrest</title>
+  <meta name="description" content="I designed Reddit's first LLM product — the identity system, voice framework, and prompt workflow that became the foundation for Reddit Answers.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>
+    .case-body h3 {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-top: var(--spacing-xl);
+      margin-bottom: var(--spacing-md);
+      color: var(--text-secondary);
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .case-body h3.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+  <div class="progress-bar"></div>
+  <nav>
+    <div class="nav-content">
+      <a href="../../index.html" class="nav-brand">Della Sigrest</a>
+      <ul class="nav-links">
+        <li><a href="../../index.html#work">Work</a></li>
+        <li><a href="../../about.html">About</a></li>
+        <li><a href="../../resume.pdf" target="_blank">Resume</a></li>
+        <li><a href="mailto:dsigrest@gmail.com">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main id="main">
+    <section class="case-hero">
+      <div class="case-hero-eyebrow">Case Study 02 of 05</div>
+      <h1>Reddit Answers MVP</h1>
+      <div class="case-meta-grid">
+        <div class="meta-item">
+          <label>Role</label>
+          <span>Senior Product Designer</span>
+        </div>
+        <div class="meta-item">
+          <label>Team</label>
+          <span>SEO &amp; Discovery</span>
+        </div>
+        <div class="meta-item">
+          <label>Timeline</label>
+          <span>Jun 2023 – Dec 2023</span>
+        </div>
+        <div class="meta-item">
+          <label>Platform</label>
+          <span>Web (SEO surfaces)</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-body">
+
+      <h2>Challenge</h2>
+
+      <p><strong>Reddit content was hard to find.</strong> Answers to a single question lived across multiple posts and communities, and users hitting those pages from search had no way to piece them together. Most bounced.</p>
+
+      <p>SEO was where the majority of new users entered Reddit — and where most of them left.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Diagram — fragmented search experience: user query → multiple partial-match posts across communities → bounce</div>
+      </div>
+
+      <h2>Solution</h2>
+
+      <p><strong>I designed an LLM-powered summary that synthesized content across posts and communities into a single entry point</strong> aligned with the user's search intent. Instead of letting new users bounce, we caught them at the door and pulled them deeper into the platform.</p>
+
+      <p>The long bet: shift the mental model from appending <em>reddit</em> to a Google search toward searching Reddit directly.</p>
+
+      <div class="case-img-full">
+        <img src="../../img/klp-flow-v2.png" alt="Flow showing search query to synthesized AI summary with source attribution and deeper platform entry points" loading="lazy">
+      </div>
+
+      <h2>Identity</h2>
+
+      <p><strong>Reddit had no precedent for AI-generated content.</strong> No identity system, no evaluation criteria, no framework for non-deterministic output. I partnered with brand, legal, and design systems to define what AI content would <em>be</em> at Reddit.</p>
+
+      <div class="case-img-full">
+        <img src="../../img/klp-ui-1.png" alt="AI identification patterns explored across Reddit surfaces" loading="lazy">
+      </div>
+
+      <p><strong>Transparency was the design constraint.</strong> User research confirmed people valued knowing content was AI-generated, but this was peak AI backlash. The signal had to build trust without feeling like a trend.</p>
+
+      <div class="case-img-full">
+        <img src="../../img/klp-ui-2.png" alt="AI content identification component variations" loading="lazy">
+      </div>
+
+      <h3>Developing the UI</h3>
+
+      <p>Working with design systems and brand, I explored the full spectrum of identification patterns — and tested them across surfaces well beyond the initial product.</p>
+
+      <div class="case-img-full">
+        <img src="../../img/klp-ui-3.png" alt="Final AI identification system components" loading="lazy">
+      </div>
+
+      <p>The component library, identification patterns, and feedback UI shipped as <strong>reusable system components</strong> — built to scale to wherever AI content appeared next.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Component library — AI badge, attribution block, feedback controls, collapsed/expanded states</div>
+      </div>
+
+      <h2>Voice</h2>
+
+      <p><strong>The closer summaries stayed to original posts, the more users trusted them.</strong> Broad generalizations — a consistent failure mode in early outputs — killed trust immediately.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Comparison — high-trust summary (close to source, attributed) vs. low-trust summary (vague generalization, no attribution)</div>
+      </div>
+
+      <p>I drove the team through the harder question: how to synthesize across communities without losing the source. Every summary needed direct attribution and links so users could go deeper.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Summary display explorations — length variants, source attribution placement (inline vs. post bank), expand/collapse patterns</div>
+      </div>
+
+      <p>The synthesis display patterns and truncation logic became reusable across later products.</p>
+
+      <h3>Prompt Design Workflow</h3>
+
+      <p><strong>Previously, prompt iteration was one engineer, vibes-based.</strong> The feedback loop was gut reactions with no shared criteria — and I had to turn that into something the team could operate against.</p>
+
+      <div class="case-img-full">
+        <img src="../../img/klp-slide-1.png" alt="Prompt evaluation framework overview" loading="lazy">
+      </div>
+
+      <p>I introduced a structured evaluation matrix — multiple prompts tested simultaneously against live data, scored on defined parameters: summary quality, source relevance, synthesis depth, transparency, community diversity.</p>
+
+      <div class="case-img-full">
+        <img src="../../img/klp-slide-2.png" alt="Prompt evaluation scoring in practice" loading="lazy">
+      </div>
+
+      <p><strong>I partnered with content design to define the evaluation dimensions, then facilitated scoring sessions where our cross-functional team rated outputs against the rubric directly.</strong> No external raters — we were the evaluators. The rubric had to be precise enough for non-designers to apply consistently.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Evaluation rubric in use — team scoring session, parameter definitions, iteration cycle</div>
+      </div>
+
+      <h2>Value</h2>
+
+      <p><strong>The question we kept returning to: how do we know we're bringing users value, not just serving SEO?</strong> Search ranking rewarded keyword density and repetition — exactly the patterns that made summaries feel mechanical to readers.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Diagram — tension between SEO optimization signals vs. user value signals</div>
+      </div>
+
+      <p>I worked with the engineer to separate those concerns: keywords were embedded in structured page elements outside the summary itself, so the synthesis could stay natural while the page still ranked. That separation became a core principle.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Before/after — keyword-stuffed summary vs. clean synthesis with structured SEO elements separated</div>
+      </div>
+
+      <h3>Failure States</h3>
+
+      <p><strong>Below-threshold quality meant the summary didn't appear</strong> — rather than showing users something unreliable. Users could flag responses, suggest improvements, or collapse the summary entirely.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Failure state UI — suppressed summary, user flag/feedback flow, quality threshold logic</div>
+      </div>
+
+      <h3>User Control</h3>
+
+      <p><strong>Those signals fed directly back into model iteration.</strong> Flagged outputs surfaced where the model was weakest, and the rubric evolved to reflect what users actually valued versus what we'd assumed.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">Feedback loop diagram — user signals → rubric updates → model improvement cycle</div>
+      </div>
+
+      <p>We started with the verticals that had the strongest source coverage and used real usage data alongside our content team to refine over time.</p>
+
+      <h2>Results</h2>
+
+      <p><strong>This project shipped to every user reaching Reddit through Google search for targeted verticals</strong> — a surface handling hundreds of millions of monthly visits.</p>
+
+      <p>The governance model, identity system, and prompt workflow I built were handed to a new team spun up to bring synthesis into search — where research had shown it belonged.</p>
+
+      <div class="metrics-callout">
+        <div class="metric">
+          <span class="metric-value">15M</span>
+          <span class="metric-label">Weekly active users (Reddit Answers, year one)</span>
+        </div>
+        <div class="metric">
+          <span class="metric-value">100s of M</span>
+          <span class="metric-label">Monthly SEO visits served</span>
+        </div>
+      </div>
+
+      <p><strong>Reddit Answers launched on top of the systems I built</strong> — the LLM identification library, synthesis patterns, feedback UI, evaluation rubric, and governance framework were inherited directly.</p>
+
+      <div class="case-next">
+        <span class="case-next-label">Next Case Study</span>
+        <a href="../../case-sharing.html" class="case-next-link">
+          <span class="case-next-title">Sharing &amp; Embeds</span>
+          <span class="case-next-arrow">&rarr;</span>
+        </a>
+      </div>
+    </section>
+
+    <div class="case-nav-grid">
+      <span class="case-nav-grid-label">All Case Studies</span>
+      <div class="case-nav-items">
+        <a href="../../case-notifications.html" class="case-nav-item">
+          <span class="case-nav-number">01</span>
+          <span class="case-nav-name">Notifications</span>
+        </a>
+        <span class="case-nav-item current">
+          <span class="case-nav-number">02</span>
+          <span class="case-nav-name">AI</span>
+        </span>
+        <a href="../../case-sharing.html" class="case-nav-item">
+          <span class="case-nav-number">03</span>
+          <span class="case-nav-name">Sharing</span>
+        </a>
+        <a href="../../case-subreddit.html" class="case-nav-item">
+          <span class="case-nav-number">04</span>
+          <span class="case-nav-name">Subreddit</span>
+        </a>
+        <a href="../../case-building-portfolio.html" class="case-nav-item">
+          <span class="case-nav-number">05</span>
+          <span class="case-nav-name">Portfolio</span>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <div><p style="color: var(--text-secondary); margin-bottom: 8px;">Let's talk product, systems, or design.</p></div>
+      <ul class="footer-links">
+        <li><a href="https://linkedin.com/in/dellasigrest" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+        <li><a href="mailto:dsigrest@gmail.com">Email</a></li>
+      </ul>
+    </div>
+    <div style="text-align: center; margin-top: var(--spacing-xl); padding-top: var(--spacing-xl); border-top: 1px solid var(--border-subtle);">
+      <p class="footer-credit">This site was designed collaboratively with AI — <a href="../../case-building-portfolio.html" style="color: var(--text-tertiary); text-decoration: underline; text-underline-offset: 2px;">read how</a></p>
+    </div>
+  </footer>
+
+  <script>
+    // Progress bar scroll handler
+    const progressBar = document.querySelector('.progress-bar');
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercent = (scrollTop / docHeight) * 100;
+      progressBar.style.width = scrollPercent + '%';
+    });
+
+    // Nav scroll state
+    const nav = document.querySelector('nav');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+    });
+
+    // IntersectionObserver for case images and h2 headings
+    const imageObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          imageObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.case-img-full').forEach(img => {
+      imageObserver.observe(img);
+    });
+
+    document.querySelectorAll('.case-body h2, .case-body h3').forEach(heading => {
+      imageObserver.observe(heading);
+    });
+  </script>
+</body>
+</html>

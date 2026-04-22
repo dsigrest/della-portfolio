@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flywheel — Hybrid: Accent Number + Liquid Glass</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg: #0a0c16;
+    --surface-1: #10121c;
+    --surface-2: #151722;
+    --text-primary: #e0dfe4;
+    --text-secondary: rgba(224,223,228,0.6);
+    --text-tertiary: rgba(224,223,228,0.4);
+    --accent: #7fb5b0;
+    --border-subtle: rgba(224,223,228,0.04);
+    --border-normal: rgba(224,223,228,0.07);
+    --spacing-xl: 32px;
+    --spacing-2xl: 48px;
+    --spacing-3xl: 64px;
+    --spacing-lg: 24px;
+    --spacing-md: 16px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+
+  .option-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .option-title {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+  .option-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 480px;
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  /* ── Flywheel component ── */
+  .flywheel-wrap {
+    position: relative;
+    max-width: 780px;
+    width: 100%;
+    padding: var(--spacing-2xl) var(--spacing-xl);
+  }
+  .flywheel-wrap .fw-core {
+    position: relative;
+    width: 100%;
+    max-width: 650px;
+    aspect-ratio: 1 / 1.08;
+    margin: 0 auto;
+  }
+  .flywheel-wrap .fw-svg {
+    position: absolute;
+    top: 10%; left: 8%; width: 84%; height: 78%;
+    overflow: visible;
+  }
+  .flywheel-wrap .glow-haze {
+    fill: none;
+    stroke: url(#fwRingGrad);
+    stroke-width: 8;
+    stroke-linecap: round;
+    opacity: 0.9;
+  }
+  .flywheel-wrap .orbit-ring { fill: none; stroke: none; }
+  .flywheel-wrap .fw-fairy {
+    filter: url(#fwFairyGlow);
+    transition: opacity 0.8s ease-out;
+  }
+
+  /* ── HYBRID: Option 3 typography + Option 4 glass surface ──
+     Three-level type hierarchy (accent number / name / desc)
+     on translucent frosted glass cards. Ring gradient bleeds
+     through the glass, connecting cards to the animated ring. */
+  .flywheel-wrap .fw-card {
+    position: absolute;
+    /* Liquid glass surface */
+    background: rgba(16, 18, 28, 0.55);
+    -webkit-backdrop-filter: blur(16px) saturate(1.2);
+    backdrop-filter: blur(16px) saturate(1.2);
+    border: 1px solid rgba(224, 223, 228, 0.08);
+    border-radius: 8px;
+    /* Fixed height so all three cards match exactly */
+    padding: 14px 18px 16px;
+    width: 196px;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    z-index: 2;
+    /* Glass highlight: subtle top-edge shine + outer ring */
+    box-shadow:
+      inset 0 1px 0 0 rgba(224, 223, 228, 0.05),
+      0 0 0 0.5px rgba(224, 223, 228, 0.03);
+  }
+
+  /* Top row: accent number + name inline, centered */
+  .flywheel-wrap .fw-card__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+  /* Oversized accent number — visual anchor */
+  .flywheel-wrap .fw-card__num {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--accent);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  /* Name beside number */
+  .flywheel-wrap .fw-card__name {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text-primary);
+    line-height: 1;
+  }
+  /* Description: full card width, centered */
+  .flywheel-wrap .fw-card__desc {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-secondary);
+    line-height: 1.45;
+    margin: 0;
+  }
+
+  /* Card positions — Share bumped down more, Preview/Trust balanced */
+  .flywheel-wrap .fw-card--share {
+    top: 12%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .flywheel-wrap .fw-card--preview {
+    top: 57%;
+    left: 63%;
+  }
+  .flywheel-wrap .fw-card--trust {
+    top: 57%;
+    right: 63%;
+    left: auto;
+  }
+
+  /* Arc labels */
+  .flywheel-wrap .fw-arc-label {
+    position: absolute;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+    z-index: 1;
+  }
+  .flywheel-wrap .fw-arc-label--sp { top: 38%; left: 83%; }
+  /* Users engage: pulled closer to ring bottom */
+  .flywheel-wrap .fw-arc-label--pt { top: 88%; left: 50%; transform: translateX(-50%); }
+  .flywheel-wrap .fw-arc-label--ts { top: 38%; right: 83%; text-align: right; }
+
+  @media (max-width: 640px) {
+    .flywheel-wrap .fw-card { width: 164px; height: 88px; padding: 12px 16px 14px; }
+    .flywheel-wrap .fw-card__num { font-size: 24px; }
+    .flywheel-wrap .fw-card__name { font-size: 14px; }
+    .flywheel-wrap .fw-card__desc { font-size: 12px; }
+    .flywheel-wrap .fw-card--preview { left: 60%; }
+    .flywheel-wrap .fw-card--trust { right: 60%; }
+    .flywheel-wrap .fw-arc-label--sp { left: 80%; }
+    .flywheel-wrap .fw-arc-label--ts { right: 80%; }
+  }
+  @media (max-width: 480px) {
+    .flywheel-wrap .fw-arc-label { display: none; }
+    .flywheel-wrap .fw-svg { left: 3%; width: 94%; }
+    .flywheel-wrap .fw-card { width: 148px; height: 82px; }
+    .flywheel-wrap .fw-card__num { font-size: 20px; }
+    .flywheel-wrap .fw-card__name { font-size: 13px; }
+    .flywheel-wrap .fw-card--preview { left: 57%; }
+    .flywheel-wrap .fw-card--trust { right: 57%; }
+  }
+</style>
+</head>
+<body>
+  <div class="option-tag">Hybrid 3 + 4</div>
+  <div class="option-title">Accent Number + Liquid Glass</div>
+  <p class="option-desc">Three-level type hierarchy on translucent frosted cards. The gradient ring bleeds through the glass. All cards locked to 88px&nbsp;height.</p>
+
+  <div class="flywheel-wrap" id="flywheel">
+    <div class="fw-core">
+      <svg class="fw-svg" viewBox="0 0 520 520">
+        <defs>
+          <linearGradient id="fwRingGrad" gradientTransform="rotate(135)">
+            <stop offset="0%" stop-color="#7aa4bc"/>
+            <stop offset="35%" stop-color="#a0beb4"/>
+            <stop offset="65%" stop-color="#d0ccc4"/>
+            <stop offset="100%" stop-color="#c4b898"/>
+          </linearGradient>
+          <radialGradient id="fwFairyFill">
+            <stop offset="0%" stop-color="rgba(127,181,176,0.09)"/>
+            <stop offset="100%" stop-color="rgba(127,181,176,0)"/>
+          </radialGradient>
+          <filter id="fwFairyGlow" x="-300%" y="-300%" width="700%" height="700%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="10"/>
+          </filter>
+        </defs>
+        <circle class="glow-haze" cx="260" cy="260" r="160"/>
+        <circle class="orbit-ring" cx="260" cy="260" r="160"/>
+        <path id="fwOrbitPath" d="M 260 100 A 160 160 0 0 1 399 340 A 160 160 0 0 1 121 340 A 160 160 0 0 1 260 100" fill="none" stroke="none"/>
+        <circle class="fw-fairy" cx="260" cy="100" r="24" fill="url(#fwFairyFill)"/>
+      </svg>
+
+      <div class="fw-card fw-card--share">
+        <div class="fw-card__head">
+          <span class="fw-card__num">1</span>
+          <span class="fw-card__name">Share</span>
+        </div>
+        <p class="fw-card__desc">One-tap channel selection streamlined for&nbsp;speed</p>
+      </div>
+
+      <div class="fw-card fw-card--preview">
+        <div class="fw-card__head">
+          <span class="fw-card__num">2</span>
+          <span class="fw-card__name">Preview</span>
+        </div>
+        <p class="fw-card__desc">Platform-native cards that set&nbsp;expectations</p>
+      </div>
+
+      <div class="fw-card fw-card--trust">
+        <div class="fw-card__head">
+          <span class="fw-card__num">3</span>
+          <span class="fw-card__name">Trust</span>
+        </div>
+        <p class="fw-card__desc">Privacy status surfaced before the user&nbsp;sends</p>
+      </div>
+
+      <span class="fw-arc-label fw-arc-label--sp">Recipients click</span>
+      <span class="fw-arc-label fw-arc-label--pt">Users engage</span>
+      <span class="fw-arc-label fw-arc-label--ts">Trust compounds</span>
+    </div>
+  </div>
+
+  <script>
+  (function() {
+    var wrap = document.getElementById('flywheel');
+    var orbitPath = document.getElementById('fwOrbitPath');
+    var fairy = wrap.querySelector('.fw-fairy');
+    var ringGrad = document.getElementById('fwRingGrad');
+    var pathLen = orbitPath.getTotalLength();
+    var duration = 10000;
+    var startTime = null;
+    var animating = true;
+    function animateLoop(timestamp) {
+      if (!startTime) startTime = timestamp;
+      var elapsed = (timestamp - startTime) % duration;
+      var progress = elapsed / duration;
+      var point = orbitPath.getPointAtLength(progress * pathLen);
+      fairy.setAttribute('cx', point.x);
+      fairy.setAttribute('cy', point.y);
+      ringGrad.setAttribute('gradientTransform', 'rotate(' + (progress * 360) + ' 0.5 0.5)');
+      if (animating) requestAnimationFrame(animateLoop);
+    }
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      requestAnimationFrame(animateLoop);
+    }
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flywheel — Option A (Core Only)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0a0c16;
+      color: #e0dfe4;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.6;
+      padding: 80px 24px 64px;
+    }
+
+    /* Option badge */
+    .option-badge {
+      position: fixed;
+      top: 24px;
+      left: 24px;
+      background: rgba(16, 18, 28, 0.8);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(224, 223, 228, 0.12);
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: rgba(224, 223, 228, 0.7);
+      z-index: 100;
+    }
+
+    .flywheel-wrap {
+      position: relative;
+      max-width: 780px;
+      margin: 64px auto;
+      padding: 48px 24px;
+    }
+
+    .flywheel-wrap .fw-core {
+      position: relative;
+      width: 100%;
+      max-width: 650px;
+      aspect-ratio: 1 / 1.08;
+      margin: 0 auto;
+    }
+
+    .flywheel-wrap .fw-svg {
+      position: absolute;
+      top: 10%; left: 8%; width: 84%; height: 78%;
+      overflow: visible;
+    }
+
+    .flywheel-wrap .glow-haze {
+      fill: none;
+      stroke: url(#fwRingGrad);
+      stroke-width: 8;
+      stroke-linecap: round;
+      opacity: 0;
+    }
+
+    .flywheel-wrap .orbit-ring {
+      fill: none;
+      stroke: none;
+    }
+
+    .flywheel-wrap .fw-fairy {
+      opacity: 0;
+      filter: url(#fwFairyGlow);
+      transition: opacity 0.8s ease-out;
+    }
+
+    .flywheel-wrap .fw-fairy-core {
+      opacity: 0;
+      filter: url(#fwCoreGlow);
+      transition: opacity 0.8s ease-out;
+    }
+
+    /* Liquid glass cards */
+    .flywheel-wrap .fw-card {
+      position: absolute;
+      background: rgba(16, 18, 28, 0.55);
+      -webkit-backdrop-filter: blur(16px) saturate(1.2);
+      backdrop-filter: blur(16px) saturate(1.2);
+      border: 1px solid rgba(224, 223, 228, 0.08);
+      border-radius: 8px;
+      padding: 14px 18px 16px;
+      width: 196px;
+      height: 100px;
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+      justify-content: center;
+      opacity: 0;
+      scale: 0.92;
+      z-index: 2;
+      box-shadow:
+        inset 0 1px 0 0 rgba(224, 223, 228, 0.05),
+        0 0 0 0.5px rgba(224, 223, 228, 0.03);
+    }
+
+    .flywheel-wrap .fw-card__head {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .flywheel-wrap .fw-card__num {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: #7fb5b0;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .flywheel-wrap .fw-card__name {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: #e0dfe4;
+      line-height: 1;
+    }
+
+    .flywheel-wrap .fw-card__desc {
+      font-size: 13px;
+      font-weight: 400;
+      color: rgba(224, 223, 228, 0.6);
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    .flywheel-wrap .fw-card--share {
+      top: 12%; left: 50%; transform: translateX(-50%);
+    }
+
+    .flywheel-wrap .fw-card--preview {
+      top: 57%; left: 63%;
+    }
+
+    .flywheel-wrap .fw-card--trust {
+      top: 57%; right: 63%; left: auto;
+    }
+
+    .flywheel-wrap .fw-arc-label {
+      position: absolute;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: rgba(224, 223, 228, 0.4);
+      white-space: nowrap;
+      opacity: 0;
+      z-index: 1;
+    }
+
+    .flywheel-wrap .fw-arc-label--sp { top: 38%; left: 83%; }
+    .flywheel-wrap .fw-arc-label--pt { top: 88%; left: 50%; transform: translateX(-50%); }
+    .flywheel-wrap .fw-arc-label--ts { top: 38%; right: 83%; text-align: right; }
+
+    /* Animation states */
+    .flywheel-wrap.is-active .fw-card {
+      animation: fwCardIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .flywheel-wrap.is-active .fw-card--share { animation-delay: 0ms; }
+    .flywheel-wrap.is-active .fw-card--preview { animation-delay: 140ms; }
+    .flywheel-wrap.is-active .fw-card--trust { animation-delay: 280ms; }
+
+    .flywheel-wrap.is-active .glow-haze {
+      opacity: 0.9;
+      transition: opacity 1s ease-out 300ms;
+    }
+
+    .flywheel-wrap.is-active .fw-fairy {
+      opacity: 1;
+      transition-delay: 500ms;
+    }
+
+    .flywheel-wrap.is-active .fw-fairy-core {
+      opacity: 1;
+      transition-delay: 500ms;
+    }
+
+    .flywheel-wrap.is-active .fw-arc-label {
+      animation: fwFadeIn 0.4s ease-out forwards;
+    }
+
+    .flywheel-wrap.is-active .fw-arc-label--sp { animation-delay: 600ms; }
+    .flywheel-wrap.is-active .fw-arc-label--pt { animation-delay: 750ms; }
+    .flywheel-wrap.is-active .fw-arc-label--ts { animation-delay: 900ms; }
+
+    @keyframes fwCardIn {
+      from { opacity: 0; scale: 0.92; }
+      to   { opacity: 1; scale: 1; }
+    }
+
+    @keyframes fwFadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    /* Page context */
+    .context-header {
+      max-width: 780px;
+      margin: 0 auto 48px;
+      padding: 0 24px;
+    }
+
+    .context-header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      color: #e0dfe4;
+    }
+
+    .context-header p {
+      font-size: 14px;
+      color: rgba(224, 223, 228, 0.6);
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="option-badge">Option A — Core Only</div>
+
+  <div class="context-header">
+    <h1>Flywheel Direction Comp</h1>
+    <p>Option A removes the comet tail entirely. The bright core becomes the concentrated engine — a burning-hot point at r=5 with tight glow (stdDev=3). The ring gradient provides directional warmth through rotation, so the core just needs to shine.</p>
+  </div>
+
+  <div id="flywheel" class="flywheel-wrap">
+    <div class="fw-core">
+      <svg class="fw-svg" viewBox="0 0 520 520" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <linearGradient id="fwRingGrad" gradientTransform="rotate(135)">
+            <stop offset="0%" stop-color="#7aa4bc"/>
+            <stop offset="35%" stop-color="#a0beb4"/>
+            <stop offset="65%" stop-color="#d0ccc4"/>
+            <stop offset="100%" stop-color="#c4b898"/>
+          </linearGradient>
+          <radialGradient id="fwFairyFill">
+            <stop offset="0%" stop-color="rgba(208,204,196,0.04)"/>
+            <stop offset="100%" stop-color="rgba(208,204,196,0)"/>
+          </radialGradient>
+          <filter id="fwFairyGlow" x="-200%" y="-200%" width="500%" height="500%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="6"/>
+          </filter>
+          <radialGradient id="fwCoreFill">
+            <stop offset="0%" stop-color="rgba(255,250,240,0.7)"/>
+            <stop offset="50%" stop-color="rgba(240,232,216,0.35)"/>
+            <stop offset="100%" stop-color="rgba(224,216,196,0)"/>
+          </radialGradient>
+          <filter id="fwCoreGlow" x="-150%" y="-150%" width="400%" height="400%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="3"/>
+          </filter>
+        </defs>
+
+        <!-- Ring and fairy bloom -->
+        <circle class="glow-haze" cx="260" cy="260" r="160"/>
+        <circle class="orbit-ring" cx="260" cy="260" r="160"/>
+
+        <!-- Orbit path for animation -->
+        <path id="fwOrbitPath" d="M 260 100 A 160 160 0 0 1 399 340 A 160 160 0 0 1 121 340 A 160 160 0 0 1 260 100" fill="none" stroke="none"/>
+
+        <!-- Fairy bloom (subtle glow) -->
+        <circle class="fw-fairy" cx="260" cy="100" r="16" fill="url(#fwFairyFill)"/>
+
+        <!-- Core only (no tail) — bright concentrated point -->
+        <circle class="fw-fairy-core" cx="260" cy="100" r="5" fill="url(#fwCoreFill)"/>
+      </svg>
+
+      <!-- Cards -->
+      <div class="fw-card fw-card--share">
+        <div class="fw-card__head">
+          <span class="fw-card__num">1</span>
+          <span class="fw-card__name">Share</span>
+        </div>
+        <p class="fw-card__desc">One-tap channel selection streamlined for&nbsp;speed</p>
+      </div>
+      <div class="fw-card fw-card--preview">
+        <div class="fw-card__head">
+          <span class="fw-card__num">2</span>
+          <span class="fw-card__name">Preview</span>
+        </div>
+        <p class="fw-card__desc">Platform-native cards that set&nbsp;expectations</p>
+      </div>
+      <div class="fw-card fw-card--trust">
+        <div class="fw-card__head">
+          <span class="fw-card__num">3</span>
+          <span class="fw-card__name">Trust</span>
+        </div>
+        <p class="fw-card__desc">Privacy status surfaced before the user&nbsp;sends</p>
+      </div>
+
+      <!-- Arc labels -->
+      <span class="fw-arc-label fw-arc-label--sp">Recipients click</span>
+      <span class="fw-arc-label fw-arc-label--pt">Users engage</span>
+      <span class="fw-arc-label fw-arc-label--ts">Trust compounds</span>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      var wrap = document.getElementById('flywheel');
+      var orbitPath = document.getElementById('fwOrbitPath');
+      var fairy = wrap.querySelector('.fw-fairy');
+      var fairyCore = wrap.querySelector('.fw-fairy-core');
+      var ringGrad = document.getElementById('fwRingGrad');
+      var pathLen = orbitPath.getTotalLength();
+      var duration = 10000;
+      var startTime = null;
+      var animating = false;
+
+      function animateLoop(timestamp) {
+        if (!startTime) startTime = timestamp;
+        var elapsed = (timestamp - startTime) % duration;
+        var progress = elapsed / duration;
+        var point = orbitPath.getPointAtLength(progress * pathLen);
+        fairy.setAttribute('cx', point.x);
+        fairy.setAttribute('cy', point.y);
+        fairyCore.setAttribute('cx', point.x);
+        fairyCore.setAttribute('cy', point.y);
+        // Core LEADS the oatmeal: gradient lags 40° behind fairy position
+      ringGrad.setAttribute('gradientTransform', 'rotate(' + ((progress * 360) - 40) + ' 0.5 0.5)');
+        if (animating) requestAnimationFrame(animateLoop);
+      }
+
+      var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var io = new IntersectionObserver(function(entries) {
+        if (!entries[0].isIntersecting) return;
+        wrap.classList.add('is-active');
+        if (!prefersReduced) {
+          setTimeout(function() {
+            animating = true;
+            requestAnimationFrame(animateLoop);
+          }, 500);
+        }
+        io.disconnect();
+      }, { threshold: 0.25 });
+      io.observe(wrap);
+    })();
+  </script>
+</body>
+</html>

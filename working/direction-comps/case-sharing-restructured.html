@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="How I designed a 3-stage sharing system to capture off-platform reach for Reddit's 100M+ daily active users.">
+    <title>Sharing &amp; Embeds — Della Sigrest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="../../styles.css">
+<style>
+    /* Subsection styling for the skimmable outline structure */
+    .case-body h3 {
+        font-size: 18px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        margin-top: var(--spacing-2xl);
+        margin-bottom: var(--spacing-sm);
+        color: var(--text-primary);
+        opacity: 0;
+        transform: translateY(12px);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .case-body h3.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Section numbers for framework stages */
+    .section-num {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--accent);
+        margin-right: 8px;
+        letter-spacing: 0.02em;
+    }
+</style>
+</head>
+<body>
+    <a href="#main" class="skip-link">Skip to main content</a>
+    <div class="progress-bar"></div>
+
+    <nav>
+        <div class="nav-content">
+            <a href="../../index.html" class="nav-brand">Della Sigrest</a>
+            <ul class="nav-links">
+                <li><a href="../../index.html#work">Work</a></li>
+                <li><a href="../../about.html">About</a></li>
+                <li><a href="../../resume.pdf" target="_blank">Resume</a></li>
+                <li><a href="mailto:dsigrest@gmail.com">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main id="main">
+        <article>
+            <section class="case-hero">
+                <div class="case-hero-eyebrow">Case Study 03 of 05 &mdash; Led design for sharing &amp; embeds infrastructure</div>
+                <h1>Sharing &amp; Embeds</h1>
+                <div class="case-meta-grid">
+                    <div class="meta-item">
+                        <label>Role</label>
+                        <span>Senior Product Designer</span>
+                    </div>
+                    <div class="meta-item">
+                        <label>Team</label>
+                        <span>Growth &mdash; Top of Funnel</span>
+                    </div>
+                    <div class="meta-item">
+                        <label>Timeline</label>
+                        <span>Oct 2022 &ndash; May 2023</span>
+                    </div>
+                    <div class="meta-item">
+                        <label>Platform</label>
+                        <span>iOS, Android, Web</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="case-body">
+
+                <!-- Challenge -->
+                <h2>Challenge</h2>
+
+                <p>Reddit content was already everywhere on the internet&mdash;but without attribution. Screenshots stripped context, URLs looked sketchy, and the platform had no recognizable off-platform presence. Seven-figure daily sharing volume, completely unoptimized.</p>
+
+                <div class="case-img-full">
+                    <div class="img-placeholder">What sharing looked like before &mdash; default iOS share sheet, raw URLs, no previews</div>
+                </div>
+
+                <!-- Solution -->
+                <h2>Solution</h2>
+
+                <p>I framed sharing as a three-stage system and owned the design strategy across all three. The goal: make proper sharing channels faster and more appealing than a screenshot, so attribution and brand travel with every piece of content that leaves the platform.</p>
+
+                <div class="case-img-full">
+                    <div class="img-placeholder">What sharing became &mdash; branded share sheet, rich previews, privacy controls</div>
+                </div>
+
+
+                <!-- ═══════════════════════════════════════════ -->
+                <!-- RESEARCH FOUNDATION                        -->
+                <!-- ═══════════════════════════════════════════ -->
+
+                <h2>Research</h2>
+
+                <p>I partnered with UXR on a longitudinal, foundational study that ran the length of this project&mdash;spanning social behavior on pseudonymous platforms, privacy perception, and sharing motivations across both Reddit users and non-users. The study shaped every stage of the framework.</p>
+
+                <div class="case-img-full">
+                    <div class="img-placeholder">Research overview &mdash; study scope, participant types (Redditors vs. non-users), key research questions</div>
+                </div>
+
+                <h3>Testing Both Sides of the Share</h3>
+
+                <p>We tested the existing sharing experience to identify breakdowns, then tested what we&rsquo;d designed with the same participants to validate whether we&rsquo;d addressed the actual problems. We also user-tested different preview formats with non-Redditors to understand what made sense, what didn&rsquo;t, and what they&rsquo;d expect after clicking.</p>
+
+                <div class="case-img-full">
+                    <div class="img-placeholder">Research methodology &mdash; before/after testing with same participants, non-Redditor preview comprehension tests</div>
+                </div>
+
+                <h3>Foundational Questions</h3>
+
+                <p>Our team&rsquo;s core product questions shaped UXR&rsquo;s study design&mdash;what motivates sharing on a pseudonymous platform, what inhibits it, and how do non-users perceive Reddit content when they encounter it in the wild? The answers built the behavioral model that informed every design decision in this project.</p>
+
+                <div class="case-img-full">
+                    <div class="img-placeholder">Key research findings &mdash; behavioral model showing sharing motivations and inhibitors</div>
+                </div>
+
+
+                <!-- ═══════════════════════════════════════════ -->
+                <!-- SECTION 1: STREAMLINE SHARING              -->
+                <!-- ═══════════════════════════════════════════ -->
+
+                <h2><span class="section-num">01</span> Streamline Sharing</h2>
+
+                <p>Sharing had no dedicated infrastructure&mdash;no share button on posts or in the feed, no consistent controls across surfaces. This phase shipped iteratively: contextual entry points first, then the overflow standardization, then screenshot interception.</p>
+
+                <div class="case-img-full">
+                    <div class="img-placeholder">Section overview &mdash; before state of sharing entry points across the app</div>
+                </div>
+
+                <!-- Subsection: Surface sharing contextually -->
+                <h3>Surface Sharing Contextually</h3>
+
+                <p>Sharing was buried in overflow menus&mdash;invisible at the moments users were most likely to want it. I mapped contextual triggers across the post detail page and feed, then surfaced controls directly at those points.</p>
+
+                <div class="case-img-full">
+                    <div class="img-placeholder">Share controls on PDP and feed &mdash; contextual placement of share entry points</div>
+                </div>
+
+                <!-- Subsection: Standardize overflow menus -->
+                <h3>Standardize Overflow Menus</h3>
+
+                <p>Every overflow button in the app looked different&mdash;inconsistent across every surface. I designed a standardized overflow sheet with share controls at the top, then partnered with design systems and content design to establish a repeatable action hierarchy that held across surfaces with different tool sets.</p>
+
+                <div class="case-img-full">
+                    <div class="img-placeholder">Overflow menu standardization &mdash; before (inconsistent) vs. after (shared hierarchy with share controls at top)</div>
+                </div>
+
+                <!-- Subsection: Screenshot to share -->
+                <h3>Screenshot to Share</h3>
+
+                <p>Users defaulted to screenshots because they were fast and certain. I designed a capture-and-share path that intercepted the screenshot gesture and channeled it into a branded, attributable flow. Instead of fighting the instinct, I built on top of it.</p>
+
+                <div class="case-img-full">
+                    <div class="img-placeholder">Screenshot to share &mdash; user takes a screenshot, gets prompted with a branded share card</div>
+                </div>
+
+
+                <!-- ═══════════════════════════════════════════ -->
+                <!-- SECTION 2: RECEIVE & ENGAGE                -->
+                <!-- ═══════════════════════════════════════════ -->
+
+                <h2><span class="section-num">02</span> Simplify Engagement</h2>
+
+                <p>Wherever Reddit content appeared off-platform, it needed to be consistent, attributable, and enticing. I designed previews as a first introduction to the platform&mdash;a learning tool that established what Reddit is before anyone ever landed on it.</p>
+
+                <div class="case-img-full">
+                    <div class="img-placeholder">Cross-platform preview grid &mdash; same Reddit post rendered as previews on iMessage, WhatsApp, Twitter, LinkedIn</div>
+                </div>
+
+                <!-- Subsection: Aligning on-platform and off-platform design -->
+                <h3>Aligning Off-Platform with On-Platform</h3>
+
+                <p>I partnered with design systems to bring familiar UI into previews. Upvotes and comment counts served double duty&mdash;social proof to entice clicks, and education about how the platform works. Reddit&rsquo;s logo anchored brand recognition for first-time viewers.</p>
+
+                <div class="case-img-full">
+                    <div class="img-placeholder">Preview component anatomy &mdash; callouts: upvotes (social proof + education), comment count (depth signal), logo (brand anchor)</div>
+                </div>
+
+                <!-- Subsection: Text post previews -->
+                <h3>Text Post Previews</h3>
+
+                <p>Image and video posts had built-in thumbnails&mdash;text posts, the majority of Reddit content, had nothing. I worked with engineering to build a tool that generated digital screenshots of text as preview cards. We iterated on size, truncation, and cropping together&mdash;from rough desktop-page captures to crisp, legible cards that scaled for long and short form.</p>
+
+                <div class="case-img-full">
+                    <div class="img-placeholder">Text post preview iteration &mdash; early rough version (full desktop screenshot) vs. final crisp text card</div>
+                </div>
+
+                <!-- Subsection: Brand expression vs. systematic scalability -->
+                <h3>Balancing Brand Expression and Systematic Scale</h3>
+
+                <p>I worked with OrangeRed&mdash;Reddit&rsquo;s external branding team&mdash;to identify the core brand components previews needed to carry. The tension: OrangeRed favored rich illustrative concepts; design systems pushed for scalable UI. The previews had to do both across six-plus platforms.</p>
+
+                <div class="case-img-full">
+                    <div class="img-placeholder">Brand expression spectrum &mdash; illustrative concepts alongside systematic UI components</div>
+                </div>
+
+
+                <!-- ═══════════════════════════════════════════ -->
+                <!-- SECTION 3: TRUST                           -->
+                <!-- ═══════════════════════════════════════════ -->
+
+                <h2><span class="section-num">03</span> Establish Trust</h2>
+
+                <p>Streamlining flows and improving previews addressed the mechanics&mdash;but volume still wasn&rsquo;t moving. The real friction wasn&rsquo;t speed or aesthetics. On a pseudonymous platform, privacy was the core barrier to sharing.</p>
+
+                <div class="case-img-full">
+                    <div class="img-placeholder">Research insight &mdash; privacy as the core sharing barrier on a pseudonymous platform</div>
+                </div>
+
+                <!-- Subsection: Custom share sheet -->
+                <h3>Custom Share Sheet</h3>
+
+                <p>I replaced the iOS default&mdash;a text list users scrolled through blindly&mdash;with a visual icon grid that surfaced each user&rsquo;s most-used channels first. The grid reordered dynamically based on sharing history, with considerations for the cold-start default and the threshold for promoting a channel.</p>
+
+                <div class="case-img-full">
+                    <div class="img-placeholder">Custom share sheet v1 &mdash; visual grid with personalized channel order (before: text list / after: icon grid)</div>
+                </div>
+
+                <!-- Subsection: Share preview and privacy -->
+                <h3>Share Preview and Privacy Controls</h3>
+
+                <p>The first version shipped without a preview, and users still hesitated. I added a live preview of exactly what the recipient would see, plus an explicit privacy disclosure confirming the share wouldn&rsquo;t expose the sender&rsquo;s username. The preview became the trust mechanism&mdash;users could verify before committing.</p>
+
+                <div class="case-img-full">
+                    <div class="img-placeholder">Custom share sheet v2 &mdash; live preview + privacy disclosure added above the channel grid</div>
+                </div>
+
+                <!-- Subsection: Embedding tools for publishers -->
+                <h3>Embedding Tools for Publishers</h3>
+
+                <p>Publishers were already embedding Reddit content commercially&mdash;we weren&rsquo;t giving them proper tools to do it well. I worked directly with publishers to build an embedding tool that made the attributed, well-formatted path easier than screenshotting.</p>
+
+                <div class="case-img-full">
+                    <div class="img-placeholder">Embed tool &mdash; publisher-facing interface for embedding Reddit content with proper attribution</div>
+                </div>
+
+
+                <!-- ═══════════════════════════════════════════ -->
+                <!-- RESULT                                     -->
+                <!-- ═══════════════════════════════════════════ -->
+
+                <h2>The Result</h2>
+
+                <p>Reddit went from zero sharing infrastructure to optimized, branded experiences across every major channel. The preview component system became the foundation for a public embed API, and the privacy-as-growth-lever framework shaped how growth teams across Reddit approached user control as a distribution strategy.</p>
+
+                <div class="metrics-callout">
+                    <div class="metric">
+                        <span class="metric-value">0 &rarr; all</span>
+                        <span class="metric-label">Channels optimized for branded sharing</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value">100M+</span>
+                        <span class="metric-label">Daily active users served</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value">Public API</span>
+                        <span class="metric-label">Embed tools shipped for publishers</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value">Phased</span>
+                        <span class="metric-label">Shipped iteratively across 8 months</span>
+                    </div>
+                </div>
+
+                <div class="case-next">
+                    <span class="case-next-label">Next Case Study</span>
+                    <a href="../../case-subreddit.html" class="case-next-link">
+                        <span class="case-next-title">Subreddit Success</span>
+                        <span class="case-next-arrow">&rarr;</span>
+                    </a>
+                </div>
+
+                <div class="case-nav-grid">
+                    <span class="case-nav-grid-label">All Case Studies</span>
+                    <div class="case-nav-items">
+                        <a href="../../case-notifications.html" class="case-nav-item">
+                            <span class="case-nav-number">01</span>
+                            <span class="case-nav-name">Notifications</span>
+                        </a>
+                        <a href="../../case-ai.html" class="case-nav-item">
+                            <span class="case-nav-number">02</span>
+                            <span class="case-nav-name">AI</span>
+                        </a>
+                        <span class="case-nav-item current">
+                            <span class="case-nav-number">03</span>
+                            <span class="case-nav-name">Sharing</span>
+                        </span>
+                        <a href="../../case-subreddit.html" class="case-nav-item">
+                            <span class="case-nav-number">04</span>
+                            <span class="case-nav-name">Subreddit</span>
+                        </a>
+                        <a href="../../case-building-portfolio.html" class="case-nav-item">
+                            <span class="case-nav-number">05</span>
+                            <span class="case-nav-name">Portfolio</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div><p style="color:var(--text-secondary);margin-bottom:8px;">Let's talk product, systems, or design.</p></div>
+            <ul class="footer-links">
+                <li><a href="https://linkedin.com/in/dellasigrest" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+                <li><a href="mailto:dsigrest@gmail.com">Email</a></li>
+            </ul>
+        </div>
+        <div style="text-align:center;margin-top:var(--spacing-xl);padding-top:var(--spacing-xl);border-top:1px solid var(--border-subtle);">
+            <p class="footer-credit">This site was designed collaboratively with AI — <a href="../../case-building-portfolio.html" style="color:var(--text-tertiary);text-decoration:underline;text-underline-offset:2px;">read how</a></p>
+        </div>
+    </footer>
+
+    <script>
+        // Progress bar
+        window.addEventListener('scroll', () => {
+            const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = window.scrollY;
+            const scrollPercent = (scrolled / windowHeight) * 100;
+            document.querySelector('.progress-bar').style.width = scrollPercent + '%';
+        });
+
+        // Nav scroll state
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 0) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // IntersectionObserver for image fade-in and heading reveal
+        const scrollRevealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    scrollRevealObserver.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        document.querySelectorAll('.case-img-full').forEach(img => {
+            scrollRevealObserver.observe(img);
+        });
+
+        document.querySelectorAll('.case-body h2, .case-body h3').forEach(heading => {
+            scrollRevealObserver.observe(heading);
+        });
+    </script>
+</body>
+</html>

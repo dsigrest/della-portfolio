@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="How I designed a 3-stage sharing system to capture off-platform reach for Reddit's 100M+ daily active users.">
+    <title>Sharing &amp; Embeds — Della Sigrest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <a href="#main" class="skip-link">Skip to main content</a>
+    <div class="progress-bar"></div>
+
+    <nav>
+        <div class="nav-content">
+            <a href="index.html" class="nav-brand">Della Sigrest</a>
+            <ul class="nav-links">
+                <li><a href="index.html#work">Work</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="resume.pdf" target="_blank">Resume</a></li>
+                <li><a href="mailto:dsigrest@gmail.com">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main id="main">
+        <article>
+            <section class="case-hero">
+                <div class="case-hero-eyebrow">Case Study 03 of 05 &mdash; Led design for sharing &amp; embeds infrastructure</div>
+                <h1>Sharing &amp; Embeds</h1>
+                <p class="case-hero-sub">Reddit had no sharing infrastructure&mdash;just the default iOS share sheet and unrecognizable URL strings. I framed sharing as a three-event system, owned the design strategy across all three stages, and discovered that on a pseudo-anonymous platform, privacy isn&rsquo;t a non-issue&mdash;it&rsquo;s the core issue. Serving 100M+ daily active users.</p>
+                <div class="case-meta-grid">
+                    <div class="meta-item">
+                        <label>Role</label>
+                        <span>Senior Product Designer</span>
+                    </div>
+                    <div class="meta-item">
+                        <label>Team</label>
+                        <span>Growth</span>
+                    </div>
+                    <div class="meta-item">
+                        <label>Timeline</label>
+                        <span>Oct 2022 – May 2023</span>
+                    </div>
+                    <div class="meta-item">
+                        <label>Platform</label>
+                        <span>iOS, Android, Web</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="case-body">
+                <p>Reddit had no sharing infrastructure. The platform defaulted to iOS&rsquo;s native share sheet&mdash;an unsorted list users scrolled through blindly&mdash;and shared links were long, unrecognizable URL strings with no preview. Recipients didn&rsquo;t know what they&rsquo;d get, so they didn&rsquo;t click.</p>
+
+                <p><strong>I framed sharing as a three-event system</strong>&mdash;distribution, engagement, and re-engagement&mdash;and owned the design strategy across all three stages. At the time, Reddit was approaching 100M daily active users. None of that scale was being captured off-platform.</p>
+
+                <div class="case-img-full">
+                    <img src="img/sharing-before-after-v2.png" alt="Before and after — iOS default share sheet compared to custom Reddit share sheet with visual grid" loading="lazy">
+                </div>
+
+                <!-- ── SHARING FLYWHEEL DIAGRAM ── -->
+                <div class="flywheel-wrap case-img-full" id="flywheel">
+                  <style>
+                    /* ── Flywheel component (scoped via .flywheel-wrap) ──
+                       HYBRID: Option 3 typography + Option 4 liquid glass.
+                       Three-level type hierarchy (accent number / name / desc)
+                       on translucent frosted glass cards. Ring gradient bleeds
+                       through glass, connecting cards to the animated ring.
+                       Ring uses hero h1 palette: #7aa4bc → #a0beb4 → #d0ccc4 → #c4b898
+                       Fairy bloom matches hero h1::before cursor glow. */
+                    .flywheel-wrap {
+                      position: relative;
+                      max-width: 780px;
+                      margin: var(--spacing-3xl) auto;
+                      padding: var(--spacing-2xl) var(--spacing-xl);
+                    }
+
+                    /* No header — component embeds directly in prose */
+
+                    /* ── Core layout ── */
+                    .flywheel-wrap .fw-core {
+                      position: relative;
+                      width: 100%;
+                      max-width: 650px;
+                      aspect-ratio: 1 / 1.08;
+                      margin: 0 auto;
+                    }
+
+                    /* ── SVG layer ── */
+                    .flywheel-wrap .fw-svg {
+                      position: absolute;
+                      top: 10%;
+                      left: 8%;
+                      width: 84%;
+                      height: 78%;
+                      overflow: visible;
+                    }
+                    /* Ring — clean stroke, hero h1 gradient, weight 8 */
+                    .flywheel-wrap .glow-haze {
+                      fill: none;
+                      stroke: url(#fwRingGrad);
+                      stroke-width: 8;
+                      stroke-linecap: round;
+                      opacity: 0;
+                    }
+                    .flywheel-wrap .orbit-ring {
+                      fill: none;
+                      stroke: none;
+                    }
+                    /* Fairy bloom — warm radial glow, orbits the ring */
+                    .flywheel-wrap .fw-fairy {
+                      opacity: 0;
+                      filter: url(#fwFairyGlow);
+                      transition: opacity 0.8s ease-out;
+                    }
+
+                    /* ── Liquid glass node cards ──
+                       backdrop-filter blur lets the gradient ring bleed through.
+                       Fixed height locks all three cards to the same visual size. */
+                    .flywheel-wrap .fw-card {
+                      position: absolute;
+                      background: rgba(16, 18, 28, 0.55);
+                      -webkit-backdrop-filter: blur(16px) saturate(1.2);
+                      backdrop-filter: blur(16px) saturate(1.2);
+                      border: 1px solid rgba(224, 223, 228, 0.08);
+                      border-radius: 8px;
+                      padding: 14px 18px 16px;
+                      width: 196px;
+                      height: 100px;
+                      display: flex;
+                      flex-direction: column;
+                      text-align: center;
+                      justify-content: center;
+                      opacity: 0;
+                      scale: 0.92;
+                      z-index: 2;
+                      box-shadow:
+                        inset 0 1px 0 0 rgba(224, 223, 228, 0.05),
+                        0 0 0 0.5px rgba(224, 223, 228, 0.03);
+                    }
+                    /* Number + name inline row */
+                    .flywheel-wrap .fw-card__head {
+                      display: flex;
+                      align-items: baseline;
+                      justify-content: center;
+                      gap: 6px;
+                      margin-bottom: 4px;
+                    }
+                    /* Oversized accent number — visual anchor */
+                    .flywheel-wrap .fw-card__num {
+                      font-size: 28px;
+                      font-weight: 700;
+                      letter-spacing: -0.03em;
+                      color: var(--accent);
+                      line-height: 1;
+                      font-variant-numeric: tabular-nums;
+                    }
+                    .flywheel-wrap .fw-card__name {
+                      font-size: 16px;
+                      font-weight: 600;
+                      letter-spacing: -0.01em;
+                      color: var(--text-primary);
+                      line-height: 1;
+                    }
+                    .flywheel-wrap .fw-card__desc {
+                      font-size: 13px;
+                      font-weight: 400;
+                      color: var(--text-secondary);
+                      line-height: 1.45;
+                      margin: 0;
+                    }
+
+                    /* Card positions — all three overlap the ring,
+                       no tangents, ring catches inner card corners */
+                    .flywheel-wrap .fw-card--share {
+                      top: 12%;
+                      left: 50%;
+                      transform: translateX(-50%);
+                    }
+                    .flywheel-wrap .fw-card--preview {
+                      top: 57%;
+                      left: 63%;
+                    }
+                    .flywheel-wrap .fw-card--trust {
+                      top: 57%;
+                      right: 63%;
+                      left: auto;
+                    }
+
+                    /* ── Arc transition labels ── */
+                    .flywheel-wrap .fw-arc-label {
+                      position: absolute;
+                      font-size: 10px;
+                      font-weight: 500;
+                      letter-spacing: 0.04em;
+                      text-transform: uppercase;
+                      color: var(--text-tertiary);
+                      white-space: nowrap;
+                      opacity: 0;
+                      z-index: 1;
+                    }
+                    .flywheel-wrap .fw-arc-label--sp {
+                      top: 38%;
+                      left: 83%;
+                    }
+                    .flywheel-wrap .fw-arc-label--pt {
+                      top: 88%;
+                      left: 50%;
+                      transform: translateX(-50%);
+                    }
+                    .flywheel-wrap .fw-arc-label--ts {
+                      top: 38%;
+                      right: 83%;
+                      text-align: right;
+                    }
+
+                    /* ── Animation states ── */
+                    .flywheel-wrap.is-active .fw-card {
+                      animation: fwCardIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+                    }
+                    .flywheel-wrap.is-active .fw-card--share   { animation-delay: 0ms; }
+                    .flywheel-wrap.is-active .fw-card--preview { animation-delay: 140ms; }
+                    .flywheel-wrap.is-active .fw-card--trust   { animation-delay: 280ms; }
+
+                    .flywheel-wrap.is-active .glow-haze {
+                      opacity: 0.9;
+                      transition: opacity 1s ease-out 300ms;
+                    }
+                    .flywheel-wrap.is-active .fw-fairy {
+                      opacity: 1;
+                      transition-delay: 500ms;
+                    }
+
+                    .flywheel-wrap.is-active .fw-arc-label {
+                      animation: fwFadeIn 0.4s ease-out forwards;
+                    }
+                    .flywheel-wrap.is-active .fw-arc-label--sp { animation-delay: 600ms; }
+                    .flywheel-wrap.is-active .fw-arc-label--pt { animation-delay: 750ms; }
+                    .flywheel-wrap.is-active .fw-arc-label--ts { animation-delay: 900ms; }
+
+                    @keyframes fwCardIn {
+                      from { opacity: 0; scale: 0.92; }
+                      to   { opacity: 1; scale: 1; }
+                    }
+                    @keyframes fwFadeIn {
+                      from { opacity: 0; }
+                      to   { opacity: 1; }
+                    }
+
+                    @media (prefers-reduced-motion: reduce) {
+                      .flywheel-wrap .fw-card,
+                      .flywheel-wrap .fw-arc-label {
+                        animation: none !important;
+                        opacity: 1 !important;
+                        scale: 1 !important;
+                      }
+                      .flywheel-wrap .glow-haze { opacity: 0.9 !important; }
+                      .flywheel-wrap .fw-fairy { opacity: 0 !important; }
+                    }
+
+                    @media (max-width: 640px) {
+                      .flywheel-wrap { padding: var(--spacing-lg) var(--spacing-md); }
+                      .flywheel-wrap .fw-card { width: 164px; height: 88px; padding: 12px 16px 14px; }
+                      .flywheel-wrap .fw-card__num { font-size: 24px; }
+                      .flywheel-wrap .fw-card__name { font-size: 14px; }
+                      .flywheel-wrap .fw-card__desc { font-size: 12px; }
+                      .flywheel-wrap .fw-card--preview { left: 60%; }
+                      .flywheel-wrap .fw-card--trust   { right: 60%; }
+                      .flywheel-wrap .fw-arc-label--sp { left: 80%; }
+                      .flywheel-wrap .fw-arc-label--ts { right: 80%; }
+                    }
+                    @media (max-width: 480px) {
+                      .flywheel-wrap .fw-arc-label { display: none; }
+                      .flywheel-wrap .fw-svg { left: 3%; width: 94%; }
+                      .flywheel-wrap .fw-card { width: 148px; height: 82px; }
+                      .flywheel-wrap .fw-card__num { font-size: 20px; }
+                      .flywheel-wrap .fw-card__name { font-size: 13px; }
+                      .flywheel-wrap .fw-card--preview { left: 57%; }
+                      .flywheel-wrap .fw-card--trust   { right: 57%; }
+                    }
+                  </style>
+
+                  <div class="fw-core">
+                    <svg class="fw-svg" viewBox="0 0 520 520">
+                      <defs>
+                        <!-- Ring gradient: exact hero h1 text palette -->
+                        <linearGradient id="fwRingGrad" gradientTransform="rotate(135)">
+                          <stop offset="0%" stop-color="#7aa4bc"/>
+                          <stop offset="35%" stop-color="#a0beb4"/>
+                          <stop offset="65%" stop-color="#d0ccc4"/>
+                          <stop offset="100%" stop-color="#c4b898"/>
+                        </linearGradient>
+
+                        <!-- Fairy glow: matches hero cursor bloom -->
+                        <radialGradient id="fwFairyFill">
+                          <stop offset="0%" stop-color="rgba(127,181,176,0.09)"/>
+                          <stop offset="100%" stop-color="rgba(127,181,176,0)"/>
+                        </radialGradient>
+                        <filter id="fwFairyGlow" x="-300%" y="-300%" width="700%" height="700%">
+                          <feGaussianBlur in="SourceGraphic" stdDeviation="10"/>
+                        </filter>
+                      </defs>
+
+                      <!-- Gradient ring — animated rotation via JS -->
+                      <circle class="glow-haze" cx="260" cy="260" r="160"/>
+                      <circle class="orbit-ring" cx="260" cy="260" r="160"/>
+
+                      <!-- Hidden path for fairy orbit calculation -->
+                      <path id="fwOrbitPath" d="M 260 100 A 160 160 0 0 1 399 340 A 160 160 0 0 1 121 340 A 160 160 0 0 1 260 100" fill="none" stroke="none"/>
+
+                      <!-- Fairy bloom: orbits clockwise -->
+                      <circle class="fw-fairy" cx="260" cy="100" r="24" fill="url(#fwFairyFill)"/>
+                    </svg>
+
+                    <!-- Node cards — liquid glass + 3-level type hierarchy -->
+                    <div class="fw-card fw-card--share">
+                      <div class="fw-card__head">
+                        <span class="fw-card__num">1</span>
+                        <span class="fw-card__name">Share</span>
+                      </div>
+                      <p class="fw-card__desc">One-tap channel selection streamlined for&nbsp;speed</p>
+                    </div>
+
+                    <div class="fw-card fw-card--preview">
+                      <div class="fw-card__head">
+                        <span class="fw-card__num">2</span>
+                        <span class="fw-card__name">Preview</span>
+                      </div>
+                      <p class="fw-card__desc">Platform-native cards that set&nbsp;expectations</p>
+                    </div>
+
+                    <div class="fw-card fw-card--trust">
+                      <div class="fw-card__head">
+                        <span class="fw-card__num">3</span>
+                        <span class="fw-card__name">Trust</span>
+                      </div>
+                      <p class="fw-card__desc">Privacy status surfaced before the user&nbsp;sends</p>
+                    </div>
+
+                    <!-- Arc transition labels -->
+                    <span class="fw-arc-label fw-arc-label--sp">Recipients click</span>
+                    <span class="fw-arc-label fw-arc-label--pt">Users engage</span>
+                    <span class="fw-arc-label fw-arc-label--ts">Trust compounds</span>
+                  </div>
+                </div>
+
+                <script>
+                (function() {
+                  var wrap = document.getElementById('flywheel');
+                  var orbitPath = document.getElementById('fwOrbitPath');
+                  var fairy = wrap.querySelector('.fw-fairy');
+                  var ringGrad = document.getElementById('fwRingGrad');
+                  var pathLen = orbitPath.getTotalLength();
+                  var duration = 10000;
+                  var startTime = null;
+                  var animating = false;
+
+                  function animateLoop(timestamp) {
+                    if (!startTime) startTime = timestamp;
+                    var elapsed = (timestamp - startTime) % duration;
+                    var progress = elapsed / duration;
+
+                    // Fairy position along orbit path
+                    var point = orbitPath.getPointAtLength(progress * pathLen);
+                    fairy.setAttribute('cx', point.x);
+                    fairy.setAttribute('cy', point.y);
+
+                    // Rotate ring gradient — oatmeal highlight orbits clockwise
+                    ringGrad.setAttribute('gradientTransform', 'rotate(' + (progress * 360) + ' 0.5 0.5)');
+
+                    if (animating) requestAnimationFrame(animateLoop);
+                  }
+
+                  var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+                  var io = new IntersectionObserver(function(entries) {
+                    if (!entries[0].isIntersecting) return;
+                    wrap.classList.add('is-active');
+                    if (!prefersReduced) {
+                      setTimeout(function() {
+                        animating = true;
+                        requestAnimationFrame(animateLoop);
+                      }, 500);
+                    }
+                    io.disconnect();
+                  }, { threshold: 0.25 });
+                  io.observe(wrap);
+                })();
+                </script>
+                <!-- ── END FLYWHEEL ── -->
+
+                <h2>Make It Easy to Share</h2>
+
+                <p>I designed a <strong>custom share sheet</strong> to replace the iOS default&mdash;a visual grid that prioritized channels based on each user&rsquo;s sharing history. WhatsApp-heavy sharers saw WhatsApp first. One tap, no scrolling, no reading through pages.</p>
+
+                <p>The first version shipped without a preview, and users still hesitated. They didn&rsquo;t trust what their friends would see. So I added a <strong>live preview directly into the sheet</strong>&mdash;exactly what the recipient would get, with an explicit line confirming the share wouldn&rsquo;t expose the sender&rsquo;s profile. That preview was the trust mechanism. Users could confirm it didn&rsquo;t look like spam before they hit send.</p>
+
+                <div class="case-img-full">
+                    <img src="img/sharing-live-preview.png" alt="Share sheet with live preview — Reddit post preview visible above the sharing channel grid" loading="lazy">
+                </div>
+
+                <p><strong>Earning surface placement was its own project.</strong> Feed, the post detail page, the overflow menu&mdash;these were contested surfaces mid-redesign, and every team wanted an on-ramp. I built the case for sharing as a top-of-funnel growth channel with data showing it drove both new user acquisition and brand awareness upstream&mdash;trust-building before someone ever landed on Reddit.</p>
+
+                <h2>Make Shared Content Easy to Engage With</h2>
+
+                <p>I led the design of a <strong>cross-platform preview component library</strong>&mdash;how Reddit content renders on iMessage, WhatsApp, Instagram, Twitter, LinkedIn, and in publisher embeds. I partnered with content design on copy, OrangeRed branding on visual identity, and Reddit Product Language on component architecture.</p>
+
+                <p>The design constraint: <strong>enough context to build trust, not enough to satisfy curiosity.</strong> A preview that showed the full post killed click-through. A bare URL killed trust. I landed on a format that surfaced the headline, a content thumbnail, and social proof&mdash;upvote count, comment count&mdash;with Reddit branding anchoring recognition for first-time viewers. Same principle I&rsquo;d applied in notifications: show what&rsquo;s behind the door, make users want to open it.</p>
+
+                <div class="case-img-full">
+                    <div class="img-placeholder">Cross-platform preview grid: show the same Reddit post rendered as a link preview on 4-6 different platforms (iMessage bubble, WhatsApp card, Twitter card, LinkedIn embed, publisher article embed). Demonstrate visual consistency across different platform constraints.</div>
+                </div>
+
+                <p>I designed these as a <strong>fixed component system rather than custom layouts per channel</strong>&mdash;each component rendered consistently across six-plus platforms with different display constraints. That architectural decision paid off twice: first in scaling to new channels without redesign, and later when the platform team used the same component library as the foundation for developer-facing embed tools&mdash;a public API that let third-party publishers natively render Reddit content in their own apps.</p>
+
+                <h2>Help Users Feel Safe Sharing</h2>
+
+                <p>Stages one and two shipped. Sharing got easier and looked better&mdash;but volume wasn&rsquo;t moving the way we expected. I pushed for a research sprint, and what came back reframed the entire project.</p>
+
+                <p><strong>Growth teams default to friction removal. The insight here was the inverse: friction was a symptom, not the problem.</strong> Reddit users maintain segmented identities across communities. Sharing a profile to someone who knows you in real life creates context collapse&mdash;your interest graph, your communities, your comment history all become visible. On a pseudo-anonymous platform, privacy isn&rsquo;t a non-issue. It&rsquo;s the core issue.</p>
+
+                <div class="case-img-full">
+                    <div class="img-placeholder">Context collapse diagram: show a Reddit user profile with multiple community memberships (subreddits) visible, with an arrow pointing to a real-life contact receiving a shared link. Illustrate how sharing exposes the full interest graph.</div>
+                </div>
+
+                <p>I led the privacy integration in the share sheet&mdash;controls surfaced at the moment of sharing, not buried in settings. I collaborated with the profile team to redesign <strong>privacy visibility on the profile itself</strong>&mdash;at a glance, users could see what others could see and update it. In post creation, I designed <strong>identity-selection flows</strong>&mdash;letting users choose who they posted as&mdash;and prototyped anonymous posting&mdash;experiments the creation team picked up and tested later that year.</p>
+
+                <div class="case-img-full">
+                    <div class="img-placeholder">Privacy controls across surfaces: 2-3 screens showing (1) privacy toggle in the share sheet, (2) profile visibility settings with what-others-can-see view, and (3) who-am-I-posting-as selector in the post creation flow. Show these as a connected system.</div>
+                </div>
+
+                <p>Once privacy was addressed at the source&mdash;on the profile, in creation, and in the share sheet&mdash;previously silent cohorts started sharing.</p>
+
+                <h2>The Result</h2>
+
+                <p>Reddit went from zero custom sharing infrastructure to <strong>branded, trustworthy previews on every major channel</strong> serving 100M+ daily active users. The component library I designed became the reference architecture for developer-facing embed tools&mdash;a public API now used by third-party publishers. The privacy-as-growth-lever framework&mdash;my team&rsquo;s core contribution&mdash;shaped how subsequent growth initiatives across Reddit approached user control as a distribution strategy, not a constraint.</p>
+
+                <div class="metrics-callout">
+                    <div class="metric">
+                        <span class="metric-value">100M+</span>
+                        <span class="metric-label">Daily active users served</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value">6+</span>
+                        <span class="metric-label">Platform preview integrations</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-value">Public API</span>
+                        <span class="metric-label">Embed tools for publishers</span>
+                    </div>
+                </div>
+
+                <div class="case-next">
+                    <span class="case-next-label">Next Case Study</span>
+                    <a href="case-subreddit.html" class="case-next-link">
+                        <span class="case-next-title">Subreddit Success</span>
+                        <span class="case-next-arrow">&rarr;</span>
+                    </a>
+                </div>
+
+                <div class="case-nav-grid">
+                    <span class="case-nav-grid-label">All Case Studies</span>
+                    <div class="case-nav-items">
+                        <a href="case-notifications.html" class="case-nav-item">
+                            <span class="case-nav-number">01</span>
+                            <span class="case-nav-name">Notifications</span>
+                        </a>
+                        <a href="case-ai.html" class="case-nav-item">
+                            <span class="case-nav-number">02</span>
+                            <span class="case-nav-name">AI</span>
+                        </a>
+                        <span class="case-nav-item current">
+                            <span class="case-nav-number">03</span>
+                            <span class="case-nav-name">Sharing</span>
+                        </span>
+                        <a href="case-subreddit.html" class="case-nav-item">
+                            <span class="case-nav-number">04</span>
+                            <span class="case-nav-name">Subreddit</span>
+                        </a>
+                        <a href="case-building-portfolio.html" class="case-nav-item">
+                            <span class="case-nav-number">05</span>
+                            <span class="case-nav-name">Portfolio</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div><p style="color:var(--text-secondary);margin-bottom:8px;">Let's talk product, systems, or design.</p></div>
+            <ul class="footer-links">
+                <li><a href="https://linkedin.com/in/dellasigrest" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+                <li><a href="mailto:dsigrest@gmail.com">Email</a></li>
+            </ul>
+        </div>
+        <div style="text-align:center;margin-top:var(--spacing-xl);padding-top:var(--spacing-xl);border-top:1px solid var(--border-subtle);">
+            <p class="footer-credit">This site was designed collaboratively with AI — <a href="case-building-portfolio.html" style="color:var(--text-tertiary);text-decoration:underline;text-underline-offset:2px;">read how</a></p>
+        </div>
+    </footer>
+
+    <script>
+        // Progress bar
+        window.addEventListener('scroll', () => {
+            const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = window.scrollY;
+            const scrollPercent = (scrolled / windowHeight) * 100;
+            document.querySelector('.progress-bar').style.width = scrollPercent + '%';
+        });
+
+        // Nav scroll state
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 0) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // IntersectionObserver for image fade-in and h2 reveal
+        const scrollRevealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    scrollRevealObserver.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        document.querySelectorAll('.case-img-full').forEach(img => {
+            scrollRevealObserver.observe(img);
+        });
+
+        document.querySelectorAll('.case-body h2').forEach(heading => {
+            scrollRevealObserver.observe(heading);
+        });
+    </script>
+</body>
+</html>

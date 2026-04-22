@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Context Preview — Notifications Bar Graph</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>
+    /* ── Diagram-specific styles (would live in styles.css in production) ── */
+    .notif-chart {
+      width: 100%; max-width: 640px; margin: 0 auto;
+      background: rgba(16, 18, 28, 0.55);
+      -webkit-backdrop-filter: blur(16px) saturate(1.2);
+      backdrop-filter: blur(16px) saturate(1.2);
+      border: 1px solid rgba(224, 223, 228, 0.08);
+      border-radius: 8px; padding: 28px 32px 32px;
+      box-shadow: inset 0 1px 0 0 rgba(224, 223, 228, 0.05);
+    }
+    .notif-chart .bars { display: flex; flex-direction: column; gap: 20px; }
+    .notif-chart .bar-group { display: flex; flex-direction: column; gap: 5px; }
+    .notif-chart .bar-row { display: grid; grid-template-columns: 110px 1fr; align-items: center; gap: 14px; }
+    .notif-chart .bar-row__label { font-size: 13px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.01em; text-align: right; }
+    .notif-chart .bar-row__track {
+      height: 28px; background: rgba(224, 223, 228, 0.03);
+      border-radius: 6px; overflow: hidden;
+    }
+    .notif-chart .bar-row__fill {
+      height: 100%; border-radius: 6px;
+      transform-origin: left center; transform: scaleX(0);
+    }
+    .notif-chart .bar-row__fill::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.06) 100%);
+      border-radius: 6px;
+    }
+    .notif-chart .bar-row--conversation .bar-row__fill { background: #c4b898; width: 88%; position: relative; }
+    .notif-chart .bar-row--discovery .bar-row__fill { background: #7fb5b0; width: 50%; position: relative; }
+    .notif-chart .bar-row--following .bar-row__fill { background: #7aa4bc; width: 30%; position: relative; }
+
+    .notif-chart .bar-meta { display: grid; grid-template-columns: 110px 1fr; gap: 14px; }
+    .notif-chart .bar-meta__text { font-size: 11px; font-weight: 400; color: var(--text-tertiary); line-height: 1.4; }
+
+    .notif-chart.is-active .bar-row__fill { animation: barGrow 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+    .notif-chart.is-active .bar-row--conversation .bar-row__fill { animation-delay: 200ms; }
+    .notif-chart.is-active .bar-row--discovery .bar-row__fill { animation-delay: 360ms; }
+    .notif-chart.is-active .bar-row--following .bar-row__fill { animation-delay: 520ms; }
+    @keyframes barGrow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .notif-chart .bar-row__fill { transform: scaleX(1) !important; animation: none !important; }
+    }
+    @media (max-width: 540px) {
+      .notif-chart { padding: 20px 16px 24px; }
+      .notif-chart .bar-row { grid-template-columns: 90px 1fr; gap: 10px; }
+      .notif-chart .bar-meta { grid-template-columns: 90px 1fr; gap: 10px; }
+      .notif-chart .bar-row__track { height: 24px; }
+    }
+
+    /* Override: portfolio JS not loaded, so force wrapper visible */
+    .case-img-full { opacity: 1 !important; transform: none !important; }
+
+    /* Context label */
+    .ctx-label { position: fixed; top: 16px; left: 16px; background: rgba(127,181,176,0.15); border: 1px solid rgba(127,181,176,0.3); border-radius: 6px; padding: 5px 10px; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); z-index: 100; }
+  </style>
+</head>
+<body>
+  <div class="ctx-label">In-page context preview</div>
+  <main id="main">
+    <section class="case-body">
+      <h2>The Framework</h2>
+
+      <p>I developed a <strong>three-tier model based on signal strength</strong>: direct activity, explicit opt-ins, and recommendations. This resolved a core tension&mdash;recommendation notifications performed well by engagement metrics but drew user complaints. The framework showed when each type belonged: high-activity users with abundant direct notifications don't need discovery; new users without activity history do.</p>
+
+      <p>The inbox drives 2% of all comments on Reddit&mdash;a figure that shifted leadership investment and directly shaped how we targeted the strategy across cohorts.</p>
+
+      <div class="case-img-full">
+        <!-- DIAGRAM REPLACES PLACEHOLDER -->
+        <div class="notif-chart" id="chart">
+          <div class="bars">
+            <div class="bar-group">
+              <div class="bar-row bar-row--conversation">
+                <span class="bar-row__label">Conversation</span>
+                <div class="bar-row__track"><div class="bar-row__fill"></div></div>
+              </div>
+              <div class="bar-meta"><span></span><span class="bar-meta__text">Replies, mentions, direct messages</span></div>
+            </div>
+            <div class="bar-group">
+              <div class="bar-row bar-row--discovery">
+                <span class="bar-row__label">Discovery</span>
+                <div class="bar-row__track"><div class="bar-row__fill"></div></div>
+              </div>
+              <div class="bar-meta"><span></span><span class="bar-meta__text">Trending, recommendations — highlights Reddit's&nbsp;value</span></div>
+            </div>
+            <div class="bar-group">
+              <div class="bar-row bar-row--following">
+                <span class="bar-row__label">Following</span>
+                <div class="bar-row__track"><div class="bar-row__fill"></div></div>
+              </div>
+              <div class="bar-meta"><span></span><span class="bar-meta__text">Subreddit updates — content the user opted&nbsp;into</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2>The Evolution</h2>
+
+      <p><strong>Modernize</strong> &mdash; I migrated the inbox to the platform design system and standardized copy across all notification types. Contextualized copy&mdash;showing <em>why</em> users received a notification&mdash;doubled click-through compared to generic framing.</p>
+    </section>
+  </main>
+
+  <script>
+  (function() {
+    var c = document.getElementById('chart');
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) { c.classList.add('is-active'); return; }
+    var io = new IntersectionObserver(function(e) {
+      if (!e[0].isIntersecting) return;
+      c.classList.add('is-active'); io.disconnect();
+    }, { threshold: 0.25 });
+    io.observe(c);
+  })();
+  </script>
+</body>
+</html>

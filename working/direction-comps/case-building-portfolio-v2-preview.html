@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Building This Portfolio — Della Sigrest</title>
+  <meta name="description" content="How I built the system that builds, evaluates, and maintains a portfolio — 9 custom skills, automated workflows, and a collaboration model designed to compound.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>
+    .case-body h3 {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-top: var(--spacing-2xl);
+      margin-bottom: var(--spacing-sm);
+      color: var(--text-primary);
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .case-body h3.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .section-num {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent);
+      margin-right: 8px;
+      letter-spacing: 0.02em;
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+  <div class="progress-bar"></div>
+
+  <nav>
+    <div class="nav-content">
+      <a href="../../index.html" class="nav-brand">Della Sigrest</a>
+      <ul class="nav-links">
+        <li><a href="../../index.html#work">Work</a></li>
+        <li><a href="../../about.html">About</a></li>
+        <li><a href="../../resume.pdf" target="_blank">Resume</a></li>
+        <li><a href="mailto:dsigrest@gmail.com">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main id="main">
+    <article>
+      <section class="case-hero">
+        <div class="case-hero-eyebrow">Case Study 05 of 05 &mdash; Built the system that builds, evaluates, and maintains this portfolio</div>
+        <h1>Building This Portfolio</h1>
+        <div class="case-meta-grid">
+          <div class="meta-item">
+            <label>Role</label>
+            <span>Senior Product Designer</span>
+          </div>
+          <div class="meta-item">
+            <label>Team</label>
+            <span>Personal Practice</span>
+          </div>
+          <div class="meta-item">
+            <label>Timeline</label>
+            <span>Mar &ndash; Apr 2026</span>
+          </div>
+          <div class="meta-item">
+            <label>Platform</label>
+            <span>Web (Static HTML/CSS/JS)</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="case-body">
+
+        <!-- ============================================
+             CHALLENGE
+             ============================================ -->
+
+        <h2>Challenge</h2>
+
+        <p>I needed a portfolio that captures <strong>depth of craft while staying easy to scan</strong> and feeling authentically mine. The narrative was rich but scattered&mdash;and the industry was shifting under it.</p>
+
+        <p>The harder problem: <strong>every audience evaluates differently</strong>. Some roles weight AI workflow evidence, others want research methodology, others care about systems thinking or craft. No way to measure whether materials were landing across all of those criteria at once.</p>
+
+        <div class="case-img-full">
+          <div class="img-placeholder">The evaluation gap&mdash;multiple audiences with different hiring criteria, no single tool to benchmark materials against all of them at once</div>
+        </div>
+
+        <!-- ============================================
+             SOLUTION
+             ============================================ -->
+
+        <h2>Solution</h2>
+
+        <p>I designed <strong>a practice infrastructure that produces, evaluates, and maintains the portfolio</strong>&mdash;sense-making tools to cut through bulk information, automations for recurring operational work, and repeatable skills that learn over time and interconnect.</p>
+
+        <p>The system handles prep, outreach, tracking, and quality checks so <strong>my time goes to craft and message</strong>.</p>
+
+        <div class="case-img-full">
+          <div class="img-placeholder">System architecture&mdash;how 9 custom skills, living documents, and shared data hubs connect (interview-prep &rarr; tracker &rarr; overview &rarr; calendar &rarr; cheat sheets)</div>
+        </div>
+
+        <div class="metrics-callout">
+          <div class="metric">
+            <span class="metric-value">9</span>
+            <span class="metric-label">Custom skills built</span>
+          </div>
+          <div class="metric">
+            <span class="metric-value">5</span>
+            <span class="metric-label">Case studies shipped</span>
+          </div>
+          <div class="metric">
+            <span class="metric-value">6.7 &rarr; 8.2</span>
+            <span class="metric-label">Resume score improvement</span>
+          </div>
+          <div class="metric">
+            <span class="metric-value">6</span>
+            <span class="metric-label">Skills portable for sharing</span>
+          </div>
+        </div>
+
+        <!-- ============================================
+             01 MAKING SENSE OF THE PROBLEM
+             ============================================ -->
+
+        <h2><span class="section-num">01</span> Building the Feedback Loop</h2>
+
+        <p>Before writing a single case study, I needed systems that could <strong>tell me whether materials were working</strong>&mdash;and keep telling me as requirements changed. Every tool in this section runs against live data, not a one-time audit.</p>
+
+        <h3>Competitive Benchmarking</h3>
+
+        <p>I needed a baseline for the level I was targeting. I profiled <strong>21 designers across 17 dimensions</strong> and identified three strategic archetypes&mdash;revealing where the field clusters and where the gaps are.</p>
+
+        <div class="case-img-full">
+          <div class="img-placeholder">Competitive benchmark&mdash;21 designers scored across archetypes, showing cluster patterns and positioning gaps</div>
+        </div>
+
+        <h3>Recruiter Panel</h3>
+
+        <p>Self-assessment doesn&rsquo;t scale across roles with different criteria. The solution: a <strong>three-stage evaluation pipeline</strong> scoring materials against real, current job postings&mdash;14 companies evaluated. Each run surfaces the specific gap between what a role needs and what the material delivers.</p>
+
+        <div class="case-img-full">
+          <div class="img-placeholder">Recruiter panel output&mdash;per-company scores with gap analysis, showing what each role values and where materials fall short</div>
+        </div>
+
+        <h3>Progressive Disclosure Framework</h3>
+
+        <p>Content was duplicating across the resume, portfolio, deck, and LinkedIn. I formalized <strong>four layers, each with one job</strong>&mdash;scope, frameworks, decisions, process. No layer repeats what another says&mdash;they build on each other.</p>
+
+        <div class="case-img-full">
+          <div class="img-placeholder">Progressive disclosure layers&mdash;LinkedIn &rarr; Resume &rarr; Portfolio &rarr; Deck, showing what content lives where and why</div>
+        </div>
+
+        <h3>Screenshot Organization</h3>
+
+        <p><strong>1,576 screenshots across 7 projects</strong>, no organizing structure. The sorter I created uses a taxonomy that learns&mdash;each project sorted makes the next one faster and more accurate.</p>
+
+        <div class="case-img-full">
+          <div class="img-placeholder">Screenshot sorter&mdash;before (flat folder of 1,576 images) vs. after (organized surface taxonomy with contact sheets)</div>
+        </div>
+
+        <!-- ============================================
+             02 AUTOMATING THE GRIND
+             ============================================ -->
+
+        <h2><span class="section-num">02</span> Removing Operational Friction</h2>
+
+        <p>Every hour spent on logistics&mdash;prepping for calls, tracking contacts, re-establishing context&mdash;was an hour not spent on the portfolio itself. I identified the <strong>repeating workflows and turned each one into a system</strong>.</p>
+
+        <h3>Interview Prep System</h3>
+
+        <p>Each recruiter call meant manually researching the company, re-reading my own materials, and assembling notes from scratch. Now a single skill <strong>generates cheat sheets from live research and the tracker</strong>, links them in calendar events, and syncs debrief notes back after the call. One input, everything updates.</p>
+
+        <div class="case-img-full">
+          <div class="img-placeholder">Interview prep flow&mdash;calendar event detected &rarr; cheat sheet generated &rarr; linked in calendar &rarr; debrief after call &rarr; tracker updated &rarr; overview regenerated</div>
+        </div>
+
+        <h3>Recruiter Tracker</h3>
+
+        <p>Contacts, stages, and company intel were scattered across emails, messages, and notes. I consolidated into a <strong>single source of truth</strong>&mdash;32 leads, 24 columns, five sheets. Every skill reads from and writes to this file.</p>
+
+        <div class="case-img-full">
+          <div class="img-placeholder">Tracker architecture&mdash;5-sheet structure showing how data flows in from skills and out to living documents</div>
+        </div>
+
+        <h3>Persistent Memory</h3>
+
+        <p>Context was lost between sessions&mdash;every conversation started from scratch. I designed a four-file memory architecture that <strong>self-heals</strong>&mdash;an automated script validates from the filesystem, flags stale content, and detects drift. Weeks of work stay continuous.</p>
+
+        <div class="case-img-full">
+          <div class="img-placeholder">Memory architecture&mdash;four files, each with one job, showing how session continuity works across weeks of collaboration</div>
+        </div>
+
+        <h3>Outreach Automation</h3>
+
+        <p>Drafting outreach meant re-reading job postings and manually tailoring each message. An automated engine now <strong>generates targeted emails and LinkedIn messages</strong> with progressive disclosure, links prep materials via the calendar, and stages follow-up drafts after calls.</p>
+
+        <div class="case-img-full">
+          <div class="img-placeholder">Outreach pipeline&mdash;company intel &rarr; drafted email &rarr; calendar detection &rarr; follow-up staging</div>
+        </div>
+
+        <!-- ============================================
+             03 THE COLLABORATION MODEL
+             ============================================ -->
+
+        <h2><span class="section-num">03</span> The Collaboration Model</h2>
+
+        <p>The individual tools solved individual problems. The collaboration model is what makes them <strong>compound instead of coexist</strong>&mdash;versioned skills that improve, shared data that flows between them, and quality gates that catch problems before they ship.</p>
+
+        <h3>Skills That Learn</h3>
+
+        <p>Early skills were useful once, then stale. A meta-skill now <strong>creates, evaluates, and iterates other skills</strong> on a 7-dimension framework&mdash;versioned releases, evaluation scores, learning logs. The resource cataloger went v1 &rarr; v3, interview-prep v0.3 &rarr; v0.5. Each version addresses gaps the previous one surfaced.</p>
+
+        <div class="case-img-full">
+          <div class="img-placeholder">Skill evolution&mdash;version history across key skills showing feature progression and accuracy improvements over time</div>
+        </div>
+
+        <h3>Interconnected Systems</h3>
+
+        <p>Standalone tools create data silos. These skills <strong>share data through common hubs</strong>&mdash;the recruiter panel scores companies, outreach reads those scores to tailor messaging, interview-prep generates cheat sheets from the tracker and writes debrief notes back. One change propagates.</p>
+
+        <div class="case-img-full">
+          <div class="img-placeholder">System map&mdash;data flow between skills, shared files, and living documents showing how one change propagates</div>
+        </div>
+
+        <h3>Version Control and Quality Gates</h3>
+
+        <p>Without automated checks, voice drift and broken markup ship silently. I set up git for every change and a <strong>CI/CD pipeline</strong> that runs voice-check, quality-check, and placeholder scan before anything deploys.</p>
+
+        <div class="case-img-full">
+          <div class="img-placeholder">CI/CD pipeline&mdash;git push &rarr; voice check &rarr; quality check &rarr; placeholder scan &rarr; deploy</div>
+        </div>
+
+        <h3>Portability by Design</h3>
+
+        <p>Skills that only work in one environment aren&rsquo;t reusable&mdash;they&rsquo;re scripts. <strong>6 of 9 skills are designed for sharing</strong> with parameterized paths, semver, and no hardcoded references. Portability scores tracked and improved across releases.</p>
+
+        <div class="case-img-full">
+          <div class="img-placeholder">Portability audit&mdash;skills scored on shareability, showing path from internal tool to publishable artifact</div>
+        </div>
+
+        <!-- ============================================
+             04 QUALITY OVER TIME
+             ============================================ -->
+
+        <h2><span class="section-num">04</span> Quality Over Time</h2>
+
+        <p>The point of building systems instead of one-off deliverables is that <strong>quality compounds</strong>. Every revision runs through the same evaluation pipeline, so improvement is measurable and gaps don&rsquo;t quietly reappear.</p>
+
+        <h3>Measurable Improvement</h3>
+
+        <p>Without a consistent scoring method, &ldquo;better&rdquo; is a guess. The recruiter panel scores every material against the same criteria each time&mdash;resume average moved from <strong>6.7 &rarr; 8.2</strong>, case study scores climbed +0.5 to +1.1 per company after a single restructure pass.</p>
+
+        <div class="case-img-full">
+          <div class="img-placeholder">Score progression&mdash;before/after across materials, showing measurable improvement per revision cycle</div>
+        </div>
+
+        <h3>Voice Consistency</h3>
+
+        <p>AI-assisted writing drifts toward generic patterns without guardrails. I defined <strong>40+ banned patterns</strong> enforced by an automated linter, plus four voice registers so the system distinguishes between a LinkedIn post, a case study, and an outreach email.</p>
+
+        <div class="case-img-full">
+          <div class="img-placeholder">Voice system&mdash;banned patterns, four registers, automated linting output</div>
+        </div>
+
+        <!-- ============================================
+             RESULTS
+             ============================================ -->
+
+        <h2>Results</h2>
+
+        <p>The portfolio shipped in weeks. The lasting output is the <strong>practice infrastructure underneath it</strong>&mdash;9 interconnected skills, a shared tracker, a quality system scoring against live job postings, and a memory architecture that carries context across weeks of work.</p>
+
+        <p>Nothing here is static. New case studies get added, skills get new versions, the recruiter panel re-evaluates as postings change. The system is <strong>designed to keep compounding</strong>.</p>
+
+      </section>
+
+      <div class="case-next">
+        <span class="case-next-label">Portfolio</span>
+        <a href="../../index.html" class="case-next-link">
+          <span class="case-next-title">&larr; Back to all work</span>
+          <span class="case-next-arrow"></span>
+        </a>
+      </div>
+
+      <div class="case-nav-grid">
+        <span class="case-nav-grid-label">All Case Studies</span>
+        <div class="case-nav-items">
+          <a href="../../case-notifications.html" class="case-nav-item">
+            <span class="case-nav-number">01</span>
+            <span class="case-nav-name">Notifications</span>
+          </a>
+          <a href="../../case-ai.html" class="case-nav-item">
+            <span class="case-nav-number">02</span>
+            <span class="case-nav-name">AI</span>
+          </a>
+          <a href="../../case-sharing.html" class="case-nav-item">
+            <span class="case-nav-number">03</span>
+            <span class="case-nav-name">Sharing</span>
+          </a>
+          <a href="../../case-subreddit.html" class="case-nav-item">
+            <span class="case-nav-number">04</span>
+            <span class="case-nav-name">Subreddit</span>
+          </a>
+          <span class="case-nav-item current">
+            <span class="case-nav-number">05</span>
+            <span class="case-nav-name">Portfolio</span>
+          </span>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <div><p style="color: var(--text-secondary); margin-bottom: 8px;">Let's talk product, systems, or design.</p></div>
+      <ul class="footer-links">
+        <li><a href="https://linkedin.com/in/dellasigrest" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+        <li><a href="mailto:dsigrest@gmail.com">Email</a></li>
+      </ul>
+    </div>
+    <div style="text-align: center; margin-top: var(--spacing-xl); padding-top: var(--spacing-xl); border-top: 1px solid var(--border-subtle);">
+      <p class="footer-credit">This site was designed collaboratively with AI &mdash; <a href="../../case-building-portfolio.html" style="color: var(--text-tertiary); text-decoration: underline; text-underline-offset: 2px;">read how</a></p>
+    </div>
+  </footer>
+
+  <script>
+    // Progress bar
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercent = (scrollTop / docHeight) * 100;
+      document.querySelector('.progress-bar').style.width = scrollPercent + '%';
+    });
+
+    // Nav scroll state
+    window.addEventListener('scroll', () => {
+      const nav = document.querySelector('nav');
+      if (window.scrollY > 50) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+    });
+
+    // IntersectionObserver for image fade-in and heading reveal
+    const scrollRevealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          scrollRevealObserver.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.1
+    });
+
+    document.querySelectorAll('.case-img-full').forEach(img => {
+      scrollRevealObserver.observe(img);
+    });
+
+    document.querySelectorAll('.case-body h2, .case-body h3').forEach(heading => {
+      scrollRevealObserver.observe(heading);
+    });
+  </script>
+</body>
+</html>

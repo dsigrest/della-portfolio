@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Context Preview — AI Pipeline</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>
+    /* Override: portfolio JS not loaded, so force wrapper visible */
+    .case-img-full { opacity: 1 !important; transform: none !important; }
+
+    .ctx-label { position: fixed; top: 16px; left: 16px; background: rgba(127,181,176,0.15); border: 1px solid rgba(127,181,176,0.3); border-radius: 6px; padding: 5px 10px; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); z-index: 100; }
+
+    /* Pipeline inline */
+    .ai-pipeline { width: 100%; overflow-x: auto; padding: 0 0 8px; }
+    .ai-pipeline__gov { display: flex; gap: 48px; justify-content: center; margin-bottom: 14px; min-width: 600px; padding: 0 40px; }
+    .ai-pipeline__gov-bar {
+      flex: 1; max-width: 240px;
+      background: rgba(127, 181, 176, 0.06);
+      border: 1px solid rgba(127, 181, 176, 0.12);
+      border-radius: 6px; padding: 8px 16px; text-align: center; opacity: 0;
+    }
+    .ai-pipeline__gov-label {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--accent); opacity: 0.8;
+    }
+    .ai-pipeline__flow { display: flex; align-items: flex-start; gap: 0; min-width: 600px; }
+    .ai-pipeline__stage {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      text-align: center; opacity: 0; padding: 0 2px;
+    }
+    .ai-pipeline__icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      background: rgba(16, 18, 28, 0.7);
+      border: 1px solid rgba(224, 223, 228, 0.08);
+      box-shadow: inset 0 1px 0 0 rgba(224, 223, 228, 0.04);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px; margin-bottom: 8px;
+    }
+    .ai-pipeline__num {
+      font-family: var(--font-mono); font-size: 10px; font-weight: 400;
+      color: var(--accent); letter-spacing: 0.04em; margin-bottom: 2px;
+    }
+    .ai-pipeline__name { font-size: 13px; font-weight: 600; letter-spacing: -0.01em; color: var(--text-primary); margin-bottom: 3px; }
+    .ai-pipeline__desc { font-size: 11px; font-weight: 400; color: var(--text-secondary); line-height: 1.35; max-width: 110px; }
+    .ai-pipeline__arrow {
+      flex: 0 0 20px; display: flex; align-items: center; justify-content: center;
+      opacity: 0; margin-top: 18px;
+    }
+    .ai-pipeline__arrow svg { width: 20px; height: 10px; }
+    .ai-pipeline__arrow-line { stroke: rgba(224, 223, 228, 0.12); stroke-width: 1; }
+    .ai-pipeline__arrow-head { fill: rgba(224, 223, 228, 0.2); }
+
+    .ai-pipeline__feedback {
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px; margin-top: 16px; opacity: 0;
+    }
+    .ai-pipeline__feedback-text { font-size: 11px; font-weight: 400; color: var(--text-tertiary); }
+    .ai-pipeline__feedback-arrow { color: var(--text-tertiary); }
+
+    .ai-pipeline.is-active .ai-pipeline__stage { animation: stageIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+    .ai-pipeline.is-active .ai-pipeline__stage:nth-child(1) { animation-delay: 0ms; }
+    .ai-pipeline.is-active .ai-pipeline__stage:nth-child(3) { animation-delay: 120ms; }
+    .ai-pipeline.is-active .ai-pipeline__stage:nth-child(5) { animation-delay: 240ms; }
+    .ai-pipeline.is-active .ai-pipeline__stage:nth-child(7) { animation-delay: 360ms; }
+    .ai-pipeline.is-active .ai-pipeline__stage:nth-child(9) { animation-delay: 480ms; }
+    .ai-pipeline.is-active .ai-pipeline__arrow { animation: fadeIn 0.3s ease-out forwards; }
+    .ai-pipeline.is-active .ai-pipeline__arrow:nth-child(2) { animation-delay: 60ms; }
+    .ai-pipeline.is-active .ai-pipeline__arrow:nth-child(4) { animation-delay: 180ms; }
+    .ai-pipeline.is-active .ai-pipeline__arrow:nth-child(6) { animation-delay: 300ms; }
+    .ai-pipeline.is-active .ai-pipeline__arrow:nth-child(8) { animation-delay: 420ms; }
+    .ai-pipeline.is-active .ai-pipeline__gov-bar { animation: govIn 0.5s ease-out forwards; }
+    .ai-pipeline.is-active .ai-pipeline__gov-bar:first-child { animation-delay: 250ms; }
+    .ai-pipeline.is-active .ai-pipeline__gov-bar:last-child { animation-delay: 400ms; }
+    .ai-pipeline.is-active .ai-pipeline__feedback { animation: fadeIn 0.4s ease-out 600ms forwards; }
+
+    @keyframes stageIn { from { opacity: 0; transform: translateY(8px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes govIn { from { opacity: 0; transform: scaleX(0.6); } to { opacity: 1; transform: scaleX(1); } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ai-pipeline__stage, .ai-pipeline__arrow, .ai-pipeline__gov-bar, .ai-pipeline__feedback { opacity: 1 !important; animation: none !important; transform: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="ctx-label">In-page context preview</div>
+  <main id="main">
+    <section class="case-body">
+      <h2>Prompt Design Workflow</h2>
+
+      <p>Previously, prompt iteration was <strong>one engineer, vibes-based.</strong> I introduced a structured evaluation matrix &mdash; multiple prompts tested simultaneously against live data from Reddit&rsquo;s highest-traffic SEO verticals, scored on defined parameters: summary quality, source relevance, synthesis depth, transparency, community diversity, post engagement.</p>
+
+      <p><strong>My core contribution was translating subjective design criteria into rubrics engineers could operate against.</strong> I partnered with content design to define the evaluation dimensions, then facilitated scoring sessions where our cross-functional team&mdash;design, engineering, product&mdash;rated outputs against the rubric directly.</p>
+
+      <div class="case-img-full">
+        <div class="ai-pipeline" id="pipeline">
+          <div class="ai-pipeline__gov">
+            <div class="ai-pipeline__gov-bar">
+              <span class="ai-pipeline__gov-label">Transparency Principles</span>
+            </div>
+            <div class="ai-pipeline__gov-bar">
+              <span class="ai-pipeline__gov-label">Quality Threshold</span>
+            </div>
+          </div>
+          <div class="ai-pipeline__flow">
+            <div class="ai-pipeline__stage">
+              <div class="ai-pipeline__icon">◇</div>
+              <span class="ai-pipeline__num">01</span>
+              <span class="ai-pipeline__name">Source</span>
+              <span class="ai-pipeline__desc">Threads scored for relevance</span>
+            </div>
+            <div class="ai-pipeline__arrow"><svg viewBox="0 0 20 10"><line class="ai-pipeline__arrow-line" x1="0" y1="5" x2="14" y2="5"/><polygon class="ai-pipeline__arrow-head" points="13,2 20,5 13,8"/></svg></div>
+            <div class="ai-pipeline__stage">
+              <div class="ai-pipeline__icon">⊕</div>
+              <span class="ai-pipeline__num">02</span>
+              <span class="ai-pipeline__name">Synthesize</span>
+              <span class="ai-pipeline__desc">LLM combines — SEO separated</span>
+            </div>
+            <div class="ai-pipeline__arrow"><svg viewBox="0 0 20 10"><line class="ai-pipeline__arrow-line" x1="0" y1="5" x2="14" y2="5"/><polygon class="ai-pipeline__arrow-head" points="13,2 20,5 13,8"/></svg></div>
+            <div class="ai-pipeline__stage">
+              <div class="ai-pipeline__icon">◈</div>
+              <span class="ai-pipeline__num">03</span>
+              <span class="ai-pipeline__name">Attribute</span>
+              <span class="ai-pipeline__desc">Every claim links to&nbsp;source</span>
+            </div>
+            <div class="ai-pipeline__arrow"><svg viewBox="0 0 20 10"><line class="ai-pipeline__arrow-line" x1="0" y1="5" x2="14" y2="5"/><polygon class="ai-pipeline__arrow-head" points="13,2 20,5 13,8"/></svg></div>
+            <div class="ai-pipeline__stage">
+              <div class="ai-pipeline__icon">▣</div>
+              <span class="ai-pipeline__num">04</span>
+              <span class="ai-pipeline__name">Display</span>
+              <span class="ai-pipeline__desc">Reusable AI component&nbsp;library</span>
+            </div>
+            <div class="ai-pipeline__arrow"><svg viewBox="0 0 20 10"><line class="ai-pipeline__arrow-line" x1="0" y1="5" x2="14" y2="5"/><polygon class="ai-pipeline__arrow-head" points="13,2 20,5 13,8"/></svg></div>
+            <div class="ai-pipeline__stage">
+              <div class="ai-pipeline__icon">◎</div>
+              <span class="ai-pipeline__num">05</span>
+              <span class="ai-pipeline__name">User Sees</span>
+              <span class="ai-pipeline__desc">Below threshold? Doesn't&nbsp;appear.</span>
+            </div>
+          </div>
+          <div class="ai-pipeline__feedback">
+            <span class="ai-pipeline__feedback-arrow">↩</span>
+            <span class="ai-pipeline__feedback-text">User flags feed back into prompt rubric</span>
+          </div>
+        </div>
+      </div>
+
+      <p>Post-processing stayed minimal. Heavy backend cleanup masked the nondeterministic behavior the system needed to handle honestly.</p>
+
+      <h2>Failure States &amp; User Control</h2>
+
+      <p>Below-threshold quality meant the summary didn&rsquo;t appear &mdash; rather than showing users something unreliable. Users could flag responses, suggest improvements, or collapse the summary entirely.</p>
+    </section>
+  </main>
+
+  <script>
+  (function() {
+    var d = document.getElementById('pipeline');
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) { d.classList.add('is-active'); return; }
+    var io = new IntersectionObserver(function(e) {
+      if (!e[0].isIntersecting) return;
+      d.classList.add('is-active'); io.disconnect();
+    }, { threshold: 0.2 });
+    io.observe(d);
+  })();
+  </script>
+</body>
+</html>

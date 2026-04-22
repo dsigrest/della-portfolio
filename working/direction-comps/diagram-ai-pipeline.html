@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI/KLP — Governance Pipeline (v2)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0a0c16; --text-primary: #e0dfe4;
+      --text-secondary: rgba(224, 223, 228, 0.6);
+      --text-tertiary: rgba(224, 223, 228, 0.4);
+      --accent: #7fb5b0;
+    }
+    html, body { background: var(--bg); color: var(--text-primary); font-family: 'Inter', -apple-system, sans-serif; min-height: 100vh; }
+    body { display: flex; align-items: center; justify-content: center; padding: 60px 20px; }
+    .label { position: fixed; top: 20px; left: 20px; background: rgba(16,18,28,0.85); backdrop-filter: blur(12px); border: 1px solid rgba(127,181,176,0.2); border-radius: 6px; padding: 6px 12px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); z-index: 100; }
+
+    .pipeline-card {
+      width: 100%; max-width: 820px;
+      background: rgba(16, 18, 28, 0.55);
+      -webkit-backdrop-filter: blur(16px) saturate(1.2);
+      backdrop-filter: blur(16px) saturate(1.2);
+      border: 1px solid rgba(224, 223, 228, 0.08);
+      border-radius: 12px; padding: 36px 40px 40px;
+      box-shadow: inset 0 1px 0 0 rgba(224, 223, 228, 0.05);
+    }
+    .pipeline-card__eyebrow {
+      font-size: 10px; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 8px;
+    }
+    .pipeline-card__title {
+      font-size: 20px; font-weight: 700; letter-spacing: -0.02em;
+      color: var(--text-primary); margin-bottom: 6px;
+    }
+    .pipeline-card__subtitle {
+      font-size: 13px; font-weight: 400; color: var(--text-secondary);
+      line-height: 1.5; margin-bottom: 36px; max-width: 560px;
+    }
+
+    /* Pipeline layout */
+    .pipeline-area { position: relative; overflow-x: auto; padding: 0 0 8px; }
+    .pipeline { display: flex; align-items: flex-end; gap: 0; min-width: 700px; position: relative; }
+
+    /* Governance bars that span ABOVE stages */
+    .gov-bars { position: relative; min-width: 700px; margin-bottom: 12px; height: 36px; }
+    .gov-bar {
+      position: absolute; top: 0; height: 100%;
+      background: rgba(127, 181, 176, 0.06);
+      border: 1px solid rgba(127, 181, 176, 0.12);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0;
+    }
+    .gov-bar__label {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--accent); opacity: 0.8;
+      white-space: nowrap;
+    }
+    /* Transparency gate spans from Synthesize through Attribute (stages 2-3, ~28% to ~58%) */
+    .gov-bar--transparency { left: 22%; width: 30%; }
+    /* Quality threshold spans from Display to User (stages 4-5, ~58% to ~92%) */
+    .gov-bar--quality { left: 52%; width: 30%; }
+
+    /* Dashed drop lines from gov bars to flow */
+    .gov-bar::before {
+      content: ''; position: absolute; bottom: -12px; left: 50%;
+      width: 1px; height: 12px;
+      background: repeating-linear-gradient(to bottom, var(--accent) 0px, var(--accent) 3px, transparent 3px, transparent 6px);
+      opacity: 0.3;
+    }
+
+    /* Stages */
+    .stage {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      text-align: center; position: relative; z-index: 2; opacity: 0;
+      padding: 0 4px;
+    }
+    .stage__icon {
+      width: 48px; height: 48px; border-radius: 10px;
+      background: rgba(16, 18, 28, 0.7);
+      border: 1px solid rgba(224, 223, 228, 0.08);
+      box-shadow: inset 0 1px 0 0 rgba(224, 223, 228, 0.04);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; margin-bottom: 10px;
+    }
+    .stage__num {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 400;
+      color: var(--accent); letter-spacing: 0.04em; margin-bottom: 3px;
+    }
+    .stage__name { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; color: var(--text-primary); margin-bottom: 4px; }
+    .stage__desc { font-size: 11px; font-weight: 400; color: var(--text-secondary); line-height: 1.4; max-width: 120px; }
+
+    /* Arrow connectors between stages */
+    .arrow {
+      flex: 0 0 28px; display: flex; align-items: center; justify-content: center;
+      z-index: 1; opacity: 0; margin-bottom: 60px; /* align with icon center */
+    }
+    .arrow svg { width: 28px; height: 12px; }
+    .arrow__line { stroke: rgba(224, 223, 228, 0.12); stroke-width: 1; }
+    .arrow__head { fill: rgba(224, 223, 228, 0.2); }
+
+    /* Gradient flow line behind stages */
+    .flow-line {
+      position: absolute; bottom: 82px; left: 24px; right: 24px; height: 1px;
+      background: linear-gradient(90deg,
+        rgba(122,164,188,0.12) 0%, rgba(160,190,180,0.12) 33%,
+        rgba(208,204,196,0.12) 66%, rgba(196,184,152,0.12) 100%
+      );
+      z-index: 0;
+    }
+
+    /* Feedback loop arrow at bottom */
+    .feedback {
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px; margin-top: 24px; padding-top: 16px;
+      border-top: 1px solid rgba(224, 223, 228, 0.06);
+      opacity: 0;
+    }
+    .feedback__arrow { color: var(--text-tertiary); font-size: 14px; }
+    .feedback__text {
+      font-size: 11px; font-weight: 500; color: var(--text-tertiary);
+      letter-spacing: 0.02em;
+    }
+
+    /* Animations */
+    .pipeline-card.is-active .stage {
+      animation: stageIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    .pipeline-card.is-active .stage:nth-child(1) { animation-delay: 0ms; }
+    .pipeline-card.is-active .stage:nth-child(3) { animation-delay: 140ms; }
+    .pipeline-card.is-active .stage:nth-child(5) { animation-delay: 280ms; }
+    .pipeline-card.is-active .stage:nth-child(7) { animation-delay: 420ms; }
+    .pipeline-card.is-active .stage:nth-child(9) { animation-delay: 560ms; }
+
+    .pipeline-card.is-active .arrow { animation: fadeIn 0.3s ease-out forwards; }
+    .pipeline-card.is-active .arrow:nth-child(2) { animation-delay: 80ms; }
+    .pipeline-card.is-active .arrow:nth-child(4) { animation-delay: 220ms; }
+    .pipeline-card.is-active .arrow:nth-child(6) { animation-delay: 360ms; }
+    .pipeline-card.is-active .arrow:nth-child(8) { animation-delay: 500ms; }
+
+    .pipeline-card.is-active .gov-bar {
+      animation: govIn 0.5s ease-out forwards;
+    }
+    .pipeline-card.is-active .gov-bar--transparency { animation-delay: 300ms; }
+    .pipeline-card.is-active .gov-bar--quality { animation-delay: 500ms; }
+
+    .pipeline-card.is-active .feedback { animation: fadeIn 0.4s ease-out 700ms forwards; }
+
+    @keyframes stageIn { from { opacity: 0; transform: translateY(10px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes govIn { from { opacity: 0; transform: scaleX(0.5); } to { opacity: 1; transform: scaleX(1); } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .stage, .arrow, .gov-bar, .feedback { opacity: 1 !important; animation: none !important; transform: none !important; }
+    }
+    @media (max-width: 600px) {
+      .pipeline-card { padding: 24px 20px 28px; }
+      .stage__icon { width: 40px; height: 40px; font-size: 15px; }
+      .stage__name { font-size: 12px; }
+      .stage__desc { font-size: 10px; max-width: 100px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="label">AI/KLP — Governance Pipeline</div>
+
+  <div class="pipeline-card" id="diagram">
+    <div class="pipeline-card__eyebrow">Content Governance</div>
+    <div class="pipeline-card__title">From SEO traffic to trusted AI&nbsp;answers</div>
+    <div class="pipeline-card__subtitle">No precedent for AI-generated content at Reddit. I built the governance model that defined how LLMs would appear, sound, and behave — shipped iteratively over six&nbsp;months.</div>
+
+    <div class="pipeline-area">
+      <!-- Governance bars ABOVE the flow -->
+      <div class="gov-bars">
+        <div class="gov-bar gov-bar--transparency">
+          <span class="gov-bar__label">Transparency Principles</span>
+        </div>
+        <div class="gov-bar gov-bar--quality">
+          <span class="gov-bar__label">Quality Threshold</span>
+        </div>
+      </div>
+
+      <!-- Stage flow -->
+      <div class="pipeline">
+        <div class="flow-line"></div>
+
+        <div class="stage">
+          <div class="stage__icon">◇</div>
+          <span class="stage__num">01</span>
+          <span class="stage__name">Source</span>
+          <span class="stage__desc">Reddit threads scored for relevance and&nbsp;coverage</span>
+        </div>
+
+        <div class="arrow">
+          <svg viewBox="0 0 28 12"><line class="arrow__line" x1="0" y1="6" x2="22" y2="6"/><polygon class="arrow__head" points="20,3 28,6 20,9"/></svg>
+        </div>
+
+        <div class="stage">
+          <div class="stage__icon">⊕</div>
+          <span class="stage__num">02</span>
+          <span class="stage__name">Synthesize</span>
+          <span class="stage__desc">LLM combines sources — SEO separated from&nbsp;summary</span>
+        </div>
+
+        <div class="arrow">
+          <svg viewBox="0 0 28 12"><line class="arrow__line" x1="0" y1="6" x2="22" y2="6"/><polygon class="arrow__head" points="20,3 28,6 20,9"/></svg>
+        </div>
+
+        <div class="stage">
+          <div class="stage__icon">◈</div>
+          <span class="stage__num">03</span>
+          <span class="stage__name">Attribute</span>
+          <span class="stage__desc">Every claim links to original source&nbsp;thread</span>
+        </div>
+
+        <div class="arrow">
+          <svg viewBox="0 0 28 12"><line class="arrow__line" x1="0" y1="6" x2="22" y2="6"/><polygon class="arrow__head" points="20,3 28,6 20,9"/></svg>
+        </div>
+
+        <div class="stage">
+          <div class="stage__icon">▣</div>
+          <span class="stage__num">04</span>
+          <span class="stage__name">Display</span>
+          <span class="stage__desc">Reusable component library with AI&nbsp;identification</span>
+        </div>
+
+        <div class="arrow">
+          <svg viewBox="0 0 28 12"><line class="arrow__line" x1="0" y1="6" x2="22" y2="6"/><polygon class="arrow__head" points="20,3 28,6 20,9"/></svg>
+        </div>
+
+        <div class="stage">
+          <div class="stage__icon">◎</div>
+          <span class="stage__num">05</span>
+          <span class="stage__name">User Sees</span>
+          <span class="stage__desc">Below threshold? Summary doesn't&nbsp;appear.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="feedback">
+      <span class="feedback__arrow">↩</span>
+      <span class="feedback__text">User flags and team evaluation feed back into prompt rubric — system improves through&nbsp;usage</span>
+    </div>
+  </div>
+
+  <script>
+  (function() {
+    var d = document.getElementById('diagram');
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) { d.classList.add('is-active'); return; }
+    var io = new IntersectionObserver(function(e) {
+      if (!e[0].isIntersecting) return;
+      d.classList.add('is-active');
+      io.disconnect();
+    }, { threshold: 0.2 });
+    io.observe(d);
+  })();
+  </script>
+</body>
+</html>

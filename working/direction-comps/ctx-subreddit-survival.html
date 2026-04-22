@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Context Preview — Subreddit Survival</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <style>
+    /* Override: portfolio JS not loaded, so force wrapper visible */
+    .case-img-full { opacity: 1 !important; transform: none !important; }
+
+    .ctx-label { position: fixed; top: 16px; left: 16px; background: rgba(127,181,176,0.15); border: 1px solid rgba(127,181,176,0.3); border-radius: 6px; padding: 5px 10px; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); z-index: 100; }
+
+    /* Survival chart — cropped to 28 days, compressed height */
+    .survival-chart {
+      width: 100%; max-width: 640px; margin: 0 auto;
+      background: rgba(16, 18, 28, 0.55);
+      -webkit-backdrop-filter: blur(16px) saturate(1.2);
+      backdrop-filter: blur(16px) saturate(1.2);
+      border: 1px solid rgba(224, 223, 228, 0.08);
+      border-radius: 8px; padding: 24px 28px 20px;
+      box-shadow: inset 0 1px 0 0 rgba(224, 223, 228, 0.05);
+    }
+    .survival-chart__area { position: relative; width: 100%; }
+    .survival-chart__area svg { width: 100%; height: auto; display: block; overflow: visible; }
+    .survival-chart .axis-label {
+      font-size: 10px; font-weight: 500; letter-spacing: 0.06em;
+      text-transform: uppercase; fill: var(--text-tertiary); font-family: 'Inter', sans-serif;
+    }
+    .survival-chart .tick-label {
+      font-size: 11px; font-weight: 400; fill: var(--text-tertiary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .survival-chart .grid-line { stroke: rgba(224, 223, 228, 0.04); stroke-width: 0.5; }
+
+    .survival-chart .curve-path { stroke-dasharray: 800; stroke-dashoffset: 800; }
+    .survival-chart .area-fill { opacity: 0; }
+
+    .survival-chart.is-active .curve-path { animation: drawLine 1.2s ease-out forwards; }
+    .survival-chart.is-active .curve-path--after { animation-delay: 300ms; }
+    .survival-chart.is-active .area-fill { animation: fadeIn 0.6s ease-out 0.6s forwards; }
+    .survival-chart.is-active .area-fill--after { animation-delay: 0.8s; }
+    .survival-chart.is-active .callout { animation: fadeIn 0.4s ease-out 1.2s forwards; }
+
+    @keyframes drawLine { to { stroke-dashoffset: 0; } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* Callout */
+    .survival-chart__callout {
+      position: absolute; opacity: 0;
+      background: rgba(16, 18, 28, 0.85); backdrop-filter: blur(12px);
+      border: 1px solid rgba(127,181,176,0.2); border-radius: 6px;
+      padding: 6px 10px; text-align: center;
+    }
+    .survival-chart__callout-num {
+      font-size: 16px; font-weight: 700; color: var(--accent);
+      letter-spacing: -0.02em; font-variant-numeric: tabular-nums;
+    }
+    .survival-chart__callout-label {
+      font-size: 9px; font-weight: 500; letter-spacing: 0.04em;
+      text-transform: uppercase; color: var(--text-tertiary);
+    }
+    .survival-chart__gap {
+      position: absolute; opacity: 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; font-weight: 400; color: var(--accent);
+    }
+
+    /* Legend */
+    .survival-chart__legend { display: flex; gap: 20px; margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(224, 223, 228, 0.06); }
+    .survival-chart__legend-item { display: flex; align-items: center; gap: 6px; }
+    .survival-chart__legend-swatch { width: 10px; height: 2px; border-radius: 1px; }
+    .survival-chart__legend-swatch--before { background: #7aa4bc; }
+    .survival-chart__legend-swatch--after { background: #c4b898; }
+    .survival-chart__legend-text { font-size: 11px; font-weight: 400; color: var(--text-secondary); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .survival-chart .curve-path { stroke-dashoffset: 0 !important; animation: none !important; }
+      .survival-chart .area-fill, .survival-chart__callout, .survival-chart__gap { opacity: 1 !important; animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="ctx-label">In-page context preview</div>
+  <main id="main">
+    <section class="case-body">
+      <p>Reddit&rsquo;s new communities were failing silently. <strong>90% of subreddits died within 21 days</strong>&mdash;no content, no members, no path forward. The platform had only ever invested in large, established communities&mdash;and with Reddit scaling from 101M to 121M daily active users, new community health was a direct growth lever.</p>
+
+      <p>The Subreddit Success team was stood up to fix this. A director of product brought me in as the sole designer&mdash;no PM, no EM, 15&ndash;16 engineers already allocated and burning runway.</p>
+
+      <div class="case-img-full">
+        <!-- DIAGRAM -->
+        <div class="survival-chart" id="chart">
+          <div class="survival-chart__area">
+            <!--
+              Cropped to 28 days. Compressed height (viewBox 220px tall).
+              Y-axis: 0-100%. X-axis: 0d, 7d, 14d, 21d, 28d.
+              BEFORE: 100% → steep drop → ~10% at day 21 → ~8% at day 28.
+              AFTER:  100% → steep drop → ~17% at day 21 → ~15% at day 28.
+              Chart area: x 50-600, y 20-200 (180px usable height).
+              10% = y 182. 17% = y 169.4. Gap at day 21 ≈ 12.6px.
+            -->
+            <svg viewBox="0 0 620 230" preserveAspectRatio="xMidYMid meet">
+              <defs>
+                <linearGradient id="bGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="rgba(122,164,188,0.12)"/>
+                  <stop offset="100%" stop-color="rgba(122,164,188,0)"/>
+                </linearGradient>
+                <linearGradient id="aGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="rgba(196,184,152,0.12)"/>
+                  <stop offset="100%" stop-color="rgba(196,184,152,0)"/>
+                </linearGradient>
+              </defs>
+
+              <!-- Grid -->
+              <line class="grid-line" x1="50" y1="20" x2="600" y2="20"/>
+              <line class="grid-line" x1="50" y1="65" x2="600" y2="65"/>
+              <line class="grid-line" x1="50" y1="110" x2="600" y2="110"/>
+              <line class="grid-line" x1="50" y1="155" x2="600" y2="155"/>
+              <line class="grid-line" x1="50" y1="200" x2="600" y2="200"/>
+
+              <!-- Y -->
+              <text class="tick-label" x="44" y="24" text-anchor="end">100%</text>
+              <text class="tick-label" x="44" y="69" text-anchor="end">75%</text>
+              <text class="tick-label" x="44" y="114" text-anchor="end">50%</text>
+              <text class="tick-label" x="44" y="159" text-anchor="end">25%</text>
+              <text class="tick-label" x="44" y="204" text-anchor="end">0%</text>
+
+              <!-- X: 0, 7, 14, 21, 28 days. Span = 550px / 4 = 137.5 per week -->
+              <text class="tick-label" x="50" y="218" text-anchor="middle">0d</text>
+              <text class="tick-label" x="187" y="218" text-anchor="middle">7d</text>
+              <text class="tick-label" x="325" y="218" text-anchor="middle">14d</text>
+              <text class="tick-label" x="462" y="218" text-anchor="middle">21d</text>
+              <text class="tick-label" x="600" y="218" text-anchor="middle">28d</text>
+
+              <!-- 21-day marker -->
+              <line x1="462" y1="20" x2="462" y2="200" stroke="var(--accent)" stroke-width="0.5" stroke-dasharray="4,3" opacity="0.2"/>
+
+              <!--
+                BEFORE curve: 100%(y20) → steep drop → 10%(y182) at day21 → 8%(y186) at day28
+                Day 7 approx 40% → y=128
+              -->
+              <path class="area-fill" d="M 50 20 Q 100 28, 187 128 Q 260 170, 325 178 Q 390 182, 462 182 Q 530 184, 600 186 L 600 200 L 50 200 Z"
+                    fill="url(#bGrad)"/>
+              <path class="curve-path" d="M 50 20 Q 100 28, 187 128 Q 260 170, 325 178 Q 390 182, 462 182 Q 530 184, 600 186"
+                    fill="none" stroke="#7aa4bc" stroke-width="2" stroke-linecap="round"/>
+
+              <!--
+                AFTER curve: 100%(y20) → less steep → 17%(y169) at day21 → 15%(y173) at day28
+                Day 7 approx 47% → y=115
+              -->
+              <path class="area-fill area-fill--after" d="M 50 20 Q 100 32, 187 115 Q 260 155, 325 164 Q 390 168, 462 169 Q 530 171, 600 173 L 600 200 L 50 200 Z"
+                    fill="url(#aGrad)"/>
+              <path class="curve-path curve-path--after" d="M 50 20 Q 100 32, 187 115 Q 260 155, 325 164 Q 390 168, 462 169 Q 530 171, 600 173"
+                    fill="none" stroke="#c4b898" stroke-width="2" stroke-linecap="round"/>
+
+              <!-- Data dots at day 21 -->
+              <circle cx="462" cy="182" r="3" fill="#7aa4bc" opacity="0.8" class="callout"/>
+              <circle cx="462" cy="169" r="3" fill="#c4b898" opacity="0.8" class="callout"/>
+            </svg>
+
+            <!-- Callouts -->
+            <div class="survival-chart__callout callout" style="top: 6%; right: 10%;">
+              <div class="survival-chart__callout-num">~7pp</div>
+              <div class="survival-chart__callout-label">Survival improvement at day&nbsp;21</div>
+            </div>
+          </div>
+
+          <div class="survival-chart__legend">
+            <div class="survival-chart__legend-item">
+              <span class="survival-chart__legend-swatch survival-chart__legend-swatch--before"></span>
+              <span class="survival-chart__legend-text">Before — no lifecycle tooling</span>
+            </div>
+            <div class="survival-chart__legend-item">
+              <span class="survival-chart__legend-swatch survival-chart__legend-swatch--after"></span>
+              <span class="survival-chart__legend-text">After — creation quality + framework</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2>Raising the Floor on Creation</h2>
+
+      <p>The existing creation flow collected a subreddit name and nothing else&mdash;the assumption being any friction would cause abandonment. <strong>The reality: low friction meant low intent.</strong></p>
+    </section>
+  </main>
+
+  <script>
+  (function() {
+    var c = document.getElementById('chart');
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) { c.classList.add('is-active'); return; }
+    var io = new IntersectionObserver(function(e) {
+      if (!e[0].isIntersecting) return;
+      c.classList.add('is-active'); io.disconnect();
+    }, { threshold: 0.2 });
+    io.observe(c);
+  })();
+  </script>
+</body>
+</html>

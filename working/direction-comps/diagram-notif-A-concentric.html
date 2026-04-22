@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifications — Option A: Concentric Filter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0a0c16; --text-primary: #e0dfe4;
+      --text-secondary: rgba(224, 223, 228, 0.6);
+      --text-tertiary: rgba(224, 223, 228, 0.4);
+      --accent: #7fb5b0;
+      --ring-cool: #7aa4bc; --ring-mid: #a0beb4;
+      --ring-warm: #d0ccc4; --ring-oat: #c4b898;
+    }
+    html, body { background: var(--bg); color: var(--text-primary); font-family: 'Inter', -apple-system, sans-serif; min-height: 100vh; }
+    body { display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+    .label { position: fixed; top: 20px; left: 20px; background: rgba(16,18,28,0.85); backdrop-filter: blur(12px); border: 1px solid rgba(127,181,176,0.2); border-radius: 6px; padding: 6px 12px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); z-index: 100; }
+
+    .diagram { position: relative; width: 100%; max-width: 640px; aspect-ratio: 1 / 1; }
+    .diagram svg { width: 100%; height: 100%; overflow: visible; }
+
+    /* Labels */
+    .ring-label { position: absolute; display: flex; flex-direction: column; gap: 2px; opacity: 0; }
+    .ring-label__title { font-size: 13px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.01em; }
+    .ring-label__desc { font-size: 11px; font-weight: 400; color: var(--text-secondary); line-height: 1.4; max-width: 160px; }
+    .ring-label__vol { font-size: 10px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); margin-top: 2px; }
+
+    .ring-label--outer { top: 8%; right: 4%; text-align: right; }
+    .ring-label--outer .ring-label__desc { margin-left: auto; }
+    .ring-label--mid { bottom: 18%; left: 2%; }
+    .ring-label--inner { top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+    .ring-label--inner .ring-label__desc { margin: 0 auto; }
+
+    /* Center focus metric */
+    .focus-metric { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; opacity: 0; }
+    .focus-metric__num { font-size: 36px; font-weight: 700; letter-spacing: -0.03em; color: var(--accent); line-height: 1; font-variant-numeric: tabular-nums; }
+    .focus-metric__label { font-size: 10px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); margin-top: 4px; }
+
+    .diagram.is-active .ring-label { animation: fadeSlideIn 0.5s ease-out forwards; }
+    .diagram.is-active .ring-label--outer { animation-delay: 400ms; }
+    .diagram.is-active .ring-label--mid { animation-delay: 600ms; }
+    .diagram.is-active .focus-metric { animation: fadeSlideIn 0.6s ease-out 800ms forwards; }
+
+    @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .ring-label--inner { animation: none !important; }
+    .focus-metric { transform: translate(-50%, -50%); }
+    @keyframes focusIn { from { opacity: 0; } to { opacity: 1; } }
+    .diagram.is-active .focus-metric { animation: focusIn 0.6s ease-out 800ms forwards; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ring-label, .focus-metric { opacity: 1 !important; animation: none !important; }
+    }
+    @media (max-width: 480px) {
+      .ring-label__title { font-size: 12px; }
+      .ring-label__desc { font-size: 10px; max-width: 120px; }
+      .focus-metric__num { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="label">Option A — Concentric Filter</div>
+
+  <div class="diagram" id="diagram">
+    <svg viewBox="0 0 520 520">
+      <defs>
+        <!-- Outer ring gradient — cool blue, low opacity -->
+        <radialGradient id="outerFill">
+          <stop offset="0%" stop-color="rgba(122,164,188,0)"/>
+          <stop offset="60%" stop-color="rgba(122,164,188,0.03)"/>
+          <stop offset="100%" stop-color="rgba(122,164,188,0.08)"/>
+        </radialGradient>
+        <!-- Mid ring gradient — teal, slightly more visible -->
+        <radialGradient id="midFill">
+          <stop offset="0%" stop-color="rgba(160,190,180,0)"/>
+          <stop offset="50%" stop-color="rgba(160,190,180,0.04)"/>
+          <stop offset="100%" stop-color="rgba(160,190,180,0.12)"/>
+        </radialGradient>
+        <!-- Inner ring gradient — warm, most visible -->
+        <radialGradient id="innerFill">
+          <stop offset="0%" stop-color="rgba(208,204,196,0)"/>
+          <stop offset="40%" stop-color="rgba(208,204,196,0.06)"/>
+          <stop offset="100%" stop-color="rgba(208,204,196,0.18)"/>
+        </radialGradient>
+        <!-- Core glow -->
+        <radialGradient id="coreFill">
+          <stop offset="0%" stop-color="rgba(255,250,240,0.6)"/>
+          <stop offset="50%" stop-color="rgba(240,232,216,0.25)"/>
+          <stop offset="100%" stop-color="rgba(224,216,196,0)"/>
+        </radialGradient>
+        <filter id="coreBlur" x="-100%" y="-100%" width="300%" height="300%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="4"/>
+        </filter>
+        <filter id="ringBlur" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="1.5"/>
+        </filter>
+      </defs>
+
+      <!-- Outer ring: Discovery / Recommendations -->
+      <circle cx="260" cy="260" r="230" fill="url(#outerFill)" stroke="rgba(122,164,188,0.12)" stroke-width="1" opacity="0">
+        <animate attributeName="opacity" from="0" to="1" dur="0.6s" begin="0.2s" fill="freeze"/>
+      </circle>
+
+      <!-- Mid ring: Following / Opt-ins -->
+      <circle cx="260" cy="260" r="155" fill="url(#midFill)" stroke="rgba(160,190,180,0.15)" stroke-width="1" opacity="0">
+        <animate attributeName="opacity" from="0" to="1" dur="0.6s" begin="0.4s" fill="freeze"/>
+      </circle>
+
+      <!-- Inner ring: Conversation / Direct -->
+      <circle cx="260" cy="260" r="85" fill="url(#innerFill)" stroke="rgba(208,204,196,0.18)" stroke-width="1" opacity="0">
+        <animate attributeName="opacity" from="0" to="1" dur="0.6s" begin="0.6s" fill="freeze"/>
+      </circle>
+
+      <!-- Core hot spot -->
+      <circle cx="260" cy="260" r="8" fill="url(#coreFill)" filter="url(#coreBlur)" opacity="0">
+        <animate attributeName="opacity" from="0" to="1" dur="0.8s" begin="0.9s" fill="freeze"/>
+      </circle>
+
+      <!-- Dashed guide lines connecting rings to labels -->
+      <line x1="370" y1="110" x2="420" y2="80" stroke="rgba(122,164,188,0.15)" stroke-width="0.5" stroke-dasharray="3,3" opacity="0">
+        <animate attributeName="opacity" from="0" to="1" dur="0.4s" begin="0.5s" fill="freeze"/>
+      </line>
+      <line x1="140" y1="340" x2="90" y2="370" stroke="rgba(160,190,180,0.15)" stroke-width="0.5" stroke-dasharray="3,3" opacity="0">
+        <animate attributeName="opacity" from="0" to="1" dur="0.4s" begin="0.7s" fill="freeze"/>
+      </line>
+    </svg>
+
+    <div class="ring-label ring-label--outer">
+      <span class="ring-label__title">Discovery</span>
+      <span class="ring-label__desc">Updates that highlight Reddit's&nbsp;value</span>
+      <span class="ring-label__vol">Highest volume</span>
+    </div>
+
+    <div class="ring-label ring-label--mid">
+      <span class="ring-label__title">Following</span>
+      <span class="ring-label__desc">Updates the core user opts&nbsp;into</span>
+      <span class="ring-label__vol">Medium volume</span>
+    </div>
+
+    <div class="focus-metric">
+      <div class="focus-metric__num">Conversation</div>
+      <div class="focus-metric__label">Direct user interactions · Highest&nbsp;activity</div>
+    </div>
+  </div>
+
+  <script>
+  (function() {
+    var d = document.getElementById('diagram');
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) { d.classList.add('is-active'); return; }
+    var io = new IntersectionObserver(function(e) {
+      if (!e[0].isIntersecting) return;
+      d.classList.add('is-active');
+      io.disconnect();
+    }, { threshold: 0.25 });
+    io.observe(d);
+  })();
+  </script>
+</body>
+</html>

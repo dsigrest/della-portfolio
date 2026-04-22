@@ -27,6 +27,14 @@ import glob
 # --- Config ---
 MAX_HTML_SIZE_KB = 200
 MAX_IMAGE_SIZE_KB = 500
+
+# Directory prefixes whose HTML is archival / exploration only.
+# These files aren't deployed, so structure/link/image checks don't apply.
+# Voice check still runs on them (voice is consistent everywhere).
+EXCLUDED_PATH_PREFIXES = [
+    "working/direction-comps/",
+]
+
 PLACEHOLDER_PATTERNS = [
     r"\[●+\]",
     r"\[X to Y\]",
@@ -195,6 +203,18 @@ def check_file(filepath):
 
     return errors, warnings
 
+def is_excluded(filepath):
+    """Return True if filepath is in an excluded archival directory."""
+    # Normalize backslashes to forward slashes for cross-platform paths
+    normalized = filepath.replace("\\", "/")
+    # Strip leading ./ if present
+    if normalized.startswith("./"):
+        normalized = normalized[2:]
+    for prefix in EXCLUDED_PATH_PREFIXES:
+        if normalized.startswith(prefix):
+            return True
+    return False
+
 def main():
     args = [a for a in sys.argv[1:]]
 
@@ -206,6 +226,20 @@ def main():
 
     if not files:
         print("No HTML files found to check.")
+        sys.exit(0)
+
+    # Filter out archival/exploration files that aren't deployed
+    skipped = [f for f in files if is_excluded(f)]
+    files = [f for f in files if not is_excluded(f)]
+
+    if skipped:
+        print(f"ℹ️  Skipping {len(skipped)} archival file(s) (not deployed):")
+        for s in skipped:
+            print(f"   - {s}")
+        print()
+
+    if not files:
+        print("No deployable HTML files to check (all were archival).")
         sys.exit(0)
 
     total_errors = 0

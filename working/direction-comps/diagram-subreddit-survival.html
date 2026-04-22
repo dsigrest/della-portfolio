@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Communities — Survival Curve (v2)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0a0c16; --text-primary: #e0dfe4;
+      --text-secondary: rgba(224, 223, 228, 0.6);
+      --text-tertiary: rgba(224, 223, 228, 0.4);
+      --accent: #7fb5b0;
+      --curve-before: #7aa4bc; --curve-after: #c4b898;
+    }
+    html, body { background: var(--bg); color: var(--text-primary); font-family: 'Inter', -apple-system, sans-serif; min-height: 100vh; }
+    body { display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+    .label { position: fixed; top: 20px; left: 20px; background: rgba(16,18,28,0.85); backdrop-filter: blur(12px); border: 1px solid rgba(127,181,176,0.2); border-radius: 6px; padding: 6px 12px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); z-index: 100; }
+
+    .chart-card {
+      width: 100%; max-width: 740px;
+      background: rgba(16, 18, 28, 0.55);
+      -webkit-backdrop-filter: blur(16px) saturate(1.2);
+      backdrop-filter: blur(16px) saturate(1.2);
+      border: 1px solid rgba(224, 223, 228, 0.08);
+      border-radius: 12px; padding: 36px 40px 32px;
+      box-shadow: inset 0 1px 0 0 rgba(224, 223, 228, 0.05);
+    }
+    .chart-card__eyebrow {
+      font-size: 10px; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 8px;
+    }
+    .chart-card__title {
+      font-size: 20px; font-weight: 700; letter-spacing: -0.02em;
+      color: var(--text-primary); margin-bottom: 6px;
+    }
+    .chart-card__subtitle {
+      font-size: 13px; font-weight: 400; color: var(--text-secondary);
+      line-height: 1.5; margin-bottom: 32px; max-width: 560px;
+    }
+
+    .chart-area { position: relative; width: 100%; }
+    .chart-area svg { width: 100%; height: auto; overflow: visible; display: block; }
+
+    .axis-label {
+      font-size: 10px; font-weight: 500; letter-spacing: 0.06em;
+      text-transform: uppercase; fill: var(--text-tertiary);
+      font-family: 'Inter', sans-serif;
+    }
+    .tick-label {
+      font-size: 11px; font-weight: 400; fill: var(--text-tertiary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .grid-line { stroke: rgba(224, 223, 228, 0.04); stroke-width: 0.5; }
+
+    /* Legend */
+    .legend { display: flex; gap: 24px; margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(224, 223, 228, 0.06); }
+    .legend__item { display: flex; align-items: center; gap: 8px; }
+    .legend__swatch { width: 12px; height: 3px; border-radius: 2px; }
+    .legend__swatch--before { background: var(--curve-before); }
+    .legend__swatch--after { background: var(--curve-after); }
+    .legend__text { font-size: 12px; font-weight: 400; color: var(--text-secondary); }
+
+    /* Callout card */
+    .callout-card {
+      position: absolute; opacity: 0;
+      background: rgba(16, 18, 28, 0.85); backdrop-filter: blur(12px);
+      border: 1px solid rgba(127,181,176,0.2); border-radius: 6px;
+      padding: 8px 12px;
+    }
+    .callout-card__num {
+      font-size: 18px; font-weight: 700; color: var(--accent);
+      letter-spacing: -0.02em; font-variant-numeric: tabular-nums;
+    }
+    .callout-card__label {
+      font-size: 10px; font-weight: 500; letter-spacing: 0.04em;
+      text-transform: uppercase; color: var(--text-tertiary);
+    }
+
+    /* Annotation for the improvement gap */
+    .gap-annotation {
+      position: absolute; opacity: 0;
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+    }
+    .gap-annotation__bracket {
+      width: 1px; height: 20px;
+      border-left: 1px solid var(--accent);
+      opacity: 0.4;
+    }
+    .gap-annotation__label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; font-weight: 400; color: var(--accent);
+      white-space: nowrap;
+    }
+
+    /* Draw animation */
+    .curve-path { stroke-dasharray: 1000; stroke-dashoffset: 1000; }
+    .area-fill { opacity: 0; }
+    .chart-card.is-active .curve-path { animation: drawLine 1.5s ease-out forwards; }
+    .chart-card.is-active .curve-path--after { animation-delay: 400ms; }
+    .chart-card.is-active .area-fill { animation: fadeIn 0.8s ease-out 0.8s forwards; }
+    .chart-card.is-active .area-fill--after { animation-delay: 1.1s; }
+    .chart-card.is-active .callout-card { animation: fadeIn 0.4s ease-out 1.6s forwards; }
+    .chart-card.is-active .gap-annotation { animation: fadeIn 0.4s ease-out 1.8s forwards; }
+
+    @keyframes drawLine { to { stroke-dashoffset: 0; } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .curve-path { stroke-dashoffset: 0 !important; animation: none !important; }
+      .area-fill, .callout-card, .gap-annotation { opacity: 1 !important; animation: none !important; }
+    }
+    @media (max-width: 540px) {
+      .chart-card { padding: 24px 20px 24px; }
+      .callout-card { display: none; }
+      .gap-annotation { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="label">Communities — Survival Curve</div>
+
+  <div class="chart-card" id="chart">
+    <div class="chart-card__eyebrow">Community Lifecycle</div>
+    <div class="chart-card__title">Subreddit survival rate over&nbsp;time</div>
+    <div class="chart-card__subtitle">90% of new subreddits died within 21 days. The lifecycle framework targeted each drop-off threshold — creation quality, categorization, progressive&nbsp;checklists.</div>
+
+    <div class="chart-area">
+      <svg viewBox="0 0 660 300" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <linearGradient id="beforeGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="rgba(122,164,188,0.10)"/>
+            <stop offset="100%" stop-color="rgba(122,164,188,0)"/>
+          </linearGradient>
+          <linearGradient id="afterGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="rgba(196,184,152,0.10)"/>
+            <stop offset="100%" stop-color="rgba(196,184,152,0)"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Grid -->
+        <line class="grid-line" x1="60" y1="30" x2="640" y2="30"/>
+        <line class="grid-line" x1="60" y1="90" x2="640" y2="90"/>
+        <line class="grid-line" x1="60" y1="150" x2="640" y2="150"/>
+        <line class="grid-line" x1="60" y1="210" x2="640" y2="210"/>
+        <line class="grid-line" x1="60" y1="270" x2="640" y2="270"/>
+
+        <!-- Y-axis -->
+        <text class="tick-label" x="52" y="34" text-anchor="end">100%</text>
+        <text class="tick-label" x="52" y="94" text-anchor="end">75%</text>
+        <text class="tick-label" x="52" y="154" text-anchor="end">50%</text>
+        <text class="tick-label" x="52" y="214" text-anchor="end">25%</text>
+        <text class="tick-label" x="52" y="274" text-anchor="end">0%</text>
+
+        <!-- X-axis -->
+        <text class="tick-label" x="60" y="290" text-anchor="middle">0d</text>
+        <text class="tick-label" x="205" y="290" text-anchor="middle">7d</text>
+        <text class="tick-label" x="350" y="290" text-anchor="middle">21d</text>
+        <text class="tick-label" x="495" y="290" text-anchor="middle">60d</text>
+        <text class="tick-label" x="640" y="290" text-anchor="middle">90d</text>
+
+        <text class="axis-label" x="350" y="308" text-anchor="middle">Days since creation</text>
+
+        <!-- 21-day marker -->
+        <line x1="350" y1="30" x2="350" y2="270" stroke="var(--accent)" stroke-width="0.5" stroke-dasharray="4,3" opacity="0.2"/>
+
+        <!--
+          BEFORE curve: steep drop. 100% → ~10% by day 21 (90% fail).
+          At day 21 (x=350), y should be at ~10% = y=246 (270 - 0.1*240)
+          Flattens to ~5% by day 90.
+        -->
+        <path class="area-fill" d="M 60 30 Q 120 40, 205 180 Q 260 235, 350 246 Q 420 252, 495 256 Q 560 258, 640 260 L 640 270 L 60 270 Z"
+              fill="url(#beforeGrad)"/>
+        <path class="curve-path" d="M 60 30 Q 120 40, 205 180 Q 260 235, 350 246 Q 420 252, 495 256 Q 560 258, 640 260"
+              fill="none" stroke="var(--curve-before)" stroke-width="2" stroke-linecap="round"/>
+
+        <!--
+          AFTER curve: ~7pp improvement. 100% → ~17% by day 21.
+          At day 21 (x=350), y should be at ~17% = y=229 (270 - 0.17*240)
+          Flattens to ~12% by day 90.
+          The gap at day 21 = 246 - 229 = 17px visually (~7pp on a 240px scale = 16.8px). Close enough.
+        -->
+        <path class="area-fill area-fill--after" d="M 60 30 Q 120 44, 205 160 Q 260 210, 350 229 Q 420 238, 495 242 Q 560 244, 640 246 L 640 270 L 60 270 Z"
+              fill="url(#afterGrad)"/>
+        <path class="curve-path curve-path--after" d="M 60 30 Q 120 44, 205 160 Q 260 210, 350 229 Q 420 238, 495 242 Q 560 244, 640 246"
+              fill="none" stroke="var(--curve-after)" stroke-width="2" stroke-linecap="round"/>
+
+        <!-- Data points at day 21 -->
+        <circle cx="350" cy="246" r="3.5" fill="var(--curve-before)" opacity="0.8"/>
+        <circle cx="350" cy="229" r="3.5" fill="var(--curve-after)" opacity="0.8"/>
+      </svg>
+
+      <!-- 90% failure callout -->
+      <div class="callout-card" style="top: 12%; left: 56%;">
+        <div class="callout-card__num">90%</div>
+        <div class="callout-card__label">Failed by day 21</div>
+      </div>
+
+      <!-- 7pp improvement annotation near the gap -->
+      <div class="gap-annotation" style="top: 72%; left: 54%;">
+        <div class="gap-annotation__label">+~7pp</div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="legend__item">
+        <span class="legend__swatch legend__swatch--before"></span>
+        <span class="legend__text">Before — no lifecycle tooling</span>
+      </div>
+      <div class="legend__item">
+        <span class="legend__swatch legend__swatch--after"></span>
+        <span class="legend__text">After — creation quality + lifecycle&nbsp;framework</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function() {
+    var c = document.getElementById('chart');
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) { c.classList.add('is-active'); return; }
+    var io = new IntersectionObserver(function(e) {
+      if (!e[0].isIntersecting) return;
+      c.classList.add('is-active');
+      io.disconnect();
+    }, { threshold: 0.2 });
+    io.observe(c);
+  })();
+  </script>
+</body>
+</html>

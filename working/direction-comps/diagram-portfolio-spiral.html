@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Building Portfolio — Convergence Loop (v2)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0a0c16; --text-primary: #e0dfe4;
+      --text-secondary: rgba(224, 223, 228, 0.6);
+      --text-tertiary: rgba(224, 223, 228, 0.4);
+      --accent: #7fb5b0;
+    }
+    html, body { background: var(--bg); color: var(--text-primary); font-family: 'Inter', -apple-system, sans-serif; min-height: 100vh; }
+    body { display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+    .label { position: fixed; top: 20px; left: 20px; background: rgba(16,18,28,0.85); backdrop-filter: blur(12px); border: 1px solid rgba(127,181,176,0.2); border-radius: 6px; padding: 6px 12px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); z-index: 100; }
+
+    .diagram-wrap {
+      width: 100%; max-width: 680px; position: relative;
+    }
+    .diagram-wrap__eyebrow {
+      font-size: 10px; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 8px;
+      text-align: center;
+    }
+    .diagram-wrap__title {
+      font-size: 20px; font-weight: 700; letter-spacing: -0.02em;
+      color: var(--text-primary); margin-bottom: 6px; text-align: center;
+    }
+    .diagram-wrap__subtitle {
+      font-size: 13px; font-weight: 400; color: var(--text-secondary);
+      line-height: 1.5; margin-bottom: 40px; max-width: 480px;
+      text-align: center; margin-left: auto; margin-right: auto;
+    }
+
+    /* Ring + cards layout — same pattern as the Sharing flywheel */
+    .ring-core {
+      position: relative; width: 100%; max-width: 600px;
+      aspect-ratio: 1 / 1; margin: 0 auto;
+    }
+    .ring-core svg {
+      position: absolute; top: 8%; left: 8%; width: 84%; height: 84%;
+      overflow: visible;
+    }
+
+    /* Animated gradient ring */
+    .glow-haze {
+      fill: none; stroke: url(#ringGrad); stroke-width: 6;
+      stroke-linecap: round; opacity: 0;
+    }
+    .orbit-path { fill: none; stroke: none; }
+
+    /* Fairy + core */
+    .fairy { opacity: 0; transition: opacity 0.8s ease-out; }
+    .fairy-core { opacity: 0; transition: opacity 0.8s ease-out; }
+
+    /* Liquid glass cards at 4 positions (diamond: top, right, bottom, left) */
+    .lc {
+      position: absolute;
+      background: rgba(16, 18, 28, 0.55);
+      -webkit-backdrop-filter: blur(16px) saturate(1.2);
+      backdrop-filter: blur(16px) saturate(1.2);
+      border: 1px solid rgba(224, 223, 228, 0.08);
+      border-radius: 8px; padding: 14px 16px 16px;
+      width: 160px; height: 88px;
+      display: flex; flex-direction: column; text-align: center;
+      justify-content: center; opacity: 0; scale: 0.92; z-index: 2;
+      box-shadow: inset 0 1px 0 0 rgba(224, 223, 228, 0.05), 0 0 0 0.5px rgba(224, 223, 228, 0.03);
+    }
+    .lc__head { display: flex; align-items: baseline; justify-content: center; gap: 6px; margin-bottom: 4px; }
+    .lc__num {
+      font-size: 24px; font-weight: 700; letter-spacing: -0.03em;
+      color: var(--accent); line-height: 1; font-variant-numeric: tabular-nums;
+    }
+    .lc__name {
+      font-size: 14px; font-weight: 600; letter-spacing: -0.01em;
+      color: var(--text-primary); line-height: 1;
+    }
+    .lc__desc {
+      font-size: 11px; font-weight: 400; color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    /* Diamond positions: top, right, bottom, left */
+    .lc--prompt { top: 2%; left: 50%; transform: translateX(-50%); }
+    .lc--generate { top: 42%; right: 0; }
+    .lc--review { bottom: 2%; left: 50%; transform: translateX(-50%); }
+    .lc--iterate { top: 42%; left: 0; }
+
+    /* Arc labels between cards */
+    .arc-label {
+      position: absolute; font-size: 10px; font-weight: 500;
+      letter-spacing: 0.04em; text-transform: uppercase;
+      color: var(--text-tertiary); white-space: nowrap; opacity: 0; z-index: 1;
+    }
+    .arc-label--pr { top: 20%; right: 6%; }
+    .arc-label--rg { bottom: 20%; right: 6%; }
+    .arc-label--gr { bottom: 20%; left: 6%; }
+    .arc-label--ip { top: 20%; left: 6%; }
+
+    /* Center — shows convergence result */
+    .center-badge {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      z-index: 3; opacity: 0;
+      background: rgba(16, 18, 28, 0.55);
+      -webkit-backdrop-filter: blur(16px) saturate(1.2);
+      backdrop-filter: blur(16px) saturate(1.2);
+      border: 1px solid rgba(127, 181, 176, 0.2);
+      border-radius: 8px; padding: 12px 18px; text-align: center;
+    }
+    .center-badge__text {
+      font-size: 13px; font-weight: 600; color: var(--accent);
+      letter-spacing: 0.02em;
+    }
+    .center-badge__sub {
+      font-size: 10px; font-weight: 400; color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    /* Animations */
+    .diagram-wrap.is-active .lc {
+      animation: cardIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    .diagram-wrap.is-active .lc--prompt { animation-delay: 0ms; }
+    .diagram-wrap.is-active .lc--generate { animation-delay: 140ms; }
+    .diagram-wrap.is-active .lc--review { animation-delay: 280ms; }
+    .diagram-wrap.is-active .lc--iterate { animation-delay: 420ms; }
+
+    .diagram-wrap.is-active .glow-haze { opacity: 0.9; transition: opacity 1s ease-out 300ms; }
+    .diagram-wrap.is-active .fairy { opacity: 1; transition-delay: 500ms; }
+    .diagram-wrap.is-active .fairy-core { opacity: 1; transition-delay: 500ms; }
+
+    .diagram-wrap.is-active .arc-label { animation: fadeIn 0.4s ease-out forwards; }
+    .diagram-wrap.is-active .arc-label--pr { animation-delay: 600ms; }
+    .diagram-wrap.is-active .arc-label--rg { animation-delay: 700ms; }
+    .diagram-wrap.is-active .arc-label--gr { animation-delay: 800ms; }
+    .diagram-wrap.is-active .arc-label--ip { animation-delay: 900ms; }
+
+    .diagram-wrap.is-active .center-badge { animation: fadeIn 0.5s ease-out 1000ms forwards; }
+
+    @keyframes cardIn { from { opacity: 0; scale: 0.92; } to { opacity: 1; scale: 1; } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .lc, .arc-label, .center-badge { opacity: 1 !important; animation: none !important; scale: 1 !important; }
+      .glow-haze { opacity: 0.9 !important; }
+      .fairy, .fairy-core { opacity: 0 !important; }
+    }
+    @media (max-width: 580px) {
+      .lc { width: 136px; height: 78px; padding: 10px 12px 12px; }
+      .lc__num { font-size: 20px; }
+      .lc__name { font-size: 12px; }
+      .lc__desc { font-size: 10px; }
+      .arc-label { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="label">Building Portfolio — Convergence Loop</div>
+
+  <div class="diagram-wrap" id="diagram">
+    <div class="diagram-wrap__eyebrow">AI Governance Model</div>
+    <div class="diagram-wrap__title">Prompt → Generate → Review →&nbsp;Iterate</div>
+    <div class="diagram-wrap__subtitle">Human approval at every decision point. The AI proposed. The human&nbsp;disposed.</div>
+
+    <div class="ring-core">
+      <svg viewBox="0 0 520 520">
+        <defs>
+          <linearGradient id="ringGrad" gradientTransform="rotate(135)">
+            <stop offset="0%" stop-color="#7aa4bc"/>
+            <stop offset="35%" stop-color="#a0beb4"/>
+            <stop offset="65%" stop-color="#d0ccc4"/>
+            <stop offset="100%" stop-color="#c4b898"/>
+          </linearGradient>
+          <radialGradient id="fairyFill">
+            <stop offset="0%" stop-color="rgba(208,204,196,0.04)"/>
+            <stop offset="100%" stop-color="rgba(208,204,196,0)"/>
+          </radialGradient>
+          <filter id="fairyGlow" x="-200%" y="-200%" width="500%" height="500%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="6"/>
+          </filter>
+          <radialGradient id="coreFill">
+            <stop offset="0%" stop-color="rgba(255,250,240,0.7)"/>
+            <stop offset="50%" stop-color="rgba(240,232,216,0.35)"/>
+            <stop offset="100%" stop-color="rgba(224,216,196,0)"/>
+          </radialGradient>
+          <filter id="coreGlow" x="-150%" y="-150%" width="400%" height="400%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="3"/>
+          </filter>
+        </defs>
+
+        <!-- Ring -->
+        <circle class="glow-haze" cx="260" cy="260" r="190"/>
+        <path id="orbitPath" d="M 260 70 A 190 190 0 0 1 450 260 A 190 190 0 0 1 260 450 A 190 190 0 0 1 70 260 A 190 190 0 0 1 260 70" fill="none" stroke="none"/>
+
+        <!-- Fairy bloom + core -->
+        <circle class="fairy" cx="260" cy="70" r="16" fill="url(#fairyFill)" filter="url(#fairyGlow)"/>
+        <circle class="fairy-core" cx="260" cy="70" r="5" fill="url(#coreFill)" filter="url(#coreGlow)"/>
+      </svg>
+
+      <!-- Liquid glass cards -->
+      <div class="lc lc--prompt">
+        <div class="lc__head">
+          <span class="lc__num">1</span>
+          <span class="lc__name">Prompt</span>
+        </div>
+        <p class="lc__desc">Define task with context and&nbsp;constraints</p>
+      </div>
+      <div class="lc lc--generate">
+        <div class="lc__head">
+          <span class="lc__num">2</span>
+          <span class="lc__name">Generate</span>
+        </div>
+        <p class="lc__desc">AI proposes options — tone, structure,&nbsp;code</p>
+      </div>
+      <div class="lc lc--review">
+        <div class="lc__head">
+          <span class="lc__num">3</span>
+          <span class="lc__name">Review</span>
+        </div>
+        <p class="lc__desc">Human evaluates for accuracy, tone,&nbsp;fit</p>
+      </div>
+      <div class="lc lc--iterate">
+        <div class="lc__head">
+          <span class="lc__num">4</span>
+          <span class="lc__name">Iterate</span>
+        </div>
+        <p class="lc__desc">Redirect with specificity or approve to&nbsp;ship</p>
+      </div>
+
+      <!-- Arc labels -->
+      <span class="arc-label arc-label--pr">Options generated</span>
+      <span class="arc-label arc-label--rg">Human evaluates</span>
+      <span class="arc-label arc-label--gr">Refinement loop</span>
+      <span class="arc-label arc-label--ip">Context compounds</span>
+
+      <!-- Center badge -->
+      <div class="center-badge">
+        <div class="center-badge__text">Context compounds</div>
+        <div class="center-badge__sub">Each cycle builds on the&nbsp;last</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function() {
+    var wrap = document.getElementById('diagram');
+    var orbitPath = document.getElementById('orbitPath');
+    var fairy = wrap.querySelector('.fairy');
+    var core = wrap.querySelector('.fairy-core');
+    var ringGrad = document.getElementById('ringGrad');
+    var pathLen = orbitPath.getTotalLength();
+    var duration = 10000;
+    var startTime = null;
+    var animating = false;
+
+    function loop(ts) {
+      if (!startTime) startTime = ts;
+      var p = ((ts - startTime) % duration) / duration;
+      var pt = orbitPath.getPointAtLength(p * pathLen);
+      fairy.setAttribute('cx', pt.x);
+      fairy.setAttribute('cy', pt.y);
+      core.setAttribute('cx', pt.x);
+      core.setAttribute('cy', pt.y);
+      ringGrad.setAttribute('gradientTransform', 'rotate(' + ((p * 360) - 40) + ' 0.5 0.5)');
+      if (animating) requestAnimationFrame(loop);
+    }
+
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var io = new IntersectionObserver(function(e) {
+      if (!e[0].isIntersecting) return;
+      wrap.classList.add('is-active');
+      if (!reduced) setTimeout(function() { animating = true; requestAnimationFrame(loop); }, 500);
+      io.disconnect();
+    }, { threshold: 0.25 });
+    io.observe(wrap);
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Communities — Subreddit Lifecycle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0a0c16;
+      --text-primary: #e0dfe4;
+      --text-secondary: rgba(224, 223, 228, 0.6);
+      --text-tertiary: rgba(224, 223, 228, 0.4);
+      --accent: #7fb5b0;
+    }
+    html, body {
+      background: var(--bg); color: var(--text-primary);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+    }
+    body { padding: 60px 20px 80px; }
+
+    .label {
+      position: fixed; top: 20px; left: 20px;
+      background: rgba(16,18,28,0.85); backdrop-filter: blur(12px);
+      border: 1px solid rgba(127,181,176,0.2); border-radius: 6px;
+      padding: 6px 12px; font-size: 11px; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--accent); z-index: 100;
+    }
+
+    /* ── 5-node pentagon ring diagram ── */
+    .ring-wrap {
+      position: relative; max-width: 820px; margin: 64px auto; padding: 48px 24px;
+    }
+    .ring-wrap .rw-core {
+      position: relative; width: 100%; max-width: 700px;
+      aspect-ratio: 1 / 1;
+      margin: 0 auto;
+    }
+    .ring-wrap .rw-svg {
+      position: absolute; top: 6%; left: 6%; width: 88%; height: 88%;
+      overflow: visible;
+    }
+    .ring-wrap .glow-haze {
+      fill: none; stroke: url(#ringGrad); stroke-width: 8;
+      stroke-linecap: round; opacity: 0;
+    }
+    .ring-wrap .orbit-ring { fill: none; stroke: none; }
+    .ring-wrap .rw-fairy {
+      opacity: 0; filter: url(#fairyGlow); transition: opacity 0.8s ease-out;
+    }
+    .ring-wrap .rw-core-dot {
+      opacity: 0; filter: url(#coreGlow); transition: opacity 0.8s ease-out;
+    }
+
+    .ring-wrap .rw-card {
+      position: absolute;
+      background: rgba(16, 18, 28, 0.55);
+      -webkit-backdrop-filter: blur(16px) saturate(1.2);
+      backdrop-filter: blur(16px) saturate(1.2);
+      border: 1px solid rgba(224, 223, 228, 0.08);
+      border-radius: 8px; padding: 14px 16px 16px;
+      width: 172px; height: 92px;
+      display: flex; flex-direction: column; text-align: center;
+      justify-content: center; opacity: 0; scale: 0.92; z-index: 2;
+      box-shadow:
+        inset 0 1px 0 0 rgba(224, 223, 228, 0.05),
+        0 0 0 0.5px rgba(224, 223, 228, 0.03);
+    }
+    .ring-wrap .rw-card__head {
+      display: flex; align-items: baseline; justify-content: center;
+      gap: 6px; margin-bottom: 4px;
+    }
+    .ring-wrap .rw-card__num {
+      font-size: 26px; font-weight: 700; letter-spacing: -0.03em;
+      color: var(--accent); line-height: 1; font-variant-numeric: tabular-nums;
+    }
+    .ring-wrap .rw-card__name {
+      font-size: 15px; font-weight: 600; letter-spacing: -0.01em;
+      color: var(--text-primary); line-height: 1;
+    }
+    .ring-wrap .rw-card__desc {
+      font-size: 12px; font-weight: 400; color: var(--text-secondary);
+      line-height: 1.45; margin: 0;
+    }
+
+    /* Pentagon positions (5 nodes around a circle):
+       Node 1 (top center):      90° up from center
+       Node 2 (upper right):     18° right
+       Node 3 (lower right):     54° below right
+       Node 4 (lower left):      54° below left
+       Node 5 (upper left):      18° left
+    */
+    .ring-wrap .rw-card--n1 {
+      top: 2%; left: 50%; transform: translateX(-50%);
+    }
+    .ring-wrap .rw-card--n2 {
+      top: 26%; left: 76%;
+    }
+    .ring-wrap .rw-card--n3 {
+      top: 68%; left: 66%;
+    }
+    .ring-wrap .rw-card--n4 {
+      top: 68%; right: 66%; left: auto;
+    }
+    .ring-wrap .rw-card--n5 {
+      top: 26%; right: 76%; left: auto;
+    }
+
+    /* Arc labels between nodes */
+    .ring-wrap .rw-arc {
+      position: absolute; font-size: 10px; font-weight: 500;
+      letter-spacing: 0.04em; text-transform: uppercase;
+      color: var(--text-tertiary); white-space: nowrap; opacity: 0; z-index: 1;
+    }
+    .ring-wrap .rw-arc--12 { top: 12%; left: 86%; }
+    .ring-wrap .rw-arc--23 { top: 52%; left: 86%; }
+    .ring-wrap .rw-arc--34 { top: 88%; left: 50%; transform: translateX(-50%); }
+    .ring-wrap .rw-arc--45 { top: 52%; right: 86%; text-align: right; }
+    .ring-wrap .rw-arc--51 { top: 12%; right: 86%; text-align: right; }
+
+    .ring-wrap.is-active .rw-card {
+      animation: cardIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    .ring-wrap.is-active .rw-card--n1 { animation-delay: 0ms; }
+    .ring-wrap.is-active .rw-card--n2 { animation-delay: 120ms; }
+    .ring-wrap.is-active .rw-card--n3 { animation-delay: 240ms; }
+    .ring-wrap.is-active .rw-card--n4 { animation-delay: 360ms; }
+    .ring-wrap.is-active .rw-card--n5 { animation-delay: 480ms; }
+    .ring-wrap.is-active .glow-haze { opacity: 0.9; transition: opacity 1s ease-out 300ms; }
+    .ring-wrap.is-active .rw-fairy { opacity: 1; transition-delay: 500ms; }
+    .ring-wrap.is-active .rw-core-dot { opacity: 1; transition-delay: 500ms; }
+    .ring-wrap.is-active .rw-arc { animation: fadeIn 0.4s ease-out forwards; }
+    .ring-wrap.is-active .rw-arc--12 { animation-delay: 600ms; }
+    .ring-wrap.is-active .rw-arc--23 { animation-delay: 700ms; }
+    .ring-wrap.is-active .rw-arc--34 { animation-delay: 800ms; }
+    .ring-wrap.is-active .rw-arc--45 { animation-delay: 900ms; }
+    .ring-wrap.is-active .rw-arc--51 { animation-delay: 1000ms; }
+
+    @keyframes cardIn { from { opacity: 0; scale: 0.92; } to { opacity: 1; scale: 1; } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ring-wrap .rw-card, .ring-wrap .rw-arc {
+        animation: none !important; opacity: 1 !important; scale: 1 !important;
+      }
+      .ring-wrap .glow-haze { opacity: 0.9 !important; }
+      .ring-wrap .rw-fairy, .ring-wrap .rw-core-dot { opacity: 0 !important; }
+    }
+    @media (max-width: 640px) {
+      .ring-wrap .rw-card { width: 148px; height: 84px; padding: 10px 12px 12px; }
+      .ring-wrap .rw-card__num { font-size: 22px; }
+      .ring-wrap .rw-card__name { font-size: 13px; }
+      .ring-wrap .rw-card__desc { font-size: 11px; }
+      .ring-wrap .rw-card--n2 { left: 70%; }
+      .ring-wrap .rw-card--n3 { left: 62%; }
+      .ring-wrap .rw-card--n4 { right: 62%; }
+      .ring-wrap .rw-card--n5 { right: 70%; }
+    }
+    @media (max-width: 480px) {
+      .ring-wrap .rw-arc { display: none; }
+      .ring-wrap .rw-svg { left: 2%; width: 96%; top: 2%; height: 96%; }
+      .ring-wrap .rw-card { width: 130px; height: 76px; }
+      .ring-wrap .rw-card__num { font-size: 18px; }
+      .ring-wrap .rw-card__name { font-size: 12px; }
+      .ring-wrap .rw-card__desc { font-size: 10px; }
+      .ring-wrap .rw-card--n2 { left: 64%; }
+      .ring-wrap .rw-card--n3 { left: 58%; }
+      .ring-wrap .rw-card--n4 { right: 58%; }
+      .ring-wrap .rw-card--n5 { right: 64%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="label">Communities — Subreddit Lifecycle</div>
+
+  <div class="ring-wrap" id="diagram">
+    <div class="rw-core">
+      <svg class="rw-svg" viewBox="0 0 520 520">
+        <defs>
+          <linearGradient id="ringGrad" gradientTransform="rotate(135)">
+            <stop offset="0%" stop-color="#7aa4bc"/>
+            <stop offset="35%" stop-color="#a0beb4"/>
+            <stop offset="65%" stop-color="#d0ccc4"/>
+            <stop offset="100%" stop-color="#c4b898"/>
+          </linearGradient>
+          <radialGradient id="fairyFill">
+            <stop offset="0%" stop-color="rgba(208,204,196,0.04)"/>
+            <stop offset="100%" stop-color="rgba(208,204,196,0)"/>
+          </radialGradient>
+          <filter id="fairyGlow" x="-200%" y="-200%" width="500%" height="500%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="6"/>
+          </filter>
+          <radialGradient id="coreFill">
+            <stop offset="0%" stop-color="rgba(255,250,240,0.7)"/>
+            <stop offset="50%" stop-color="rgba(240,232,216,0.35)"/>
+            <stop offset="100%" stop-color="rgba(224,216,196,0)"/>
+          </radialGradient>
+          <filter id="coreGlow" x="-150%" y="-150%" width="400%" height="400%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="3"/>
+          </filter>
+        </defs>
+
+        <circle class="glow-haze" cx="260" cy="260" r="180"/>
+        <circle class="orbit-ring" cx="260" cy="260" r="180"/>
+        <!-- Full circle orbit for pentagon -->
+        <path id="orbitPath" d="M 260 80 A 180 180 0 0 1 440 260 A 180 180 0 0 1 260 440 A 180 180 0 0 1 80 260 A 180 180 0 0 1 260 80" fill="none" stroke="none"/>
+        <circle class="rw-fairy" cx="260" cy="80" r="16" fill="url(#fairyFill)"/>
+        <circle class="rw-core-dot" cx="260" cy="80" r="5" fill="url(#coreFill)"/>
+      </svg>
+
+      <div class="rw-card rw-card--n1">
+        <div class="rw-card__head">
+          <span class="rw-card__num">1</span>
+          <span class="rw-card__name">Creation</span>
+        </div>
+        <p class="rw-card__desc">New community seeded with identity and&nbsp;rules</p>
+      </div>
+      <div class="rw-card rw-card--n2">
+        <div class="rw-card__head">
+          <span class="rw-card__num">2</span>
+          <span class="rw-card__name">Content</span>
+        </div>
+        <p class="rw-card__desc">Early posts establish tone and&nbsp;norms</p>
+      </div>
+      <div class="rw-card rw-card--n3">
+        <div class="rw-card__head">
+          <span class="rw-card__num">3</span>
+          <span class="rw-card__name">Members</span>
+        </div>
+        <p class="rw-card__desc">Growth from content quality and&nbsp;discovery</p>
+      </div>
+      <div class="rw-card rw-card--n4">
+        <div class="rw-card__head">
+          <span class="rw-card__num">4</span>
+          <span class="rw-card__name">Mod Teams</span>
+        </div>
+        <p class="rw-card__desc">Governance scales with community&nbsp;size</p>
+      </div>
+      <div class="rw-card rw-card--n5">
+        <div class="rw-card__head">
+          <span class="rw-card__num">5</span>
+          <span class="rw-card__name">Sustained</span>
+        </div>
+        <p class="rw-card__desc">Self-reinforcing activity loops emerge at&nbsp;scale</p>
+      </div>
+
+      <span class="rw-arc rw-arc--12">Identity attracts posts</span>
+      <span class="rw-arc rw-arc--23">Content draws members</span>
+      <span class="rw-arc rw-arc--34">Scale requires governance</span>
+      <span class="rw-arc rw-arc--45">Health sustains activity</span>
+      <span class="rw-arc rw-arc--51">Activity feeds creation</span>
+    </div>
+  </div>
+
+  <script>
+  (function() {
+    var wrap = document.getElementById('diagram');
+    var orbitPath = document.getElementById('orbitPath');
+    var fairy = wrap.querySelector('.rw-fairy');
+    var core = wrap.querySelector('.rw-core-dot');
+    var ringGrad = document.getElementById('ringGrad');
+    var pathLen = orbitPath.getTotalLength();
+    var duration = 12000; /* slightly slower for 5 nodes */
+    var startTime = null;
+    var animating = false;
+
+    function loop(ts) {
+      if (!startTime) startTime = ts;
+      var p = ((ts - startTime) % duration) / duration;
+      var pt = orbitPath.getPointAtLength(p * pathLen);
+      fairy.setAttribute('cx', pt.x);
+      fairy.setAttribute('cy', pt.y);
+      core.setAttribute('cx', pt.x);
+      core.setAttribute('cy', pt.y);
+      ringGrad.setAttribute('gradientTransform', 'rotate(' + ((p * 360) - 40) + ' 0.5 0.5)');
+      if (animating) requestAnimationFrame(loop);
+    }
+
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var io = new IntersectionObserver(function(e) {
+      if (!e[0].isIntersecting) return;
+      wrap.classList.add('is-active');
+      if (!reduced) setTimeout(function() { animating = true; requestAnimationFrame(loop); }, 500);
+      io.disconnect();
+    }, { threshold: 0.25 });
+    io.observe(wrap);
+  })();
+  </script>
+</body>
+</html>
