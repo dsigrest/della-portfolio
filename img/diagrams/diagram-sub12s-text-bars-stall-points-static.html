@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="figma-source" content="node:340:2 page:29:40 file:TArUrZsBUocaAsqetjXq7V">
+  <title>SUB-12s — Text Bars / Stall Points Static</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --canvas: #0A0C16;
+      --elevated: #151722;
+      --text-pri: #E0DFE4;
+      --text-sec: rgba(224,223,228,0.6);
+      --text-ter: rgba(224,223,228,0.4);
+      --text-dim: rgba(224,223,228,0.2);
+      --border: rgba(224,223,228,0.07);
+      --accent: #7FB5B0;
+      --accent-dim: rgba(127,181,176,0.12);
+      --accent-soft: rgba(127,181,176,0.06);
+      --accent-strong: rgba(127,181,176,0.18);
+      --red: #C47878;
+      --warm: #D4A574;
+      --blue: #8A9EC4;
+      --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+      --glass-border: rgba(224,223,228,0.08);
+      --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #08090F;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 40px;
+      font-family: 'Inter', -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .diagram {
+      width: 760px;
+      background: var(--canvas);
+      border-radius: 16px;
+      overflow: hidden;
+      padding: 36px 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+    }
+
+    /* 3 stall cards in a row */
+    .stalls-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .stall-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-highlight);
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(8px);
+      animation: fadeSlideIn 0.5s ease forwards;
+    }
+    .stall-card:nth-child(1) { animation-delay: 0.1s; }
+    .stall-card:nth-child(2) { animation-delay: 0.25s; }
+    .stall-card:nth-child(3) { animation-delay: 0.4s; }
+
+    /* Left accent stripe — stops before the bar-track so it doesn't overlap */
+    .stall-card::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      bottom: 27px;
+      left: -1px;
+      width: 3px;
+    }
+    .stall-card.red::before { background: rgba(196,120,120,0.5); }
+    .stall-card.warm::before { background: rgba(212,165,116,0.5); }
+    .stall-card.blue::before { background: rgba(138,158,196,0.5); }
+
+    .stall-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .stall-card.red .stall-label { color: var(--red); }
+    .stall-card.warm .stall-label { color: var(--warm); }
+    .stall-card.blue .stall-label { color: var(--blue); }
+
+    .stall-desc {
+      font-size: 10px;
+      color: var(--text-ter);
+      line-height: 1.5;
+      margin-top: 4px;
+    }
+
+    .stall-bar-track {
+      background: rgba(224,223,228,0.07);
+      height: 4px;
+      border-radius: 2px;
+      width: 100%;
+      margin-top: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+    .stall-bar-fill {
+      height: 4px;
+      border-radius: 2px;
+      transform-origin: left;
+      animation: barGrow 0.9s cubic-bezier(0.4,0,0.2,1) forwards;
+    }
+    .stall-card.red .stall-bar-fill { background: var(--red); }
+    .stall-card.warm .stall-bar-fill { background: var(--warm); }
+    .stall-card.blue .stall-bar-fill { background: var(--blue); }
+
+    @keyframes barGrow {
+      from { transform: scaleX(0); }
+      to { transform: scaleX(1); }
+    }
+
+    .stall-metric {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+
+    /* Insight bar — glass + teal LEFT-stripe (matches stall cards) + icon + eyebrow + body */
+    .insight {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-highlight);
+      border-radius: 10px;
+      padding: 16px 20px;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .insight::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      bottom: 27px;
+      left: -1px;
+      width: 3px;
+      background: var(--accent);
+      opacity: 0.85;
+    }
+    .insight-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-strong);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+    }
+    .insight-body {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .insight-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      color: rgba(127,181,176,0.75);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .insight-text {
+      font-size: 12px;
+      color: var(--text-sec);
+      line-height: 1.5;
+    }
+
+    /* Outcome bar — teal-dim fill */
+    .outcome {
+      background: var(--accent-dim);
+      border-radius: 10px;
+      padding: 14px 20px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .outcome .icon { flex: 0 0 16px; color: var(--accent); opacity: 0.85; }
+    .outcome p {
+      flex: 1;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-sec);
+      line-height: 1.5;
+    }
+
+    @keyframes fadeSlideIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 768px) {
+      body { padding: 16px; }
+      .diagram {
+        width: 100%;
+        max-width: 560px;
+        padding: 24px;
+        gap: 12px;
+      }
+      /* Pattern C collapse */
+      .stalls-grid { grid-template-columns: 1fr; }
+      .stall-card { padding: 12px 14px 14px; }
+      .stall-label { font-size: 10px; letter-spacing: 0.06em; }
+      .stall-desc { font-size: 12px; line-height: 1.45; }
+      .stall-metric { font-size: 10px; text-align: right; margin-top: 4px; }
+
+      /* Insight simpler on mobile: drop icon, shrink */
+      .insight { padding: 12px 14px 14px; align-items: flex-start; gap: 10px; }
+      .insight-icon {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border-width: 1.5px;
+        background: transparent;
+      }
+      .insight-icon svg { display: none; }
+      .insight-label { font-size: 11px; }
+      .insight-text { font-size: 12px; }
+
+      /* Outcome becomes a low-key caption on mobile */
+      .outcome { padding: 10px 14px; background: transparent; border: 1px solid var(--border); }
+      .outcome p { font-size: 11px; color: var(--text-ter); font-weight: 400; }
+      .outcome .icon { width: 14px; height: 14px; }
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 10px; }
+      .diagram { padding: 20px; }
+    }
+
+    @media (max-width: 320px) {
+      .diagram { padding: 16px; gap: 10px; }
+      .stall-card { padding: 11px 12px 12px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .stall-card { opacity: 1; transform: none; animation: none; }
+      .stall-bar-fill { animation: none; }
+    }
+
+    /* Embed mode */
+    body.embedded {
+      padding: 0;
+      min-height: auto;
+      display: block;
+      background: transparent;
+      overflow: hidden;
+      align-items: initial;
+    }
+    body.embedded .diagram {
+      width: 100%;
+      max-width: none;
+      border-radius: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="diagram">
+    <!-- 3 stall cards -->
+    <div class="stalls-grid" role="list" aria-label="Creation form stall points">
+      <div class="stall-card red" role="listitem">
+        <span class="stall-label">Biggest stall</span>
+        <span class="stall-desc">Name field — choosing the identity when scope is still forming.</span>
+        <div class="stall-bar-track" aria-hidden="true">
+          <div class="stall-bar-fill" style="width: 28%;"></div>
+        </div>
+        <span class="stall-metric">28%</span>
+      </div>
+      <div class="stall-card warm" role="listitem">
+        <span class="stall-label">Key skip</span>
+        <span class="stall-desc">Description — bypassed when creators aren't ready to articulate yet.</span>
+        <div class="stall-bar-track" aria-hidden="true">
+          <div class="stall-bar-fill" style="width: 45%;"></div>
+        </div>
+        <span class="stall-metric">45%</span>
+      </div>
+      <div class="stall-card blue" role="listitem">
+        <span class="stall-label">Critical gate</span>
+        <span class="stall-desc">Visibility toggle — last decision before submit, highest drop-off.</span>
+        <div class="stall-bar-track" aria-hidden="true">
+          <div class="stall-bar-fill" style="width: 72%;"></div>
+        </div>
+        <span class="stall-metric">72%</span>
+      </div>
+    </div>
+
+    <!-- Insight -->
+    <div class="insight">
+      <div class="insight-icon" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"/>
+          <polyline points="12 7 12 12 15 14"/>
+        </svg>
+      </div>
+      <div class="insight-body">
+        <span class="insight-label">Design as Measurement</span>
+        <span class="insight-text">Stall points surface friction — each percentage marks where intent breaks down.</span>
+      </div>
+    </div>
+
+    <!-- Outcome / reading hint -->
+    <div class="outcome">
+      <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      <p>Read as a map — the taller the bar, the more often creators stalled there.</p>
+    </div>
+  </div>
+
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+</body>
+</html>

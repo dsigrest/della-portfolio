@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="figma-source" content="node:315:2 page:29:40 file:TArUrZsBUocaAsqetjXq7V">
+  <title>SUB-07 — Single Text Input (Before)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --canvas: #0A0C16;
+      --elevated: #151722;
+      --highest: #1A1C28;
+      --text-pri: #E0DFE4;
+      --text-sec: rgba(224,223,228,0.6);
+      --text-ter: rgba(224,223,228,0.4);
+      --text-dim: rgba(224,223,228,0.2);
+      --border: rgba(224,223,228,0.07);
+      --accent: #7FB5B0;
+      --accent-dim: rgba(127,181,176,0.12);
+      --red: #C47878;
+      --red-dim: rgba(196,120,120,0.12);
+      --warm: #D4A574;
+      --resur: #C4B078;
+      --blue: #8A9EC4;
+      --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+      --glass-border: rgba(224,223,228,0.08);
+      --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #08090F;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 40px;
+      font-family: 'Inter', -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .diagram {
+      width: 760px;
+      background: var(--canvas);
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+    }
+    .diagram::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      left: -100px;
+      width: 400px;
+      height: 300px;
+      background: radial-gradient(ellipse at center, rgba(196,120,120,0.04), transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ── Title area ── */
+    .title-area {
+      padding: 48px 48px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+    }
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--red);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+    .title-area h1 {
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+      color: var(--text-pri);
+    }
+    .subhead {
+      font-size: 15px;
+      color: var(--text-sec);
+      line-height: 1.55;
+      max-width: 560px;
+    }
+
+    /* ── Desktop 3-column mock ── */
+    .mock-layout {
+      padding: 36px 48px 0;
+      display: grid;
+      grid-template-columns: 160px 1fr 160px;
+      gap: 20px;
+      align-items: start;
+    }
+    .ann-col {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding-top: 60px;
+    }
+    .ann-col.left { align-items: flex-end; }
+    .ann-col.right { align-items: flex-start; }
+
+    /* Shared annotation card (renders both as desktop side annotation and as mobile glass callout) */
+    .ann-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-highlight);
+      border-radius: 10px;
+      padding: 14px 16px;
+      width: 100%;
+      max-width: 260px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      opacity: 0;
+      transform: translateY(8px);
+      animation: fadeSlideIn 0.5s ease forwards;
+    }
+    .ann-card:nth-child(1) { animation-delay: 0.15s; }
+    .ann-card:nth-child(2) { animation-delay: 0.3s; }
+    .ann-card:nth-child(3) { animation-delay: 0.45s; }
+    .ann-card:nth-child(4) { animation-delay: 0.6s; }
+
+    .ann-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--red);
+      opacity: 0.7;
+    }
+    .ann-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-pri);
+      line-height: 1.3;
+    }
+    .ann-desc {
+      font-size: 11px;
+      color: var(--text-ter);
+      line-height: 1.45;
+    }
+
+    /* Desktop-only: narrow cards beside phone mock */
+    @media (min-width: 769px) {
+      .ann-card { max-width: 150px; padding: 10px 12px; gap: 3px; }
+      .ann-card .ann-num { font-size: 9px; }
+      .ann-card .ann-title { font-size: 11px; }
+      .ann-card .ann-desc { font-size: 9px; line-height: 1.4; }
+      .ann-card::before { display: none; }
+    }
+
+    /* ── Phone mock (desktop) / browser preview (mobile) ── */
+    .preview {
+      background: var(--elevated);
+      border: 1px solid rgba(224,223,228,0.12);
+      border-radius: 20px;
+      overflow: hidden;
+      width: 100%;
+      max-width: 220px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .preview-chrome {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      color: var(--text-dim);
+    }
+    .preview-chrome .chrome-url { display: none; }
+    .preview-content {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .preview-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-pri);
+    }
+    .preview-spacer-lg { height: 24px; }
+    .preview-spacer-md { height: 20px; }
+    .preview-spacer-sm { height: 14px; }
+    .preview-spacer-xs { height: 8px; }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      width: 100%;
+    }
+    .input-label {
+      font-size: 8px;
+      font-weight: 500;
+      color: var(--text-ter);
+      letter-spacing: 0.03em;
+    }
+    .input-field {
+      background: var(--canvas);
+      border: 1px solid rgba(224,223,228,0.12);
+      border-radius: 4px;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 10px;
+    }
+    .input-prefix { color: var(--text-dim); }
+    .input-cursor {
+      width: 1px;
+      height: 12px;
+      background: var(--text-ter);
+      animation: blink 1s steps(2) infinite;
+    }
+    .input-placeholder {
+      color: var(--text-dim);
+      font-size: 10px;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .btn-create {
+      background: var(--highest);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 8px 12px;
+      width: 100%;
+      font-size: 9px;
+      font-weight: 500;
+      color: var(--text-ter);
+      text-align: center;
+    }
+
+    .empty-field {
+      border: 1px solid rgba(196,120,120,0.2);
+      border-radius: 6px;
+      padding: 6px 8px;
+      width: 100%;
+      text-align: center;
+      font-size: 8px;
+      font-weight: 500;
+      color: rgba(196,120,120,0.4);
+    }
+    .empty-field + .empty-field { margin-top: 8px; }
+
+    /* Inline-list variant used on mobile */
+    .empty-list { display: none; }
+    .empty-list .x-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--text-sec);
+      padding: 3px 0;
+    }
+    .empty-list .x-mark {
+      color: var(--red);
+      opacity: 0.7;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* ── Consequence bar (desktop) ── */
+    .consequence-wrap {
+      padding: 28px 48px 0;
+    }
+    .consequence {
+      background: var(--red-dim);
+      border-left: 3px solid rgba(196,120,120,0.4);
+      border-radius: 10px;
+      padding: 14px 20px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .consequence .icon {
+      flex: 0 0 20px;
+      color: var(--red);
+      opacity: 0.85;
+    }
+    .consequence p {
+      flex: 1;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-sec);
+      line-height: 1.5;
+    }
+
+    /* ── Outcome bar (desktop only) ── */
+    .outcome-wrap {
+      padding: 16px 48px 48px;
+    }
+    .outcome {
+      background: var(--accent-dim);
+      border-radius: 10px;
+      padding: 14px 20px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .outcome .icon {
+      flex: 0 0 16px;
+      color: var(--accent);
+      opacity: 0.85;
+    }
+    .outcome p {
+      flex: 1;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-sec);
+      line-height: 1.5;
+    }
+
+    /* Mobile-only footer-insight eyebrow */
+    .footer-insight-eyebrow {
+      display: none;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--red);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.75;
+      margin-bottom: 8px;
+    }
+
+    @keyframes fadeSlideIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Tablet / Mobile responsive ── */
+    @media (max-width: 768px) {
+      body { padding: 16px; }
+      .diagram { width: 100%; max-width: 560px; }
+      .title-area { padding: 32px 24px 0; }
+      .title-area h1 { font-size: 28px; }
+      .subhead { font-size: 14px; }
+
+      /* Stack: preview first, then all 4 callouts */
+      .mock-layout {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 24px 24px 0;
+        align-items: stretch;
+      }
+      .ann-col,
+      .ann-col.left,
+      .ann-col.right {
+        padding-top: 0;
+        gap: 12px;
+        align-items: stretch;
+        order: 2;
+      }
+      .ann-col .ann-card {
+        max-width: 100%;
+        width: 100%;
+      }
+      .preview {
+        order: 1;
+        max-width: 100%;
+        border-radius: 12px;
+      }
+
+      /* Glass callouts with red top stripe on mobile */
+      .ann-card {
+        padding: 12px 14px 14px;
+      }
+      .ann-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: rgba(196,120,120,0.5);
+        border-radius: 10px 10px 0 0;
+      }
+      .ann-card .ann-num { font-size: 9px; }
+      .ann-card .ann-title { font-size: 13px; }
+      .ann-card .ann-desc { font-size: 11px; line-height: 1.45; }
+
+      /* Preview becomes browser-style */
+      .preview-chrome {
+        background: var(--canvas);
+        border-bottom: 1px solid var(--border);
+        padding: 10px 14px;
+      }
+      .preview-chrome .chrome-time { display: none; }
+      .preview-chrome .chrome-host { display: none; }
+      .preview-chrome .chrome-url {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 10px;
+        color: var(--text-ter);
+      }
+      .preview-chrome .chrome-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--text-dim);
+      }
+
+      .preview-content { padding: 18px; }
+      .preview-title { font-size: 15px; }
+      .preview-spacer-lg { height: 16px; }
+      .preview-spacer-md { height: 14px; }
+      .preview-spacer-sm { height: 10px; }
+
+      .input-label { font-size: 10px; }
+      .input-field { padding: 10px 12px; font-size: 13px; }
+      .input-prefix { font-size: 13px; }
+      .input-placeholder { font-size: 13px; }
+
+      /* Hide the desktop stack of "No X" empty fields, show the inline x-list */
+      .empty-field { display: none; }
+      .empty-list {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        width: 100%;
+        margin-top: 8px;
+      }
+
+      .btn-create { font-size: 12px; padding: 11px 14px; margin-top: 16px; }
+
+      /* Outcome bar hidden on mobile (desktop-only reflection) */
+      .outcome-wrap { display: none; }
+
+      .consequence-wrap { padding: 20px 24px 32px; }
+      .consequence { align-items: flex-start; padding: 16px 16px 18px; }
+      .consequence .icon { margin-top: 1px; }
+      .consequence p { font-size: 12px; }
+      .footer-insight-eyebrow { display: block; }
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 10px; }
+      .title-area { padding: 28px 20px 0; }
+      .title-area h1 { font-size: 24px; }
+      .subhead { font-size: 13px; }
+      .mock-layout { padding: 20px 20px 0; }
+      .consequence-wrap { padding: 18px 20px 28px; }
+    }
+
+    @media (max-width: 320px) {
+      .title-area { padding: 24px 16px 0; }
+      .title-area h1 { font-size: 20px; }
+      .subhead { font-size: 12px; }
+      .mock-layout { padding: 18px 16px 0; }
+      .preview-content { padding: 14px; }
+      .consequence-wrap { padding: 16px 16px 24px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ann-card { opacity: 1; transform: none; animation: none; }
+      .input-cursor { animation: none; opacity: 0.5; }
+    }
+
+    /* Embed mode */
+    body.embedded {
+      padding: 0;
+      min-height: auto;
+      display: block;
+      background: transparent;
+      overflow: hidden;
+      align-items: initial;
+    }
+    body.embedded .diagram {
+      width: 100%;
+      max-width: none;
+      border-radius: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="diagram">
+    <!-- Title -->
+    <header class="title-area">
+      <div class="eyebrow">Before — Creation</div>
+      <h1>Single Text Input</h1>
+      <p class="subhead">The existing creation flow collected a subreddit name and nothing else. Low friction meant low intent — creators launched with no identity.</p>
+    </header>
+
+    <!-- Mock: 3-col on desktop, stacked on mobile -->
+    <section class="mock-layout" aria-label="Legacy creation flow annotated">
+      <div class="ann-col left">
+        <div class="ann-card">
+          <span class="ann-num">01</span>
+          <span class="ann-title">No category</span>
+          <span class="ann-desc">Invisible to recommendations engine</span>
+        </div>
+        <div class="ann-card">
+          <span class="ann-num">02</span>
+          <span class="ann-title">No avatar</span>
+          <span class="ann-desc">No visual identity in feeds or search</span>
+        </div>
+      </div>
+
+      <div class="preview" role="img" aria-label="Legacy subreddit creation flow — single text input with no category, avatar, banner, or preview">
+        <div class="preview-chrome">
+          <span class="chrome-time">9:41</span>
+          <span class="chrome-host">reddit</span>
+          <span class="chrome-url"><span class="chrome-dot"></span>reddit.com/subreddits/create</span>
+        </div>
+        <div class="preview-content">
+          <div class="preview-title">Create a Community</div>
+          <div class="preview-spacer-lg"></div>
+          <div class="input-group">
+            <span class="input-label">Name</span>
+            <div class="input-field">
+              <span class="input-prefix">r/</span>
+              <span class="input-placeholder">Community name</span>
+              <span class="input-cursor" aria-hidden="true"></span>
+            </div>
+          </div>
+          <div class="preview-spacer-sm"></div>
+
+          <!-- Desktop: stacked empty fields -->
+          <div class="empty-field">No category selector</div>
+          <div class="empty-field">No avatar upload</div>
+          <div class="empty-field">No banner</div>
+          <div class="empty-field">No preview</div>
+
+          <!-- Mobile: inline x-list -->
+          <div class="empty-list">
+            <div class="x-row"><span class="x-mark">×</span>No category selector</div>
+            <div class="x-row"><span class="x-mark">×</span>No avatar upload</div>
+            <div class="x-row"><span class="x-mark">×</span>No banner</div>
+            <div class="x-row"><span class="x-mark">×</span>No preview</div>
+          </div>
+
+          <div class="preview-spacer-md"></div>
+          <div class="btn-create">Create Community</div>
+        </div>
+      </div>
+
+      <div class="ann-col right">
+        <div class="ann-card">
+          <span class="ann-num">03</span>
+          <span class="ann-title">No banner</span>
+          <span class="ann-desc">Generic appearance, no community personality</span>
+        </div>
+        <div class="ann-card">
+          <span class="ann-num">04</span>
+          <span class="ann-title">No preview</span>
+          <span class="ann-desc">Blind launch — no sense of what others see</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Consequence bar (becomes "Why it mattered" footer on mobile) -->
+    <section class="consequence-wrap">
+      <div class="footer-insight-eyebrow">Why it mattered</div>
+      <div class="consequence">
+        <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        <p>Communities launched with nothing — no identity, no category, no way to be discovered. Set up to fail from the first screen.</p>
+      </div>
+    </section>
+
+    <!-- Outcome bar (desktop-only) -->
+    <section class="outcome-wrap">
+      <div class="outcome">
+        <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        <p>The creation flow was a repeatable component eng needed regardless — a low-regret starting point while the lifecycle framework was still forming.</p>
+      </div>
+    </section>
+  </div>
+
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+</body>
+</html>
