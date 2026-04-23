@@ -129,16 +129,24 @@ Figma translation:
 
 _Thread B: update this table as each mobile frame ships._
 
-| ID | figma_mobile_node_id | Shipped | Verified against HTML | Notes |
-|---|---|---|---|---|
-| shr01 | TBD | — | — | — |
-| shr02 | TBD | — | — | — |
-| shr06 | TBD | — | — | — |
-| shr07 | TBD | — | — | — |
-| shr08 | TBD | — | — | — |
-| shr10 | TBD | — | — | — |
-| shr11 | TBD | — | — | — |
-| shr12 | TBD | — | — | — |
+**STATUS: ✅ COMPLETE + VERIFICATION PASS (Session 26, 2026-04-22)** — all 8 frames shipped at x=-1300 on page 29:41, native-layer auto-layout, screenshot-verified against HTML v4 at 375. Session 26 re-verification pass: tracker rows 57–64 all at `status=verified` with matching node IDs; Figma metadata spot-check confirms structure, CSS-selector layer names, and embedded copy intact — no drift since Session 18 Thread B close-out. Case-sharing close-out ✅ CLOSED.
+
+| ID | figma_mobile_node_id | y | Shipped | Verified against HTML | Notes |
+|---|---|---|---|---|---|
+| shr01 | 1011:8 | 120 | ✅ | ✅ | Recipe A. Della-approved at quality gate ("yes! let's go"). |
+| shr02 | 1028:8 | 925 | ✅ | ✅ | Recipe A (branded variant). |
+| shr06 | 1041:8 | 5457 | ✅ | ✅ | Recipe B horizontal carousel preserved. |
+| shr07 | 1043:8 | 6412 | ✅ | ✅ | Recipe B (3-card scroll). |
+| shr08 | 1047:8 | 7553 | ✅ | ✅ | Recipe C. Arrow centered via parent `counterAxisAlignItems='CENTER'` (layoutAlign on FIXED child returns INHERIT — doesn't stick). |
+| shr10 | 1066:8 | 10272 | ✅ | ✅ | **Redesigned to 2×3 stacked grid** per handoff note. HTML v4 also rewrote: hub-on-top + 6 platform cards (Twitter, Facebook, LinkedIn, Reddit, Telegram, SMS) + stat-bar. |
+| shr11 | 1073:8 | 11450 | ✅ | ✅ | Custom layout: 2 callouts top, preview-component centered (280×~265), 1 callout bottom. |
+| shr12 | 1077:8 | 12435 | ✅ | ✅ | Recipe C. Mock-line text-post mockups (10-line before / 4-line after), stat-bar trio. |
+
+**Lessons learned (for next thread):**
+- `layoutPositioning='ABSOLUTE'` requires `parent.layoutMode !== 'NONE'`. With NONE-layout parents, children are inherently absolute via x/y — don't set the property.
+- SVG arc command `a` is not supported in `vectorPaths`. Use ellipse + rectangle primitives for clock-style icons.
+- `lineHeight` in PERCENT is direct percentage (`150` not `1.5`).
+- Two-phase MCP pattern is mandatory: mutate-and-commit (no throw) → query-and-throw separately. Throwing in the mutation call rolls back writes.
 
 ---
 

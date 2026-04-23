@@ -74,6 +74,50 @@ Next up: Thread 1b — fix the 9 remaining L2 reworks + build L3 mobile variants
 
 ## Log entries
 
+### Apr 22, 2026 (PM) — Session 17: Portfolio ship-complete — 4 port- diagrams live on case-building-portfolio
+
+**What happened:**
+Executed the 6-stage `resume-prompt-portfolio-ship-complete.md` plan autonomously end-to-end while Della was on a walk. Shipped 4 of 5 planned mobile diagrams to the live site; escalated the 5th (port-04b-governance) as L3 redesign-severity.
+
+**Work done:**
+- **port-01a-grid (dim-weights)** — Added card-stack `@media (680px, 375px)` pattern with `:nth-child(n)::before` pseudo-element dimension labels. File renamed from `diagram-port01a-company-grid.html` to `diagram-port01a-dimension-weights.html` (semantic alias for port-01a-grid). Deployed with embed-mode CSS + `body.embedded` detection script.
+- **port-01a-carousel** — Already live. Added `diagram-pair` class on the existing embed to signal pairing with the new dim-weights diagram.
+- **port-01c-implication** — Already responsive at 375/320. Deployed with embed-mode CSS; embedded after port-01b in case page.
+- **port-03b-principles** — Already responsive. Deployed with embed-mode CSS; embedded after port-03a.
+- **port-03c-design-system** — Added `@media (480px, 375px)` rules: palette wrap 4→3 col, type-row column-stack + font-size caps 32→22→20, spacing-row wrap, micro-demo stack. Deployed + embedded after port-03b.
+- **port-04b-governance** — Escalated L3. Absolute-positioned ring with hardcoded coords + SVG ring path cannot CSS-reflow to 375px. Status left as `figma-mobile-built`. Needs separate `-mobile.html` variant mirroring port-04a pattern before deploy. Flagged for Della review.
+
+**Case page embed state:**
+- `case-building-portfolio.html` went from 6 → 10 embeds
+- New embed sequence: port-01a-dimension-weights next to port-01a-carousel (as `diagram-pair`), port-01c after port-01b, port-03b after port-03a, port-03c after port-03b
+
+**Verification:**
+- Full-page headless screenshots at 1440 + 375 confirmed all 10 embeds render with no layout regressions.
+- Pre-commit hooks PASSED: voice-check (5 files, 0 errors, 5 warnings — all non-prose), quality-check (5 files, 30 checks, 0 errors, 0 warnings).
+- Commit `53694c2` pushed clean: 6 files changed, 1859 insertions, 1 deletion. `4d7786c..53694c2 main -> main`.
+
+**Tracker state — end:**
+- Rows 65, 66, 67, 69, 70 flipped to `shipped` with verify_date 2026-04-22
+- Row 68 (port-03a1) left as `deleted-ghost-row`
+- Row 71 (port-04b) left as `figma-mobile-built` with escalation note
+
+**Lessons captured:**
+- **Never run `git` commands from the sandbox for this project.** A sandbox `git status` call created `.git/index.lock` that couldn't be released, blocking Della's subsequent `git add` calls with "File exists" errors. Fix was `rm .git/index.lock` in her terminal. Rule added to Session 18 pickup doc.
+- **Multi-line HEREDOC commit messages hang shell continuation** when pasted in Mac Terminal without careful quoting. Use single-line `git commit -m "..."` for any command Della will paste.
+- **Deploy script had to handle indentation variance** — port-01a-dimension-weights uses 4-space indent + `.container` wrapper; the other 3 use 2-space + `.diagram`. Deploy script now handles both via `(?m)^([ ]{2,4})body \{` regex + per-file wrapper selector config.
+
+**Artifacts:**
+- Session report: `working/mobile-audit/reports/session17-ship-complete.md`
+- Pickup doc: `working/mobile-audit/resume-prompt-session18-figma-polish-to-deploy.md`
+- Deploy script: `/sessions/quirky-eloquent-gauss/deploy_diagrams.py` (sandbox, reusable template)
+
+**Open gates parked for next session:**
+1. port-04b-governance — L3 redesign, needs `-mobile.html` variant (1-2 hr)
+2. `diagram-pair` class CSS — currently semantic no-op on port-01a pair; Della's call on extend/remove/leave
+3. Figma sentinel test — skipped this session; ~10 min when MCP is loaded
+
+---
+
 ### Apr 22, 2026 — Case-AI mobile completion: ai06, ai19, ai23 verified
 
 **What happened:**
