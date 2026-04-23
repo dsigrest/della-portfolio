@@ -84,7 +84,8 @@
       backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
       box-shadow: var(--glass-highlight);
-      border-radius: 10px;
+      /* Workstream A: border-radius 10→12 (prevailing pattern + Figma x=914 polish) */
+      border-radius: 12px;
       padding: 18px 22px;
       position: relative;
     }
@@ -146,6 +147,10 @@
       color: var(--text-dim);
       margin-bottom: 2px;
     }
+
+    /* Workstream A: per-bet eyebrow hue matches accent line (Figma x=914 polish, sub02 prevailing pattern) */
+    .bet-card.progressive .bet-type { color: var(--blue); }
+    .bet-card.creation .bet-type { color: var(--warm); }
 
     .bet-title {
       font-size: 15px;

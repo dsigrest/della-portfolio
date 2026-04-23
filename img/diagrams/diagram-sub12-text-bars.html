@@ -74,13 +74,14 @@
       backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
       box-shadow: var(--glass-highlight);
-      border-radius: 10px;
+      /* Workstream A: border-radius 10→12 (prevailing pattern + Figma x=914 polish) */
+      border-radius: 12px;
       padding: 14px 16px;
       position: relative;
       display: flex;
       flex-direction: column;
     }
-    
+
     .stall-card::before {
       content: '';
       position: absolute;
@@ -88,7 +89,7 @@
       top: 0;
       bottom: 27px;
       width: 3px;
-      border-radius: 10px 0 0 0;
+      border-radius: 12px 0 0 0;
     }
     
     .stall-card.red::before { background: rgba(196,120,120,0.5); }
@@ -159,6 +160,11 @@
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
       }
+    }
+
+    /* Workstream A Session 28: Pattern C responsive collapse — 3-col stalls-grid → 1-col at @768 (matches sibling sub11-text-bars) */
+    @media (max-width: 768px) {
+      .stalls-grid { grid-template-columns: 1fr; }
     }
     
     body.embedded {

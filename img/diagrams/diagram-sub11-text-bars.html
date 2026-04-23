@@ -74,13 +74,15 @@
       backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
       box-shadow: var(--glass-highlight);
-      border-radius: 10px;
-      padding: 16px;
+      /* Workstream A: border-radius 10→12 (prevailing pattern + Figma x=914 polish) */
+      border-radius: 12px;
+      /* Workstream A Session 28: padding 16→20 (Figma x=914 scale match) */
+      padding: 20px;
       position: relative;
       display: flex;
       flex-direction: column;
     }
-    
+
     .pillar-card::before {
       content: '';
       position: absolute;
@@ -88,7 +90,7 @@
       left: 0;
       right: 0;
       height: 2px;
-      border-radius: 10px 10px 0 0;
+      border-radius: 12px 12px 0 0;
     }
     
     .pillar-card.accent::before { background: var(--accent); }
@@ -96,9 +98,10 @@
     .pillar-card.blue::before { background: var(--blue); }
     
     .pillar-number {
-      font-size: 28px;
+      /* Workstream A Session 28: font-size 28→36 + opacity 0.12→0.18 (Figma x=914 polish) */
+      font-size: 36px;
       font-weight: 700;
-      opacity: 0.12;
+      opacity: 0.18;
       line-height: 1;
       margin-bottom: 8px;
       font-family: 'Inter', sans-serif;

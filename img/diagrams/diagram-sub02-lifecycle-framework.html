@@ -48,7 +48,9 @@
       border-radius: 16px;
       overflow: hidden;
       position: relative;
-      padding: 36px 48px;
+      /* Workstream A: horizontal padding removed to match Figma x=914 polish
+         — cards span edge-to-edge (5 × 144px + 4 × 10px gap = 760 exact) */
+      padding: 36px 0 27px;
     }
 
     .diagram::before {
@@ -84,8 +86,9 @@
       backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
       box-shadow: var(--glass-highlight);
-      border-radius: 10px;
-      padding: 16px 20px;
+      /* Workstream A: border-radius 10→12 + padding swap 16/20→20/16 to match Figma */
+      border-radius: 12px;
+      padding: 20px 16px;
       position: relative;
     }
 
@@ -94,7 +97,8 @@
       position: absolute;
       top: 0;
       left: 0;
-      width: 100px;
+      /* Workstream A: accent line now spans full card width (Figma: 144px on a 144px card) */
+      width: 100%;
       height: 2px;
       border-radius: 1px;
     }
@@ -161,6 +165,13 @@
       color: var(--text-dim);
       margin-bottom: 2px;
     }
+
+    /* Workstream A: per-stage eyebrow hue matches the card accent (Figma x=914 polish) */
+    .stage-card.creation .stage-label { color: var(--red); }
+    .stage-card.seed .stage-label { color: var(--warm); }
+    .stage-card.distribute .stage-label { color: var(--resur); }
+    .stage-card.mod .stage-label { color: var(--blue); }
+    .stage-card.sustained .stage-label { color: var(--accent); }
 
     .stage-title {
       font-size: 14px;
@@ -356,8 +367,8 @@
             </svg>
           </div>
           <div class="stage-meta">
-            <div class="stage-label">Creation</div>
-            <div class="stage-title">Identity &amp; Category</div>
+            <div class="stage-label">Stage 1</div>
+            <div class="stage-title">Creation</div>
           </div>
         </div>
         <div class="stage-description">Identity, category, first description</div>
@@ -380,8 +391,8 @@
             </svg>
           </div>
           <div class="stage-meta">
-            <div class="stage-label">Seed Post</div>
-            <div class="stage-title">First Week Activity</div>
+            <div class="stage-label">Stage 2</div>
+            <div class="stage-title">Seed post</div>
           </div>
         </div>
         <div class="stage-description">First-week post activity</div>
@@ -404,8 +415,8 @@
             </svg>
           </div>
           <div class="stage-meta">
-            <div class="stage-label">Distribute</div>
-            <div class="stage-title">Beyond Founder</div>
+            <div class="stage-label">Stage 3</div>
+            <div class="stage-title">Distribute</div>
           </div>
         </div>
         <div class="stage-description">Acquisition beyond founder</div>
@@ -430,8 +441,8 @@
             </svg>
           </div>
           <div class="stage-meta">
-            <div class="stage-label">Mod Team</div>
-            <div class="stage-title">Leadership</div>
+            <div class="stage-label">Stage 4</div>
+            <div class="stage-title">Mod Team</div>
           </div>
         </div>
         <div class="stage-description">Teams outperformed solo founders</div>
@@ -454,8 +465,8 @@
             </svg>
           </div>
           <div class="stage-meta">
-            <div class="stage-label">Sustained</div>
-            <div class="stage-title">Self-Sustaining</div>
+            <div class="stage-label">Stage 5</div>
+            <div class="stage-title">Sustained</div>
           </div>
         </div>
         <div class="stage-description">Self-sustaining engagement</div>

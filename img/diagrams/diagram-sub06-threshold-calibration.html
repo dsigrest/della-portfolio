@@ -153,7 +153,8 @@
       background: var(--glass-bg);
       backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
-      border-radius: 10px;
+      /* Workstream A: border-radius 10→12 (prevailing pattern) */
+      border-radius: 12px;
       padding: 10px;
       position: relative;
       opacity: 0;
@@ -173,7 +174,8 @@
       left: 0;
       width: 100%;
       height: 2px;
-      border-radius: 10px 10px 0 0;
+      /* Workstream A: match card corner-radius 12 */
+      border-radius: 12px 12px 0 0;
     }
 
     .detail-icon {
@@ -337,8 +339,9 @@
           <text x="83" y="25" font-size="8" fill="var(--red)" text-anchor="middle" opacity="0.7">Highest</text>
           <text x="173" y="30" font-size="8" fill="var(--warm)" text-anchor="middle" opacity="0.6">High</text>
           <text x="263" y="35" font-size="8" fill="var(--resur)" text-anchor="middle" opacity="0.5">Medium</text>
-          <text x="50" y="100" font-size="8" fill="var(--red)" opacity="0.6">Most fail</text>
-          <text x="50" y="110" font-size="8" fill="var(--red)" opacity="0.6">here</text>
+          <!-- "Most fail here" annotation inside pill (matches Figma x=914 frame 678:822) -->
+          <rect x="48" y="92" width="84" height="16" rx="8" fill="var(--red)" opacity="0.14"/>
+          <text x="90" y="100" font-size="8" fill="var(--red)" opacity="0.9" text-anchor="middle" dominant-baseline="middle">Most fail here</text>
         </svg>
       </div>
     </div>

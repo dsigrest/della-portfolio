@@ -153,8 +153,9 @@
       backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
       box-shadow: var(--glass-highlight);
-      border-radius: 10px;
-      padding: 16px 18px;
+      /* Workstream A: border-radius 10→12 (prevailing pattern) + padding 16/18→16/20 (Figma x=914 polish) */
+      border-radius: 12px;
+      padding: 16px 20px;
       position: relative;
       display: flex;
       justify-content: space-between;
@@ -369,7 +370,7 @@
         <div class="stage-card">
           <div class="card-body">
             <div class="card-title">Creation</div>
-            <div class="card-gate">Identity, category, first description</div>
+            <div class="card-gate">Gate: Identity, category, first description</div>
             <div class="action-tags">
               <div class="tag">Name + description</div>
               <div class="tag">Avatar + banner</div>
@@ -400,7 +401,7 @@
         <div class="stage-card">
           <div class="card-body">
             <div class="card-title">Early Content</div>
-            <div class="card-gate">Content activity within the first week</div>
+            <div class="card-gate">Gate: Content activity within the first week</div>
             <div class="action-tags">
               <div class="tag">First posts</div>
               <div class="tag">Content seeding</div>
@@ -431,7 +432,7 @@
         <div class="stage-card">
           <div class="card-body">
             <div class="card-title">Member Growth</div>
-            <div class="card-gate">Acquisition beyond the founder</div>
+            <div class="card-gate">Gate: Acquisition beyond the founder</div>
             <div class="action-tags">
               <div class="tag">Invite members</div>
               <div class="tag">Cross-promote</div>
@@ -461,7 +462,7 @@
         <div class="stage-card">
           <div class="card-body">
             <div class="card-title">Mod Team Formation</div>
-            <div class="card-gate">Teams significantly outperformed solo founders</div>
+            <div class="card-gate">Gate: Teams significantly outperformed solo founders</div>
             <div class="action-tags">
               <div class="tag">Recruit co-mods</div>
               <div class="tag">Delegate</div>
@@ -491,7 +492,7 @@
         <div class="stage-card">
           <div class="card-body">
             <div class="card-title">Sustained Engagement</div>
-            <div class="card-gate">Self-sustaining contributor activity</div>
+            <div class="card-gate">Gate: Self-sustaining contributor activity</div>
             <div class="action-tags">
               <div class="tag">Iterate engagement</div>
               <div class="tag">Cadence</div>

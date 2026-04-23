@@ -35,7 +35,7 @@
     border-radius: 16px;
     overflow: hidden;
     position: relative;
-    padding: 32px;
+    padding: 48px;
   }
   .diagram::before {
     content: '';
@@ -282,16 +282,13 @@
 
 <script>
   const CHART_DATA = {
+    // Simplified from 10 points to 3 anchors to match the Figma x=914 polish —
+    // single smooth bend from Day 1 → Day 21 (horizontal tangents at both ends)
+    // plus a short flat tail to Day 30. Preserves [21, 10] so the marker lookup
+    // still resolves to the correct y.
     points: [
       [1, 100],
-      [3, 85],
-      [5, 65],
-      [7, 50],
-      [10, 35],
-      [14, 22],
-      [18, 14],
       [21, 10],
-      [25, 8],
       [30, 6],
     ],
     marker: {
