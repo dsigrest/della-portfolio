@@ -195,3 +195,64 @@ All frames at `x = -1634` (mobile cluster anchor), width 375, native-rendered (n
 - `primaryAxisSizingMode = "FIXED"` + `resizeWithoutConstraints(w, h)` before appending + `layoutAlign = "STRETCH"` is the stable sizing pattern
 - Text pattern: `textAutoResize = "HEIGHT"` + `resize(w, currentHeight)` + `layoutAlign = "STRETCH"`
 - Append child BEFORE setting x/y — auto-layout override otherwise stomps position
+
+---
+
+## Session 17 addendum — x=80 desktop-only pairings (Workstream B)
+
+**Date:** 2026-04-22
+**Scope:** 6 new native-layer mobile frames paired to x=80 desktop frames on page `29:40` that had no existing mobile counterpart and no HTML diagram. These are NOT in `audit-tracker.xlsx` because they never went through the HTML responsive audit — they exist only as Figma-native desktop frames Della hand-built.
+
+**Constraint:** Mobile content had to match current x=80 desktop Figma exactly — no rich elements re-added that Della had deliberately stripped. Working-folder HTMLs in `working/diagrams/` served as aesthetic reference only, NOT a source of truth.
+
+### Final node IDs (all 6 paired)
+
+| Desktop frame | Desktop node ID | Mobile frame | Mobile node ID | Mobile y | Mobile dimensions |
+|---|---|---|---|---|---|
+| SUB-07 — Single Text Input | `315:2` | `sub07-mobile` | `1064:26` | 6578 | 375 × 863 |
+| SUB-10a — Disorienting Landing | `326:2` | `sub10a-mobile` | `1068:26` | 10977 | 375 × 890 |
+| SUB-10b — Structured Landing | `327:2` | `sub10b-mobile` | `1072:26` | 11966 | 375 × 936 |
+| SUB-11a — Surface Adapts to Stage | `329:2` | `sub11a-mobile` | `1075:26` | 13368 | 375 × 981 |
+| SUB-11b — Contextual Depth | `330:2` | `sub11b-mobile` | `1076:26` | 14400 | 375 × 904 |
+| SUB-12s — Text Bars / Stall Points | `340:2` | `sub12s-mobile` | `1037:26` | 17134 | 375 × 509 |
+
+All 6 at `x = -1634`, width 375, native-rendered (no image fills). Screenshot-verified via `get_screenshot` on each node ID.
+
+### Locked mobile pattern (applies across all 16 case-subreddit mobile frames)
+
+**Structure:** eyebrow → H1 → subhead → stylized product preview → 4 glass callouts → footer insight
+
+**Glass callout spec:**
+- Fill: `textPri` at 0.035 opacity
+- Stroke: `textPri` at 0.08 opacity, 1px weight
+- Corner radius: 10px
+- Padding: 14/16/14/16 (T/R/B/L)
+- Gap: 6px vertical
+- Top accent stripe: 2px tall, full width, hue at 0.5 opacity
+- Number row: JetBrains Mono Bold 9px (numeric token) + Inter Medium 11px (label)
+- Description: Inter Regular 10px at 0.5 opacity
+
+**Semantic hue palette:**
+- **red `#C47878`** — before state / problem / legacy flow
+- **warm `#D4A574`** — takeaway / insight / key skip
+- **teal `#7FB5B0`** — after state / system / new flow
+- **blue `#8A9EC4`** — interaction / critical / tap-to-reveal
+
+### Build-protocol learnings
+
+1. **`throw-DATA` rollback is real — Figma's transactional model drops all mutations when a script throws.** First `sub12s-mobile` build used `throw new Error('DATA:…')` at end to return structured data; the throw rolled back every frame/text/fill mutation. Orphan node ID (`1030:26`) pointed at nothing. **New rule:** mutate-then-`notify` in one call, verify via `throw-DATA` in a separate read-only call. Read-only scripts have nothing to roll back, so the throw is safe.
+
+2. **JetBrains Mono Semi Bold doesn't exist.** Inter supports Regular/Medium/Semi Bold/Bold; JetBrains Mono supports only Regular/Bold. Numeric tokens on mobile use JetBrains Mono **Bold** at 9px — reads as "monospace data" voice without Semi Bold.
+
+3. **Compute running y-anchors from actual rendered heights post-mutation, not from planned heights.** sub11a's height (981) pushed its bottom to y=14349; sub11b was initially placed at y=14329 (20px overlap). Nudged sub11b to y=14400. Stylized previews occasionally exceed plan — always re-verify y after each frame lands.
+
+4. **Content verification before translation.** When iterating over desktop children to extract text/layout, guard RECTANGLE/ELLIPSE with `'children' in n` — those node types don't have a `.children` property and will throw on access.
+
+### Version
+
+- 2026-04-22 — Session 11: initial handoff complete, 10 HTML-paired mobile frames landed.
+- 2026-04-22 — Session 17: **Workstream B addendum shipped.** 6 additional mobile frames pair the x=80 desktop-only frames. Pattern locked, hue palette semantic across all 16 mobile frames, two new build-protocol learnings captured.
+
+### Workstream A — deferred to future thread
+
+Task #10 in this session: update live HTMLs in `portfolio-site/img/diagrams/` to match x=914 Figma styling (primarily removing elements Della stripped). Covers 11 diagrams: sub01a, sub02a, sub03a, sub04a, sub05a, sub06a, sub08b, sub09c, sub11t, sub12c, sub12t. Separate thread because scope is large and requires per-diagram visual diffs before committing any HTML edits. This is NOT in Session 17 scope and was explicitly deferred.
