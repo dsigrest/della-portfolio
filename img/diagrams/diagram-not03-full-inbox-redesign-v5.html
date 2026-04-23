@@ -223,19 +223,27 @@
   .col.before { animation: fadeSlideIn 0.5s ease-out 120ms forwards; opacity: 0; }
   .col.after { animation: fadeSlideIn 0.5s ease-out 180ms forwards; opacity: 0; }
 
-  /* ─ Mobile fit — keep 2-col, slim outer padding so columns have room ─ */
+  /* ─ Mobile fit — progressively restructure as viewport narrows ─ */
   @media (max-width: 768px) {
     body { padding: 16px; }
     .hover-hint-wrap { padding: 14px 16px 0; }
     .comparison-wrap { padding: 8px 16px 20px; }
     .comparison { gap: 12px; }
   }
+  @media (max-width: 600px) {
+    .comparison { grid-template-columns: 1fr; gap: 24px; }
+    .comparison-wrap { padding: 12px 16px 24px; }
+  }
   @media (max-width: 400px) {
     body { padding: 10px; }
     .hover-hint-wrap { padding: 12px 10px 0; }
-    .comparison-wrap { padding: 6px 10px 16px; }
-    .comparison { gap: 8px; }
+    .comparison-wrap { padding: 10px 10px 18px; }
+    .comparison { gap: 20px; }
   }
+
+  /* Embed mode — strip body chrome when iframed on a case study page */
+  body.embedded { padding: 0; background: transparent; min-height: auto; display: block; }
+  body.embedded .diagram { width: 100%; max-width: none; border-radius: 0; }
 </style>
 </head>
 <body>
@@ -456,5 +464,6 @@
     });
   })();
 </script>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
 </body>
 </html>

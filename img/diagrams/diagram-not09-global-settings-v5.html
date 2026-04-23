@@ -255,6 +255,20 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
+  /* ─ Mobile fit — progressively restructure as viewport narrows ─ */
+  @media (max-width: 768px) {
+    body { padding: 16px; }
+    .compare-area { padding: 12px 16px 0; gap: 12px; }
+  }
+  @media (max-width: 600px) {
+    /* Collapse 2-col before/after to stacked — each column gets full width */
+    .compare-area { grid-template-columns: 1fr; gap: 24px; }
+  }
+  @media (max-width: 400px) {
+    body { padding: 10px; }
+    .compare-area { padding: 10px 10px 0; gap: 20px; }
+  }
+
   /* Embed mode */
   body.embedded { padding: 0; min-height: auto; display: block; background: transparent; overflow: hidden; }
   body.embedded .diagram { border-radius: 0; }

@@ -205,6 +205,20 @@
   }
   .impact-anchor { font-size: 11px; font-weight: 600; color: var(--accent); letter-spacing: 0.04em; margin-top: 12px; opacity: 0.85; }
 
+  /* ─ Mobile fit — progressively restructure as viewport narrows ─ */
+  @media (max-width: 768px) {
+    body { padding: 16px; }
+    .platform-matrix { margin: 20px 16px 0; gap: 8px; }
+  }
+  @media (max-width: 600px) {
+    /* Collapse 3-col platform matrix to stacked — each platform card full width */
+    .platform-matrix { grid-template-columns: 1fr; gap: 14px; margin: 20px 16px 0; }
+  }
+  @media (max-width: 400px) {
+    body { padding: 10px; }
+    .platform-matrix { margin: 16px 10px 0; gap: 12px; }
+  }
+
   /* Embed mode */
   body.embedded { padding: 0; min-height: auto; display: block; background: transparent; overflow: hidden; }
   body.embedded .diagram { border-radius: 0; }

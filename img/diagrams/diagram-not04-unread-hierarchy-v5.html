@@ -341,7 +341,7 @@
   body.embedded { padding: 0; min-height: auto; display: block; background: transparent; overflow: hidden; }
   body.embedded .diagram { border-radius: 0; }
 
-  /* ─ Mobile fit — keep 3-col hierarchy, slim outer padding at narrow widths ─ */
+  /* ─ Mobile fit — progressively restructure as viewport narrows ─ */
   @media (max-width: 768px) {
     body { padding: 16px; }
     .title-area { padding: 32px 16px 0; }
@@ -355,18 +355,45 @@
     .illustration { padding: 18px 10px 12px; min-height: 118px; }
     .card-desc { padding: 0 10px 12px; }
   }
+  /* 600 and below: collapse 3-col hierarchy to stacked — cards get full width.
+     Labels row is hidden (breaks visual pairing when cards stack); level identity
+     gets injected into each card via a small header pseudo-element instead. */
+  @media (max-width: 600px) {
+    .level-labels { display: none; }
+    .levels-grid  { grid-template-columns: 1fr; gap: 16px; }
+    .flow-arrows  { display: none; }
+    .illustration { min-height: 0; padding: 24px 16px 16px; }
+    .card-desc    { padding: 0 16px 16px; }
+
+    /* Inject "Level N — Name" header inside each card at mobile.
+       Preserves the level identity that was in the hidden labels row. */
+    .level-card::before {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 14px 16px 0;
+      box-shadow: none;
+      position: static;
+      inset: auto;
+      border-radius: 0;
+      pointer-events: auto;
+    }
+    .level-card.l1::before { content: "1  —  Inbox"; color: var(--lvl1); }
+    .level-card.l2::before { content: "2  —  Tab";   color: var(--lvl2); }
+    .level-card.l3::before { content: "3  —  Row";   color: var(--lvl3); }
+  }
   @media (max-width: 400px) {
     body { padding: 10px; }
     .title-area { padding: 24px 10px 0; }
     .hover-hint { padding: 10px 10px 0; }
     .levels-flow { padding: 16px 10px 0; }
-    .flow-arrows { padding: 4px 10px 0; }
     .principle-bar { margin: 12px 10px 0; padding: 10px 12px; gap: 8px; }
     .outcome-bar { margin: 8px 10px 16px; padding: 10px 12px; }
-    .level-labels { gap: 6px; }
-    .levels-grid { gap: 6px; }
-    .illustration { padding: 14px 6px 10px; min-height: 108px; }
-    .card-desc { padding: 0 6px 10px; font-size: 9px; }
+    .levels-grid { gap: 12px; }
+    .illustration { padding: 20px 12px 14px; }
+    .card-desc { padding: 0 12px 14px; font-size: 10px; }
   }
 </style>
 </head>

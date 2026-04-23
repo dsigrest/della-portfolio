@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>case-notifications mobile audit · Phase 1 current-state tracker · 2026-04-22</title>
+  <style>
+    :root {
+      --bg: #0a0c16;
+      --surface-1: #10121c;
+      --surface-2: #151722;
+      --surface-3: #1b1e2a;
+      --text-primary: #e0dfe4;
+      --text-secondary: rgba(224, 223, 228, 0.7);
+      --text-tertiary: rgba(224, 223, 228, 0.45);
+      --border-subtle: rgba(224, 223, 228, 0.05);
+      --border-normal: rgba(224, 223, 228, 0.1);
+      --accent: #7fb5b0;
+      --accent-dim: rgba(127, 181, 176, 0.3);
+      --warn: #e9a87e;
+      --danger: #d97a7a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---------- Page frame ---------- */
+    .page {
+      max-width: 1800px;
+      margin: 0 auto;
+      padding: 40px 32px 80px;
+    }
+
+    .intro {
+      border: 1px solid var(--border-normal);
+      background: var(--surface-1);
+      border-radius: 16px;
+      padding: 32px 36px;
+      margin-bottom: 40px;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      padding: 4px 10px;
+      border: 1px solid var(--accent-dim);
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+
+    .intro h1 {
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-bottom: 8px;
+    }
+
+    .intro .sub {
+      color: var(--text-secondary);
+      font-size: 15px;
+      margin-bottom: 24px;
+    }
+
+    .intro .sub strong { color: var(--text-primary); font-weight: 600; }
+
+    .callout {
+      background: var(--surface-2);
+      border-left: 3px solid var(--warn);
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      color: var(--text-secondary);
+      font-size: 13.5px;
+    }
+
+    .callout strong { color: var(--warn); }
+
+    /* ---------- Problem panel ---------- */
+    .problems {
+      border: 1px solid var(--border-normal);
+      background: var(--surface-1);
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 40px;
+    }
+
+    .problems h2 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .problems .sub {
+      color: var(--text-secondary);
+      font-size: 13.5px;
+      margin-bottom: 20px;
+    }
+
+    .problems ol {
+      list-style: none;
+      counter-reset: p;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 12px;
+    }
+
+    .problems li {
+      counter-increment: p;
+      padding: 12px 14px 12px 44px;
+      background: var(--surface-2);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      position: relative;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .problems li::before {
+      content: counter(p);
+      position: absolute;
+      left: 14px;
+      top: 10px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent-dim);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 600;
+      display: grid;
+      place-items: center;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+    }
+
+    .problems li .probable {
+      display: block;
+      margin-top: 6px;
+      font-size: 11.5px;
+      color: var(--text-tertiary);
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+    }
+
+    /* ---------- Diagram cards ---------- */
+    .diagram-card {
+      border: 1px solid var(--border-normal);
+      background: var(--surface-1);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 28px;
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .card-id {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 13px;
+      color: var(--accent);
+      padding: 4px 10px;
+      background: rgba(127, 181, 176, 0.08);
+      border: 1px solid var(--accent-dim);
+      border-radius: 6px;
+    }
+
+    .card-title {
+      font-size: 17px;
+      font-weight: 600;
+      flex: 1;
+    }
+
+    .card-hypothesis {
+      font-size: 12.5px;
+      color: var(--text-tertiary);
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+    }
+
+    .card-link {
+      color: var(--text-tertiary);
+      font-size: 12px;
+      text-decoration: none;
+      padding: 4px 10px;
+      border: 1px solid var(--border-normal);
+      border-radius: 6px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .card-link:hover {
+      color: var(--accent);
+      border-color: var(--accent-dim);
+    }
+
+    .frames {
+      display: grid;
+      grid-template-columns: 375px 320px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 1100px) {
+      .frames { grid-template-columns: 1fr; }
+    }
+
+    .frame {
+      background: var(--surface-2);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      overflow: visible;
+    }
+
+    .frame-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-subtle);
+      background: var(--surface-3);
+    }
+
+    .frame-width {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 12px;
+      color: var(--accent);
+    }
+
+    .frame-hint {
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+
+    .frame-body {
+      padding: 12px;
+      overflow: visible;
+    }
+
+    iframe.diag {
+      background: white;
+      border: none;
+      display: block;
+      border-radius: 6px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    /* Generous default heights so stacked mobile content is fully visible —
+       no internal scrollbars inside the iframe. The onload handler (bottom
+       of file) will trim each iframe to its actual content height when the
+       tracker is served same-origin with the diagrams. Cross-origin (file://
+       local open) falls back to these defaults. */
+    iframe.w375 { width: 375px; height: 2400px; }
+    iframe.w320 { width: 320px; height: 2600px; }
+
+    .mapping-box {
+      background: var(--surface-2);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 16px 18px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .mapping-box h3 {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .mapping-box .row {
+      display: flex;
+      gap: 8px;
+      align-items: baseline;
+      padding: 6px 0;
+      border-bottom: 1px dashed var(--border-subtle);
+    }
+
+    .mapping-box .row:last-child { border-bottom: none; }
+
+    .mapping-box .label {
+      color: var(--text-tertiary);
+      min-width: 88px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .mapping-box .val {
+      flex: 1;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 12px;
+      color: var(--text-primary);
+    }
+
+    .mapping-box .problems-matched {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      background: var(--accent-dim);
+      color: var(--accent);
+      border-radius: 999px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      margin: 0 4px 4px 0;
+    }
+
+    .pill.warn { background: rgba(233, 168, 126, 0.2); color: var(--warn); }
+    .pill.unmapped { background: rgba(224, 223, 228, 0.08); color: var(--text-tertiary); }
+
+    footer {
+      margin-top: 60px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-subtle);
+      color: var(--text-tertiary);
+      font-size: 12.5px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- Intro -->
+    <section class="intro">
+      <span class="tag">Phase 1 · current state · no fixes applied</span>
+      <h1>case-notifications — mobile responsive audit</h1>
+      <p class="sub">
+        <strong>10 live iframe diagrams</strong> rendered at <strong>375px</strong> and <strong>320px</strong>
+        widths from the live Vercel deployment (<code>della-portfolio.vercel.app</code>). Iframes are live —
+        scroll inside each frame to see the full diagram. This is the unaltered state after commit
+        <code>4d7786c</code>; the 5 diagrams touched by that commit (NOT-02, 03, 04, 08, 14) got a width
+        fix only. Aspect-ratio mismatches, PNG crops, and the ~5 untouched diagrams still have Della's
+        9 reported problems somewhere in here.
+      </p>
+      <div class="callout">
+        <strong>What to do:</strong> scroll through each card, find your 9 problems, and tell me which
+        diagram ID matches each. I'll update the progress file with the confirmed mapping and kick off
+        Phase 2 classification. No CSS edits until you've confirmed.
+      </div>
+    </section>
+
+    <!-- Problem panel -->
+    <section class="problems">
+      <h2>Della's 9 reported problems (from phone test, 2026-04-22)</h2>
+      <p class="sub">Each diagram card below has a "problems matched" slot — we'll fill that in once you map.</p>
+      <ol>
+        <li>Mobile Before/After frames render at different sizes<span class="probable">probable: NOT-02 / 03 / 08 / 14 — aspect-ratio mismatch</span></li>
+        <li>Diagram cut off on right side<span class="probable">probable: NOT-07 preference architecture</span></li>
+        <li>Same as #2 (different diagram)<span class="probable">probable: NOT-06 or NOT-12</span></li>
+        <li>Not centered, cards too large vs diagram, cut off<span class="probable">probable: flywheel/cards — no NOT-E* on this page; may be PNG image</span></li>
+        <li>Wrong part of header PNG showing (needs community details)<span class="probable">probable: NOT-08 — PNG crop positioning</span></li>
+        <li>Same as #4 (second cards/flywheel diagram)<span class="probable">probable: second PNG image on case-notifications</span></li>
+        <li>Totally cut off on right, "looks like an OLD diagram"<span class="probable">probable: NOT-06 — may be pre-v5 template (L3 rebuild?)</span></li>
+        <li>3-column too cramped, margins too tight<span class="probable">probable: NOT-04 unread hierarchy</span></li>
+        <li>"5" and "3" ghost watermark numbers illegible<span class="probable">probable: NOT-04 watermarks</span></li>
+      </ol>
+    </section>
+
+    <!-- NOT-02 -->
+    <section class="diagram-card">
+      <header class="card-head">
+        <span class="card-id">NOT-02</span>
+        <span class="card-title">Inbox Row Component — Before &amp; After</span>
+        <span class="card-hypothesis">prior fix: width → 100% + padding media queries (commit 4d7786c)</span>
+        <a class="card-link" href="https://della-portfolio.vercel.app/img/diagrams/diagram-not02-inbox-row-unit-v5.html" target="_blank">open standalone ↗</a>
+      </header>
+      <div class="frames">
+        <div class="frame">
+          <div class="frame-head"><span class="frame-width">375 px</span><span class="frame-hint">scroll inside frame</span></div>
+          <div class="frame-body"><iframe class="diag w375" src="https://della-portfolio.vercel.app/img/diagrams/diagram-not02-inbox-row-unit-v5.html" loading="lazy"></iframe></div>
+        </div>
+        <div class="frame">
+          <div class="frame-head"><span class="frame-width">320 px</span><span class="frame-hint">scroll inside frame</span></div>
+          <div class="frame-body"><iframe class="diag w320" src="https://della-portfolio.vercel.app/img/diagrams/diagram-not02-inbox-row-unit-v5.html" loading="lazy"></iframe></div>
+        </div>
+        <div class="mapping-box">
+          <h3>Diagnostic scratch pad</h3>
+          <div class="row"><span class="label">prior fix</span><span class="val">width 100% + mq</span></div>
+          <div class="row"><span class="label">suspect</span><span class="val">Pattern A — aspect-ratio mismatch between .before-mock / .after-mock</span></div>
+          <div class="row"><span class="label">PNG mocks?</span><span class="val">yes — before/after PNG mocks inside</span></div>
+          <div class="problems-matched">
+            <span class="pill warn">problem #1?</span>
+            <span class="pill unmapped">confirm mapping</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NOT-03 -->
+    <section class="diagram-card">
+      <header class="card-head">
+        <span class="card-id">NOT-03</span>
+        <span class="card-title">Full Inbox Redesign — Before &amp; After</span>
+        <span class="card-hypothesis">prior fix: width → 100% + padding media queries (commit 4d7786c)</span>
+        <a class="card-link" href="https://della-portfolio.vercel.app/img/diagrams/diagram-not03-full-inbox-redesign-v5.html" target="_blank">open standalone ↗</a>
+      </header>
+      <div class="frames">
+        <div class="frame">
+          <div class="frame-head"><span class="frame-width">375 px</span><span class="frame-hint">scroll inside frame</span></div>
+          <div class="frame-body"><iframe class="diag w375" src="https://della-portfolio.vercel.app/img/diagrams/diagram-not03-full-inbox-redesign-v5.html" loading="lazy"></iframe></div>
+        </div>
+        <div class="frame">
+          <div class="frame-head"><span class="frame-width">320 px</span><span class="frame-hint">scroll inside frame</span></div>
+          <div class="frame-body"><iframe class="diag w320" src="https://della-portfolio.vercel.app/img/diagrams/diagram-not03-full-inbox-redesign-v5.html" loading="lazy"></iframe></div>
+        </div>
+        <div class="mapping-box">
+          <h3>Diagnostic scratch pad</h3>
+          <div class="row"><span class="label">prior fix</span><span class="val">width 100% + mq</span></div>
+          <div class="row"><span class="label">suspect</span><span class="val">same aspect-ratio class as NOT-02</span></div>
+          <div class="row"><span class="label">PNG mocks?</span><span class="val">yes</span></div>
+          <div class="problems-matched">
+            <span class="pill warn">problem #1?</span>
+            <span class="pill unmapped">confirm mapping</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NOT-04 -->
+    <section class="diagram-card">
+      <header class="card-head">
+        <span class="card-id">NOT-04</span>
+        <span class="card-title">Unread Hierarchy — 3 levels + watermark numerals</span>
+        <span class="card-hypothesis">prior fix: width + larger mq block (commit 4d7786c)</span>
+        <a class="card-link" href="https://della-portfolio.vercel.app/img/diagrams/diagram-not04-unread-hierarchy-v5.html" target="_blank">open standalone ↗</a>
+      </header>
+      <div class="frames">
+        <div class="frame">
+          <div class="frame-head"><span class="frame-width">375 px</span><span class="frame-hint">scroll inside frame</span></div>
+          <div class="frame-body"><iframe class="diag w375" src="https://della-portfolio.vercel.app/img/diagrams/diagram-not04-unread-hierarchy-v5.html" loading="lazy"></iframe></div>
+        </div>
+        <div class="frame">
+          <div class="frame-head"><span class="frame-width">320 px</span><span class="frame-hint">scroll inside frame</span></div>
+          <div class="frame-body"><iframe class="diag w320" src="https://della-portfolio.vercel.app/img/diagrams/diagram-not04-unread-hierarchy-v5.html" loading="lazy"></iframe></div>
+        </div>
+        <div class="mapping-box">
+          <h3>Diagnostic scratch pad</h3>
+          <div class="row"><span class="label">prior fix</span><span class="val">width + mq (partial)</span></div>
+          <div class="row"><span class="label">suspect</span><span class="val">3-col cramped at mobile, watermarks ("5","3") illegible</span></div>
+          <div class="row"><span class="label">layout</span><span class="val">3-col grid with decorative watermark numerals</span></div>
+          <div class="problems-matched">
+            <span class="pill warn">problem #8?</span>
+            <span class="pill warn">problem #9?</span>
+            <span class="pill unmapped">confirm mapping</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NOT-06 -->
+    <section class="diagram-card">
+      <header class="card-head">
+        <span class="card-id">NOT-06</span>
+        <span class="card-title">Push → Inbox handoff</span>
+        <span class="card-hypothesis">NOT touched by commit 4d7786c — untouched since v5 rebuild</span>
+        <a class="card-link" href="https://della-portfolio.vercel.app/img/diagrams/diagram-not06-push-to-inbox-v5.html" target="_blank">open standalone ↗</a>
+      </header>
+      <div class="frames">
+        <div class="frame">
+          <div class="frame-head"><span class="frame-width">375 px</span><span class="frame-hint">scroll inside frame</span></div>
+          <div class="frame-body"><iframe class="diag w375" src="https://della-portfolio.vercel.app/img/diagrams/diagram-not06-push-to-inbox-v5.html" loading="lazy"></iframe></div>
+        </div>
+        <div class="frame">
+          <div class="frame-head"><span class="frame-width">320 px</span><span class="frame-hint">scroll inside frame</span></div>
+          <div class="frame-body"><iframe class="diag w320" src="https://della-portfolio.vercel.app/img/diagrams/diagram-not06-push-to-inbox-v5.html" loading="lazy"></iframe></div>
+        </div>
+        <div class="mapping-box">
+          <h3>Diagnostic scratch pad</h3>
+          <div class="row"><span class="label">prior fix</span><span class="val">none</span></div>
+          <div class="row"><span class="label">suspect</span><span class="val">"OLD diagram" — may be pre-v5 template escape; candidate for L3 rebuild</span></div>
+          <div class="row"><span class="label">check</span><span class="val">grep file for v4-era styles / .comparison-strip 2-col</span></div>
+          <div class="problems-matched">
+            <span class="pill warn">problem #3? #7?</span>
+            <span class="pill unmapped">confirm mapping</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NOT-07 -->
+    <section class="diagram-card">
+      <header class="card-head">
+        <span class="card-id">NOT-07</span>
+        <span class="card-title">Preference Architecture</span>
+        <span class="card-hypothesis">NOT touched by commit 4d7786c</span>
+        <a class="card-link" href="https://della-portfolio.vercel.app/img/diagrams/diagram-not07-preference-architecture-v5.html" target="_blank">open standalone ↗</a>
+      </header>
+      <div class="frames">
+        <div class="frame">
+          <div class="frame-head"><span class="frame-width">375 px</span><span class="frame-hint">scroll inside frame</span></div>
+          <div class="frame-body"><iframe class="diag w375" src="https://della-portfolio.vercel.app/img/diagrams/diagram-not07-preference-architecture-v5.html" loading="lazy"></iframe></div>
+        </div>
+        <div class="frame">
+          <div class="frame-head"><span class="frame-width">320 px</span><span class="frame-hint">scroll inside frame</span></div>
+          <div class="frame-body"><iframe class="diag w320" src="https://della-portfolio.vercel.app/img/diagrams/diagram-not07-preference-architecture-v5.html" loading="lazy"></iframe></div>
+        </div>
+        <div class="mapping-box">
+          <h3>Diagnostic scratch pad</h3>
+          <div class="row"><span class="label">prior fix</span><span class="val">none</span></div>
+          <div class="row"><span class="label">suspect</span><span class="val">Pattern A (phantom selectors) from common-l2-failure-patterns.md — already cataloged for this diagram</span></div>
+          <div class="row"><span class="label">note</span><span class="val">.pref-columns 3-col w/ .transform-arrow center; needs collapse + hide arrow</span></div>
+          <div class="problems-matched">
+            <span class="pill warn">problem #2?</span>
+            <span class="pill unmapped">confirm mapping</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NOT-08 -->
+    <section class="diagram-card">
+      <header class="card-head">
+        <span class="card-id">NOT-08</span>
+        <span class="card-title">Subreddit Onramps</span>
+        <span class="card-hypothesis">prior fix: width + padding mq (commit 4d7786c)</span>
+        <a class="card-link" href="https://della-portfolio.vercel.app/img/diagrams/diagram-not08-subreddit-onramps-v5.html" target="_blank">open standalone ↗</a>
+      </header>
+      <div class="frames">
+        <div class="frame">
+          <div class="frame-head"><span class="frame-width">375 px</span><span class="frame-hint">scroll inside frame</span></div>
+          <div class="frame-body"><iframe class="diag w375" src="https://della-portfolio.vercel.app/img/diagrams/diagram-not08-subreddit-onramps-v5.html" loading="lazy"></iframe></div>
+        </div>
+        <div class="frame">
+          <div class="frame-head"><span class="frame-width">320 px</span><span class="frame-hint">scroll inside frame</span></div>
+          <div class="frame-body"><iframe class="diag w320" src="https://della-portfolio.vercel.app/img/diagrams/diagram-not08-subreddit-onramps-v5.html" loading="lazy"></iframe></div>
+        </div>
+        <div class="mapping-box">
+          <h3>Diagnostic scratch pad</h3>
+          <div class="row"><span class="label">prior fix</span><span class="val">width 100% + mq</span></div>
+          <div class="row"><span class="label">suspect</span><span class="val">aspect-ratio 520/150 vs 520/197 mismatch (Before vs After); PNG top/height positioning breaks at mobile</span></div>
+          <div class="row"><span class="label">PNG mocks?</span><span class="val">yes — header crop is critical (community details)</span></div>
+          <div class="problems-matched">
+            <span class="pill warn">problem #1? #5?</span>
+            <span class="pill unmapped">confirm mapping</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NOT-09 -->
+    <section class="diagram-card">
+      <header class="card-head">
+        <span class="card-id">NOT-09</span>
+        <span class="card-title">Global Settings</span>
+        <span class="card-hypothesis">NOT touched by commit 4d7786c</span>
+        <a class="card-link" href="https://della-portfolio.vercel.app/img/diagrams/diagram-not09-global-settings-v5.html" target="_blank">open standalone ↗</a>
+      </header>
+      <div class="frames">
+        <div class="frame">
+          <div class="frame-head"><span class="frame-width">375 px</span><span class="frame-hint">scroll inside frame</span></div>
+          <div class="frame-body"><iframe class="diag w375" src="https://della-portfolio.vercel.app/img/diagrams/diagram-not09-global-settings-v5.html" loading="lazy"></iframe></div>
+        </div>
+        <div class="frame">
+          <div class="frame-head"><span class="frame-width">320 px</span><span class="frame-hint">scroll inside frame</span></div>
+          <div class="frame-body"><iframe class="diag w320" src="https://della-portfolio.vercel.app/img/diagrams/diagram-not09-global-settings-v5.html" loading="lazy"></iframe></div>
+        </div>
+        <div class="mapping-box">
+          <h3>Diagnostic scratch pad</h3>
+          <div class="row"><span class="label">prior fix</span><span class="val">none</span></div>
+          <div class="row"><span class="label">suspect</span><span class="val">prior pattern A catalog noted .panels phantom selector (should be .compare-area)</span></div>
+          <div class="row"><span class="label">note</span><span class="val">BEFORE screenshots already exist at 320/375/480</span></div>
+          <div class="problems-matched">
+            <span class="pill unmapped">not in Della's top-9 list</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NOT-11 -->
+    <section class="diagram-card">
+      <header class="card-head">
+        <span class="card-id">NOT-11</span>
+        <span class="card-title">Cross-Channel (SMS / Push / Inbox)</span>
+        <span class="card-hypothesis">NOT touched by commit 4d7786c</span>
+        <a class="card-link" href="https://della-portfolio.vercel.app/img/diagrams/diagram-not11-cross-channel-v5.html" target="_blank">open standalone ↗</a>
+      </header>
+      <div class="frames">
+        <div class="frame">
+          <div class="frame-head"><span class="frame-width">375 px</span><span class="frame-hint">scroll inside frame</span></div>
+          <div class="frame-body"><iframe class="diag w375" src="https://della-portfolio.vercel.app/img/diagrams/diagram-not11-cross-channel-v5.html" loading="lazy"></iframe></div>
+        </div>
+        <div class="frame">
+          <div class="frame-head"><span class="frame-width">320 px</span><span class="frame-hint">scroll inside frame</span></div>
+          <div class="frame-body"><iframe class="diag w320" src="https://della-portfolio.vercel.app/img/diagrams/diagram-not11-cross-channel-v5.html" loading="lazy"></iframe></div>
+        </div>
+        <div class="mapping-box">
+          <h3>Diagnostic scratch pad</h3>
+          <div class="row"><span class="label">prior fix</span><span class="val">none</span></div>
+          <div class="row"><span class="label">suspect</span><span class="val">likely multi-column cards or phone mocks — inspect</span></div>
+          <div class="row"><span class="label">hypothesis</span><span class="val">could be the "flywheel/cards" #4 or #6 problem</span></div>
+          <div class="problems-matched">
+            <span class="pill warn">problem #4? #6?</span>
+            <span class="pill unmapped">confirm mapping</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NOT-12 -->
+    <section class="diagram-card">
+      <header class="card-head">
+        <span class="card-id">NOT-12</span>
+        <span class="card-title">Inbox Layout Experiments</span>
+        <span class="card-hypothesis">NOT touched by commit 4d7786c</span>
+        <a class="card-link" href="https://della-portfolio.vercel.app/img/diagrams/diagram-not12-inbox-layout-experiments-v5.html" target="_blank">open standalone ↗</a>
+      </header>
+      <div class="frames">
+        <div class="frame">
+          <div class="frame-head"><span class="frame-width">375 px</span><span class="frame-hint">scroll inside frame</span></div>
+          <div class="frame-body"><iframe class="diag w375" src="https://della-portfolio.vercel.app/img/diagrams/diagram-not12-inbox-layout-experiments-v5.html" loading="lazy"></iframe></div>
+        </div>
+        <div class="frame">
+          <div class="frame-head"><span class="frame-width">320 px</span><span class="frame-hint">scroll inside frame</span></div>
+          <div class="frame-body"><iframe class="diag w320" src="https://della-portfolio.vercel.app/img/diagrams/diagram-not12-inbox-layout-experiments-v5.html" loading="lazy"></iframe></div>
+        </div>
+        <div class="mapping-box">
+          <h3>Diagnostic scratch pad</h3>
+          <div class="row"><span class="label">prior fix</span><span class="val">none</span></div>
+          <div class="row"><span class="label">suspect</span><span class="val">multi-variant layout — could be "cut off on right" #2 or #3</span></div>
+          <div class="problems-matched">
+            <span class="pill warn">problem #2? #3?</span>
+            <span class="pill unmapped">confirm mapping</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NOT-14 -->
+    <section class="diagram-card">
+      <header class="card-head">
+        <span class="card-id">NOT-14</span>
+        <span class="card-title">Navigation Simplification</span>
+        <span class="card-hypothesis">prior fix: width + padding mq (commit 4d7786c)</span>
+        <a class="card-link" href="https://della-portfolio.vercel.app/img/diagrams/diagram-not14-navigation-simplification-v5.html" target="_blank">open standalone ↗</a>
+      </header>
+      <div class="frames">
+        <div class="frame">
+          <div class="frame-head"><span class="frame-width">375 px</span><span class="frame-hint">scroll inside frame</span></div>
+          <div class="frame-body"><iframe class="diag w375" src="https://della-portfolio.vercel.app/img/diagrams/diagram-not14-navigation-simplification-v5.html" loading="lazy"></iframe></div>
+        </div>
+        <div class="frame">
+          <div class="frame-head"><span class="frame-width">320 px</span><span class="frame-hint">scroll inside frame</span></div>
+          <div class="frame-body"><iframe class="diag w320" src="https://della-portfolio.vercel.app/img/diagrams/diagram-not14-navigation-simplification-v5.html" loading="lazy"></iframe></div>
+        </div>
+        <div class="mapping-box">
+          <h3>Diagnostic scratch pad</h3>
+          <div class="row"><span class="label">prior fix</span><span class="val">width 100% + mq</span></div>
+          <div class="row"><span class="label">suspect</span><span class="val">possibly same aspect-ratio class as NOT-02/03/08</span></div>
+          <div class="row"><span class="label">PNG mocks?</span><span class="val">inspect to confirm</span></div>
+          <div class="problems-matched">
+            <span class="pill warn">problem #1?</span>
+            <span class="pill unmapped">confirm mapping</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Additional non-diagram candidates for #4, #5, #6 -->
+    <section class="intro" style="border-color: var(--warn); border-style: dashed;">
+      <span class="tag" style="color: var(--warn); border-color: rgba(233, 168, 126, 0.3);">Non-iframe suspects</span>
+      <h1 style="font-size: 20px;">Problems that may map to PNG images, not iframe diagrams</h1>
+      <p class="sub">
+        case-notifications.html has <strong>4 static PNG images</strong> alongside the 10 iframes.
+        Problems #4, #5, #6 (flywheel cards, header PNG crop) may belong to these. The case study page itself
+        is what gets affected by container CSS in <code>styles.css</code>, not the diagram HTML files.
+      </p>
+      <div class="callout">
+        <strong>candidate PNGs on case-notifications:</strong><br>
+        1. <code>notif-ds-migration.png</code> — legacy vs unified inbox (before/after)<br>
+        2. <code>notif-push-landing.png</code> — Discovery / Following / Conversation volume levels (3 cards — likely matches #4 or #6)<br>
+        3. <code>notif-pipeline-separation.png</code> — push + community preferences<br>
+        4. <code>notif-unified-inbox.png</code> — 4-panel progression (possibly the other cards/flywheel)<br>
+        <br>
+        If #4 or #6 map to a PNG image, the fix lives in <code>styles.css</code> (container rules on the img
+        wrapper) — that's L1, not L2. Confirm from the phone screenshots.
+      </div>
+    </section>
+
+    <footer>
+      comparison-tracker-case-notifications-2026-04-22.html · Phase 1 current-state capture · responsive-audit v0.3.0
+    </footer>
+  </div>
+
+  <script>
+    // Auto-trim each iframe's height to its actual content height.
+    // Works when the tracker and the iframes are same-origin (e.g. served
+    // together from della-portfolio.vercel.app). Silently fails on file://
+    // opens because cross-origin iframe content is not readable — in that
+    // case the generous CSS defaults (2400/2600px) remain in place and the
+    // full diagram content is still visible with no inner scroll.
+    document.querySelectorAll('iframe.diag').forEach(frame => {
+      frame.addEventListener('load', () => {
+        try {
+          const doc = frame.contentDocument;
+          if (!doc) return;
+          const h = Math.max(
+            doc.documentElement.scrollHeight,
+            doc.body ? doc.body.scrollHeight : 0
+          );
+          if (h > 0) frame.style.height = (h + 12) + 'px';
+        } catch (e) {
+          // Cross-origin — keep the CSS default height. Content stays visible.
+        }
+      });
+    });
+  </script>
+</body>
+</html>
