@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PORT-03c — Design System Overview</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --casual: #D4A574;
+    --resur: #C4B078;
+    --blue: #8A9EC4;
+    --red: #C47878;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+
+  .diagram {
+    width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    padding: 48px;
+    opacity: 0;
+    animation: fadeIn 0.7s ease-out 0.1s forwards;
+  }
+  .diagram::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 350px 280px at 30% 60%, rgba(127,181,176,0.03) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .title-area {
+    margin-bottom: 40px;
+    position: relative;
+    z-index: 1;
+  }
+  .section-label-top {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.8;
+    margin-bottom: 8px;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-out 0.15s forwards;
+  }
+  h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text-pri);
+    letter-spacing: -0.025em;
+    margin-bottom: 8px;
+    line-height: 1.15;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-out 0.25s forwards;
+  }
+  .subtitle {
+    font-size: 14px;
+    color: var(--text-sec);
+    line-height: 1.55;
+    max-width: 480px;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-out 0.35s forwards;
+  }
+
+  /* Token sections — increased gap for breathing room */
+  .tokens {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .token-section {
+    opacity: 0;
+    animation: sectionIn 0.5s ease-out forwards;
+  }
+  .token-section:nth-child(1) { animation-delay: 0.4s; }
+  .token-section:nth-child(2) { animation-delay: 0.5s; }
+  .token-section:nth-child(3) { animation-delay: 0.6s; }
+  .token-section:nth-child(4) { animation-delay: 0.7s; }
+
+  @keyframes sectionIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-ter);
+    margin-bottom: 14px;
+  }
+
+  /* COLOR PALETTE */
+  .palette {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .swatch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .swatch-color {
+    width: 56px; height: 56px;
+    border-radius: 12px;
+    border: 1px solid rgba(224,223,228,0.1);
+    position: relative;
+    overflow: hidden;
+  }
+  .swatch-color.canvas-swatch {
+    background: var(--canvas);
+    border-color: rgba(224,223,228,0.15);
+  }
+  .swatch-color.accent-swatch { background: var(--accent); }
+  .swatch-color.casual-swatch { background: var(--casual); }
+  .swatch-color.resur-swatch { background: var(--resur); }
+  .swatch-color.seg-swatch { background: var(--blue); }
+  .swatch-color.red-swatch { background: var(--red); }
+  .swatch-color.text-swatch {
+    background: var(--canvas);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .swatch-color.text-swatch span {
+    font-size: 22px; font-weight: 700; color: var(--text-pri);
+  }
+  .swatch-name {
+    font-size: 9px; font-weight: 500;
+    color: var(--text-dim);
+    text-align: center;
+    max-width: 60px;
+    line-height: 1.3;
+  }
+  .swatch-hex {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--text-ter);
+  }
+
+  /* TYPOGRAPHY */
+  .type-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .type-row {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-normal);
+  }
+  .type-sample {
+    flex: 1;
+    color: var(--text-pri);
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .type-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    flex-shrink: 0;
+    width: 120px;
+    text-align: right;
+  }
+
+  /* SPACING — extra top margin for breathing room (per Della's feedback) */
+  .spacing-section {
+    margin-top: 8px;
+  }
+  .spacing-row {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .spacing-block {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .spacing-vis {
+    height: 28px;
+    background: var(--accent-dim);
+    border-radius: 4px;
+    border: 1px solid rgba(127,181,176,0.15);
+    position: relative;
+  }
+  .spacing-vis::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    top: 50%; height: 1px;
+    background: var(--accent);
+    opacity: 0.3;
+  }
+  .spacing-label {
+    font-size: 10px;
+    color: var(--text-ter);
+    white-space: nowrap;
+  }
+  .spacing-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    opacity: 0.7;
+  }
+
+  /* SIGNATURE INTERACTION — extra top padding for breathing room */
+  .micro-section {
+    margin-top: 8px;
+  }
+  .micro-demo {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-highlight);
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .micro-example {
+    display: flex;
+    gap: 6px;
+    align-items: flex-end;
+  }
+  .micro-bar {
+    width: 20px;
+    background: var(--accent);
+    border-radius: 3px 3px 0 0;
+    opacity: 0;
+    animation: barReveal 0.4s ease forwards;
+  }
+  .micro-bar:nth-child(1) { height: 18px; animation-delay: 0.75s; }
+  .micro-bar:nth-child(2) { height: 28px; animation-delay: 0.83s; }
+  .micro-bar:nth-child(3) { height: 22px; animation-delay: 0.91s; }
+  .micro-bar:nth-child(4) { height: 36px; animation-delay: 0.99s; }
+  .micro-bar:nth-child(5) { height: 30px; animation-delay: 1.07s; }
+
+  @keyframes barReveal {
+    from { opacity: 0; transform: scaleY(0); transform-origin: bottom; }
+    to { opacity: 0.7; transform: scaleY(1); transform-origin: bottom; }
+  }
+
+  .micro-text { flex: 1; }
+  .micro-title {
+    font-size: 12px; font-weight: 600;
+    color: var(--text-pri);
+    margin-bottom: 4px;
+  }
+  .micro-desc {
+    font-size: 11px;
+    color: var(--text-sec);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 680px) {
+    .diagram { padding: 24px; }
+    body { padding: 16px; }
+    .swatch-color { width: 44px; height: 44px; }
+  }
+
+  @media (max-width: 480px) {
+    body { padding: 12px; }
+    .diagram { padding: 20px; }
+    /* Palette wraps */
+    .palette { flex-wrap: wrap; gap: 12px; }
+    .swatch { flex: 0 0 calc(25% - 9px); }
+    /* Type rows stack sample above meta */
+    .type-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      padding: 10px 0;
+    }
+    .type-sample {
+      white-space: normal;
+      overflow: visible;
+      text-overflow: clip;
+      font-size: 22px !important; /* cap the 32px sample */
+      flex: none;
+    }
+    .type-row:nth-child(2) .type-sample { font-size: 15px !important; }
+    .type-row:nth-child(3) .type-sample { font-size: 13px !important; }
+    .type-meta {
+      width: auto;
+      text-align: left;
+      font-size: 9px;
+    }
+    /* Spacing row wraps */
+    .spacing-row { flex-wrap: wrap; gap: 14px; }
+    .spacing-block { gap: 8px; }
+    /* Micro demo stacks */
+    .micro-demo {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 18px;
+    }
+  }
+
+  @media (max-width: 375px) {
+    .swatch { flex: 0 0 calc(33.333% - 8px); }
+    .type-sample { font-size: 20px !important; }
+    .type-row:nth-child(2) .type-sample { font-size: 14px !important; }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="title-area">
+      <div class="section-label-top">Visual System</div>
+      <h1>What Emerged</h1>
+      <p class="subtitle">Six case studies, one coherent system. The direction choice produced a minimal token set — constrained enough for consistency, flexible enough for range.</p>
+    </div>
+
+    <div class="tokens">
+      <!-- COLOR -->
+      <div class="token-section">
+        <div class="section-label">Palette</div>
+        <div class="palette">
+          <div class="swatch">
+            <div class="swatch-color canvas-swatch"></div>
+            <div class="swatch-hex">#0A0C16</div>
+            <div class="swatch-name">Canvas</div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color text-swatch"><span>Aa</span></div>
+            <div class="swatch-hex">#E0DFE4</div>
+            <div class="swatch-name">Primary text</div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color accent-swatch"></div>
+            <div class="swatch-hex">#7FB5B0</div>
+            <div class="swatch-name">Accent</div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color casual-swatch"></div>
+            <div class="swatch-hex">#D4A574</div>
+            <div class="swatch-name">Warm</div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color resur-swatch"></div>
+            <div class="swatch-hex">#C4B078</div>
+            <div class="swatch-name">Gold</div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color seg-swatch"></div>
+            <div class="swatch-hex">#8A9EC4</div>
+            <div class="swatch-name">Cool</div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color red-swatch"></div>
+            <div class="swatch-hex">#C47878</div>
+            <div class="swatch-name">Alert</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TYPOGRAPHY -->
+      <div class="token-section">
+        <div class="section-label">Type Scale</div>
+        <div class="type-stack">
+          <div class="type-row">
+            <div class="type-sample" style="font-size: 32px; font-weight: 700; letter-spacing: -0.025em;">Case Study Title</div>
+            <div class="type-meta">Inter 700 · 32px</div>
+          </div>
+          <div class="type-row">
+            <div class="type-sample" style="font-size: 17px; font-weight: 600; letter-spacing: -0.02em;">Section Heading</div>
+            <div class="type-meta">Inter 600 · 17px</div>
+          </div>
+          <div class="type-row">
+            <div class="type-sample" style="font-size: 14px; font-weight: 500; color: var(--text-sec);">Body copy with comfortable reading measure</div>
+            <div class="type-meta">Inter 500 · 14px</div>
+          </div>
+          <div class="type-row">
+            <div class="type-sample" style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent);">Mono Label</div>
+            <div class="type-meta">JB Mono 700 · 11px</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SPACING -->
+      <div class="token-section spacing-section">
+        <div class="section-label">Spacing Zones</div>
+        <div class="spacing-row">
+          <div class="spacing-block">
+            <div class="spacing-vis" style="width: 8px;"></div>
+            <div class="spacing-label">Tight</div>
+            <div class="spacing-val">4–8</div>
+          </div>
+          <div class="spacing-block">
+            <div class="spacing-vis" style="width: 24px;"></div>
+            <div class="spacing-label">Comfortable</div>
+            <div class="spacing-val">16–24</div>
+          </div>
+          <div class="spacing-block">
+            <div class="spacing-vis" style="width: 56px;"></div>
+            <div class="spacing-label">Generous</div>
+            <div class="spacing-val">48–80</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIGNATURE INTERACTION -->
+      <div class="token-section micro-section">
+        <div class="section-label">Signature Interaction</div>
+        <div class="micro-demo">
+          <div class="micro-example">
+            <div class="micro-bar"></div>
+            <div class="micro-bar"></div>
+            <div class="micro-bar"></div>
+            <div class="micro-bar"></div>
+            <div class="micro-bar"></div>
+          </div>
+          <div class="micro-text">
+            <div class="micro-title">Staggered reveals</div>
+            <div class="micro-desc">Metrics and visual elements enter in sequence — 50–80ms delays, spring easing. The portfolio feels alive without feeling busy.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+</body>
+</html>

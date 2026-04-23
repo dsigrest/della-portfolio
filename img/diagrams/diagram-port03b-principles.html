@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PORT-03b — Design Principles</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --casual: #D4A574;
+    --blue: #8A9EC4;
+    --red: #C47878;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+
+  .diagram {
+    width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    opacity: 0;
+    animation: fadeIn 0.7s ease-out 0.1s forwards;
+  }
+  .diagram::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 400px 300px at 50% 40%, rgba(127,181,176,0.03) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Vertical thread connecting the cards */
+  .thread {
+    position: absolute;
+    left: 83px;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(127,181,176,0.15) 25%,
+      rgba(127,181,176,0.15) 75%,
+      transparent 100%
+    );
+    z-index: 0;
+  }
+
+  .title-area {
+    padding: 48px 48px 0;
+    position: relative;
+    z-index: 1;
+  }
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.8;
+    margin-bottom: 8px;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-out 0.15s forwards;
+  }
+  h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text-pri);
+    letter-spacing: -0.025em;
+    margin-bottom: 8px;
+    line-height: 1.15;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-out 0.25s forwards;
+  }
+  .subtitle {
+    font-size: 14px;
+    color: var(--text-sec);
+    line-height: 1.55;
+    max-width: 480px;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-out 0.35s forwards;
+  }
+
+  /* Principle cards */
+  .principles {
+    padding: 32px 48px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .principle {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-highlight);
+    border-radius: 14px;
+    padding: 28px 24px;
+    opacity: 0;
+    animation: cardRise 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+  .principle:nth-child(1) { animation-delay: 0.4s; }
+  .principle:nth-child(2) { animation-delay: 0.5s; }
+  .principle:nth-child(3) { animation-delay: 0.6s; }
+
+  /* Illustration area */
+  .principle-illustration {
+    width: 72px; height: 72px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .principle-illustration::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.12;
+    border-radius: 12px;
+  }
+  .principle-illustration svg {
+    position: relative;
+    z-index: 1;
+  }
+
+  .p1 .principle-illustration::before { background: var(--accent); }
+  .p2 .principle-illustration::before { background: var(--casual); }
+  .p3 .principle-illustration::before { background: var(--blue); }
+
+  /* Ambient illustration animations */
+  .p1 .principle-illustration svg circle:nth-child(n+2) {
+    animation: ripple 3s ease-in-out infinite;
+  }
+  .p1 .principle-illustration svg circle:nth-child(3) { animation-delay: 0.4s; }
+  .p1 .principle-illustration svg circle:nth-child(4) { animation-delay: 0.8s; }
+
+  @keyframes ripple {
+    0%, 100% { opacity: inherit; }
+    50% { opacity: 0.15; }
+  }
+
+  /* Text content */
+  .principle-content { flex: 1; min-width: 0; }
+  .principle-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .p1 .principle-tag { color: var(--accent); }
+  .p2 .principle-tag { color: var(--casual); }
+  .p3 .principle-tag { color: var(--blue); }
+
+  .principle-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-pri);
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+    line-height: 1.25;
+  }
+  .principle-desc {
+    font-size: 13px;
+    color: var(--text-sec);
+    line-height: 1.55;
+  }
+  .principle-desc strong {
+    color: var(--text-pri);
+    font-weight: 600;
+  }
+  .principle-desc em {
+    color: var(--accent);
+    font-style: normal;
+    font-weight: 500;
+  }
+
+  @media (max-width: 680px) {
+    .title-area, .principles { padding-left: 24px; padding-right: 24px; }
+    body { padding: 16px; }
+    .principle { flex-direction: column; gap: 12px; }
+    .thread { display: none; }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes cardRise {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="thread"></div>
+    <div class="title-area">
+      <div class="section-label">Decision Framework</div>
+      <h1>Three Lenses</h1>
+      <p class="subtitle">Choosing a visual direction that would hold up across six case studies — evaluated through signal, pattern, and a tiebreaker, not gut feel.</p>
+    </div>
+
+    <div class="principles">
+      <!-- Signal -->
+      <div class="principle p1">
+        <div class="principle-illustration">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <circle cx="18" cy="18" r="3" fill="#7FB5B0" opacity="0.9"/>
+            <circle cx="18" cy="18" r="8" stroke="#7FB5B0" stroke-width="1.2" opacity="0.5" fill="none"/>
+            <circle cx="18" cy="18" r="13" stroke="#7FB5B0" stroke-width="1" opacity="0.3" fill="none"/>
+            <circle cx="18" cy="18" r="17" stroke="#7FB5B0" stroke-width="0.8" opacity="0.15" fill="none"/>
+          </svg>
+        </div>
+        <div class="principle-content">
+          <div class="principle-tag">Signal</div>
+          <div class="principle-title">What does it say before you read it?</div>
+          <div class="principle-desc">Dark Spare signals <strong>senior IC who ships</strong> — not a junior showing off Figma tricks. The restraint itself is the message: confident enough to let the work lead.</div>
+        </div>
+      </div>
+
+      <!-- Pattern -->
+      <div class="principle p2">
+        <div class="principle-illustration">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <rect x="4" y="4" width="6" height="6" rx="1.5" fill="#D4A574" opacity="0.7"/>
+            <rect x="15" y="4" width="6" height="6" rx="1.5" fill="#D4A574" opacity="0.5"/>
+            <rect x="26" y="4" width="6" height="6" rx="1.5" fill="#D4A574" opacity="0.7"/>
+            <rect x="4" y="15" width="6" height="6" rx="1.5" fill="#D4A574" opacity="0.5"/>
+            <rect x="15" y="15" width="6" height="6" rx="1.5" fill="#D4A574" opacity="0.9"/>
+            <rect x="26" y="15" width="6" height="6" rx="1.5" fill="#D4A574" opacity="0.5"/>
+            <rect x="4" y="26" width="6" height="6" rx="1.5" fill="#D4A574" opacity="0.7"/>
+            <rect x="15" y="26" width="6" height="6" rx="1.5" fill="#D4A574" opacity="0.5"/>
+            <rect x="26" y="26" width="6" height="6" rx="1.5" fill="#D4A574" opacity="0.7"/>
+          </svg>
+        </div>
+        <div class="principle-content">
+          <div class="principle-tag">Pattern</div>
+          <div class="principle-title">What system does it create?</div>
+          <div class="principle-desc">The dark canvas + single accent color creates <strong>a repeatable container system</strong> — every case study, diagram, and interaction lives in the same visual language without competing for attention.</div>
+        </div>
+      </div>
+
+      <!-- Decision -->
+      <div class="principle p3">
+        <div class="principle-illustration">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <line x1="18" y1="6" x2="18" y2="16" stroke="#8A9EC4" stroke-width="1.5" opacity="0.6"/>
+            <line x1="6" y1="16" x2="30" y2="16" stroke="#8A9EC4" stroke-width="1.5" opacity="0.6"/>
+            <line x1="6" y1="16" x2="6" y2="22" stroke="#8A9EC4" stroke-width="1.2" opacity="0.4"/>
+            <line x1="30" y1="16" x2="30" y2="22" stroke="#8A9EC4" stroke-width="1.2" opacity="0.4"/>
+            <path d="M2 22 Q6 28, 10 22" stroke="#8A9EC4" stroke-width="1.2" fill="none" opacity="0.5"/>
+            <path d="M26 22 Q30 28, 34 22" stroke="#8A9EC4" stroke-width="1.2" fill="none" opacity="0.5"/>
+            <circle cx="18" cy="6" r="2" fill="#8A9EC4" opacity="0.7"/>
+            <circle cx="6" cy="22" r="1.5" fill="#8A9EC4" opacity="0.3"/>
+            <circle cx="30" cy="23" r="2.5" fill="#8A9EC4" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="principle-content">
+          <div class="principle-tag">Decision</div>
+          <div class="principle-title">What broke the tie?</div>
+          <div class="principle-desc"><strong>Diagrams.</strong> Dark Spare was the only direction where technical diagrams, data visualizations, and interactive elements felt native — not bolted on. The case study content <em>is</em> the portfolio's visual identity.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+</body>
+</html>

@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Six Companies, Six Rubrics — Dimension Weights</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-body: #08090F;
+      --bg-canvas: #0A0C16;
+      --bg-card: #10121C;
+      --bg-elevated: #151722;
+      --text-primary: #E0DFE4;
+      --text-sec: rgba(224, 223, 228, 0.6);
+      --text-tertiary: rgba(224, 223, 228, 0.4);
+      --text-dim: rgba(224, 223, 228, 0.2);
+      --accent: #7FB5B0;
+      --accent-dim: rgba(127, 181, 176, 0.12);
+      --warm: #D4A574;
+      --blue: #8A9EC4;
+      --red: #C47878;
+      --gold: #C4B078;
+      --border: rgba(224, 223, 228, 0.07);
+    }
+
+    body {
+      background: var(--bg-body);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .container {
+    width: 100%;
+    border-radius: 0;
+  }
+
+
+    .container {
+      width: 760px;
+      background: var(--bg-canvas);
+      border-radius: 16px;
+      padding: 48px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 60px rgba(127, 181, 176, 0.08);
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 50%, rgba(127, 181, 176, 0.08) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      opacity: 0.8;
+      margin-bottom: 8px;
+      animation: fadeIn 0.6s ease-out 0.1s both;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      margin-bottom: 8px;
+      animation: fadeIn 0.6s ease-out 0.2s both;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: var(--text-sec);
+      line-height: 1.55;
+      margin-bottom: 32px;
+      animation: fadeIn 0.6s ease-out 0.3s both;
+    }
+
+    .grid-wrapper {
+      animation: fadeIn 0.6s ease-out 0.4s both;
+      margin-bottom: 24px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 100px 1fr 1fr 1fr 1fr 1fr;
+      gap: 16px;
+      align-items: start;
+      margin-bottom: 20px;
+    }
+
+    .grid-header {
+      display: contents;
+    }
+
+    .header-label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-tertiary);
+      padding-bottom: 12px;
+    }
+
+    .header-dimension {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-tertiary);
+      padding-bottom: 12px;
+      text-align: center;
+      transition: color 0.3s ease, opacity 0.3s ease;
+    }
+
+    .header-dimension.focused {
+      color: var(--accent);
+      opacity: 1;
+    }
+
+    .grid-row {
+      display: contents;
+    }
+
+    .company-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: transparent;
+    }
+
+    .company-label:hover {
+      background: var(--accent-dim);
+    }
+
+    .company-label.focused {
+      background: var(--accent-dim);
+      opacity: 1;
+    }
+
+    .company-label.dimmed {
+      opacity: 0.2;
+    }
+
+    .company-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .company-icon svg {
+      width: 100%;
+      height: 100%;
+      stroke-width: 1.5;
+      fill: none;
+    }
+
+    .company-name {
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: opacity 0.3s ease;
+    }
+
+    .company-label.dimmed .company-name {
+      opacity: 0.5;
+    }
+
+    .weight-cell {
+      text-align: center;
+      padding: 12px 8px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      background: transparent;
+      min-height: 56px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .weight-cell.dimmed {
+      opacity: 0.2;
+    }
+
+    .weight-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 4px;
+      opacity: 0;
+      transition: opacity 0.5s ease 0.1s;
+    }
+
+    .weight-value.focused {
+      opacity: 1;
+    }
+
+    .weight-unit {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--text-tertiary);
+    }
+
+    .weight-bar {
+      width: 100%;
+      height: 4px;
+      background: var(--accent-dim);
+      border-radius: 2px;
+      margin-top: 8px;
+      overflow: hidden;
+      opacity: 0;
+      transition: opacity 0.5s ease 0.1s;
+    }
+
+    .weight-bar.focused {
+      opacity: 1;
+    }
+
+    .weight-fill {
+      height: 100%;
+      border-radius: 2px;
+      width: 0%;
+      animation: fillBar 0.6s ease-out 0.2s forwards;
+    }
+
+    @keyframes fillBar {
+      from {
+        width: 0%;
+      }
+      to {
+        width: var(--fill-width, 100%);
+      }
+    }
+
+    .company-label.focused {
+      transform: scale(1.01);
+    }
+
+    .insight-card {
+      background: linear-gradient(135deg, rgba(224, 223, 228, 0.05) 0%, rgba(224, 223, 228, 0.015) 100%);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(224, 223, 228, 0.08);
+      box-shadow: inset 0 1px 0 rgba(224, 223, 228, 0.06);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 24px;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.6s ease-out 0.5s both;
+    }
+
+    .insight-text {
+      font-size: 13px;
+      color: var(--text-sec);
+      line-height: 1.5;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .insight-text.active {
+      opacity: 1;
+    }
+
+    .instruction-text {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      text-align: center;
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      animation: fadeIn 0.6s ease-out 0.55s both;
+    }
+
+    .instruction-icon {
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .instruction-icon svg {
+      width: 100%;
+      height: 100%;
+      stroke: currentColor;
+      stroke-width: 1.5;
+      fill: none;
+    }
+
+    .source {
+      font-size: 10px;
+      color: var(--text-dim);
+      font-style: italic;
+      text-align: center;
+      margin-top: 24px;
+      animation: fadeIn 0.6s ease-out 0.6s both;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* Color map for companies */
+    .company-label[data-company="ramp"] { --company-color: #7FB5B0; }
+    .company-label[data-company="anthropic"] { --company-color: #D4A574; }
+    .company-label[data-company="meta"] { --company-color: #8A9EC4; }
+    .company-label[data-company="figma"] { --company-color: #C4B078; }
+    .company-label[data-company="openai"] { --company-color: rgba(224, 223, 228, 0.35); }
+    .company-label[data-company="cursor"] { --company-color: #C47878; }
+
+    .weight-fill {
+      background: var(--company-color);
+    }
+
+    /* Responsive — card-stack pattern at small widths
+       Converts the 6-col grid into one card per company, with each of the
+       5 dimensions stacked as a labelled mini-bar row. */
+    @media (max-width: 680px) {
+      body {
+        padding: 24px 16px;
+        align-items: flex-start;
+      }
+      .container {
+        width: 100%;
+        padding: 28px 20px;
+      }
+      h1 { font-size: 24px; }
+      .subtitle { font-size: 14px; margin-bottom: 24px; }
+      .grid-wrapper { margin-bottom: 20px; }
+
+      /* Neutralize desktop grid */
+      .grid {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .grid-header { display: none; }
+      .grid-row {
+        display: flex !important;
+        flex-direction: column;
+        gap: 4px;
+        padding: 14px 14px 12px;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+      }
+
+      .company-label {
+        padding: 4px 0 10px;
+        border-radius: 0;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 6px;
+        background: transparent !important;
+        opacity: 1 !important;
+        transform: none !important;
+      }
+      .company-label .company-name {
+        opacity: 1 !important;
+        color: var(--text-primary);
+        font-size: 15px;
+        font-weight: 700;
+      }
+      .company-icon { width: 18px; height: 18px; opacity: 0.8; }
+      .company-icon svg { stroke: var(--text-primary); }
+      .company-label.dimmed .company-name { opacity: 1 !important; }
+      .company-label.dimmed .company-icon { opacity: 0.9 !important; }
+
+      /* Row-style weight cell: [dimension label | value | bar] */
+      .grid-row > .weight-cell {
+        display: grid;
+        grid-template-columns: 88px 48px 1fr;
+        align-items: center;
+        gap: 12px;
+        padding: 6px 4px;
+        min-height: auto;
+        opacity: 1 !important;
+        background: transparent !important;
+      }
+      .grid-row > .weight-cell::before {
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-tertiary);
+        text-align: left;
+      }
+      .grid-row > .weight-cell:nth-child(2)::before { content: "Portfolio"; }
+      .grid-row > .weight-cell:nth-child(3)::before { content: "Craft"; }
+      .grid-row > .weight-cell:nth-child(4)::before { content: "Scope"; }
+      .grid-row > .weight-cell:nth-child(5)::before { content: "Tech Collab"; }
+      .grid-row > .weight-cell:nth-child(6)::before { content: "Impact"; }
+
+      .weight-value {
+        font-size: 15px;
+        margin-bottom: 0;
+        text-align: left;
+        opacity: 1 !important;
+      }
+      .weight-bar {
+        margin-top: 0;
+        opacity: 1 !important;
+        height: 4px;
+      }
+
+      .insight-card {
+        padding: 14px;
+        margin-bottom: 16px;
+        min-height: auto;
+      }
+      .insight-text { font-size: 12px; }
+      .instruction-text { font-size: 11px; }
+      .source { font-size: 10px; }
+    }
+
+    @media (max-width: 375px) {
+      .container { padding: 24px 16px; }
+      h1 { font-size: 22px; }
+      .grid-row > .weight-cell {
+        grid-template-columns: 76px 42px 1fr;
+        gap: 10px;
+      }
+      .weight-value { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="content">
+      <div class="section-label">Portfolio Evaluation</div>
+      <h1>Six Companies, Six Rubrics</h1>
+      <p class="subtitle">Each target company values different strengths — so every portfolio artifact was shaped to match. Click a company to explore its evaluation fingerprint.</p>
+
+      <div class="grid-wrapper">
+        <div class="grid">
+          <div class="grid-header">
+            <div class="header-label">Company</div>
+            <div class="header-dimension" data-dimension="portfolio">Portfolio</div>
+            <div class="header-dimension" data-dimension="craft">Craft</div>
+            <div class="header-dimension" data-dimension="scope">Scope</div>
+            <div class="header-dimension" data-dimension="collab">Tech Collab</div>
+            <div class="header-dimension" data-dimension="impact">Impact</div>
+          </div>
+
+          <!-- Ramp -->
+          <div class="grid-row" data-company="ramp">
+            <button class="company-label focused" data-company="ramp" aria-label="Ramp">
+              <div class="company-icon" id="icon-ramp">
+                <svg viewBox="0 0 24 24" stroke="currentColor">
+                  <line x1="4" y1="20" x2="20" y2="4"></line>
+                  <polyline points="20 4 20 20 4 20"></polyline>
+                </svg>
+              </div>
+              <span class="company-name">Ramp</span>
+            </button>
+            <div class="weight-cell focused" style="--company-color: #7FB5B0;">
+              <div class="weight-value focused">10<span class="weight-unit">%</span></div>
+              <div class="weight-bar focused"><div class="weight-fill" style="--fill-width: 10%;"></div></div>
+            </div>
+            <div class="weight-cell focused" style="--company-color: #7FB5B0;">
+              <div class="weight-value focused">15<span class="weight-unit">%</span></div>
+              <div class="weight-bar focused"><div class="weight-fill" style="--fill-width: 15%;"></div></div>
+            </div>
+            <div class="weight-cell focused" style="--company-color: #7FB5B0;">
+              <div class="weight-value focused">15<span class="weight-unit">%</span></div>
+              <div class="weight-bar focused"><div class="weight-fill" style="--fill-width: 15%;"></div></div>
+            </div>
+            <div class="weight-cell focused" style="--company-color: #7FB5B0;">
+              <div class="weight-value focused">30<span class="weight-unit">%</span></div>
+              <div class="weight-bar focused"><div class="weight-fill" style="--fill-width: 30%;"></div></div>
+            </div>
+            <div class="weight-cell focused" style="--company-color: #7FB5B0;">
+              <div class="weight-value focused">30<span class="weight-unit">%</span></div>
+              <div class="weight-bar focused"><div class="weight-fill" style="--fill-width: 30%;"></div></div>
+            </div>
+          </div>
+
+          <!-- Anthropic -->
+          <div class="grid-row" data-company="anthropic">
+            <button class="company-label dimmed" data-company="anthropic" aria-label="Anthropic">
+              <div class="company-icon">
+                <svg viewBox="0 0 24 24" stroke="currentColor">
+                  <circle cx="12" cy="12" r="8"></circle>
+                </svg>
+              </div>
+              <span class="company-name">Anthropic</span>
+            </button>
+            <div class="weight-cell dimmed" style="--company-color: #D4A574;">
+              <div class="weight-value">15<span class="weight-unit">%</span></div>
+              <div class="weight-bar"><div class="weight-fill" style="--fill-width: 15%;"></div></div>
+            </div>
+            <div class="weight-cell dimmed" style="--company-color: #D4A574;">
+              <div class="weight-value">20<span class="weight-unit">%</span></div>
+              <div class="weight-bar"><div class="weight-fill" style="--fill-width: 20%;"></div></div>
+            </div>
+            <div class="weight-cell dimmed" style="--company-color: #D4A574;">
+              <div class="weight-value">15<span class="weight-unit">%</span></div>
+              <div class="weight-bar"><div class="weight-fill" style="--fill-width: 15%;"></div></div>
+            </div>
+            <div class="weight-cell dimmed" style="--company-color: #D4A574;">
+              <div class="weight-value">25<span class="weight-unit">%</span></div>
+              <div class="weight-bar"><div class="weight-fill" style="--fill-width: 25%;"></div></div>
+            </div>
+            <div class="weight-cell dimmed" style="--company-color: #D4A574;">
+              <div class="weight-value">25<span class="weight-unit">%</span></div>
+              <div class="weight-bar"><div class="weight-fill" style="--fill-width: 25%;"></div></div>
+            </div>
+          </div>
+
+          <!-- Meta -->
+          <div class="grid-row" data-company="meta">
+            <button class="company-label dimmed" data-company="meta" aria-label="Meta">
+              <div class="company-icon">
+                <svg viewBox="0 0 24 24" stroke="currentColor">
+                  <path d="M12 2 L22 7 L22 17 L12 22 L2 17 L2 7 Z"></path>
+                </svg>
+              </div>
+              <span class="company-name">Meta</span>
+            </button>
+            <div class="weight-cell dimmed" style="--company-color: #8A9EC4;">
+              <div class="weight-value">20<span class="weight-unit">%</span></div>
+              <div class="weight-bar"><div class="weight-fill" style="--fill-width: 20%;"></div></div>
+            </div>
+            <div class="weight-cell dimmed" style="--company-color: #8A9EC4;">
+              <div class="weight-value">20<span class="weight-unit">%</span></div>
+              <div class="weight-bar"><div class="weight-fill" style="--fill-width: 20%;"></div></div>
+            </div>
+            <div class="weight-cell dimmed" style="--company-color: #8A9EC4;">
+              <div class="weight-value">25<span class="weight-unit">%</span></div>
+              <div class="weight-bar"><div class="weight-fill" style="--fill-width: 25%;"></div></div>
+            </div>
+            <div class="weight-cell dimmed" style="--company-color: #8A9EC4;">
+              <div class="weight-value">25<span class="weight-unit">%</span></div>
+              <div class="weight-bar"><div class="weight-fill" style="--fill-width: 25%;"></div></div>
+            </div>
+            <div class="weight-cell dimmed" style="--company-color: #8A9EC4;">
+              <div class="weight-value">10<span class="weight-unit">%</span></div>
+              <div class="weight-bar"><div class="weight-fill" style="--fill-width: 10%;"></div></div>
+            </div>
+          </div>
+
+          <!-- Figma -->
+          <div class="grid-row" data-company="figma">
+            <button class="company-label dimmed" data-company="figma" aria-label="Figma">
+              <div class="company-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <rect x="6" y="6" width="6" height="6"></rect>
+                  <rect x="14" y="6" width="6" height="6"></rect>
+                </svg>
+              </div>
+              <span class="company-name">Figma</span>
+            </button>
+            <div class="weight-cell dimmed" style="--company-color: #C4B078;">
+              <div class="weight-value">15<span class="weight-unit">%</span></div>
+              <div class="weight-bar"><div class="weight-fill" style="--fill-width: 15%;"></div></div>
+            </div>
+            <div class="weight-cell dimmed" style="--company-color: #C4B078;">
+              <div class="weight-value">30<span class="weight-unit">%</span></div>
+              <div class="weight-bar"><div class="weight-fill" style="--fill-width: 30%;"></div></div>
+            </div>
+            <div class="weight-cell dimmed" style="--company-color: #C4B078;">
+              <div class="weight-value">20<span class="weight-unit">%</span></div>
+              <div class="weight-bar"><div class="weight-fill" style="--fill-width: 20%;"></div></div>
+            </div>
+            <div class="weight-cell dimmed" style="--company-color: #C4B078;">
+              <div class="weight-value">20<span class="weight-unit">%</span></div>
+              <div class="weight-bar"><div class="weight-fill" style="--fill-width: 20%;"></div></div>
+            </div>
+            <div class="weight-cell dimmed" style="--company-color: #C4B078;">
+              <div class="weight-value">15<span class="weight-unit">%</span></div>
+              <div class="weight-bar"><div class="weight-fill" style="--fill-width: 15%;"></div></div>
+            </div>
+          </div>
+
+          <!-- OpenAI -->
+          <div class="grid-row" data-company="openai">
+            <button class="company-label dimmed" data-company="openai" aria-label="OpenAI">
+              <div class="company-icon">
+                <svg viewBox="0 0 24 24" stroke="currentColor" fill="none">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </div>
+              <span class="company-name">OpenAI</span>
+            </button>
+            <div class="weight-cell dimmed" style="--company-color: rgba(224, 223, 228, 0.35);">
+              <div class="weight-value">20<span class="weight-unit">%</span></div>
+              <div class="weight-bar"><div class="weight-fill" style="--fill-width: 20%;"></div></div>
+            </div>
+            <div class="weight-cell dimmed" style="--company-color: rgba(224, 223, 228, 0.35);">
+              <div class="weight-value">20<span class="weight-unit">%</span></div>
+              <div class="weight-bar"><div class="weight-fill" style="--fill-width: 20%;"></div></div>
+            </div>
+            <div class="weight-cell dimmed" style="--company-color: rgba(224, 223, 228, 0.35);">
+              <div class="weight-value">20<span class="weight-unit">%</span></div>
+              <div class="weight-bar"><div class="weight-fill" style="--fill-width: 20%;"></div></div>
+            </div>
+            <div class="weight-cell dimmed" style="--company-color: rgba(224, 223, 228, 0.35);">
+              <div class="weight-value">20<span class="weight-unit">%</span></div>
+              <div class="weight-bar"><div class="weight-fill" style="--fill-width: 20%;"></div></div>
+            </div>
+            <div class="weight-cell dimmed" style="--company-color: rgba(224, 223, 228, 0.35);">
+              <div class="weight-value">20<span class="weight-unit">%</span></div>
+              <div class="weight-bar"><div class="weight-fill" style="--fill-width: 20%;"></div></div>
+            </div>
+          </div>
+
+          <!-- Cursor -->
+          <div class="grid-row" data-company="cursor">
+            <button class="company-label dimmed" data-company="cursor" aria-label="Cursor">
+              <div class="company-icon">
+                <svg viewBox="0 0 24 24" stroke="currentColor" fill="none">
+                  <path d="M5 3 L19 15 L13 18 L11 24 L8 19 Z"></path>
+                </svg>
+              </div>
+              <span class="company-name">Cursor</span>
+            </button>
+            <div class="weight-cell dimmed" style="--company-color: #C47878;">
+              <div class="weight-value">20<span class="weight-unit">%</span></div>
+              <div class="weight-bar"><div class="weight-fill" style="--fill-width: 20%;"></div></div>
+            </div>
+            <div class="weight-cell dimmed" style="--company-color: #C47878;">
+              <div class="weight-value">20<span class="weight-unit">%</span></div>
+              <div class="weight-bar"><div class="weight-fill" style="--fill-width: 20%;"></div></div>
+            </div>
+            <div class="weight-cell dimmed" style="--company-color: #C47878;">
+              <div class="weight-value">20<span class="weight-unit">%</span></div>
+              <div class="weight-bar"><div class="weight-fill" style="--fill-width: 20%;"></div></div>
+            </div>
+            <div class="weight-cell dimmed" style="--company-color: #C47878;">
+              <div class="weight-value">20<span class="weight-unit">%</span></div>
+              <div class="weight-bar"><div class="weight-fill" style="--fill-width: 20%;"></div></div>
+            </div>
+            <div class="weight-cell dimmed" style="--company-color: #C47878;">
+              <div class="weight-value">20<span class="weight-unit">%</span></div>
+              <div class="weight-bar"><div class="weight-fill" style="--fill-width: 20%;"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="insight-card">
+        <div class="insight-text active" id="insight">Ramp weights technical collaboration and impact storytelling equally at 30% each — they want to see how you work with engineers and measure outcomes.</div>
+      </div>
+
+      <div class="instruction-text">
+        <div class="instruction-icon">
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none">
+            <path d="M12 2 L22 7 L22 17 L12 22 L2 17 L2 7 Z"></path>
+          </svg>
+        </div>
+        <span>Click a company to explore its evaluation fingerprint</span>
+      </div>
+
+      <div class="source">Source: companies.json — extracted from job descriptions</div>
+    </div>
+  </div>
+
+  <script>
+    const companies = [
+      {
+        name: 'Ramp',
+        key: 'ramp',
+        weights: { portfolio: 10, craft: 15, scope: 15, collab: 30, impact: 30 },
+        maxDimensions: ['collab', 'impact'],
+        insight: 'Ramp weights technical collaboration and impact storytelling equally at 30% each — they want to see how you work with engineers and measure outcomes.'
+      },
+      {
+        name: 'Anthropic',
+        key: 'anthropic',
+        weights: { portfolio: 15, craft: 20, scope: 15, collab: 25, impact: 25 },
+        maxDimensions: ['collab', 'impact'],
+        insight: 'Anthropic balances tech collab and impact at 25% each, with meaningful craft weight — they value thoughtful design that ships responsibly.'
+      },
+      {
+        name: 'Meta',
+        key: 'meta',
+        weights: { portfolio: 20, craft: 20, scope: 25, collab: 25, impact: 10 },
+        maxDimensions: ['scope', 'collab'],
+        insight: 'Meta prioritizes scope navigation and tech collab — they need designers who can operate in complex, cross-functional orgs.'
+      },
+      {
+        name: 'Figma',
+        key: 'figma',
+        weights: { portfolio: 15, craft: 30, scope: 20, collab: 20, impact: 15 },
+        maxDimensions: ['craft'],
+        insight: 'Figma leads with craft mastery at 30% — as a design tool company, they hold the bar highest on design quality.'
+      },
+      {
+        name: 'OpenAI',
+        key: 'openai',
+        weights: { portfolio: 20, craft: 20, scope: 20, collab: 20, impact: 20 },
+        maxDimensions: ['portfolio', 'craft', 'scope', 'collab', 'impact'],
+        insight: 'OpenAI weights all five dimensions equally at 20% — no dimension can be safely deprioritized.'
+      },
+      {
+        name: 'Cursor',
+        key: 'cursor',
+        weights: { portfolio: 20, craft: 20, scope: 20, collab: 20, impact: 20 },
+        maxDimensions: ['portfolio', 'craft', 'scope', 'collab', 'impact'],
+        insight: 'Cursor mirrors OpenAI\'s equal weighting — a generalist profile that\'s strong everywhere.'
+      }
+    ];
+
+    const dimensionMap = ['portfolio', 'craft', 'scope', 'collab', 'impact'];
+    let focusedIndex = 0;
+
+    function setFocus(index) {
+      focusedIndex = index;
+      const company = companies[index];
+
+      // Update row states
+      document.querySelectorAll('.grid-row').forEach((row, i) => {
+        const isActive = i === index;
+        const label = row.querySelector('.company-label');
+        const cells = row.querySelectorAll('.weight-cell');
+
+        if (isActive) {
+          label.classList.remove('dimmed');
+          label.classList.add('focused');
+          cells.forEach(cell => {
+            cell.classList.remove('dimmed');
+            cell.classList.add('focused');
+            const valueEl = cell.querySelector('.weight-value');
+            const barEl = cell.querySelector('.weight-bar');
+            if (valueEl) valueEl.classList.add('focused');
+            if (barEl) barEl.classList.add('focused');
+          });
+        } else {
+          label.classList.remove('focused');
+          label.classList.add('dimmed');
+          cells.forEach(cell => {
+            cell.classList.remove('focused');
+            cell.classList.add('dimmed');
+            const valueEl = cell.querySelector('.weight-value');
+            const barEl = cell.querySelector('.weight-bar');
+            if (valueEl) valueEl.classList.remove('focused');
+            if (barEl) barEl.classList.remove('focused');
+          });
+        }
+      });
+
+      // Update header highlights
+      document.querySelectorAll('.header-dimension').forEach(header => {
+        const dim = header.getAttribute('data-dimension');
+        if (company.maxDimensions.includes(dim)) {
+          header.classList.add('focused');
+        } else {
+          header.classList.remove('focused');
+        }
+      });
+
+      // Update insight text
+      const insightEl = document.getElementById('insight');
+      if (insightEl) {
+        insightEl.classList.remove('active');
+        setTimeout(() => {
+          insightEl.textContent = company.insight;
+          insightEl.classList.add('active');
+        }, 200);
+      }
+    }
+
+    // Click handlers
+    document.querySelectorAll('.company-label').forEach((label, index) => {
+      label.addEventListener('click', (e) => {
+        e.preventDefault();
+        setFocus(index);
+      });
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        setFocus((focusedIndex + 1) % companies.length);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setFocus((focusedIndex - 1 + companies.length) % companies.length);
+      }
+    });
+
+    // Initialize with Ramp focused
+    setFocus(0);
+  </script>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+</body>
+</html>
