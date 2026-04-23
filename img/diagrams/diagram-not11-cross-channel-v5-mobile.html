@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="figma-source" content="node:945:17 file:TArUrZsBUocaAsqetjXq7V">
+<title>NOT-11 — Cross-Channel Model (Mobile)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16; --card: #10121C; --elevated: #151722; --highest: #1A1C28;
+    --text-pri: #E0DFE4; --text-sec: rgba(224,223,228,0.6); --text-ter: rgba(224,223,228,0.4); --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0; --accent-dim: rgba(127,181,176,0.12);
+    --red: #C47878; --gold: #C4B078; --blue: #8A9EC4; --amber: #D4A574;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 16px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 100%;
+    max-width: 375px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* Hover hint */
+  .hover-hint {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-ter);
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+    animation-delay: calc(var(--ai, 0) * 60ms);
+  }
+
+  /* Hub — centered inbox card */
+  .hub-wrap {
+    display: flex; justify-content: center; align-items: center;
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+    animation-delay: calc(var(--ai, 0) * 60ms);
+  }
+  .hub {
+    background: var(--elevated);
+    border: 1px solid rgba(127,181,176,0.24);
+    border-radius: 14px;
+    padding: 16px;
+    width: 220px;
+    text-align: center;
+    position: relative;
+    box-shadow: var(--glass-highlight), 0 0 40px rgba(127,181,176,0.08);
+    transition: border-color 0.3s ease, transform 0.35s var(--spring);
+  }
+  .hub:hover { transform: scale(1.02); border-color: rgba(127,181,176,0.45); }
+  .hub-glow {
+    position: absolute; width: 160px; height: 160px; border-radius: 50%; filter: blur(50px);
+    top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 0;
+    background: var(--accent); opacity: 0.08;
+    animation: hubBreathe 3s ease-in-out infinite;
+    pointer-events: none;
+  }
+  .hub-card-inner { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .hub-badge {
+    display: inline-flex; align-items: center;
+    background: rgba(127,181,176,0.15);
+    border: 1px solid rgba(127,181,176,0.4);
+    border-radius: 8px;
+    padding: 4px 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent);
+  }
+  .hub-icon { width: 36px; height: 36px; }
+  .hub-label {
+    font-size: 16px; font-weight: 600; color: var(--text-pri);
+    letter-spacing: -0.02em;
+  }
+  .hub-sub {
+    font-size: 11px; color: var(--text-sec); line-height: 1.4;
+  }
+
+  /* Connection lines — svg between hub and spokes */
+  .connections {
+    width: 100%; height: 28px; position: relative;
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+    animation-delay: calc(var(--ai, 0) * 60ms);
+  }
+  .connections svg { width: 100%; height: 100%; display: block; }
+  .conn-line { stroke-dasharray: 6 10; animation: dashFlow 2s linear infinite; }
+
+  /* Spokes — 2-column row */
+  .spokes-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+    animation-delay: calc(var(--ai, 0) * 60ms);
+  }
+  .spoke {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .spoke-card {
+    background: var(--elevated);
+    border-radius: 12px;
+    padding: 14px;
+    text-align: center;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    box-shadow: var(--glass-highlight);
+    transition: border-color 0.3s ease, transform 0.35s var(--spring);
+    position: relative;
+  }
+  .spoke-card:hover { transform: translateY(-1px); }
+  .spoke.push .spoke-card { border: 1px solid rgba(138,158,196,0.35); }
+  .spoke.email .spoke-card { border: 1px solid rgba(196,176,120,0.35); }
+  .spoke-glow {
+    position: absolute; width: 80px; height: 80px; border-radius: 50%; filter: blur(30px);
+    top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: -1; opacity: 0.2;
+    pointer-events: none;
+  }
+  .spoke.push .spoke-glow { background: var(--blue); }
+  .spoke.email .spoke-glow { background: var(--gold); }
+  .spoke-icon { width: 28px; height: 28px; }
+  .spoke-label {
+    font-size: 14px; font-weight: 600; color: var(--text-pri);
+    letter-spacing: -0.02em;
+  }
+  .spoke-role {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--text-sec);
+    line-height: 1.3;
+  }
+  .spoke-callout {
+    background: rgba(16,18,28,0.4);
+    border: 1px solid rgba(224,223,228,0.1);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 10px; color: var(--text-sec);
+    line-height: 1.4;
+  }
+
+  /* Platform matrix — stacked 3 cards */
+  .platform-matrix {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 8px 0;
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+    animation-delay: calc(var(--ai, 0) * 60ms);
+  }
+  .platform-cell {
+    background: var(--elevated);
+    border: 1px solid rgba(224,223,228,0.08);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    box-shadow: var(--glass-highlight);
+    transition: transform 0.35s var(--spring), border-color 0.3s ease;
+  }
+  .platform-cell:hover { transform: translateY(-2px); border-color: rgba(224,223,228,0.15); }
+  .platform-name {
+    font-size: 13px; font-weight: 600; color: var(--text-pri);
+    letter-spacing: -0.01em;
+  }
+  .platform-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--text-ter);
+  }
+  .channel-tags {
+    display: flex; gap: 6px; justify-content: center; align-items: center; flex-wrap: wrap;
+  }
+  .channel-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; font-weight: 500;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 2px 6px; border-radius: 6px;
+  }
+  .tag-inbox { background: rgba(127,181,176,0.2); color: var(--accent); }
+  .tag-push  { background: rgba(138,158,196,0.2); color: var(--blue); }
+  .tag-email { background: rgba(196,176,120,0.2); color: var(--gold); }
+  .tag-gap   { background: rgba(224,223,228,0.06); color: var(--text-ter); font-style: italic; }
+
+  /* Animations (preserved from desktop) */
+  @keyframes mount {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes dashFlow { to { stroke-dashoffset: -20; } }
+  @keyframes hubBreathe {
+    0%, 100% { opacity: 0.06; transform: translate(-50%, -50%) scale(1); }
+    50%      { opacity: 0.10; transform: translate(-50%, -50%) scale(1.1); }
+  }
+
+  /* Embed mode — strip body chrome when iframed on a case study page */
+  body.embedded { padding: 0; min-height: auto; display: block; background: transparent; overflow: hidden; }
+  body.embedded .diagram { width: 100%; max-width: none; border-radius: 0; }
+</style>
+</head>
+<body>
+<div class="diagram">
+
+  <div class="hover-hint" style="--ai:1">Tap channels for role detail</div>
+
+  <div class="hub-wrap" style="--ai:2">
+    <div class="hub">
+      <div class="hub-glow"></div>
+      <div class="hub-card-inner">
+        <div class="hub-badge">Source of Truth</div>
+        <svg class="hub-icon" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+          <rect x="6" y="6" width="24" height="24" rx="4" stroke="var(--accent)" stroke-width="1.2" fill="none"/>
+          <path d="M6 14h24" stroke="var(--accent)" stroke-width="1" opacity="0.3"/>
+          <line x1="10" y1="19" x2="20" y2="19" stroke="var(--accent)" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+          <line x1="10" y1="23" x2="16" y2="23" stroke="var(--accent)" stroke-width="1" stroke-linecap="round" opacity="0.3"/>
+        </svg>
+        <div class="hub-label">Inbox</div>
+        <div class="hub-sub">Persistent, complete record</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connections" style="--ai:3">
+    <svg viewBox="0 0 343 28" preserveAspectRatio="none" fill="none">
+      <!-- Left arrow from hub down-left to Push spoke -->
+      <path class="conn-line" d="M110 4 Q 90 16, 75 26" stroke="var(--blue)" stroke-width="1.2" opacity="0.45"/>
+      <!-- Right arrow from hub down-right to Email spoke -->
+      <path class="conn-line" d="M233 4 Q 253 16, 268 26" stroke="var(--gold)" stroke-width="1.2" opacity="0.45" style="animation-delay: 0.5s"/>
+      <!-- Subtle bridge under hub -->
+      <path class="conn-line" d="M130 24 Q 171 14, 213 24" stroke="rgba(224,223,228,0.18)" stroke-width="1" opacity="0.4" style="animation-delay: 1s"/>
+    </svg>
+  </div>
+
+  <div class="spokes-row" style="--ai:4">
+    <div class="spoke push">
+      <div class="spoke-card">
+        <div class="spoke-glow"></div>
+        <svg class="spoke-icon" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+          <rect x="6" y="2" width="16" height="24" rx="3" stroke="var(--blue)" stroke-width="1.2" fill="none"/>
+          <line x1="12" y1="22" x2="16" y2="22" stroke="var(--blue)" stroke-width="0.8" stroke-linecap="round" opacity="0.5"/>
+          <rect x="3" y="6" width="10" height="6" rx="2" stroke="var(--blue)" stroke-width="1" fill="none" opacity="0.5"/>
+          <line x1="5" y1="9" x2="11" y2="9" stroke="var(--blue)" stroke-width="0.6" stroke-linecap="round" opacity="0.35"/>
+        </svg>
+        <div class="spoke-label">Push</div>
+        <div class="spoke-role">delivery + re-engage</div>
+      </div>
+      <div class="spoke-callout">Real-time delivery. Drives re-engagement back to inbox. Not on all platforms.</div>
+    </div>
+
+    <div class="spoke email">
+      <div class="spoke-card">
+        <div class="spoke-glow"></div>
+        <svg class="spoke-icon" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+          <rect x="3" y="6" width="22" height="16" rx="3" stroke="var(--gold)" stroke-width="1.2" fill="none"/>
+          <path d="M3 9l11 7 11-7" stroke="var(--gold)" stroke-width="1" fill="none" opacity="0.45"/>
+        </svg>
+        <div class="spoke-label">Email</div>
+        <div class="spoke-role">digest + reach</div>
+      </div>
+      <div class="spoke-callout">Digest format. Reaches users off-platform. Lower signal density.</div>
+    </div>
+  </div>
+
+  <div class="platform-matrix" style="--ai:5">
+    <div class="platform-cell">
+      <div class="platform-name">Native Mobile</div>
+      <div class="platform-sub">iOS + Android</div>
+      <div class="channel-tags">
+        <span class="channel-tag tag-inbox">Inbox</span>
+        <span class="channel-tag tag-push">Push</span>
+        <span class="channel-tag tag-email">Email</span>
+      </div>
+    </div>
+    <div class="platform-cell">
+      <div class="platform-name">Mobile Web</div>
+      <div class="platform-sub">m.reddit.com</div>
+      <div class="channel-tags">
+        <span class="channel-tag tag-inbox">Inbox</span>
+        <span class="channel-tag tag-gap">No push</span>
+        <span class="channel-tag tag-email">Email</span>
+      </div>
+    </div>
+    <div class="platform-cell">
+      <div class="platform-name">Desktop</div>
+      <div class="platform-sub">reddit.com</div>
+      <div class="channel-tags">
+        <span class="channel-tag tag-inbox">Inbox</span>
+        <span class="channel-tag tag-gap">No push</span>
+        <span class="channel-tag tag-email">Email</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+</body>
+</html>

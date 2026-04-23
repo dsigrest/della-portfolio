@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Session 31 — local verify (NOT-06/07/09/11/12 @ 375/320)</title>
+<style>
+  :root { color-scheme: light; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+    background: #f3f4f6;
+    margin: 0;
+    padding: 32px;
+    color: #111827;
+  }
+  h1 { font-size: 20px; margin: 0 0 6px; }
+  p.sub { margin: 0 0 24px; color: #6b7280; font-size: 13px; }
+  .row {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    padding: 16px 0;
+    border-top: 1px solid #e5e7eb;
+  }
+  .row:first-of-type { border-top: 0; }
+  .row h2 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+    width: 120px;
+    flex-shrink: 0;
+    color: #374151;
+  }
+  .col { display: flex; flex-direction: column; gap: 6px; }
+  .label { font-size: 11px; color: #6b7280; font-weight: 500; }
+  iframe { border: 1px solid #d1d5db; background: #fff; display: block; }
+  iframe.w375 { width: 375px; height: 600px; }
+  iframe.w320 { width: 320px; height: 600px; }
+  #results {
+    position: sticky;
+    top: 16px;
+    margin-left: auto;
+    width: 420px;
+    background: #111827;
+    color: #d1fae5;
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-family: ui-monospace, "SF Mono", monospace;
+    font-size: 11px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    max-height: 80vh;
+    overflow: auto;
+  }
+  #results .fail { color: #fca5a5; }
+  #results .pass { color: #86efac; }
+  .toolbar { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
+  button {
+    background: #111827; color: #fff; border: 0;
+    padding: 8px 14px; border-radius: 6px;
+    font-size: 13px; cursor: pointer;
+  }
+  button:hover { background: #1f2937; }
+</style>
+</head>
+<body>
+
+<h1>Session 31 — local verify (L2 container-override fix)</h1>
+<p class="sub">5 diagrams × 2 widths. Runs <code>document.body.scrollWidth - document.body.clientWidth</code> inside each iframe. Pass: overflow === 0.</p>
+
+<div class="toolbar">
+  <button onclick="runOverflowCheck()">Re-run overflow check</button>
+  <span id="status" style="font-size:12px;color:#6b7280;">(Iframes loading — results appear below)</span>
+</div>
+
+<div style="display:flex; gap:24px; align-items:flex-start;">
+
+<div style="flex:1;">
+
+<div class="row">
+  <h2>NOT-06</h2>
+  <div class="col"><span class="label">375px</span><iframe id="not06-375" class="w375 diag" data-id="not06" data-w="375" src="../../img/diagrams/diagram-not06-push-to-inbox-v5.html"></iframe></div>
+  <div class="col"><span class="label">320px</span><iframe id="not06-320" class="w320 diag" data-id="not06" data-w="320" src="../../img/diagrams/diagram-not06-push-to-inbox-v5.html"></iframe></div>
+</div>
+
+<div class="row">
+  <h2>NOT-07</h2>
+  <div class="col"><span class="label">375px</span><iframe id="not07-375" class="w375 diag" data-id="not07" data-w="375" src="../../img/diagrams/diagram-not07-preference-architecture-v5.html"></iframe></div>
+  <div class="col"><span class="label">320px</span><iframe id="not07-320" class="w320 diag" data-id="not07" data-w="320" src="../../img/diagrams/diagram-not07-preference-architecture-v5.html"></iframe></div>
+</div>
+
+<div class="row">
+  <h2>NOT-09</h2>
+  <div class="col"><span class="label">375px</span><iframe id="not09-375" class="w375 diag" data-id="not09" data-w="375" src="../../img/diagrams/diagram-not09-global-settings-v5.html"></iframe></div>
+  <div class="col"><span class="label">320px</span><iframe id="not09-320" class="w320 diag" data-id="not09" data-w="320" src="../../img/diagrams/diagram-not09-global-settings-v5.html"></iframe></div>
+</div>
+
+<div class="row">
+  <h2>NOT-11</h2>
+  <div class="col"><span class="label">375px</span><iframe id="not11-375" class="w375 diag" data-id="not11" data-w="375" src="../../img/diagrams/diagram-not11-cross-channel-v5.html"></iframe></div>
+  <div class="col"><span class="label">320px</span><iframe id="not11-320" class="w320 diag" data-id="not11" data-w="320" src="../../img/diagrams/diagram-not11-cross-channel-v5.html"></iframe></div>
+</div>
+
+<div class="row">
+  <h2>NOT-12</h2>
+  <div class="col"><span class="label">375px</span><iframe id="not12-375" class="w375 diag" data-id="not12" data-w="375" src="../../img/diagrams/diagram-not12-inbox-layout-experiments-v5.html"></iframe></div>
+  <div class="col"><span class="label">320px</span><iframe id="not12-320" class="w320 diag" data-id="not12" data-w="320" src="../../img/diagrams/diagram-not12-inbox-layout-experiments-v5.html"></iframe></div>
+</div>
+
+</div>
+
+<pre id="results">Waiting for iframes…</pre>
+
+</div>
+
+<script>
+  function runOverflowCheck() {
+    const out = document.getElementById('results');
+    const status = document.getElementById('status');
+    const frames = document.querySelectorAll('iframe.diag');
+    const lines = [];
+    let allPass = true;
+
+    frames.forEach(f => {
+      try {
+        const doc = f.contentDocument;
+        if (!doc || !doc.body) { lines.push(`[NO DOC] ${f.id}`); allPass = false; return; }
+        const body = doc.body;
+        const diag = doc.querySelector('.diagram');
+        const overflow = body.scrollWidth - body.clientWidth;
+        const diagW = diag ? diag.getBoundingClientRect().width : -1;
+        const embedded = body.classList.contains('embedded');
+        const verdict = overflow === 0 ? 'PASS' : 'FAIL';
+        if (overflow !== 0) allPass = false;
+        lines.push(`[${verdict}] ${f.id.padEnd(10)} embedded=${embedded}  diag.w=${diagW.toFixed(0).padStart(4)}  overflow=${overflow}`);
+      } catch (e) {
+        lines.push(`[ERR ] ${f.id}: ${e.message}`);
+        allPass = false;
+      }
+    });
+
+    const banner = allPass
+      ? '✅ ALL 10 CHECKS PASS — overflow === 0 on every diagram at 375 and 320\n'
+      : '❌ FAILURES DETECTED — see FAIL rows below\n';
+    out.textContent = banner + '\n' + lines.join('\n');
+    out.className = allPass ? 'pass' : 'fail';
+    status.textContent = allPass ? 'Last run: PASS' : 'Last run: FAIL';
+  }
+
+  // Wait for all iframes to load, then run check
+  let loaded = 0;
+  const frames = document.querySelectorAll('iframe.diag');
+  frames.forEach(f => {
+    f.addEventListener('load', () => {
+      loaded++;
+      if (loaded === frames.length) setTimeout(runOverflowCheck, 300);
+    });
+  });
+</script>
+
+</body>
+</html>
