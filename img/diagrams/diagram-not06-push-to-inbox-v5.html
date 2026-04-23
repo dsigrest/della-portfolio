@@ -270,6 +270,10 @@
   @media (max-width: 600px) {
     /* Collapse 2-col before/after to stacked — each column gets full width */
     .comparison-strip { grid-template-columns: 1fr; gap: 24px; }
+    /* Stack the 3-card hover flow (Push Sent / User Taps / Inbox Stack) vertically */
+    .flow { flex-direction: column; gap: 16px; }
+    .flow-step { width: 100%; }
+    .flow-arrow { display: none; }
   }
   @media (max-width: 400px) {
     body { padding: 10px; }

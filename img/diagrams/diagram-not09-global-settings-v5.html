@@ -263,6 +263,9 @@
   @media (max-width: 600px) {
     /* Collapse 2-col before/after to stacked — each column gets full width */
     .compare-area { grid-template-columns: 1fr; gap: 24px; }
+    /* Wrap the 4-item structure-stat strip (Screens / Controls / Language / Channels) to 2x2 grid */
+    .stat-strip { flex-wrap: wrap; margin: 20px 16px 0; gap: 10px; }
+    .stat-item { flex: 1 1 calc(50% - 10px); min-width: 0; }
   }
   @media (max-width: 400px) {
     body { padding: 10px; }
