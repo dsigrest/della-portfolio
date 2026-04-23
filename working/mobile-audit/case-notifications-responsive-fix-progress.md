@@ -179,13 +179,14 @@ Commit 4d7786c from Thread 1 addressed only half of piece #1 (container width). 
 - [x] NOT-02 pattern proof — Della verified locally before committing
 - [x] Phase 2 — 9 remaining v5 NOT diagrams retrofitted with same pattern (NOT-03, 04, 06, 07, 08, 09, 11, 12, 14)
 - [x] Quality + voice gates — all 9 files pass
-- [ ] Della commits + pushes to Vercel (command below)
-- [ ] Vercel build succeeds, tracker reloaded and all 10 diagrams verified on mobile
-- [ ] Any remaining visual issues captured for Phase 3 (per-diagram tuning)
-- [ ] BUILD-LOG.md appended
-- [ ] SESSION-STATE.md updated
-- [ ] Deferred: PNG image problems #4/#5/#6 (if still broken after commit)
-- [ ] Deferred: Figma mobile frames via html-to-figma
+- [x] Della commits + pushes to Vercel (pushed 2026-04-22, Session 29)
+- [x] BUILD-LOG.md appended
+- [x] SESSION-STATE.md updated
+- [ ] **Phase 4 (next thread):** hard-refresh tracker after Vercel build, visual-verify all 10 v5 diagrams at 375/320 look correct on phone
+- [ ] **If any per-diagram tuning needed** — capture as Phase 5 in this progress file
+- [ ] **Deferred:** PNG image problems #4/#5/#6 on case-notifications.html (may map to `notif-ds-migration.png`, `notif-push-landing.png`, `notif-pipeline-separation.png`, `notif-unified-inbox.png`). Investigate in next thread IF still broken on phone after commit lands.
+- [ ] **Deferred:** capture v4 embed-retrofit pattern into `Skills/responsive-audit/references/v4-embed-retrofit.md` per Lessons→Skill References rule. Wire into SKILL.md Step 0 reads. Bump skill version minor (v0.3.x → v0.4.0).
+- [ ] **Deferred:** push 10 dedicated mobile Figma frames via `html-to-figma` skill (one per retrofitted v5 NOT diagram at 375px) — separate focused thread, not blocking
 - [ ] Della confirmed diagram-ID mapping
 - [ ] Phase 2 classification in `audit-tracker.xlsx`
 - [ ] Phase 3 fixes applied, diffs shown
