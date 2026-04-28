@@ -86,44 +86,24 @@
     pointer-events: none;
   }
 
-  /* GIF placeholder — Della drops a swipe-interaction recording in
-     here as a follow-up. Empty state keeps the layout stable. */
-  .gif-placeholder {
+  /* Swipe-action recording — sized to the GIF's native 797x132 ratio so
+     the row doesn't squash or letterbox. Matches the static card above. */
+  .swipe-gif {
     position: relative;
     width: 100%;
-    aspect-ratio: 16 / 7;
+    aspect-ratio: 797 / 132;
     border-radius: 16px;
-    border: 1px dashed var(--glass-border);
-    background:
-      linear-gradient(135deg, rgba(224,223,228,0.04), rgba(224,223,228,0.01));
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    color: var(--text-ter);
-    font-size: 11px;
-    box-shadow: var(--glass-highlight);
+    overflow: hidden;
+    background: #F6F6F6;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
     opacity: 0;
     animation: fadeUp 0.6s ease-out 0.25s forwards;
   }
-  .gif-placeholder .ph-tag {
-    font-size: 9px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--accent);
-    opacity: 0.7;
-  }
-  .gif-placeholder .ph-text {
-    font-size: 12px;
-    color: var(--text-sec);
-    font-weight: 500;
-  }
-  .gif-placeholder .ph-meta {
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 10px;
-    color: var(--text-dim);
+  .swipe-gif img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   @keyframes fadeUp {
@@ -149,10 +129,8 @@
     <div class="swipe-card">
       <img src="assets/not02b-swipe-card.png" alt="A single inbox notification row: 'Because you visited r/MexicoCity — Buenas Lugares Para Comprar Chilcuague — 56m'" loading="lazy">
     </div>
-    <div class="gif-placeholder" role="img" aria-label="Placeholder for a recording of the swipe-action interaction">
-      <span class="ph-tag">Swipe interaction</span>
-      <span class="ph-text">GIF placeholder &mdash; recording of swipe gesture pending</span>
-      <span class="ph-meta">drag right &rarr; secondary actions</span>
+    <div class="swipe-gif">
+      <img src="assets/not07i-swipe-action.gif" alt="Recording: swiping a Reddit inbox notification row to the right reveals secondary actions inline" loading="lazy">
     </div>
   </div>
 <!-- diagram-height-poster v1 -->
