@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="figma-source" content="node:1173:1127 page:29:43 file:TArUrZsBUocaAsqetjXq7V">
+<title>NOT-02b — Easy access swipe actions</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --red: #C47878;
+    --glass-bg: rgba(224,223,228,0.04);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 100%;
+    max-width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    padding: 24px 48px 32px;
+  }
+
+  .col-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1;
+    margin-bottom: 18px;
+  }
+  .col-label .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  /* Static notification row (image cropped from a larger screenshot,
+     mirroring Figma's absolute-position crop transform). */
+  .swipe-card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 800 / 141;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #F6F6F6;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    margin-bottom: 18px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease-out 0.1s forwards;
+  }
+  .swipe-card img {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1233.33%;
+    top: -329.79%;
+    max-width: none;
+    object-fit: cover;
+    pointer-events: none;
+  }
+
+  /* GIF placeholder — Della drops a swipe-interaction recording in
+     here as a follow-up. Empty state keeps the layout stable. */
+  .gif-placeholder {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 7;
+    border-radius: 16px;
+    border: 1px dashed var(--glass-border);
+    background:
+      linear-gradient(135deg, rgba(224,223,228,0.04), rgba(224,223,228,0.01));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: var(--text-ter);
+    font-size: 11px;
+    box-shadow: var(--glass-highlight);
+    opacity: 0;
+    animation: fadeUp 0.6s ease-out 0.25s forwards;
+  }
+  .gif-placeholder .ph-tag {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.7;
+  }
+  .gif-placeholder .ph-text {
+    font-size: 12px;
+    color: var(--text-sec);
+    font-weight: 500;
+  }
+  .gif-placeholder .ph-meta {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .diagram::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center 30%, rgba(127,181,176,0.04), transparent 70%);
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="col-label">
+      <span class="dot"></span>
+      <span>Easy access swipe actions</span>
+    </div>
+    <div class="swipe-card">
+      <img src="assets/not02b-swipe-card.png" alt="A single inbox notification row: 'Because you visited r/MexicoCity — Buenas Lugares Para Comprar Chilcuague — 56m'" loading="lazy">
+    </div>
+    <div class="gif-placeholder" role="img" aria-label="Placeholder for a recording of the swipe-action interaction">
+      <span class="ph-tag">Swipe interaction</span>
+      <span class="ph-text">GIF placeholder &mdash; recording of swipe gesture pending</span>
+      <span class="ph-meta">drag right &rarr; secondary actions</span>
+    </div>
+  </div>
+</body>
+</html>
