@@ -27,7 +27,7 @@
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   body {
-    background: #08090F;
+    background: var(--canvas);
     display: flex;
     justify-content: center;
     padding: 40px;
@@ -98,6 +98,11 @@
   .mock {
     position: relative;
     width: 100%;
+    /* Cap phone mock at ~200px wide (≈433px tall) so both phones plus
+       the labeled comparison rows below fit in a 1440x900 viewport
+       (after ~80px nav) without scrolling. Aspect-ratio preserved. */
+    max-width: 200px;
+    margin: 0 auto;
     aspect-ratio: 322 / 697;
     border-radius: 20px;
     overflow: hidden;

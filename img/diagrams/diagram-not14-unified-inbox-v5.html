@@ -18,7 +18,7 @@
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   body {
-    background: #08090F;
+    background: var(--canvas);
     display: flex;
     justify-content: center;
     padding: 40px;
@@ -71,6 +71,11 @@
   .mock {
     position: relative;
     width: 100%;
+    /* Cap the closing-demo phone at ~280px wide (≈606px tall) so it
+       reads at the same visual weight as the other in-context phone
+       embeds and detail in the GIF stays legible at desktop. */
+    max-width: 280px;
+    margin: 0 auto;
     aspect-ratio: 322 / 697;
     border-radius: 16px;
     overflow: hidden;
