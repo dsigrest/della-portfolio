@@ -132,14 +132,6 @@
         </div>
       </section>
 
-      <h2>Framework</h2>
-
-      <p>The strategy sat on <strong>two axes: signal and tenure</strong>. By reading the signal Reddit has from a user and how long they&rsquo;ve been on the platform, we could infer what experiences they were having and prioritize notification types accordingly. The inbox drives <strong>2% of all comments on Reddit</strong>&mdash;that figure shifted leadership investment across the board.</p>
-
-      <p>The first decision was where to start. <strong>Comment replies were the highest-usage surface</strong>&mdash;core users with strong opinions about their flows. Changing that experience could disrupt the one thing the inbox was actually working for. The alternative: open <strong>net-new growth</strong> for subreddit following and new users with completely empty inboxes. Less data, more assumptions, required research&mdash;but the upside was coverage where we had next to none.</p>
-
-      <p>Users had a <strong>bias for action</strong> in the inbox. The more content was framed as personally actionable, the more likely they were to engage. The inbox wasn&rsquo;t a destination&mdash;it was a switchboard that guided users through their session.</p>
-
       <h2>Scaleable foundation</h2>
 
       <h3>Inbox row component</h3>
@@ -224,29 +216,81 @@
         ></iframe>
       </div>
 
+      <h2>Frameworks</h2>
+
+      <h3>Activity prioritization</h3>
+
+      <p>The first principle of the framework: prioritize activity outside of <em>how well</em> a post is performing. The inbox should surface what&rsquo;s directly related to the user&mdash;something they asked for, something they need to know&mdash;not whatever the algorithm thinks is hot.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">13i &mdash; Notification taxonomy (detailed cut, 2 examples per category) &mdash; figma-to-html translation pending</div>
+      </div>
+
+      <h3>User targeting</h3>
+
+      <p>The strategy sat on <strong>two axes: signal and intent</strong>. By reading the signal Reddit has from a user and what they&rsquo;re trying to do on the platform, we could infer what experiences they were having and prioritize notification types accordingly. The inbox drives <strong>2% of all comments on Reddit</strong>&mdash;that figure shifted leadership investment across the board.</p>
+
+      <p>The first decision was where to start. <strong>Comment replies were the highest-usage surface</strong>&mdash;core users with strong opinions about their flows. Changing that experience could disrupt the one thing the inbox was actually working for. The alternative: open <strong>net-new growth</strong> for subreddit following and new users with completely empty inboxes. Less data, more assumptions, required research&mdash;but the upside was coverage where we had next to none.</p>
+
+      <div class="case-img-full diagram-embed" data-diagram="not-e4" data-mobile-pending="true">
+        <iframe
+          src="img/diagrams/diagram-not-e4-signal-intent-matrix-v5.html"
+          loading="lazy"
+          scrolling="no"
+          title="Signal × Intent matrix — quadrants for new user, scroller, seeker, and contributor"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
+      </div>
+
+      <h3>Growth flywheel</h3>
+
+      <p>With taxonomy and targeting in place, the system becomes a growth flywheel. Reading signal lets us deliver value; delivering value generates more signal; the loop tightens with each cycle. The inbox shifts from a passive feed to an active driver of engagement and platform understanding.</p>
+
+      <div class="case-img-full diagram-embed" data-diagram="not-e2" data-mobile-pending="true">
+        <iframe
+          src="img/diagrams/diagram-not-e2-strategy-flywheel-v5.html"
+          loading="lazy"
+          scrolling="no"
+          title="Strategy flywheel — leverage signal, deliver value, tune experience"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
+      </div>
+
+      <h3>Strategic pillars</h3>
+
+      <p>Three pillars implement the strategy across the inbox: <strong>build habits</strong>, <strong>enable curation</strong>, <strong>create focus</strong>. Each pillar maps to a phase of the work that follows&mdash;and each builds on what the previous phase made possible.</p>
+
+      <div class="case-img-full diagram-embed" data-diagram="not-e3" data-mobile-pending="true">
+        <iframe
+          src="img/diagrams/diagram-not-e3-strategic-pillars-v5.html"
+          loading="lazy"
+          scrolling="no"
+          title="Strategic pillars — build habits, enable curation, create focus"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
+      </div>
+
       <h2>1. Build Habits</h2>
 
-      <h3>Contextualizing notifications</h3>
+      <h3>Intelligent defaults &amp; feedback loops</h3>
+
+      <p>Users had a <strong>bias for action</strong> in the inbox. The more content was framed as personally actionable, the more likely they were to engage.</p>
 
       <p>I added copy showing <em>why</em> a user received each notification. <strong>Click-through doubled</strong> compared to generic framing, and the surface could support higher volume without overwhelming users.</p>
 
-      <div class="case-img-full">
-        <img src="img/notif-ds-migration.png" alt="Before and after — legacy inbox with basic notification list compared to unified inbox with contextualized copy and two-tab design" loading="lazy">
-      </div>
-
-      <h3>Recommendations as onboarding</h3>
-
-      <p>For low-subscription users, the inbox became an <strong>onboarding engine</strong>. Recommendations surfaced contextually; push landing experiences converted discovery into lasting signal. DAU for that cohort lifted <strong>+1.4%</strong>; push click-through rose <strong>+6.4%</strong> across 7.5M daily inbox users.</p>
+      <p>I shipped <strong>decay logic</strong> for breaking news, recommendations, and subreddit updates: if a user doesn&rsquo;t open a notification type after a threshold, the system asks whether to turn it off. The ML team ran parallel experiments on signal thresholds while I defined the user-facing behavior&mdash;a <strong>continuous dialogue</strong> between design and engineering, each side&rsquo;s findings reshaping the other&rsquo;s approach.</p>
 
       <div class="case-img-full">
-        <img src="img/notif-push-landing.png" alt="Push landing experience — Discovery, Following, and Conversation volume levels showing notification context" loading="lazy">
+        <div class="img-placeholder">17i &mdash; Without context vs With context &mdash; figma-to-html translation pending</div>
       </div>
 
       <h3>Push-to-inbox connection</h3>
 
+      <p>For low-subscription users, the inbox became an <strong>onboarding engine</strong>. Recommendations surfaced contextually; push landing experiences converted discovery into lasting signal. DAU for that cohort lifted <strong>+1.4%</strong>; push click-through rose <strong>+6.4%</strong> across 7.5M daily inbox users.</p>
+
       <p>Only the latest push recommendation appeared in the inbox. Users expected a <strong>history of communications</strong>&mdash;removing older recommendations cut off discovery flows mid-stream. I restored that connection. Push good visits climbed <strong>+1%</strong> across 15 million daily receives.</p>
 
-      <div class="case-img-full diagram-embed" data-diagram="not-06">
+      <div class="case-img-full diagram-embed" data-diagram="not-06" data-mobile-pending="true">
         <iframe
           src="img/diagrams/diagram-not06-push-to-inbox-v5.html"
           loading="lazy"
@@ -300,14 +344,6 @@
           title="Global notification settings — before nested hierarchy vs. after flat unified view"
           style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
         ></iframe>
-      </div>
-
-      <h3>Feedback loops</h3>
-
-      <p>I shipped <strong>decay logic</strong> for breaking news, recommendations, and subreddit updates: if a user doesn&rsquo;t open a notification type after a threshold, the system asks whether to turn it off. The ML team ran parallel experiments on signal thresholds while I defined the user-facing behavior&mdash;a <strong>continuous dialogue</strong> between design and engineering, each side&rsquo;s findings reshaping the other&rsquo;s approach.</p>
-
-      <div class="case-img-full">
-        <div class="img-placeholder">Decay logic&mdash;notification frequency adjustment based on user engagement, showing threshold-based prompt to turn off unused notification types</div>
       </div>
 
       <h3>Cross-channel coordination</h3>

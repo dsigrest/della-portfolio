@@ -13,9 +13,9 @@
 | Batch | Rows | Status | Commit |
 |---|---|---|---|
 | 1 | Summary + Challenge + Strategy (1–5) | landed | `aa0aee0` |
-| 2 | Scaleable foundation + Push paradox (6–12) | landed (awaiting Della preview) | (about to commit) |
-| 3 | Frameworks + Build Habits (13–18) | not started | — |
-| 4 | Enable Curation + Create Focus + Results (19–28) | not started | — |
+| 2 | Scaleable foundation + Push paradox (6–12) | landed | `d9abc38` |
+| 3 | Frameworks + Build Habits (13–18) | landed (Della greenlit run-through) | (about to commit) |
+| 4 | Enable Curation + Create Focus + Results (19–28) | in progress | — |
 
 ---
 
@@ -129,6 +129,58 @@
 
 ---
 
+## Batch 3 — Rows 13–18
+
+### Row 13 — `<h2>Frameworks</h2>` opening + `<h3>Activity prioritization</h3>`
+- New `<h2>Frameworks</h2>` (plural) wrapper inserted between Push paradox (rows 11–12) and 1. Build Habits.
+- Drafted prose verbatim from spec.
+- 13i placeholder inserted (figma-to-html pending).
+
+### Row 14 — `<h3>User targeting</h3>` (Signal × Intent matrix)
+- Existing line 80 prose with 2 wording substitutions: "tenure" → "intent", "how long they've been on the platform" → "what they're trying to do on the platform".
+- Existing line 82 prose preserved verbatim.
+- NOT-E4 embed (existing on-disk file).
+
+### Row 15 — `<h3>Growth flywheel</h3>`
+- Drafted prose verbatim from spec.
+- NOT-E2 embed (existing on-disk file).
+
+### Row 16 — `<h3>Strategic pillars</h3>`
+- Drafted prose verbatim from spec.
+- NOT-E3 embed (existing on-disk file).
+
+### Row 17 — `<h2>1. Build Habits</h2>` opening + `<h3>Intelligent defaults &amp; feedback loops</h3>`
+- `<h2>1. Build Habits</h2>` kept as wrapper.
+- Old `<h3>Contextualizing notifications</h3>` heading removed; its prose merged into row 17 below.
+- New merged 3-paragraph body from existing line 84 (first 2 sentences only — switchboard sentence held for row 25), line 136, line 212.
+- 17i placeholder inserted (figma-to-html pending).
+- Static `<img src="img/notif-ds-migration.png">` removed.
+
+### Row 18 — `<h3>Push-to-inbox connection</h3>`
+- `<h3>Push-to-inbox connection</h3>` kept; old `<h3>Recommendations as onboarding</h3>` heading folded in (its prose became the first paragraph of the merged row 18 body).
+- New merged 2-paragraph body from existing line 144 + line 152.
+- NOT-06 embed retained; added `data-mobile-pending="true"`.
+- Static `<img src="img/notif-push-landing.png">` removed.
+
+### Other Batch 3 changes (cross-section)
+- Old `<h2>Framework</h2>` (singular) block deleted from its transient post-Batch-2 position between Strategy and Scaleable foundation.
+- Old `<h3>Feedback loops</h3>` heading + paragraph + decay-logic placeholder div deleted from Enable Curation section (its paragraph merged into row 17).
+
+### Verification checklist for Batch 3 (all passed 2026-04-28)
+- [x] Old `<h2>Framework</h2>` (singular) absent.
+- [x] Old h3s removed: `<h3>Contextualizing notifications</h3>`, `<h3>Recommendations as onboarding</h3>`, `<h3>Feedback loops</h3>`.
+- [x] All 7 new headings present exactly once: `<h2>Frameworks</h2>`, `<h3>Activity prioritization</h3>`, `<h3>User targeting</h3>`, `<h3>Growth flywheel</h3>`, `<h3>Strategic pillars</h3>`, `<h3>Intelligent defaults &amp; feedback loops</h3>`, `<h3>Push-to-inbox connection</h3>`.
+- [x] Row 14 reword: "signal and tenure" absent (0); "signal and intent" present (1); old "how long they.ve been on the platform" absent; new "trying to do on the platform" present (1).
+- [x] Static images deleted: `notif-ds-migration.png` (0); `notif-push-landing.png` (0).
+- [x] All 4 diagram embeds present (NOT-E2, NOT-E3, NOT-E4, NOT-06) with `data-mobile-pending="true"`.
+- [x] All preserved prose anchors land: "bias for action" (row 17), "I added copy showing" (row 17), "I shipped decay logic" (row 17), "For low-subscription users" (row 18), "Only the latest push recommendation" (row 18), "The first decision was where to start" (row 14).
+- [x] 6 placeholders total (rows 2, 7, 9, 10, 13, 17). Old "Decay logic..." placeholder gone.
+- [x] H2 hierarchy now matches spec §2: Summary → Challenge → Strategy → Scaleable foundation → Push paradox & engagement reality → Frameworks → 1. Build Habits → 2. Enable Curation → 3. Create Focus → Results.
+- [x] File grew 514 → 550 lines (+36 net), consistent with 4 new sub-sections + 4 new embeds - removed old Framework block - removed Feedback loops block - 2 deleted static images.
+- [x] "switchboard" still present once (line 384) in current row-25 prose — held for Batch 4 reword per spec.
+
+---
+
 ## Cross-batch preservation map (live audit)
 
 Compared against §4 of the spec. Will fill in per batch.
@@ -139,20 +191,20 @@ Compared against §4 of the spec. Will fill in per batch.
 | 53 | "Reddit communicates with hundreds…" | Row 1 Summary Challenge tile | 1 | yes |
 | 57 | "I built the segmentation framework…" | Row 1 Summary Strategy tile | 1 | yes |
 | 59–76 | metrics-callout | Row 5 (relocated out of hero) | 1 | yes |
-| 80 | "The strategy sat on two axes: signal and tenure…" | Row 14, "tenure" → "intent" reword | 3 | — |
-| 82 | "The first decision was where to start…" | Row 14 (second paragraph) | 3 | — |
-| 84 | "Users had a bias for action…" + "switchboard" | Split: bias → row 17, switchboard → row 25 | 3 + 4 | — |
+| 80 | "The strategy sat on two axes: signal and tenure…" | Row 14, "tenure" → "intent" reword | 3 | yes |
+| 82 | "The first decision was where to start…" | Row 14 (second paragraph) | 3 | yes |
+| 84 | "Users had a bias for action…" + "switchboard" | Split: bias → row 17, switchboard → row 25 | 3 + 4 | bias yes; switchboard pending Batch 4 |
 | 90 | "The inbox wasn't on Reddit's design system…" | Row 6 | 2 | yes |
 | 114 | "I rebuilt the unread system around progressive disclosure…" | Row 8 | 2 | yes |
 | 126 | "The migration introduced a less prominent unread color…" | Row 9 | 2 | yes |
 | 130 | "I removed the overflow menu…" | Row 7 | 2 | yes |
-| 136 | "I added copy showing why a user received each notification…" | Row 17 | 3 | — |
-| 144 | "For low-subscription users, the inbox became an onboarding engine…" | Row 18 | 3 | — |
-| 152 | "Only the latest push recommendation appeared in the inbox…" | Row 18 | 3 | — |
+| 136 | "I added copy showing why a user received each notification…" | Row 17 | 3 | yes |
+| 144 | "For low-subscription users, the inbox became an onboarding engine…" | Row 18 | 3 | yes |
+| 152 | "Only the latest push recommendation appeared in the inbox…" | Row 18 | 3 | yes |
 | 168 | "Subreddit subscriptions were entangled with recommendations…" | Row 19 | 4 | — |
 | 176 | "The back end couldn't define what updates…" | Row 20 | 4 | — |
 | 188 | "I then surfaced these preferences…" | Split: subreddit page → row 21, global settings → row 23 | 4 | — |
-| 212 | "I shipped decay logic for breaking news…" | Row 17 | 3 | — |
+| 212 | "I shipped decay logic for breaking news…" | Row 17 | 3 | yes |
 | 220 | "I defined the relationship between channels…" | **REMOVED** (cross-channel retired) | 4 | — |
 | 245 | "I consolidated four messaging systems…" | Row 24 | 4 | — |
 | 253 | "I tested chronological, nested, and tabbed layouts…" | Row 25 | 4 | — |
