@@ -74,6 +74,63 @@ Next up: Thread 1b — fix the 9 remaining L2 reworks + build L3 mobile variants
 
 ## Log entries
 
+### Apr 28, 2026 (PM) — Session 34: case-notifications v3 spec extraction (Cowork)
+
+**What happened:**
+Picked up the v3 spec-extraction scope per `~/CoworkWorkspace/Get-a-job/sessions/resume-prompt-case-notifications-v3-spec-extraction.md`. Della had rearranged her Reddit Notifications case study a third time (v3) — 6 v2 sections retired, 3 sections moved, 1 new transition (Approach) added. The previous Cowork thread hit a fabrication failure (subagent invented Slide 20 metrics from training data); this thread executed the slide work with **direct Figma fetches only, no subagents**.
+
+**Work done:**
+
+1. **Slide 09 (Approach) extracted first** — the only slide with no v2 prose fallback. Captured: eyebrow `APPROACH`, statement 01 "Establish scalable foundation" (visually de-emphasized), statement 02 "Optimize for key user journeys" (visually emphasized).
+
+2. **Slide 01 verification re-fetch** — every field matched the resume-prompt's verification anchor verbatim, including the typo "strategey." Confirmed direct Figma fetches are reliable; failure mode is fixed.
+
+3. **All 19 slides extracted** via 19 direct `mcp__Figma__get_design_context` calls. Saved to `~/CoworkWorkspace/Get-a-job/working/v3-slide-extractions.md` (a working scratch file outside the portfolio-site git repo per session-scaffolding rule). Each extraction captures eyebrow, title, subtitle, annotations, callouts, and v2-row mapping.
+
+4. **v3 spec doc written** at `portfolio-site/working/planning-docs/case-notifications-change-outline-v3.md`. Structure follows resume-prompt §"v3 spec doc — required structure":
+    - §1 v3 position table (19 positions including 2 merged + 1 new) + retirements list (6 v2 rows removed)
+    - §2 per-position entries with prose citations to existing HTML line numbers and slide node IDs
+    - §3 CSS additions (.section-eyebrow, .case-approach-pivot, .approach-steps, .surface-tradeoffs with 4 rows, .impact-callout, .pillar-tags optional)
+    - §4 5-batch execution plan with Della preview between each
+    - §5 out-of-scope
+    - §6 consolidated open questions for Della (37 items: 6 critical, 16 heading-rename decisions, 8 structural, 7 diagram-retranslation)
+
+**Key findings:**
+
+- **CONFIRMED 4 layout options at Position 17 (Slide 18)**, not 3 as the v2 spec assumed. New 4th option is "Move chat to header." `diagram-not12-inbox-layout-experiments-v5.html` needs retranslation.
+- **CONFIRMED 4 attribute rows at Position 16 (Slide 17)**, not 3 as v2 NOT-24 spec assumed. New 4th row is "Utilities." Diagram retranslation needed.
+- **Position 8 merge confirmed** — Slide 08 collapses v2 Rows 8 (Unread hierarchy) + 9 (Unread color fix) into a single h3 with a 3-card progressive-disclosure layout + a "DECISION v1→v2" callout summarizing the color-fix story.
+- **Position 14 merge confirmed** — Slide 15 collapses v2 Rows 20 + 21 (Preference architecture + Subreddit on-ramps) into a single before/after side-by-side with both subreddit-page and settings-detail screenshots per side.
+- **Position 18 merge confirmed** — Slide 19 collapses v2 Rows 26 + 27 (Navigation simplification + Unified inbox reveal). The bottom-nav simplification is the visual; the unified-inbox UI mockup may stay as a separate diagram.
+- **Slide 20 metric "discrepancy" resolved as a registry gap, not a fabrication.** The previous Cowork thread's resume prompt warned that the +1.3M / +2.7M / 75% figures were invented by a subagent. Direct fetch confirmed those exact numbers are on Slide 20 today — and they ALSO match the deployed `case-notifications.html` metrics-callout (lines 122–137). The numbers came from the deployed site, not training data. The real issue: the verified-facts-registry.md lists only +1.4% DAU and +5.4% good visits (% lifts) while the slide+site display absolute headcounts. Della needs to add registry entries with provenance for the absolute conversions and the "75% above target" figure.
+- Cohort labels (Slide 03) and quadrant labels (Slide 10) diverge from v2 prose — slide is the canonical visual; flagged for Della.
+- Pillar tag chips on slides 12–19 show 3 pillars (Build Habits / Enable Curation / Create Focus); Slide 06's "PILLAR 1" eyebrow contradicts this. Recommended treating Foundation as pre-pillar.
+
+**Verification:**
+
+- 19/19 slides extracted via direct Figma MCP calls. Zero subagent delegation per resume-prompt non-negotiable.
+- Slide 01 re-fetch verification anchor matched 10 of 10 fields verbatim. Direct fetches are accurate.
+- Spec doc citations: every prose block traces to either `case-notifications.html` line N (existing prose verbatim), Slide NN node `1214:XXXX` (verbatim slide content), or `verified-facts-registry.md` (metric provenance).
+- voice-check.py run on the spec: 147 errors, 92 warnings — **all false positives.** Errors are "Verbal transcription: Direct quote found" hits triggered by the spec doc's quoted slide content (which is supposed to be verbatim, per the spec's purpose). voice-check is designed for case-study HTML, not spec docs. Confirmed by inspecting first 50 errors — every one is a quoted slide title, microcopy line, or HTML code sample. Recommend running voice-check against the actual `case-notifications.html` after Batch 1 instead.
+- No HTML changes shipped from this scope (out-of-scope per resume prompt). Branch state preserved: still `case-notifications-figma-rearrange-v2`, ahead of origin by 12 commits, no push.
+
+**What didn't happen (intentional):**
+
+- No HTML execution. Spec doc is the deliverable.
+- No subagent delegation for slide work.
+- No registry updates — the absolute-headcount metrics need Della's input on provenance before adding.
+
+**Artifacts produced:**
+- `~/CoworkWorkspace/Get-a-job/working/v3-slide-extractions.md` (working scratch — 19 slides, ~1100 lines)
+- `portfolio-site/working/planning-docs/case-notifications-change-outline-v3.md` (deliverable spec — ~700 lines)
+
+**Open for Della before Batch 1:**
+See §6 of the v3 spec doc. 6 critical items, 16 heading-rename choices, 8 structural decisions, 7 diagram-retranslation calls. Recommend resolving §6.1 (metric registry gap) and §6.2 (scalable vs scaleable spelling) first since they affect every position downstream.
+
+**Successor state:** Once Della signs off on the spec, archive the resume prompt to `~/CoworkWorkspace/Get-a-job/sessions/archive/` and the next thread executes the 5-batch HTML refactor against this spec.
+
+---
+
 ### Apr 22, 2026 (PM) — Session 17: Portfolio ship-complete — 4 port- diagrams live on case-building-portfolio
 
 **What happened:**
