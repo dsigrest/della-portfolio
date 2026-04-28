@@ -12,8 +12,8 @@
 
 | Batch | Rows | Status | Commit |
 |---|---|---|---|
-| 1 | Summary + Challenge + Strategy (1–5) | landed (awaiting Della preview) | (about to commit) |
-| 2 | Scaleable foundation + Push paradox (6–12) | not started | — |
+| 1 | Summary + Challenge + Strategy (1–5) | landed | `aa0aee0` |
+| 2 | Scaleable foundation + Push paradox (6–12) | landed (awaiting Della preview) | (about to commit) |
 | 3 | Frameworks + Build Habits (13–18) | not started | — |
 | 4 | Enable Curation + Create Focus + Results (19–28) | not started | — |
 
@@ -79,6 +79,56 @@
 
 ---
 
+## Batch 2 — Rows 6–12
+
+### Row 6 — `<h2>Scaleable foundation</h2>` opening + `<h3>Inbox row component</h3>`
+- Renamed existing `<h2>Foundation</h2>` → `<h2>Scaleable foundation</h2>`.
+- Renamed `<h3>Design system migration</h3>` → `<h3>Inbox row component</h3>`.
+- Existing line 90 prose ("The inbox wasn't on Reddit's design system…") preserved verbatim under new heading.
+- NOT-02 embed retained in place; added `data-mobile-pending="true"` per §6.
+
+### Row 7 — `<h3>Swipe actions</h3>`
+- Renamed `<h3>Inbox simplification</h3>` → `<h3>Swipe actions</h3>` AND moved up to sit between row 6 and row 8 (was after Unread color paragraph in original).
+- Existing line 130 prose ("I removed the overflow menu…") preserved verbatim.
+- 7i placeholder inserted (figma-to-html pending; container will include GIF placeholder slot).
+
+### Row 8 — `<h3>Unread hierarchy</h3>`
+- Renamed `<h3>Unread system redesign</h3>` → `<h3>Unread hierarchy</h3>`.
+- Existing line 114 prose ("I rebuilt the unread system around progressive disclosure…") preserved verbatim.
+- NOT-04 embed retained; added `data-mobile-pending="true"`.
+
+### Row 9 — `<h3>Unread color fix</h3>` (NEW heading for orphaned prose)
+- Net-new `<h3>Unread color fix</h3>` heading wraps the existing line 126 prose ("The migration introduced a less prominent unread color…").
+- 9i placeholder inserted (figma-to-html pending).
+
+### Row 10 — `<h3>Three different inboxes</h3>` (net-new connecting beat)
+- Net-new `<h3>` + drafted prose verbatim from spec (3-journey framing: new user / subscriber / contributor).
+- 10i placeholder inserted (figma-to-html pending).
+
+### Row 11 — `<h2>Push paradox &amp; engagement reality</h2>` opening + `<h3>The push paradox</h3>`
+- New `<h2>` wrapper for rows 11–12, sits between Scaleable foundation (rows 6–10) and the still-untouched-this-batch `<h2>1. Build Habits</h2>`.
+- Drafted prose verbatim from spec.
+- NOT-E6 embed (existing on-disk file `diagram-not-e6-butterfly-chart-v5.html`).
+
+### Row 12 — `<h3>Inbox engagement funnel</h3>`
+- Drafted prose verbatim from spec (7.5M / 47% / 75% / Core/Casual/Resurrected/New).
+- NOT-E7 embed (existing on-disk file `diagram-not-e7-sankey-flow-v5.html`).
+
+### Verification checklist for Batch 2 (all passed 2026-04-28)
+- [x] `<h2>Foundation</h2>` removed.
+- [x] `<h3>Design system migration</h3>` / `<h3>Unread system redesign</h3>` / `<h3>Inbox simplification</h3>` all removed.
+- [x] All 9 new headings present exactly once: `<h2>Scaleable foundation</h2>`, `<h3>Inbox row component</h3>`, `<h3>Swipe actions</h3>`, `<h3>Unread hierarchy</h3>`, `<h3>Unread color fix</h3>`, `<h3>Three different inboxes</h3>`, `<h2>Push paradox &amp; engagement reality</h2>`, `<h3>The push paradox</h3>`, `<h3>Inbox engagement funnel</h3>`.
+- [x] All 4 preserved-prose anchors found exactly once: "one-off engineer build", "less prominent unread color", "overflow menu". ("progressive disclosure" appears twice — once in row 8 prose, once in NOT-04 iframe `title=` attribute; both are expected.)
+- [x] All 4 diagram embeds present (NOT-02, NOT-04, NOT-E6, NOT-E7) with `data-mobile-pending="true"`.
+- [x] 4 placeholder divs added (rows 7, 9, 10) plus row 2 from Batch 1 = 4 net-new placeholders. (Pre-existing Decay logic placeholder at row 17/Feedback loops still untouched — Batch 3 territory.)
+- [x] H2 hierarchy after Batch 2: Summary → Challenge → Strategy → Framework (still in old position, dissolves in Batch 3) → Scaleable foundation → Push paradox & engagement reality → 1. Build Habits → 2. Enable Curation → 3. Create Focus → Results.
+- [x] File grew 466 → 514 lines (+48), consistent with new section structure.
+
+### Notes
+- The old `<h2>Framework</h2>` (singular) at line 135 is in an awkward position after Batch 2 (sits between Strategy and Scaleable foundation). This is transient — Batch 3 dissolves it: its prose splits across rows 14 and 17 + Strategy section, and a new `<h2>Frameworks</h2>` (plural) wrapper appears between Push paradox and 1. Build Habits.
+
+---
+
 ## Cross-batch preservation map (live audit)
 
 Compared against §4 of the spec. Will fill in per batch.
@@ -86,16 +136,16 @@ Compared against §4 of the spec. Will fill in per batch.
 | Original line(s) | First words | Target | Batch | Landed |
 |---|---|---|---|---|
 | 27–48 | Hero / eyebrow / h1 / meta-grid | unchanged | — | yes (untouched) |
-| 53 | "Reddit communicates with hundreds…" | Row 1 Summary Challenge tile | 1 | pending |
-| 57 | "I built the segmentation framework…" | Row 1 Summary Strategy tile | 1 | pending |
-| 59–76 | metrics-callout | Row 5 (relocated out of hero) | 1 | pending |
+| 53 | "Reddit communicates with hundreds…" | Row 1 Summary Challenge tile | 1 | yes |
+| 57 | "I built the segmentation framework…" | Row 1 Summary Strategy tile | 1 | yes |
+| 59–76 | metrics-callout | Row 5 (relocated out of hero) | 1 | yes |
 | 80 | "The strategy sat on two axes: signal and tenure…" | Row 14, "tenure" → "intent" reword | 3 | — |
 | 82 | "The first decision was where to start…" | Row 14 (second paragraph) | 3 | — |
 | 84 | "Users had a bias for action…" + "switchboard" | Split: bias → row 17, switchboard → row 25 | 3 + 4 | — |
-| 90 | "The inbox wasn't on Reddit's design system…" | Row 6 | 2 | — |
-| 114 | "I rebuilt the unread system around progressive disclosure…" | Row 8 | 2 | — |
-| 126 | "The migration introduced a less prominent unread color…" | Row 9 | 2 | — |
-| 130 | "I removed the overflow menu…" | Row 7 | 2 | — |
+| 90 | "The inbox wasn't on Reddit's design system…" | Row 6 | 2 | yes |
+| 114 | "I rebuilt the unread system around progressive disclosure…" | Row 8 | 2 | yes |
+| 126 | "The migration introduced a less prominent unread color…" | Row 9 | 2 | yes |
+| 130 | "I removed the overflow menu…" | Row 7 | 2 | yes |
 | 136 | "I added copy showing why a user received each notification…" | Row 17 | 3 | — |
 | 144 | "For low-subscription users, the inbox became an onboarding engine…" | Row 18 | 3 | — |
 | 152 | "Only the latest push recommendation appeared in the inbox…" | Row 18 | 3 | — |

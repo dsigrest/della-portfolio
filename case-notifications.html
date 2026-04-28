@@ -140,13 +140,13 @@
 
       <p>Users had a <strong>bias for action</strong> in the inbox. The more content was framed as personally actionable, the more likely they were to engage. The inbox wasn&rsquo;t a destination&mdash;it was a switchboard that guided users through their session.</p>
 
-      <h2>Foundation</h2>
+      <h2>Scaleable foundation</h2>
 
-      <h3>Design system migration</h3>
+      <h3>Inbox row component</h3>
 
       <p>The inbox wasn&rsquo;t on Reddit&rsquo;s design system. Every component was a <strong>one-off engineer build</strong>&mdash;growing technical debt, no quality assurance, and each new feature built from scratch. I designed the inbox row component as a scalable, reusable unit intended for distributed messaging surfaces across the platform, then migrated the full surface to the design system. Every project ran through a <strong>technical kickoff with the eng IC</strong> picking up the work&mdash;pressure-testing edge cases, building buy-in, and aligning on decisions before a line of code was written.</p>
 
-      <div class="case-img-full diagram-embed" data-diagram="not-02">
+      <div class="case-img-full diagram-embed" data-diagram="not-02" data-mobile-pending="true">
         <iframe
           src="img/diagrams/diagram-not02-inbox-row-unit-v5.html"
           loading="lazy"
@@ -156,11 +156,19 @@
         ></iframe>
       </div>
 
-      <h3>Unread system redesign</h3>
+      <h3>Swipe actions</h3>
+
+      <p>I removed the <strong>overflow menu, icon-based message type indicators</strong>, and segmented inbox sections that pushed content below the fold. Icons had low comprehension&mdash;I replaced them with clear, embedded copy. Swipe actions and long press handled secondary options. Engagement held steady.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">7i &mdash; Easy access swipe actions &mdash; figma-to-html translation pending (includes GIF placeholder slot)</div>
+      </div>
+
+      <h3>Unread hierarchy</h3>
 
       <p>I rebuilt the unread system around <strong>progressive disclosure</strong>: a single numeric badge at the inbox level, a dot indicator at the tab level, typography plus subtle color at the row level. Every badge mapped 1:1 to a visible item&mdash;users never had to do math.</p>
 
-      <div class="case-img-full diagram-embed" data-diagram="not-04">
+      <div class="case-img-full diagram-embed" data-diagram="not-04" data-mobile-pending="true">
         <iframe
           src="img/diagrams/diagram-not04-unread-hierarchy-v5.html"
           loading="lazy"
@@ -170,11 +178,51 @@
         ></iframe>
       </div>
 
+      <h3>Unread color fix</h3>
+
       <p>The migration introduced a <strong>less prominent unread color</strong> and click-through dropped. I used the data to identify the cause, partnered with the design systems team to adjust, and the fix influenced design system usage beyond the inbox.</p>
 
-      <h3>Inbox simplification</h3>
+      <div class="case-img-full">
+        <div class="img-placeholder">9i &mdash; Unread color before/after &mdash; figma-to-html translation pending</div>
+      </div>
 
-      <p>I removed the <strong>overflow menu, icon-based message type indicators</strong>, and segmented inbox sections that pushed content below the fold. Icons had low comprehension&mdash;I replaced them with clear, embedded copy. Swipe actions and long press handled secondary options. Engagement held steady.</p>
+      <h3>Three different inboxes</h3>
+
+      <p>Strategy doesn&rsquo;t translate without understanding who&rsquo;s receiving the notification. Three user journeys define the inbox experience, and each surfaces a different problem: new users see an empty state, subscribers can&rsquo;t customize what they see, and contributors get crowded with activity that doesn&rsquo;t surface what matters.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">10i &mdash; Three user journeys (new user / subscriber / contributor) &mdash; figma-to-html translation pending</div>
+      </div>
+
+      <h2>Push paradox &amp; engagement reality</h2>
+
+      <h3>The push paradox</h3>
+
+      <p>Anecdotally, users reported push notifications as overwhelming and annoying. The data told a different story&mdash;push recommendations were a <strong>key DAU driver</strong> with strong click-through. The behavior contradicted the sentiment, and any push strategy had to live in that tension.</p>
+
+      <div class="case-img-full diagram-embed" data-diagram="not-e6" data-mobile-pending="true">
+        <iframe
+          src="img/diagrams/diagram-not-e6-butterfly-chart-v5.html"
+          loading="lazy"
+          scrolling="no"
+          title="Inbox vs push engagement — dual-axis comparison across comment reply, post reply, recommendations, and subscriptions"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
+      </div>
+
+      <h3>Inbox engagement funnel</h3>
+
+      <p>The inbox itself wasn&rsquo;t a discovery surface&mdash;it was a contribution surface. <strong>7.5M DAU</strong> enter the inbox; <strong>47% click through</strong>; <strong>75% of those go on to contribute</strong>. That funnel is shaped almost entirely by Core users&mdash;Casual, Resurrected, and New cohorts barely make it past the first step. The inbox was serving only the most engaged.</p>
+
+      <div class="case-img-full diagram-embed" data-diagram="not-e7" data-mobile-pending="true">
+        <iframe
+          src="img/diagrams/diagram-not-e7-sankey-flow-v5.html"
+          loading="lazy"
+          scrolling="no"
+          title="Inbox engagement funnel — 7.5M DAU through 47% click-through to 75% contribution, segmented by cohort"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
+      </div>
 
       <h2>1. Build Habits</h2>
 
