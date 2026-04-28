@@ -513,4 +513,42 @@ No new metrics introduced.
 2. **Pillar tag chips at P11 + P12** — currently skipped. Easy to add if Della wants the visual breadcrumb after preview (would use existing `--accent` for active chip, `--text-tertiary` for muted).
 3. **Growth flywheel placement** — h3 still sits between P9 and P10 in document order. Per scope, relocates in Batch 4. No action needed in Batch 3, but flagged so the preview reads it as a "still here, intentional" element.
 
+---
+
+## v3 Batch 4 — Positions 13–15 (Apr 28, 2026)
+
+### CSS additions to styles.css
+
+None. All structural changes use existing classes.
+
+### HTML changes — case-notifications.html
+
+| Change | Position | Before | After |
+|---|---|---|---|
+| h3 swap | P13 | `<h3>Pipeline separation</h3>` | `<h3>Separating what you asked for from what we recommend.</h3>` (Slide 14 `1214:20146` verbatim, period preserved) |
+| Lede inserted | P13 | none | "Subscriptions used to compete with algorithmic recommendations in the backend. I rebuilt the pipeline with the ML team — user signal won over engagement metrics." (Slide 14 subtitle) |
+| h3 MERGE | P14 | TWO h3s — `<h3>Preference architecture</h3>` (v2 Row 20) + `<h3>Subreddit on-ramps</h3>` (v2 Row 21) | ONE h3 — `<h3>Preferences at the point of decision.</h3>` (Slide 15 `1214:20255` verbatim, period preserved) |
+| Lede inserted | P14 | none | "Subscription settings used vague and hidden under an overflow; I collaborated with eng to establish concrete options. Then, I surfaced them on the subreddit page itself." (Slide 15 subtitle, **typo "used vague" preserved verbatim** — flagged below) |
+| Diagrams stacked | P14 | NOT-07 + NOT-08 (already separate) | both kept stacked under the merged h3. NOT-07 between prose paragraph 1 and prose paragraph 2; NOT-08 after prose paragraph 2. |
+| **RELOCATED** | P15 | `<h3>Growth flywheel</h3>` block sat between P9 NOT-E4 diagram and P10 Strategy eyebrow | block (h3 + prose + NOT-E2 diagram) moved to AFTER P14's NOT-08 diagram. Heading swapped to slide voice in same operation. |
+| h3 swap | P15 | `<h3>Growth flywheel</h3>` (still original at start of Batch 4) | `<h3>The flywheel: signal compounds over time.</h3>` (Slide 16 `1214:19972` verbatim, period preserved) |
+| Lede inserted | P15 | none | "Intelligent defaults and feedback loops that auto-enroll and auto-exit users based on signal and engagement." (Slide 16 subtitle) |
+| Existing prose preserved | P13, P14, P15 | — | All 4 existing prose paragraphs verbatim: P13 "Subreddit subscriptions were entangled with recommendations…"; P14 "The back end couldn't define what updates…" + "I then surfaced these preferences…"; P15 "With taxonomy and targeting in place…". |
+
+### Diagrams — Batch 4 status
+
+- **Embedded (unchanged):** NOT-19 (P13), NOT-07 (P14 prose 1), NOT-08 (P14 prose 2), NOT-E2 (P15 relocated).
+- **Drift flagged for separate diagram-pass scope:** NOT-19 dual-pipeline AFTER (Slide 14 shows two-pipeline-merge structure not in v2); NOT-E2 stage labels (Slide 16 stage 1 is "Capture signal" — verify on-disk diagram); NOT-E2 5-item-per-stage labels (Slide 16 lists Geo recs / Search / Good visits / etc.).
+
+### Untouched in Batch 4 (still in document order between P15 and P16)
+
+- `<h3>Contextual suggestions</h3>` + NOT-22 diagram (existing v2 sub-position under Enable Curation, not in v3 spec scope for renaming).
+- `<h3>Global settings</h3>` + NOT-09 diagram (same — existing v2 sub-position kept as-is).
+
+### Open questions for Della (Batch 4 review)
+
+1. **Slide 15 typo** — "Subscription settings used vague" preserved verbatim in P14 lede. Likely Della meant "Subscription settings were vague" or "used to be vague". Awaiting Della's correction or confirmation.
+2. **Contextual suggestions / Global settings** — both h3s untouched in Batch 4 (not in spec scope). Sit between P15 (relocated flywheel) and P16 (Create Focus h2). Della reviews flow at preview.
+
+
 
