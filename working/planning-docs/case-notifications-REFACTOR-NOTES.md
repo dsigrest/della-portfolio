@@ -370,3 +370,77 @@ Skipped per kickoff: `.surface-tradeoffs` (Batch 5), `.pillar-tags` (deferred pe
 4. **2% datapoint dedupe (§6.28)**: rendered at P4 as impact callout. Existing line 261 prose at P9 also cites "2% of all comments". Della reviews dedupe after Batch 3.
 5. **case-strategy interlude**: stays in place between P4 and P5 in Batch 1 (lines 118–139, with line 120 spelling updated). Eventually relocates to P19 in Batch 5. Della reviews narrative flow at preview.
 
+---
+
+## v3 Batch 1.5 — Slide-voice heading swap, Positions 1–5 (Apr 28, 2026)
+
+Retroactive policy: slide-voice headings replace v2 structural labels at h2/h3. Decision driven by Della's localhost preview after Batch 1 — slide titles read as more skimmable than the v2 labels.
+
+| Change | Position | Before | After |
+|---|---|---|---|
+| h2 swap | P1 | `<h2>Summary</h2>` | `<h2>From fragmented legacy to unified system</h2>` (Slide 01 `1214:19523` verbatim) |
+| h3 swap | P2 | `<h3>No overarching strategy</h3>` | `<h3>Four systems. Three platforms. Six years.</h3>` (Slide 02 `1214:19565` three-beat) |
+| h3 swap | P3 | `<h3>Three different inboxes</h3>` | `<h3>Three activity levels. Three problems.</h3>` (Slide 03 `1214:19787`) |
+| h3 swap | P4 | `<h3>Inbox engagement funnel</h3>` | `<h3>The inbox drives engagement; but not for everyone</h3>` (Slide 04 `1214:19820` — semicolon preserved) |
+| h2 unchanged | P5 | `<h2>Approach</h2>` | unchanged (Slide 09 is heading-only) |
+
+No `id` attribute updates needed — none of the swapped headings carried `id` attributes; only `#main` anchor exists in the page.
+
+### Open questions for Della (Batch 1.5 review)
+
+1. **Duplicate heading/lede at P1**: h2 line 53 reads "From fragmented legacy to unified system"; lede line 54 reads the same. Batch 1.5 was heading-only per kickoff scope. Della to decide: drop the duplicate `<p>` lede, swap it to a different phrase, or leave as-is (CSS could differentiate).
+2. **Duplicate heading/lede at P2**: h3 line 80 reads "Four systems. Three platforms. Six years."; lede line 82 reads the same. Same disposition options as P1.
+
+---
+
+## v3 Batch 2 — Positions 6–8 (Apr 28, 2026)
+
+### CSS additions to styles.css
+
+- `--accent-warm: #d4a574` token added to `:root` for casual-warm accent (EXPERIMENT/RESULT eyebrow chips). Designed for reuse at Position 17 in Batch 5.
+- `.microformat` + `.experiment-result` modifier — container block.
+- `.microformat-eyebrow` + `.microformat-tag` — chip + lead-in eyebrow line. `.microformat-tag` uses `--accent-warm`.
+- `.microformat-mechanics` — 2-column grid; `.mechanic-card` + `.mechanic-tag` + `.mechanic-body` + `.mechanic-dot` (dot uses `--accent-warm`).
+- Mobile breakpoint at 640px collapses `.microformat-mechanics` to single column.
+- `.hierarchy-cards` — 3-column grid; `.hierarchy-card` + `.hierarchy-eyebrow` (uses `--accent`) + `.hierarchy-body`.
+- Mobile breakpoint at 768px collapses `.hierarchy-cards` to single column.
+- `.decision-callout` — left-bordered (using `--accent`); `.decision-eyebrow` + `.decision-heading` + `.decision-body`.
+
+### HTML changes — case-notifications.html
+
+| Change | Position | Before | After |
+|---|---|---|---|
+| Eyebrow inserted | P6 | none | `Foundation` (`.section-eyebrow`) above `<h2>Scalable foundation</h2>`. "PILLAR 1" suffix from slide dropped per Della's resolved decision (Foundation = pre-pillar; 3 numbered pillars come after). |
+| h3 swap | P6 | `<h3>Inbox row component</h3>` | `<h3>Create a global inbox row component</h3>` (Slide 06 `1214:19629` verbatim) |
+| Lede inserted | P6 | none | "Scalable, reusable, on the design system — new notification types in days, not weeks." (Slide 06 subtitle) between h3 and existing prose |
+| Eyebrow inserted | P7 | none | `Accessible actions` (`.section-eyebrow`) above h3 |
+| h3 swap | P7 | `<h3>Swipe actions</h3>` | `<h3>Leverage gestures for secondary actions</h3>` (Slide 07 `1214:19702` verbatim) |
+| Lede inserted | P7 | none | "Platform-native gestures replaced the overflow menu — actions without an extra tap, and the trailing slot freed for a flex element." (Slide 07 subtitle) |
+| Microformat block inserted | P7 | none | EXPERIMENT/RESULT structured block: eyebrow chip "Experiment · What gesture is most intuitive for users?" → 2 mechanic cards (Swipe → / ● Long press) → eyebrow chip "Result · swipe". Placed between existing prose and NOT-02b diagram. (Slide 07 verbatim) |
+| Eyebrow inserted | P8 | none | `Unread system · Progressive disclosure` (`.section-eyebrow`) above merged h3 |
+| h3 MERGE | P8 | TWO h3s — `<h3>Unread hierarchy</h3>` (v2 Row 8) + `<h3>Unread color fix</h3>` (v2 Row 9) | ONE h3 — `<h3>Simplify badging with progressive disclosure</h3>` (Slide 08 `1214:19728` verbatim) |
+| Lede inserted | P8 | none | "Every badge maps 1:1 to a visible item — users never have to do math." (Slide 08 subtitle, present-tense; intentional duplicate of past-tense line in existing prose body — slide voice canonical) |
+| Hierarchy 3-card block inserted | P8 | none | 3 cards (Level 01 Inbox badge count / Level 02 Tab indicator / Level 03 Row highlight) with body text per Slide 08 verbatim. Placed between NOT-04 diagram and prose paragraph 2. |
+| Decision callout inserted | P8 | none | Eyebrow `Decision` + heading `v1 → v2` + body "DS migration introduced a less prominent unread color → click-through dropped → data identified the cause → v2 restored contrast → recovery beyond the inbox." (Slide 08 verbatim). Placed between prose paragraph 2 and NOT-04b diagram. |
+| Existing prose preserved | P6, P7, P8 | — | All 4 existing prose paragraphs verbatim (P6 "The inbox wasn't on Reddit's design system…", P7 "I removed the overflow menu…", P8 paragraph 1 "I rebuilt the unread system…", P8 paragraph 2 "The migration introduced a less prominent unread color…"). |
+
+### Diagrams — Batch 2 status
+
+- **Embedded (unchanged):** NOT-02 (P6), NOT-02b-swipe (P7), NOT-04 (P8), NOT-04b (P8). Both NOT-04 diagrams remain stacked at merged P8 per kickoff.
+- **No diagram retranslations in this batch** — slide annotation drift (NOT-02 4-pair structure, NOT-04 3-card hierarchy, NOT-04b color swatches) deferred to a separate diagram-pass scope.
+
+### Position 8 placement decision
+
+Spec offered "between two prose paragraphs OR after both — Della to review". Chose:
+- **Hierarchy 3-card block:** between NOT-04 diagram and prose paragraph 2. Reinforces paragraph 1's progressive-disclosure concept as a compact structured visual after the diagram's deeper visualization.
+- **Decision callout:** between prose paragraph 2 and NOT-04b diagram. Acts as TL;DR header for the color-fix story; NOT-04b diagram then shows the actual swatches.
+
+Final P8 order: eyebrow → h3 → lede → prose 1 → NOT-04 → 3-card hierarchy → prose 2 → decision callout → NOT-04b. Della reviews at preview.
+
+### Open questions for Della (Batch 2 review)
+
+1. **EXPERIMENT/RESULT mechanic-tag color**: rendered with `--text-primary` (white). Slide may use `--accent` (teal) for SWIPE → and ● LONG PRESS chips — only the framing eyebrows (EXPERIMENT, RESULT, dot before LONG PRESS) use `--accent-warm`. If chips should be teal, easy follow-up.
+2. **P8 placement**: 3-card hierarchy after NOT-04 vs. before. Decision callout before NOT-04b vs. after. Della reviews at preview; trivial reorder if needed.
+3. **Foundation eyebrow casing**: written as "Foundation" in source; CSS renders uppercase via `.section-eyebrow`. Matches Batch 1 pattern.
+4. **Mechanic-tag arrows**: rendered "Swipe →" (right arrow) per slide. Consider whether the dot before "Long press" should be a true bullet or kept as `&bull;`.
+

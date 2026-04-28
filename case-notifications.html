@@ -167,9 +167,13 @@
         </ol>
       </section>
 
+      <p class="section-eyebrow">Foundation</p>
+
       <h2>Scalable foundation</h2>
 
-      <h3>Inbox row component</h3>
+      <h3>Create a global inbox row component</h3>
+
+      <p>Scalable, reusable, on the design system &mdash; new notification types in days, not weeks.</p>
 
       <p>The inbox wasn&rsquo;t on Reddit&rsquo;s design system. Every component was a <strong>one-off engineer build</strong>&mdash;growing technical debt, no quality assurance, and each new feature built from scratch. I designed the inbox row component as a scalable, reusable unit intended for distributed messaging surfaces across the platform, then migrated the full surface to the design system. Every project ran through a <strong>technical kickoff with the eng IC</strong> picking up the work&mdash;pressure-testing edge cases, building buy-in, and aligning on decisions before a line of code was written.</p>
 
@@ -183,9 +187,28 @@
         ></iframe>
       </div>
 
-      <h3>Swipe actions</h3>
+      <p class="section-eyebrow">Accessible actions</p>
+
+      <h3>Leverage gestures for secondary actions</h3>
+
+      <p>Platform-native gestures replaced the overflow menu &mdash; actions without an extra tap, and the trailing slot freed for a flex element.</p>
 
       <p>I removed the <strong>overflow menu, icon-based message type indicators</strong>, and segmented inbox sections that pushed content below the fold. Icons had low comprehension&mdash;I replaced them with clear, embedded copy. Swipe actions and long press handled secondary options. Engagement held steady.</p>
+
+      <div class="microformat experiment-result">
+        <p class="microformat-eyebrow"><span class="microformat-tag">Experiment</span> &middot; What gesture is most intuitive for users?</p>
+        <div class="microformat-mechanics">
+          <div class="mechanic-card">
+            <p class="mechanic-tag">Swipe &rarr;</p>
+            <p class="mechanic-body">Primary secondary action</p>
+          </div>
+          <div class="mechanic-card">
+            <p class="mechanic-tag"><span class="mechanic-dot">&bull;</span> Long press</p>
+            <p class="mechanic-body">Access secondary menu</p>
+          </div>
+        </div>
+        <p class="microformat-eyebrow"><span class="microformat-tag">Result</span> &middot; swipe</p>
+      </div>
 
       <div class="case-img-full diagram-embed" data-diagram="not-02b-swipe" data-mobile-pending="true">
         <iframe
@@ -197,7 +220,11 @@
         ></iframe>
       </div>
 
-      <h3>Unread hierarchy</h3>
+      <p class="section-eyebrow">Unread system &middot; Progressive disclosure</p>
+
+      <h3>Simplify badging with progressive disclosure</h3>
+
+      <p>Every badge maps 1:1 to a visible item &mdash; users never have to do math.</p>
 
       <p>I rebuilt the unread system around <strong>progressive disclosure</strong>: a single numeric badge at the inbox level, a dot indicator at the tab level, typography plus subtle color at the row level. Every badge mapped 1:1 to a visible item&mdash;users never had to do math.</p>
 
@@ -211,9 +238,28 @@
         ></iframe>
       </div>
 
-      <h3>Unread color fix</h3>
+      <div class="hierarchy-cards">
+        <div class="hierarchy-card">
+          <p class="hierarchy-eyebrow">Level 01 &middot; Inbox badge count</p>
+          <p class="hierarchy-body">Aggregate count at the single entry point &mdash; exact, scannable.</p>
+        </div>
+        <div class="hierarchy-card">
+          <p class="hierarchy-eyebrow">Level 02 &middot; Tab indicator</p>
+          <p class="hierarchy-body">Boolean signal &mdash; new items exist in this tab, without counting.</p>
+        </div>
+        <div class="hierarchy-card">
+          <p class="hierarchy-eyebrow">Level 03 &middot; Row highlight</p>
+          <p class="hierarchy-body">Per-item read/unread via typographic weight and subtle tint shift.</p>
+        </div>
+      </div>
 
       <p>The migration introduced a <strong>less prominent unread color</strong> and click-through dropped. I used the data to identify the cause, partnered with the design systems team to adjust, and the fix influenced design system usage beyond the inbox.</p>
+
+      <div class="decision-callout">
+        <p class="decision-eyebrow">Decision</p>
+        <p class="decision-heading">v1 &rarr; v2</p>
+        <p class="decision-body">DS migration introduced a less prominent unread color &rarr; click-through dropped &rarr; data identified the cause &rarr; v2 restored contrast &rarr; recovery beyond the inbox.</p>
+      </div>
 
       <div class="case-img-full diagram-embed" data-diagram="not-04b" data-mobile-pending="true">
         <iframe

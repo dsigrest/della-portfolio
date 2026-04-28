@@ -21,6 +21,7 @@
       --border-hover: rgba(224, 223, 228, 0.10);
       --accent: #7fb5b0;
       --accent-hover: #8ac4be;
+      --accent-warm: #d4a574;
       --spacing-xs: 4px;
       --spacing-sm: 8px;
       --spacing-md: 16px;
@@ -1329,4 +1330,132 @@ main {
   .impact-callout .body {
     font-size: 18px;
   }
+}
+
+/* ---------- Microformat: EXPERIMENT / RESULT (Position 7; reused at Position 17 in Batch 5) ---------- */
+.microformat {
+  margin: var(--spacing-lg) 0;
+  padding: var(--spacing-lg);
+  background: var(--surface-1);
+  border: 1px solid var(--border-normal);
+  border-radius: 10px;
+}
+.microformat-eyebrow {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: 0.2px;
+  margin: 0;
+}
+.microformat-eyebrow + .microformat-mechanics {
+  margin-top: var(--spacing-md);
+}
+.microformat-mechanics + .microformat-eyebrow {
+  margin-top: var(--spacing-md);
+}
+.microformat-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.88px;
+  text-transform: uppercase;
+  color: var(--accent-warm);
+  margin-right: 4px;
+}
+.microformat-mechanics {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-md);
+}
+.mechanic-card {
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+}
+.mechanic-tag {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  margin: 0 0 6px 0;
+}
+.mechanic-dot {
+  color: var(--accent-warm);
+  margin-right: 2px;
+}
+.mechanic-body {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+@media (max-width: 640px) {
+  .microformat-mechanics {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Hierarchy cards (Position 8 — 3-level unread system) ---------- */
+.hierarchy-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-md);
+  margin: var(--spacing-lg) 0;
+}
+.hierarchy-card {
+  padding: var(--spacing-lg);
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+}
+.hierarchy-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.88px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+.hierarchy-body {
+  font-size: 14px;
+  color: var(--text-primary);
+  line-height: 1.5;
+  margin: 0;
+}
+@media (max-width: 768px) {
+  .hierarchy-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Decision callout (Position 8 — v1 → v2 unread color fix story) ---------- */
+.decision-callout {
+  margin: var(--spacing-lg) 0;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  background: var(--surface-1);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+}
+.decision-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.88px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 var(--spacing-xs) 0;
+}
+.decision-heading {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+.decision-body {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
 }
