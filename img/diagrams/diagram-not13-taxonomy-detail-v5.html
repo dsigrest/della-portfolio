@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="figma-source" content="node:1176:2010 page:29:43 file:TArUrZsBUocaAsqetjXq7V">
+<title>NOT-13 — Notification taxonomy (detailed cut)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --accent: #7FB5B0;
+    --gold: #C4B078;
+    --red: #C47878;
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 100%;
+    max-width: 760px;
+    background: var(--card);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .eyebrow {
+    color: var(--text-ter);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeUp 0.5s ease-out forwards;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .row {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    border-radius: 12px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease-out forwards;
+    transition: transform 0.4s ease, background 0.4s ease;
+  }
+  .row:hover {
+    transform: translateY(-2px);
+    background: rgba(255,255,255,0.015);
+  }
+  .row.discovery     { animation-delay: 0.10s; }
+  .row.following     { animation-delay: 0.22s; }
+  .row.conversation  { animation-delay: 0.34s; }
+
+  .category {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .cat-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .cat-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+  .cat-name {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1;
+  }
+  .cat-desc {
+    font-size: 13px;
+    color: var(--text-sec);
+    line-height: 1.4;
+  }
+
+  .row.discovery     .cat-name { color: var(--gold); }
+  .row.following     .cat-name { color: var(--accent); }
+  .row.conversation  .cat-name { color: var(--red); }
+
+  .row.discovery     .cat-icon { color: var(--gold); }
+  .row.following     .cat-icon { color: var(--accent); }
+  .row.conversation  .cat-icon { color: var(--red); }
+
+  .examples {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .badge {
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(224,223,228,0.8);
+    border: 1px solid;
+    transition: transform 0.25s ease;
+  }
+  .row:hover .badge {
+    transform: translateX(2px);
+  }
+  .row.discovery .badge {
+    background: rgba(196,176,120,0.08);
+    border-color: rgba(196,176,120,0.20);
+  }
+  .row.following .badge {
+    background: rgba(127,181,176,0.08);
+    border-color: rgba(127,181,176,0.20);
+  }
+  .row.conversation .badge {
+    background: rgba(196,120,120,0.08);
+    border-color: rgba(196,120,120,0.20);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .diagram::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(127,181,176,0.04), transparent 70%);
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="eyebrow">Notification taxonomy</div>
+    <div class="grid">
+
+      <div class="row discovery">
+        <div class="category">
+          <div class="cat-header">
+            <svg class="cat-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="7.5" cy="7.5" r="4.5"/>
+              <line x1="11" y1="11" x2="15" y2="15"/>
+            </svg>
+            <span class="cat-name">Discovery</span>
+          </div>
+          <div class="cat-desc">Updates that highlight Reddit&rsquo;s value</div>
+        </div>
+        <div class="examples">
+          <div class="badge">Popular content</div>
+          <div class="badge">Breaking news</div>
+        </div>
+      </div>
+
+      <div class="row following">
+        <div class="category">
+          <div class="cat-header">
+            <svg class="cat-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="3,10 7,14 15,5"/>
+            </svg>
+            <span class="cat-name">Following</span>
+          </div>
+          <div class="cat-desc">Updates the user explicitly opts into</div>
+        </div>
+        <div class="examples">
+          <div class="badge">Subreddit following</div>
+          <div class="badge">Comment following</div>
+        </div>
+      </div>
+
+      <div class="row conversation">
+        <div class="category">
+          <div class="cat-header">
+            <svg class="cat-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="2" width="14" height="10" rx="2"/>
+              <path d="M5 12 L5.5 16 L8 12"/>
+            </svg>
+            <span class="cat-name">Conversation</span>
+          </div>
+          <div class="cat-desc">Updates about direct user engagement</div>
+        </div>
+        <div class="examples">
+          <div class="badge">Post replies</div>
+          <div class="badge">Comment replies</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>
