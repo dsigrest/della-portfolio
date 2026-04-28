@@ -48,32 +48,89 @@
     </section>
 
     <section class="case-body">
+      <section class="case-summary">
+        <h2>Summary</h2>
+        <div class="summary-pair">
+          <div class="summary-tile">
+            <h3>Challenge</h3>
+            <p>Reddit communicates with hundreds of millions of users daily across four separate systems&mdash;Chat, Messages, Mod Mail, and Notifications&mdash;fragmented across native mobile, mobile web, and desktop with no connecting architecture and a system that didn&rsquo;t behave as users expected.</p>
+          </div>
+          <div class="summary-tile">
+            <h3>Strategy</h3>
+            <p>I built the segmentation framework, defined the inbox vision, and led the evolution from disconnected surfaces into a <strong>unified system that drives growth and engagement</strong>. Every stage was validated through fully operable prototypes tested with real users&mdash;shifting internal conversations from opinion to evidence.</p>
+          </div>
+        </div>
+        <div class="case-img-full diagram-embed" data-diagram="not-03" data-mobile-pending="true">
+          <iframe
+            src="img/diagrams/diagram-not03-full-inbox-redesign-v5.html"
+            loading="lazy"
+            scrolling="no"
+            title="Full Inbox Redesign — hover-annotated before/after with paired bullets"
+            style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+          ></iframe>
+        </div>
+      </section>
+
       <h2>Challenge</h2>
 
-      <p>Reddit communicates with hundreds of millions of users daily across four separate systems&mdash;Chat, Messages, Mod Mail, and Notifications&mdash;fragmented across native mobile, mobile web, and desktop with no connecting architecture and a system that didn&rsquo;t behave as users expected.</p>
+      <h3>No overarching strategy</h3>
 
-      <h2>Solution</h2>
+      <p>Beyond fragmentation, the surfaces had no overarching user strategy: limited inventory, limited controls, no prioritization model. Push notifications, the inbox, private messages, and chat operated independently&mdash;each with a distinct content type and no shared architecture.</p>
 
-      <p>I built the segmentation framework, defined the inbox vision, and led the evolution from disconnected surfaces into a <strong>unified system that drives growth and engagement</strong>. Every stage was validated through fully operable prototypes tested with real users&mdash;shifting internal conversations from opinion to evidence.</p>
-
-      <div class="metrics-callout">
-          <div class="metric">
-              <span class="metric-value">+1.3M</span>
-              <span class="metric-label">Incremental DAU</span>
-          </div>
-          <div class="metric">
-              <span class="metric-value">+2.7M</span>
-              <span class="metric-label">Daily good visits</span>
-          </div>
-          <div class="metric">
-              <span class="metric-value">+6.4%</span>
-              <span class="metric-label">Push click-through</span>
-          </div>
-          <div class="metric">
-              <span class="metric-value">75%</span>
-              <span class="metric-label">Above target</span>
-          </div>
+      <div class="case-img-full">
+        <div class="img-placeholder">2i &mdash; Disconnected surfaces comparison &mdash; figma-to-html translation pending</div>
       </div>
+
+      <h3>Notification taxonomy gap</h3>
+
+      <p>The four surfaces also had no shared notion of <em>what</em> a notification is. Across the platform, every type&mdash;from push recommendations to comment replies&mdash;flowed through the same pipe with the same weight. Without a taxonomy, there was no way to prioritize, no way to set delivery rules, no way to reason about what users should see.</p>
+
+      <div class="case-img-full diagram-embed" data-diagram="not-e5" data-mobile-pending="true">
+        <iframe
+          src="img/diagrams/diagram-not-e5-notification-taxonomy-v5.html"
+          loading="lazy"
+          scrolling="no"
+          title="Notification taxonomy — Discovery, Following, and Conversation categories with examples"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
+      </div>
+
+      <h3>Decaying retention</h3>
+
+      <p>The inbox had a structural retention problem. By day 5 of the post-cohort window, inbox notification usage drops to <strong>12%</strong> while overall Reddit retention holds at <strong>40%</strong>&mdash;a <strong>28-point gap</strong> that compounds across 7.5M daily inbox users. That gap is the opportunity the notification strategy targets.</p>
+
+      <div class="case-img-full diagram-embed" data-diagram="not-e1" data-mobile-pending="true">
+        <iframe
+          src="img/diagrams/diagram-not-e1-cohort-decay-v5.html"
+          loading="lazy"
+          scrolling="no"
+          title="Cross-platform cohort decay — inbox notification usage vs Reddit retention over time"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
+      </div>
+
+      <section class="case-strategy">
+        <h2>Strategy</h2>
+        <p class="strategy-lede"><strong>Strategy:</strong> establish a scaleable foundation; optimize for key user journeys.</p>
+        <div class="metrics-callout">
+            <div class="metric">
+                <span class="metric-value">+1.3M</span>
+                <span class="metric-label">Incremental DAU</span>
+            </div>
+            <div class="metric">
+                <span class="metric-value">+2.7M</span>
+                <span class="metric-label">Daily good visits</span>
+            </div>
+            <div class="metric">
+                <span class="metric-value">+6.4%</span>
+                <span class="metric-label">Push click-through</span>
+            </div>
+            <div class="metric">
+                <span class="metric-value">75%</span>
+                <span class="metric-label">Above target</span>
+            </div>
+        </div>
+      </section>
 
       <h2>Framework</h2>
 
@@ -95,16 +152,6 @@
           loading="lazy"
           scrolling="no"
           title="Inbox row unit — before/after comparison of legacy one-off row vs reusable component with contextual copy"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-      </div>
-
-      <div class="case-img-full diagram-embed" data-diagram="not-03">
-        <iframe
-          src="img/diagrams/diagram-not03-full-inbox-redesign-v5.html"
-          loading="lazy"
-          scrolling="no"
-          title="Full inbox redesign — legacy fragmented inbox vs redesigned unified inbox on the platform design system"
           style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
         ></iframe>
       </div>
