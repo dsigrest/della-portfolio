@@ -1233,3 +1233,100 @@ main {
                 font-size: 18px;
             }
         }
+
+/* ============================================================
+   case-notifications v3 — Batch 1 additions
+   Eyebrow / Approach pivot / Impact callout
+   Spec: working/planning-docs/case-notifications-change-outline-v3.md §3
+   ============================================================ */
+
+.section-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.88px;
+  text-transform: uppercase;
+  color: var(--color-accent, #7fb5b0);
+  margin: 0 0 12px 0;
+}
+
+.case-approach-pivot {
+  margin: var(--spacing-xl) 0;
+}
+.approach-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+.approach-steps li {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  font-weight: 700;
+  letter-spacing: -1.92px;
+  line-height: 1.1;
+}
+.approach-steps .step-num {
+  font-size: 32px;
+  letter-spacing: -0.64px;
+}
+.approach-steps .step-text {
+  font-size: 64px;
+}
+.approach-steps .step-done {
+  color: var(--text-tertiary, rgba(224, 223, 228, 0.4));
+}
+.approach-steps .step-active {
+  color: var(--text-primary, #e0dfe4);
+}
+
+.impact-callout {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  padding: 24px 32px;
+  background: var(--surface-1);
+  border: 1px solid var(--color-accent);
+  border-radius: 10px;
+  margin: var(--spacing-lg) 0;
+}
+.impact-callout .metric {
+  font-size: 64px;
+  font-weight: 700;
+  letter-spacing: -1.92px;
+  line-height: 1.1;
+  color: var(--color-accent);
+}
+.impact-callout .body {
+  flex: 1;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.48px;
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+  .approach-steps li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .approach-steps .step-text {
+    font-size: 36px;
+    letter-spacing: -1px;
+  }
+  .impact-callout {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px 24px;
+  }
+  .impact-callout .metric {
+    font-size: 48px;
+  }
+  .impact-callout .body {
+    font-size: 18px;
+  }
+}

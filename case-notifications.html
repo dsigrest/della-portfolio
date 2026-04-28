@@ -49,7 +49,9 @@
 
     <section class="case-body">
       <section class="case-summary">
+        <p class="section-eyebrow">Executive summary</p>
         <h2>Summary</h2>
+        <p>From fragmented legacy to unified system</p>
         <div class="summary-pair">
           <div class="summary-tile">
             <h3>Challenge</h3>
@@ -71,9 +73,15 @@
         </div>
       </section>
 
+      <p class="section-eyebrow">The problem</p>
+
       <h2>Challenge</h2>
 
       <h3>No overarching strategy</h3>
+
+      <p>Four systems. Three platforms. Six years.</p>
+
+      <p>Reddit messaging had drifted across four disconnected surfaces, off the design system &mdash; hard to scale, harder to experiment.</p>
 
       <p>Beyond fragmentation, the surfaces had no overarching user strategy: limited inventory, limited controls, no prioritization model. Push notifications, the inbox, private messages, and chat operated independently&mdash;each with a distinct content type and no shared architecture.</p>
 
@@ -87,37 +95,50 @@
         ></iframe>
       </div>
 
-      <h3>Notification taxonomy gap</h3>
+      <p class="section-eyebrow">Core user groups &middot; ICP</p>
 
-      <p>The four surfaces also had no shared notion of <em>what</em> a notification is. Across the platform, every type&mdash;from push recommendations to comment replies&mdash;flowed through the same pipe with the same weight. Without a taxonomy, there was no way to prioritize, no way to set delivery rules, no way to reason about what users should see.</p>
+      <h3>Three different inboxes</h3>
 
-      <div class="case-img-full diagram-embed" data-diagram="not-e5" data-mobile-pending="true">
+      <p>Each cohort shows up in the inbox differently &mdash; the system has to serve all three without trade-offs.</p>
+
+      <p>Strategy doesn&rsquo;t translate without understanding who&rsquo;s receiving the notification. Three user journeys define the inbox experience, and each surfaces a different problem: new users see an empty state, subscribers can&rsquo;t customize what they see, and contributors get crowded with activity that doesn&rsquo;t surface what matters.</p>
+
+      <div class="case-img-full diagram-embed" data-diagram="not-10" data-mobile-pending="true">
         <iframe
-          src="img/diagrams/diagram-not-e5-notification-taxonomy-v5.html"
+          src="img/diagrams/diagram-not10-three-inboxes-v5.html"
           loading="lazy"
           scrolling="no"
-          title="Notification taxonomy — Discovery, Following, and Conversation categories with examples"
+          title="Three different inboxes &mdash; New user / Subscriber / Contributor mobile mockups, each surfacing a different problem"
           style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
         ></iframe>
       </div>
 
-      <h3>Decaying retention</h3>
+      <p class="section-eyebrow">Channel performance &middot; Inbox</p>
 
-      <p>The inbox had a structural retention problem. By day 5 of the post-cohort window, inbox notification usage drops to <strong>12%</strong> while overall Reddit retention holds at <strong>40%</strong>&mdash;a <strong>28-point gap</strong> that compounds across 7.5M daily inbox users. That gap is the opportunity the notification strategy targets.</p>
+      <h3>Inbox engagement funnel</h3>
 
-      <div class="case-img-full diagram-embed" data-diagram="not-e1" data-mobile-pending="true">
+      <p>Users had a bias for action &mdash; the more content felt personally actionable, the more likely they engaged.</p>
+
+      <p>The inbox itself wasn&rsquo;t a discovery surface&mdash;it was a contribution surface. <strong>7.5M DAU</strong> enter the inbox; <strong>47% click through</strong>; <strong>75% of those go on to contribute</strong>. That funnel is shaped almost entirely by Core users&mdash;Casual, Resurrected, and New cohorts barely make it past the first step. The inbox was serving only the most engaged.</p>
+
+      <div class="case-img-full diagram-embed" data-diagram="not-e7" data-mobile-pending="true">
         <iframe
-          src="img/diagrams/diagram-not-e1-cohort-decay-v5.html"
+          src="img/diagrams/diagram-not-e7-sankey-flow-v5.html"
           loading="lazy"
           scrolling="no"
-          title="Cross-platform cohort decay — inbox notification usage vs Reddit retention over time"
+          title="Inbox engagement funnel — 7.5M DAU through 47% click-through to 75% contribution, segmented by cohort"
           style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
         ></iframe>
+      </div>
+
+      <div class="impact-callout">
+        <div class="metric">2%</div>
+        <div class="body">of all comments on Reddit come from the inbox &mdash; the datapoint that shifted leadership investment.</div>
       </div>
 
       <section class="case-strategy">
         <h2>Strategy</h2>
-        <p class="strategy-lede"><strong>Strategy:</strong> establish a scaleable foundation; optimize for key user journeys.</p>
+        <p class="strategy-lede"><strong>Strategy:</strong> establish a scalable foundation; optimize for key user journeys.</p>
         <div class="metrics-callout">
             <div class="metric">
                 <span class="metric-value">+1.3M</span>
@@ -138,7 +159,15 @@
         </div>
       </section>
 
-      <h2>Scaleable foundation</h2>
+      <section class="case-approach-pivot">
+        <p class="section-eyebrow">Approach</p>
+        <ol class="approach-steps">
+          <li class="step-done"><span class="step-num">01</span><span class="step-text">Establish scalable foundation</span></li>
+          <li class="step-active"><span class="step-num">02</span><span class="step-text">Optimize for key user journeys</span></li>
+        </ol>
+      </section>
+
+      <h2>Scalable foundation</h2>
 
       <h3>Inbox row component</h3>
 
@@ -196,20 +225,6 @@
         ></iframe>
       </div>
 
-      <h3>Three different inboxes</h3>
-
-      <p>Strategy doesn&rsquo;t translate without understanding who&rsquo;s receiving the notification. Three user journeys define the inbox experience, and each surfaces a different problem: new users see an empty state, subscribers can&rsquo;t customize what they see, and contributors get crowded with activity that doesn&rsquo;t surface what matters.</p>
-
-      <div class="case-img-full diagram-embed" data-diagram="not-10" data-mobile-pending="true">
-        <iframe
-          src="img/diagrams/diagram-not10-three-inboxes-v5.html"
-          loading="lazy"
-          scrolling="no"
-          title="Three different inboxes &mdash; New user / Subscriber / Contributor mobile mockups, each surfacing a different problem"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-      </div>
-
       <h2>Push paradox &amp; engagement reality</h2>
 
       <h3>The push paradox</h3>
@@ -222,20 +237,6 @@
           loading="lazy"
           scrolling="no"
           title="Inbox vs push engagement — dual-axis comparison across comment reply, post reply, recommendations, and subscriptions"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-      </div>
-
-      <h3>Inbox engagement funnel</h3>
-
-      <p>The inbox itself wasn&rsquo;t a discovery surface&mdash;it was a contribution surface. <strong>7.5M DAU</strong> enter the inbox; <strong>47% click through</strong>; <strong>75% of those go on to contribute</strong>. That funnel is shaped almost entirely by Core users&mdash;Casual, Resurrected, and New cohorts barely make it past the first step. The inbox was serving only the most engaged.</p>
-
-      <div class="case-img-full diagram-embed" data-diagram="not-e7" data-mobile-pending="true">
-        <iframe
-          src="img/diagrams/diagram-not-e7-sankey-flow-v5.html"
-          loading="lazy"
-          scrolling="no"
-          title="Inbox engagement funnel — 7.5M DAU through 47% click-through to 75% contribution, segmented by cohort"
           style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
         ></iframe>
       </div>

@@ -299,3 +299,74 @@ Tracked here as the refactor proceeds.
 
 - `diagram-not01-segmentation-matrix-v5.html` — file stays on disk, no embed (per spec §5 retirement).
 - 4-step push-to-inbox flow (Figma `678:2374`) — never embedded (Della picked before/after only).
+
+---
+
+# v3 Refactor Manifest
+
+**Spec:** `working/planning-docs/case-notifications-change-outline-v3.md`
+**Working baseline:** `case-notifications.html.v2-bak` (committed at `781e8f1`)
+**Started:** 2026-04-28
+
+## v3 Status
+
+| Batch | Positions | Status | Commit |
+|---|---|---|---|
+| 1 | Summary + Challenge + 3 inboxes (relocated) + engagement funnel (relocated + 2% callout) + Approach pivot (NEW) | landing | (pending) |
+| 2 | Foundation + Scalable + Swipe + Unread merged (6–8) | not started | — |
+| 3 | Frameworks + Build Habits + Push-to-inbox (9–12) | not started | — |
+| 4 | Enable Curation + Pipeline + Preferences merged + Flywheel (13–15) | not started | — |
+| 5 | Create Focus + Layout + Nav merged + Results merged (16–19) | not started | — |
+
+---
+
+## v3 Batch 1 — Positions 1–5 (Apr 28, 2026)
+
+### CSS additions to styles.css (per v3 spec §3)
+
+- `.section-eyebrow` — eyebrow above section headings.
+- `.case-approach-pivot` + `.approach-steps` (`.step-done`, `.step-active`) — Position 5 numbered statements with progressive emphasis.
+- `.impact-callout` (`.metric` + `.body`) — Position 4 (2%). Future use at Positions 11 (×2), 12 (+1%), 18 (1 NAV SLOT FREED).
+- Mobile breakpoint added (`max-width: 768px`) for approach-steps + impact-callout — stack vertically and scale down typography.
+
+Skipped per kickoff: `.surface-tradeoffs` (Batch 5), `.pillar-tags` (deferred per default policy §6.26).
+
+### HTML changes — case-notifications.html
+
+| Change | Position | v2-bak source | v3 outcome |
+|---|---|---|---|
+| Eyebrow inserted | P1 | new | `EXECUTIVE SUMMARY` (Slide 01 `1214:19523`) above `<h2>Summary</h2>` |
+| Lede inserted | P1 | new | "From fragmented legacy to unified system" (Slide 01 title) between `<h2>Summary</h2>` and `<div class="summary-pair">` |
+| Eyebrow inserted | P2 | new | `THE PROBLEM` (Slide 02 `1214:19565`) above `<h2>Challenge</h2>` |
+| Lede 1 inserted | P2 | new | "Four systems. Three platforms. Six years." (Slide 02 hero) between h3 and existing line-78 prose |
+| Lede 2 inserted | P2 | new | "Reddit messaging had drifted across four disconnected surfaces, off the design system — hard to scale, harder to experiment." (Slide 02 subtitle) |
+| Retired | v2 Row 3 | lines 90–102 | h3 `Notification taxonomy gap` + paragraph + NOT-E5 diagram embed all removed. `diagram-not-e5-notification-taxonomy-v5.html` stays on disk; not embedded. |
+| Retired | v2 Row 4 | lines 104–116 | h3 `Decaying retention` + paragraph + NOT-E1 diagram embed all removed. `diagram-not-e1-cohort-decay-v5.html` stays on disk; not embedded. |
+| Relocated | P3 (Three different inboxes) | from lines 199–211 → after P2 NOT-02b diagram | h3 + prose + NOT-10 diagram moved to front. |
+| Eyebrow inserted | P3 | new | `CORE USER GROUPS · ICP` (Slide 03 `1214:19787`) above relocated h3 |
+| Lede inserted | P3 | new | "Each cohort shows up in the inbox differently — the system has to serve all three without trade-offs." (Slide 03 subtitle) between h3 and existing line-201 prose |
+| Relocated | P4 (Inbox engagement funnel) | from lines 229–241 → after P3 NOT-10 diagram | h3 + prose + NOT-E7 diagram moved to front. |
+| Eyebrow inserted | P4 | new | `CHANNEL PERFORMANCE · INBOX` (Slide 04 `1214:19820`) above relocated h3 |
+| Lede inserted | P4 | new | "Users had a bias for action — the more content felt personally actionable, the more likely they engaged." (Slide 04 subtitle) between h3 and existing line-231 prose |
+| Impact callout inserted | P4 | new | metric `2%` + body "of all comments on Reddit come from the inbox — the datapoint that shifted leadership investment." (Slide 04 callout) below NOT-E7 diagram |
+| NEW section inserted | P5 (Approach pivot) | new | `<section class="case-approach-pivot">` after `</section>` of `case-strategy` and before `<h2>Scalable foundation</h2>`. Contents: eyebrow `APPROACH`, two `<ol>` steps — 01 step-done "Establish scalable foundation", 02 step-active "Optimize for key user journeys" (Slide 09 `1214:19616`) |
+| Spelling | line 120 (case-strategy lede) | "scaleable foundation" | → "scalable foundation" |
+| Spelling | line 141 (Position 6 h2) | `<h2>Scaleable foundation</h2>` | → `<h2>Scalable foundation</h2>` |
+
+### Diagrams — Batch 1 status
+
+- **Embedded (unchanged):** NOT-03 (P1), NOT-02b (P2), NOT-10 (P3 relocated), NOT-E7 (P4 relocated).
+- **Removed embeds:** NOT-E5 (Row 3 retired), NOT-E1 (Row 4 retired). Files remain on disk.
+- **Drift flagged for follow-up (deferred per kickoff §6.31–§6.37):**
+  - NOT-02b: Slide 02 has 4 system descriptors (PUSH / INBOX / PRIVATE MESSAGES / CHAT) with one-line captions. Verify on-disk diagram includes them.
+  - NOT-10: Slide 03 cohort labels (`NEW USER / Casual user / Core user`) per §6.24 default. Verify diagram matches.
+  - NOT-E7: Slide 04 has 3 numbered insights in annotation column not in v2 prose. Diagram may need annotation column added.
+
+### Open questions for Della (Batch 1 review)
+
+1. **Lede styling**: ledes inserted as plain `<p>` (no class). Della to decide if a `.section-lede` class is wanted later (italic, accent color, or larger size).
+2. **Heading swap (§6.7–§6.10)**: per default policy, kept v2 h2/h3 AND added slide titles as ledes. Della reviews voice and decides whether to swap headings.
+3. **Three-beat lede formatting (P2)**: "Four systems. Three platforms. Six years." rendered as a single paragraph. Slide treats each beat on its own line at h1 size. May want `<br>` or custom class.
+4. **2% datapoint dedupe (§6.28)**: rendered at P4 as impact callout. Existing line 261 prose at P9 also cites "2% of all comments". Della reviews dedupe after Batch 3.
+5. **case-strategy interlude**: stays in place between P4 and P5 in Batch 1 (lines 118–139, with line 120 spelling updated). Eventually relocates to P19 in Batch 5. Della reviews narrative flow at preview.
+
