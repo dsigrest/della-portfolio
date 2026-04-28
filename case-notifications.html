@@ -535,8 +535,29 @@
 
   <script>
   // Auto-resize diagram iframes to their content height.
-  // Tracks inner reflows via ResizeObserver so viewport-driven media-query
-  // restacks (desktop → mobile stacked layout) grow the iframe instead of clipping.
+  //
+  // Two channels, in order of preference:
+  //   1. postMessage from inside each diagram (cross-origin safe — works on
+  //      file:// previews where each local file is its own origin and the
+  //      parent cannot read iframe.contentDocument).
+  //   2. Direct DOM read of iframe.contentDocument (same-origin only — used
+  //      as a fallback for legacy diagrams that don't post).
+  //
+  // ResizeObserver tracks inner reflows so viewport-driven media-query
+  // restacks (desktop → mobile stacked layout) grow the iframe instead of
+  // clipping.
+  window.addEventListener('message', function(event) {
+    const data = event.data;
+    if (!data || data.type !== 'diagram-height') return;
+    const h = parseInt(data.height, 10);
+    if (!h || h < 50) return;
+    document.querySelectorAll('.diagram-embed iframe').forEach(iframe => {
+      if (iframe.contentWindow === event.source) {
+        iframe.style.height = h + 'px';
+      }
+    });
+  });
+
   function resizeDiagramIframes() {
     document.querySelectorAll('.diagram-embed iframe').forEach(iframe => {
       let observer = null;
@@ -545,9 +566,6 @@
           const doc = iframe.contentDocument;
           const diagram = doc && doc.querySelector('.diagram');
           if (diagram) {
-            // Use scrollHeight (catches content clipped by overflow:hidden
-            // on .diagram, e.g. NOT-03's flex column). Take the max of
-            // .diagram and the document body to be safe.
             const h = Math.max(
               diagram.scrollHeight,
               diagram.offsetHeight,
@@ -556,15 +574,10 @@
             );
             if (h > 0) iframe.style.height = h + 'px';
           }
-        } catch(e) {
-          // Cross-origin — fall back to 600px so something renders.
-          iframe.style.height = '600px';
-        }
+        } catch(e) { /* cross-origin — postMessage path will handle it */ }
       }
       function onLoad() {
         setHeight();
-        // Re-measure after a tick — CSS animations, font swaps, or async
-        // layout (e.g. images loading) can change height after `load` fires.
         setTimeout(setHeight, 50);
         setTimeout(setHeight, 250);
         try {
@@ -573,12 +586,11 @@
             if (observer) observer.disconnect();
             observer = new ResizeObserver(setHeight);
             observer.observe(diagram);
-            // Also watch body so layout shifts outside .diagram are caught.
             if (iframe.contentDocument.body) {
               observer.observe(iframe.contentDocument.body);
             }
           }
-        } catch(e) { /* cross-origin — fallback height already set */ }
+        } catch(e) { /* cross-origin — postMessage path will handle it */ }
       }
       if (iframe.contentDocument && iframe.contentDocument.readyState === 'complete') {
         onLoad();
