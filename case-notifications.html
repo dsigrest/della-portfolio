@@ -307,14 +307,14 @@
       <p>Subreddit subscriptions were <strong>entangled with recommendations</strong> on the back end. The system weighted a recommended notification the same as a subscribed update&mdash;prioritizing engagement metrics (post performance, CTR) over what users had explicitly asked for. A user subscribing to r/all updates would get a viral r/PlayStation recommendation instead. I worked with the <strong>ML team to untangle the pipeline</strong>&mdash;they ran experiments on signal weighting while I redesigned the preference model, each side&rsquo;s findings reshaping the other&rsquo;s direction until <strong>user signal won over algorithmic signal</strong>.</p>
 
       <div class="case-img-full">
-        <img src="img/notif-pipeline-separation.png" alt="Pipeline separation — push notification recommendations on lock screen alongside community alert preferences for direct subscription management" loading="lazy">
+        <div class="img-placeholder">19i &mdash; Pipeline entanglement (User subscriptions + Discovery suggestions feeding a single Ranker) &mdash; figma-to-html translation pending</div>
       </div>
 
       <h3>Preference architecture</h3>
 
       <p>The back end couldn&rsquo;t define what updates a user could receive from a subreddit. Options were <strong>off, low, and frequent</strong>&mdash;even internally, the team couldn&rsquo;t explain what those meant because they were wrapped in algorithmic metrics. I worked with the engineering lead through <strong>weekly syncs on capacity and feasibility</strong> to rearchitect preferences: <strong>no updates, popular posts, all posts</strong>. Eng held deep knowledge of system behavior and limitations&mdash;every conversation surfaced another constraint, but each one guided us toward a more precise model.</p>
 
-      <div class="case-img-full diagram-embed" data-diagram="not-07">
+      <div class="case-img-full diagram-embed" data-diagram="not-07" data-mobile-pending="true">
         <iframe
           src="img/diagrams/diagram-not07-preference-architecture-v5.html"
           loading="lazy"
@@ -324,9 +324,11 @@
         ></iframe>
       </div>
 
-      <p>I then surfaced these preferences <strong>on the subreddit page itself</strong> and simplified subscription management in global settings&mdash;point of decision, not buried three screens deep.</p>
+      <h3>Subreddit on-ramps</h3>
 
-      <div class="case-img-full diagram-embed" data-diagram="not-08">
+      <p>I then surfaced these preferences <strong>on the subreddit page itself</strong>&mdash;point of decision, not buried three screens deep.</p>
+
+      <div class="case-img-full diagram-embed" data-diagram="not-08" data-mobile-pending="true">
         <iframe
           src="img/diagrams/diagram-not08-subreddit-onramps-v5.html"
           loading="lazy"
@@ -336,7 +338,21 @@
         ></iframe>
       </div>
 
-      <div class="case-img-full diagram-embed" data-diagram="not-09">
+      <h3>Contextual suggestions</h3>
+
+      <p>Beyond the subreddit page, recommendation surfaces also gained on-ramps. Push notifications and inbox cards offered subscription suggestions tied to the user&rsquo;s recent activity&mdash;turning a passive recommendation into an active subscription opportunity at the moment of engagement.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">22 &mdash; Contextual suggestions (push upsell + inbox row variant) &mdash; figma-to-html translation pending</div>
+      </div>
+
+      <h3>Global settings</h3>
+
+      <p>&hellip;and simplified subscription management in global settings.</p>
+
+      <p>The flat list replaced a nested per-community drill-down&mdash;every community and its alert state visible in one view.</p>
+
+      <div class="case-img-full diagram-embed" data-diagram="not-09" data-mobile-pending="true">
         <iframe
           src="img/diagrams/diagram-not09-global-settings-v5.html"
           loading="lazy"
@@ -346,44 +362,23 @@
         ></iframe>
       </div>
 
-      <h3>Cross-channel coordination</h3>
-
-      <p>I defined the <strong>relationship between channels</strong>: inbox as source of truth, push and email as delivery and re-engagement. Not all channels existed on all platforms&mdash;the system accounted for those gaps so users had control regardless of surface.</p>
-
-      <div class="case-img-full diagram-embed diagram-pair" data-diagram="not-11">
-        <iframe
-          class="desktop-variant"
-          src="img/diagrams/diagram-not11-cross-channel-v5.html"
-          loading="lazy"
-          scrolling="no"
-          title="Cross-channel model — inbox as source of truth with push and email delivery"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-        <iframe
-          class="mobile-variant"
-          src="img/diagrams/diagram-not11-cross-channel-v5-mobile.html"
-          loading="lazy"
-          scrolling="no"
-          title="Cross-channel model (mobile) — stacked inbox hub with Push and Email spokes and platform availability matrix"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-      </div>
-
       <h2>3. Create Focus</h2>
 
       <h3>Surface consolidation</h3>
 
+      <p>Why this was hard: three surfaces with different sort logic, engagement patterns, and information architecture had to merge without breaking any of them.</p>
+
       <p>I consolidated <strong>four messaging systems into a single inbox</strong>. This required deprecating one internal system, migrating another, and navigating multiple intermediate states&mdash;each shipped as a fully functional experience, not a waypoint. Eng on this team were <strong>precise and construction-oriented</strong>&mdash;they caught edge cases I hadn&rsquo;t, which made the late-stage design reviews a critical part of my process for making designs airtight before handoff.</p>
 
       <div class="case-img-full">
-        <img src="img/notif-unified-inbox.png" alt="Unified inbox evolution — four-panel progression from separated surfaces to consolidated notifications and chat" loading="lazy">
+        <div class="img-placeholder">24i &mdash; Surface trade-offs (Inbox / Private messages / Chat &mdash; sort logic, sync vs async, IA) &mdash; figma-to-html translation pending</div>
       </div>
 
       <h3>Layout experimentation</h3>
 
-      <p>I tested <strong>chronological, nested, and tabbed layouts</strong>. Users wanted to navigate the inbox as little as possible&mdash;scan, act, leave. The inbox was a switchboard: know where to go next and get there directly.</p>
+      <p>I tested <strong>chronological, nested, and tabbed layouts</strong>. Users wanted to navigate the inbox as little as possible&mdash;scan, act, leave. The inbox wasn&rsquo;t a destination&mdash;it was a switchboard that guided users through their session.</p>
 
-      <div class="case-img-full diagram-embed" data-diagram="not-12">
+      <div class="case-img-full diagram-embed" data-diagram="not-12" data-mobile-pending="true">
         <iframe
           src="img/diagrams/diagram-not12-inbox-layout-experiments-v5.html"
           loading="lazy"
@@ -393,15 +388,11 @@
         ></iframe>
       </div>
 
-      <h3>Pinned contributions</h3>
-
-      <p>I designed a system that <strong>pins contributions to the top</strong> of the inbox&mdash;enough context to know what happened, then a direct path there. Subscriptions and discovery notifications that drove DAU stayed accessible below.</p>
-
       <h3>Navigation simplification</h3>
 
       <p>The unified inbox <strong>freed a slot in the bottom tab bar</strong>. Reddit used that space to experiment with new product surfaces and validate navigation models&mdash;a simplified 3&ndash;4 tab structure. Impact that extended well beyond the inbox.</p>
 
-      <div class="case-img-full diagram-embed" data-diagram="not-14">
+      <div class="case-img-full diagram-embed" data-diagram="not-14" data-mobile-pending="true">
         <iframe
           src="img/diagrams/diagram-not14-navigation-simplification-v5.html"
           loading="lazy"
@@ -409,6 +400,14 @@
           title="Navigation simplification — legacy 5-tab bar vs simplified 3–4 tab model with a freed slot for growth"
           style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
         ></iframe>
+      </div>
+
+      <h3>Unified inbox reveal</h3>
+
+      <p>The result: one inbox, two tabs (Notifications + Chat), all messaging consolidated. The mental model is finally what users expected from the start&mdash;a single source of truth where every kind of communication lands and every kind of action is one tap away.</p>
+
+      <div class="case-img-full">
+        <div class="img-placeholder">NOT-14 v2 &mdash; Unified inbox mockup (Notifications + Chat tabs, mixed feed, simplified bottom nav) &mdash; figma-to-html translation pending (includes GIF placeholder slot)</div>
       </div>
 
       <h2>Results</h2>
