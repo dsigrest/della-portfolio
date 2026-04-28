@@ -444,3 +444,73 @@ Final P8 order: eyebrow → h3 → lede → prose 1 → NOT-04 → 3-card hierar
 3. **Foundation eyebrow casing**: written as "Foundation" in source; CSS renders uppercase via `.section-eyebrow`. Matches Batch 1 pattern.
 4. **Mechanic-tag arrows**: rendered "Swipe →" (right arrow) per slide. Consider whether the dot before "Long press" should be a true bullet or kept as `&bull;`.
 
+---
+
+## v3 Batch 1.5 cleanup — Remove duplicate ledes at P1, P2 (Apr 28, 2026)
+
+After Batch 1.5 swapped h2/h3 to slide-voice equivalents, the slide-title ledes inserted by Batch 1 at Positions 1 and 2 became duplicates. Della called for explicit deletion before Batch 3.
+
+| Change | Position | Before | After |
+|---|---|---|---|
+| Lede deleted | P1 | `<p>From fragmented legacy to unified system</p>` directly under h2 (Batch 1 line 54) | Removed; eyebrow + h2 + summary-pair tiles + NOT-03 diagram all preserved. |
+| Lede deleted | P2 | `<p>Four systems. Three platforms. Six years.</p>` directly under h3 (Batch 1 line 82) | Removed; the second lede ("Reddit messaging had drifted across four disconnected surfaces…" — Slide 02 subtitle) stays as the lede paragraph. |
+
+P3 and P4 verified clean — their ledes are slide subtitles, distinct from h3 swap text.
+
+---
+
+## v3 Batch 3 — Positions 9–12 + retire v2 Row 13 (Apr 28, 2026)
+
+### CSS additions to styles.css
+
+None. `.section-eyebrow` and `.impact-callout` were both added in Batch 1 and reused in Batch 3 without modification.
+
+### HTML changes — case-notifications.html
+
+| Change | Position | Before | After |
+|---|---|---|---|
+| **Retired** | v2 Row 13 (Activity prioritization) | `<h3>Activity prioritization</h3>` + paragraph + NOT-13 diagram embed (between `<h2>Frameworks</h2>` and v2 `<h3>User targeting</h3>`) | All three elements removed. `diagram-not13-taxonomy-detail-v5.html` stays on disk; not embedded. |
+| Eyebrow inserted | P9 | none | `Framework · User targeting` (`.section-eyebrow`) above `<h2>Frameworks</h2>` |
+| h3 swap | P9 | `<h3>User targeting</h3>` | `<h3>Identify needs by user signal and intent</h3>` (Slide 10 `1214:19909` verbatim) |
+| Lede inserted | P9 | none | "We can target beneficial experiences by understanding a user's goal and what we know about them." (Slide 10 subtitle, curly apostrophe preserved) |
+| Eyebrow inserted | P10 | none | `Strategy` (`.section-eyebrow`) above h3 |
+| h3 swap | P10 | `<h3>Strategic pillars</h3>` | `<h3>Three pillars to journey optimization</h3>` (Slide 11 `1214:20645` verbatim) |
+| No lede at P10 | P10 | — | Slide 11 has no subtitle (heading-only top strip). Existing prose flows directly under h3. |
+| h3 swap | P11 | `<h3>Intelligent defaults &amp; feedback loops</h3>` | `<h3>Every notification tells you why you got it.</h3>` (Slide 12 `1214:20054` verbatim, period preserved) |
+| Lede inserted | P11 | none | "Contextual framing replaced generic copy — users engage when the system shows its reasoning." (Slide 12 subtitle) |
+| Impact callout inserted | P11 | none | metric `×2` + body "click-through on contextualized notifications vs. generic framing." (Slide 12). Placed between prose paragraph 3 and NOT-17 diagram. Metric verified in registry as "×2 click-through (contextualized framing)". |
+| h3 swap | P12 | `<h3>Push-to-inbox connection</h3>` | `<h3>History, not just the latest.</h3>` (Slide 13 `1214:20080` verbatim, period preserved) |
+| Lede inserted | P12 | none | "Each new push wiped older ones from the inbox; which defied user expectations and interrupted discovery. I restored the history — discovery flows stay intact mid-stream." (Slide 13 subtitle, semicolon preserved) |
+| Impact callout inserted | P12 | none | metric `+1%` + body "push good visits — the continuity fix compounded across the full send volume." (Slide 13). Placed between prose paragraph 2 and NOT-06 diagram. Metric verified in registry as "+1% push good visits (continuity fix)". |
+| Existing prose preserved | P9, P10, P11, P12 | — | All 8 existing prose paragraphs verbatim: P9 "The strategy sat on…" + "The first decision was where to start…"; P10 "Three pillars implement the strategy…"; P11 "Users had a bias for action…" + "I added copy showing why…" + "I shipped decay logic…"; P12 "For low-subscription users…" + "Only the latest push recommendation…". |
+
+### Pillar tag chips — deferred per kickoff
+
+Slides 12 + 13 show 3-pillar breadcrumb chips at the top (1. Build habits active; 2. Enable curation, 3. Create focus muted). Della deferred this rendering decision; default is no chips. The h2 wrapper `<h2>1. Build Habits</h2>` carries the structural pillar label. P11 + P12 therefore ship with no eyebrow, only the h2 above.
+
+### Diagrams — Batch 3 status
+
+- **Embedded (unchanged):** NOT-E4 (P9), NOT-E3 (P10), NOT-17 (P11), NOT-06 (P12).
+- **Removed embed:** NOT-13 (Activity prioritization retired). File stays on disk.
+- **Untouched (relocates in Batch 4):** NOT-E2 Growth flywheel still embedded between P9 and P10 in document order.
+
+### Verified facts referenced in Batch 3
+
+All from `verified-facts-registry.md`:
+- "2% of all comments on Reddit" (P9 prose) — already present
+- "×2 click-through" (P11 callout) — matches "Click-through doubled (contextualized framing)"
+- "+1.4% DAU" (P12 prose) — already present
+- "+6.4% push CTR" (P12 prose) — already present
+- "7.5M daily inbox users" (P12 prose) — already present
+- "+1% push good visits" (P12 prose + callout) — matches "+1% push good visits (continuity fix)"
+- "15M daily push receives" (P12 prose) — already present
+
+No new metrics introduced.
+
+### Open questions for Della (Batch 3 review)
+
+1. **2% datapoint dedupe** — still rendered both at P4 callout (Inbox engagement funnel) and P9 prose body line 305. Della to decide after Batch 3 preview whether to keep both or remove from P9 prose. (Voice-checker reports `2%: 4x` — one of those occurrences is the `+1.4%` containing "2".)
+2. **Pillar tag chips at P11 + P12** — currently skipped. Easy to add if Della wants the visual breadcrumb after preview (would use existing `--accent` for active chip, `--text-tertiary` for muted).
+3. **Growth flywheel placement** — h3 still sits between P9 and P10 in document order. Per scope, relocates in Batch 4. No action needed in Batch 3, but flagged so the preview reads it as a "still here, intentional" element.
+
+
