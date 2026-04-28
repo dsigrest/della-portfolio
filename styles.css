@@ -1459,3 +1459,199 @@ main {
   line-height: 1.6;
   margin: 0;
 }
+
+/* ---------- Decision row (Position 17 — AMBIGUITY NAVIGATED, single-line variant of microformat) ---------- */
+.microformat.decision-row {
+  padding: var(--spacing-md) var(--spacing-lg);
+}
+.microformat.decision-row .microformat-eyebrow {
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+/* ---------- Impact callout sublabel variant (Position 18 — 1 NAV SLOT FREED) ---------- */
+.impact-callout.impact-callout-stack .metric-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+.impact-callout .metric-sublabel {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.88px;
+  text-transform: uppercase;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+/* ---------- Results metrics panel (Position 19 — 5 metrics with sublabels and captions) ---------- */
+.results-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-xl);
+  margin: var(--spacing-2xl) 0;
+}
+.results-phone-slot {
+  background: var(--surface-1);
+  border: 1px dashed var(--border-hover);
+  border-radius: 12px;
+  padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 480px;
+  gap: var(--spacing-md);
+}
+.results-phone-slot .placeholder-text {
+  font-size: 14px;
+  color: var(--text-tertiary);
+  text-align: center;
+  font-style: italic;
+  padding: var(--spacing-lg);
+  border: 1px solid var(--border-normal);
+  border-radius: 8px;
+  background: var(--surface-2);
+  width: 100%;
+  max-width: 280px;
+}
+.phone-caption {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.88px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  text-align: center;
+  margin: 0;
+}
+.results-metrics-panel {
+  background: var(--surface-1);
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+.metrics-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.88px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0;
+}
+.results-metrics-panel .hero-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.results-metrics-panel .hero-metric .metric-value {
+  font-size: 56px;
+  font-weight: 700;
+  letter-spacing: -1.5px;
+  line-height: 1.05;
+  color: var(--accent);
+  margin: 0;
+}
+.results-metrics-panel .hero-metric .metric-sublabel {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.96px;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  margin: 0;
+}
+.results-metrics-panel .hero-metric .metric-caption {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+.metrics-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+.metric-row {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: var(--spacing-md);
+  align-items: baseline;
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.metric-row:last-child {
+  border-bottom: none;
+}
+.metric-row .metric-value {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.6px;
+  color: var(--accent);
+  margin: 0;
+}
+.metric-row .metric-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.metric-row .metric-sublabel {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.88px;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  margin: 0;
+}
+.metric-row .metric-caption {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+@media (max-width: 900px) {
+  .results-row {
+    grid-template-columns: 1fr;
+  }
+  .results-phone-slot {
+    min-height: 320px;
+  }
+}
+@media (max-width: 480px) {
+  .results-metrics-panel .hero-metric .metric-value {
+    font-size: 44px;
+  }
+  .metric-row {
+    grid-template-columns: 80px 1fr;
+  }
+  .metric-row .metric-value {
+    font-size: 24px;
+  }
+}
+
+/* ---------- Learnings strip (Position 19 closing) ---------- */
+.learnings-strip {
+  margin: var(--spacing-xl) 0 var(--spacing-2xl) 0;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  background: var(--surface-1);
+  border-left: 3px solid var(--accent-warm);
+  border-radius: 6px;
+}
+.learnings-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.88px;
+  text-transform: uppercase;
+  color: var(--accent-warm);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+.learnings-body {
+  font-size: 16px;
+  color: var(--text-primary);
+  line-height: 1.6;
+  margin: 0;
+}

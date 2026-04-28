@@ -550,5 +550,75 @@ None. All structural changes use existing classes.
 1. **Slide 15 typo** — "Subscription settings used vague" preserved verbatim in P14 lede. Likely Della meant "Subscription settings were vague" or "used to be vague". Awaiting Della's correction or confirmation.
 2. **Contextual suggestions / Global settings** — both h3s untouched in Batch 4 (not in spec scope). Sit between P15 (relocated flywheel) and P16 (Create Focus h2). Della reviews flow at preview.
 
+---
+
+## v3 Batch 5 — Positions 16–19 + demolish v2 Strategy section (Apr 28, 2026)
+
+### CSS additions to styles.css
+
+- `.microformat.decision-row` — single-line variant of microformat for AMBIGUITY NAVIGATED at P17. Reuses Batch 2 microformat classes; adds tighter padding and primary-text body color.
+- `.impact-callout.impact-callout-stack` modifier — variant that stacks metric + sublabel as a column instead of single metric.
+- `.metric-group` (within `.impact-callout-stack`) — flex-column wrapper for metric + sublabel pair.
+- `.impact-callout .metric-sublabel` — uppercase chip below big metric value (P18). Uses `--accent`.
+- `.results-row` — 2-column grid for phone slot + metrics panel (collapses to 1 column at 900px).
+- `.results-phone-slot` + `.placeholder-text` + `.phone-caption` — placeholder for the unified-inbox GIF asset Della will provide.
+- `.results-metrics-panel` — accent-bordered metrics card with hero metric + 4 stacked rows.
+- `.metrics-eyebrow` — uppercase eyebrow at top of panel.
+- `.results-metrics-panel .hero-metric` + nested `.metric-value` (56px), `.metric-sublabel`, `.metric-caption` — large-format hero metric block.
+- `.metrics-stack` + `.metric-row` (grid layout 100px | text), nested `.metric-value` (28px), `.metric-text`, `.metric-sublabel`, `.metric-caption` — 4 sub-metric rows beneath hero.
+- Mobile breakpoints at 900px (collapse 2-col to 1-col) and 480px (shrink hero metric + tighten metric-row column).
+- `.learnings-strip` + `.learnings-eyebrow` + `.learnings-body` — left-bordered closing strip using `--accent-warm` (the same warm token introduced in Batch 2 for EXPERIMENT/RESULT eyebrows).
+
+### HTML changes — case-notifications.html
+
+| Change | Position | Before | After |
+|---|---|---|---|
+| **DEMOLISHED** | v2 Strategy section (between P4 callout and P5 Approach pivot) | `<section class="case-strategy">` containing `<h2>Strategy</h2>` + `<p class="strategy-lede"><strong>Strategy:</strong> establish a scalable foundation; optimize for key user journeys.</p>` + `<div class="metrics-callout">` (4 metrics) | Entire section removed. P5 Approach pivot now follows directly after the P4 2% impact callout. The 4-metric content from this callout is **upgraded and relocated to the P19 metrics panel** with sublabels and captions matching Slide 20. |
+| h3 swap | P16 | `<h3>Surface consolidation</h3>` | `<h3>Three surfaces, three mental models</h3>` (Slide 17 `1214:20314` verbatim) |
+| Lede inserted | P16 | none | "Inbox, private messages, and chat each demand different sort logic, engagement pattern, and navigation." (Slide 17 subtitle) |
+| h3 swap | P17 | `<h3>Layout experimentation</h3>` | `<h3>Four layouts tested, one clear fit</h3>` (Slide 18 `1214:20390` verbatim) |
+| Lede inserted | P17 | none | "Migrating surfaces with muscle memory meant testing layouts that balanced scan speed against mental-model load — the inbox had to behave like a switchboard, not a feed." (Slide 18 subtitle) |
+| Prose updated | P17 | "I tested **chronological, nested, and tabbed layouts**." (sentence 1 of paragraph) | "I tested **four layouts** — moving chat to the header, complete unification, group-by-activity-type, and tabs." (Slide 18 confirmed 4-layout lineup; Della verbal confirmation 2026-04-28). Sentences 2 and 3 of the paragraph (scan-act-leave + switchboard-not-destination) preserved verbatim. |
+| AMBIGUITY NAVIGATED decision row inserted | P17 | none | `<div class="microformat decision-row">` with eyebrow tag "Ambiguity navigated" + body "Chose Tabbed because scan speed was the controlling constraint — inbox as switchboard, not feed." (Slide 18 verbatim). Reuses Batch 2 microformat-eyebrow/microformat-tag classes. Placed between updated prose and NOT-12 diagram. |
+| h3 MERGE | P18 | TWO h3s — `<h3>Navigation simplification</h3>` (v2 Row 26) + `<h3>Unified inbox reveal</h3>` (v2 Row 27) | ONE h3 — `<h3>Five tabs to three</h3>` (Slide 19 `1214:20580` verbatim) |
+| Lede inserted | P18 | none | "Consolidating notifications and chat into a single inbox freed a slot in the bottom nav — one surface removed from the hierarchy, one slot returned to product surface experiments." (Slide 19 subtitle) |
+| Impact callout inserted (sublabel variant) | P18 | none | `<div class="impact-callout impact-callout-stack">` with metric `1` + sublabel "Nav slot freed" + body "Consolidating four messaging surfaces into one returned a slot to the bottom nav — the downstream effect of the inbox rebuild on surface experiments." (Slide 19 verbatim). Placed between prose paragraph 2 and the second diagram (NOT-14 unified-inbox). |
+| Diagrams stacked | P18 | NOT-14 navigation + NOT-14 unified-inbox (already separate, alternating with prose) | both kept stacked under merged h3 in original positions: NOT-14 navigation between prose paragraphs 1 and 2; NOT-14 unified-inbox after impact callout. |
+| Eyebrow inserted | P19 | none | `Results · Unified inbox` (`.section-eyebrow`) above `<h2>Results</h2>` (Slide 20 eyebrow verbatim) |
+| h3 inserted | P19 | none | `<h3>Four surfaces, one scalable system</h3>` (Slide 20 title verbatim) below the existing h2 |
+| Phone slot placeholder inserted | P19 | none | `<div class="results-phone-slot" data-asset-pending="unified-inbox-gif">` with placeholder text "Unified inbox screen recording — Della to provide" + caption "Unified inbox · Notifications + Messages + Chat in one surface". **Della to provide GIF asset separately** — flagged in open questions. |
+| Metrics panel inserted | P19 | none | `<div class="results-metrics-panel">` with eyebrow "Outcomes" + hero metric `+1.3M` "Incremental DAU" + 4 stacked rows: `+2.7M` "Daily good visits"; `+6.4%` "Push notification CTR"; `75%` "Above target"; `1` "Nav slot freed". Captions per Slide 20 verbatim. |
+| Learnings strip inserted | P19 | none | `<div class="learnings-strip">` with eyebrow "Learnings" + body "Framework-first scoping made the metrics inevitable — every decision mapped back to the three pillars and the signal-intent matrix." (Slide 20 closing verbatim). |
+| Existing prose preserved | P16, P17, P18, P19 | — | All 5 existing prose paragraphs verbatim except P17 sentence 1 (4-layout update): P16 "Why this was hard…" + "I consolidated four messaging systems…"; P17 "I tested four layouts…" (updated) + scan-act-leave + switchboard tail (verbatim); P18 "The unified inbox freed a slot…" + "The result: one inbox, two tabs…"; P19 "The segmentation framework became the foundation…". |
+
+### Diagrams — Batch 5 status
+
+- **Embedded (unchanged):** NOT-24 (P16), NOT-12 (P17), NOT-14 navigation (P18), NOT-14 unified-inbox (P18).
+- **Drift flagged for separate diagram-pass scope:** NOT-12 4-option layout (slide confirms 4 layouts; on-disk diagram is 3-option per v2 spec); NOT-24 4-row Utilities (Slide 17 adds Utilities row not in v2's 3-row table); NOT-E3 pillar one-liners at P10 (Slide 11 has "Engagement loops…" / "Customized feeds…" / "Reduced noise…" not in current diagram).
+
+### Verified facts — Batch 5
+
+All from `verified-facts-registry.md`:
+- `+1.3M` Incremental DAU (P19 hero) — registry line 102 [CONFIRMED Apr 28]
+- `+2.7M` Daily good visits (P19) — registry line 103 [CONFIRMED Apr 28]
+- `+6.4%` Push notification CTR (P19) — registry line 55 [CONFIRMED]
+- `75%` Above target (P19) — registry line 61 [CONFIRMED]
+- `1` Nav slot freed (P18 callout + P19 metric row) — registry line 104 [CONFIRMED Apr 28]
+
+No new metrics introduced.
+
+### Open questions for Della (Batch 5 review)
+
+1. **Slide 15 typo** (carry-forward from Batch 4) — "Subscription settings used vague" preserved verbatim in P14 lede.
+2. **Unified inbox GIF asset** — placeholder slot at P19 awaiting Della's screen recording asset (Figma name: `ScreenRecording_04-24-2026_08-55-55_1`). Placeholder is visibly styled with dashed border so it's clear where it goes.
+3. **P18 impact callout placement** — placed between prose paragraph 2 and the second diagram (NOT-14 unified-inbox), matching the P11/P12 pattern. Della reviews; trivial reorder if she prefers it after both diagrams.
+4. **AMBIGUITY NAVIGATED visual treatment** — rendered as single-line `.microformat.decision-row` reusing Batch 2 microformat classes. Tag uses `--accent-warm` (consistent with EXPERIMENT/RESULT). If Della wants tag in `--accent` (teal) instead, easy follow-up.
+5. **P19 metrics panel hero size** — hero metric set at 56px. Slide spec says 64px. If Della wants the slide-exact 64px, easy follow-up (one CSS line).
+6. **Diagram retranslations** — NOT-12 (4-option), NOT-24 (4-row Utilities), NOT-E3 (pillar one-liners), NOT-19 (dual-pipeline AFTER), NOT-E2 (stage labels) all flagged for a separate diagram-pass scope.
+7. **Pillar tag chips** — skipped at all pillar h2 sections per kickoff default. Della to decide whether to add after preview.
+8. **"2%" datapoint dedupe** (carry-forward from Batch 3) — still rendered at P4 callout AND P9 prose body.
+9. **EXPERIMENT/RESULT mechanic-tag color at P7** (carry-forward from Batch 2) — deferred polish item.
+
+
 
 
