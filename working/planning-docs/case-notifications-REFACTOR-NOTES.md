@@ -14,8 +14,8 @@
 |---|---|---|---|
 | 1 | Summary + Challenge + Strategy (1–5) | landed | `aa0aee0` |
 | 2 | Scaleable foundation + Push paradox (6–12) | landed | `d9abc38` |
-| 3 | Frameworks + Build Habits (13–18) | landed (Della greenlit run-through) | (about to commit) |
-| 4 | Enable Curation + Create Focus + Results (19–28) | in progress | — |
+| 3 | Frameworks + Build Habits (13–18) | landed | `b0198d2` |
+| 4 | Enable Curation + Create Focus + Results (19–28) | landed (awaiting Della preview) | (about to commit) |
 
 ---
 
@@ -181,6 +181,68 @@
 
 ---
 
+## Batch 4 — Rows 19–28
+
+### Row 19 — `<h2>2. Enable Curation</h2>` opening + `<h3>Pipeline separation</h3>`
+- `<h2>2. Enable Curation</h2>` kept as wrapper.
+- Existing line 168 prose preserved verbatim.
+- Static `notif-pipeline-separation.png` removed.
+- 19i placeholder inserted (figma-to-html pending).
+
+### Row 20 — `<h3>Preference architecture</h3>`
+- Existing line 176 prose preserved verbatim.
+- NOT-07 embed retained; added `data-mobile-pending="true"`.
+
+### Row 21 — `<h3>Subreddit on-ramps</h3>` (NEW heading)
+- New heading wraps split-out first half of existing line 188 prose: "I then surfaced these preferences on the subreddit page itself—point of decision, not buried three screens deep."
+- NOT-08 embed retained; added `data-mobile-pending="true"`.
+
+### Row 22 — `<h3>Contextual suggestions</h3>` (NEW)
+- Drafted prose verbatim from spec.
+- 22 placeholder inserted (figma-to-html pending; container will host push upsell + inbox row variant).
+
+### Row 23 — `<h3>Global settings</h3>` (NEW heading)
+- New heading wraps split-out second half of existing line 188 prose plus a new connecting line: "…and simplified subscription management in global settings." + "The flat list replaced a nested per-community drill-down—every community and its alert state visible in one view."
+- NOT-09 embed retained; added `data-mobile-pending="true"`.
+
+### Row 24 — `<h2>3. Create Focus</h2>` opening + `<h3>Surface consolidation</h3>`
+- `<h2>3. Create Focus</h2>` kept as wrapper.
+- New lead-in paragraph from spec ("Why this was hard…") + existing line 245 prose preserved verbatim.
+- Static `notif-unified-inbox.png` removed (replaced by row 27 reveal).
+- 24i placeholder inserted (figma-to-html pending).
+
+### Row 25 — `<h3>Layout experimentation</h3>`
+- Existing line 253 prose first 2 sentences preserved; third sentence reworked to absorb the line 84 "switchboard" salvage from Batch 3: "The inbox wasn't a destination—it was a switchboard that guided users through their session."
+- NOT-12 embed retained; added `data-mobile-pending="true"`.
+
+### Row 26 — `<h3>Navigation simplification</h3>`
+- Existing line 271 prose preserved verbatim.
+- NOT-14 embed retained (v1, the simplification visual); added `data-mobile-pending="true"`.
+
+### Row 27 — `<h3>Unified inbox reveal</h3>` (NEW)
+- Drafted prose verbatim from spec ("The result: one inbox, two tabs (Notifications + Chat)…").
+- NOT-14 v2 placeholder inserted (figma-to-html pending; container will include GIF placeholder slot for inbox-in-action recording).
+
+### Row 28 — `<h2>Results</h2>`
+- Untouched. Existing line 285 prose preserved verbatim.
+
+### Explicit deletions in Batch 4
+- `<h3>Cross-channel coordination</h3>` heading + paragraph + NOT-11 diagram-pair block (per spec §3 + Della's "retire?" sticky on NOT-11 v2).
+- `<h3>Pinned contributions</h3>` heading + paragraph (per spec §3 + NOT-13 "retire; never shipped" sticky).
+- 2 static images: `notif-pipeline-separation.png`, `notif-unified-inbox.png`.
+
+### Verification checklist for Batch 4 (all passed 2026-04-28)
+- [x] Final H2 inventory matches spec §2 exactly: 10 H2s in order — Summary, Challenge, Strategy, Scaleable foundation, Push paradox & engagement reality, Frameworks, 1. Build Habits, 2. Enable Curation, 3. Create Focus, Results.
+- [x] Final H3 count: 27 (matches spec §2 exactly).
+- [x] All explicit deletions confirmed: `<h3>Cross-channel coordination</h3>` (0), `<h3>Pinned contributions</h3>` (0), "pins contributions to the top" (0), `notif-pipeline-separation.png` (0), `notif-unified-inbox.png` (0), `diagram-not11-cross-channel` (0).
+- [x] All 9 new Batch 4 headings present exactly once.
+- [x] All preserved prose anchors land: "entangled with recommendations" (row 19), "off, low, and frequent" (row 20), "on the subreddit page itself" (row 21), "simplified subscription management in global settings" (row 23), "four messaging systems" (row 24), "chronological, nested, and tabbed" (row 25), "freed a slot in the bottom tab bar" (row 26), "segmentation framework became the foundation" (row 28 Results).
+- [x] Switchboard sentence salvaged into row 25 with new wording ("The inbox wasn't a destination — it was a switchboard that guided users through their session.").
+- [x] 16 unique diagram embeds in final file; 10 placeholders for net-new diagrams.
+- [x] File line count: 549.
+
+---
+
 ## Cross-batch preservation map (live audit)
 
 Compared against §4 of the spec. Will fill in per batch.
@@ -193,7 +255,7 @@ Compared against §4 of the spec. Will fill in per batch.
 | 59–76 | metrics-callout | Row 5 (relocated out of hero) | 1 | yes |
 | 80 | "The strategy sat on two axes: signal and tenure…" | Row 14, "tenure" → "intent" reword | 3 | yes |
 | 82 | "The first decision was where to start…" | Row 14 (second paragraph) | 3 | yes |
-| 84 | "Users had a bias for action…" + "switchboard" | Split: bias → row 17, switchboard → row 25 | 3 + 4 | bias yes; switchboard pending Batch 4 |
+| 84 | "Users had a bias for action…" + "switchboard" | Split: bias → row 17, switchboard → row 25 | 3 + 4 | yes (both halves landed) |
 | 90 | "The inbox wasn't on Reddit's design system…" | Row 6 | 2 | yes |
 | 114 | "I rebuilt the unread system around progressive disclosure…" | Row 8 | 2 | yes |
 | 126 | "The migration introduced a less prominent unread color…" | Row 9 | 2 | yes |
@@ -201,16 +263,16 @@ Compared against §4 of the spec. Will fill in per batch.
 | 136 | "I added copy showing why a user received each notification…" | Row 17 | 3 | yes |
 | 144 | "For low-subscription users, the inbox became an onboarding engine…" | Row 18 | 3 | yes |
 | 152 | "Only the latest push recommendation appeared in the inbox…" | Row 18 | 3 | yes |
-| 168 | "Subreddit subscriptions were entangled with recommendations…" | Row 19 | 4 | — |
-| 176 | "The back end couldn't define what updates…" | Row 20 | 4 | — |
-| 188 | "I then surfaced these preferences…" | Split: subreddit page → row 21, global settings → row 23 | 4 | — |
+| 168 | "Subreddit subscriptions were entangled with recommendations…" | Row 19 | 4 | yes |
+| 176 | "The back end couldn't define what updates…" | Row 20 | 4 | yes |
+| 188 | "I then surfaced these preferences…" | Split: subreddit page → row 21, global settings → row 23 | 4 | yes |
 | 212 | "I shipped decay logic for breaking news…" | Row 17 | 3 | yes |
-| 220 | "I defined the relationship between channels…" | **REMOVED** (cross-channel retired) | 4 | — |
-| 245 | "I consolidated four messaging systems…" | Row 24 | 4 | — |
-| 253 | "I tested chronological, nested, and tabbed layouts…" | Row 25 | 4 | — |
-| 267 | "I designed a system that pins contributions…" | **REMOVED** (NOT-13 retire sticky) | 4 | — |
-| 271 | "The unified inbox freed a slot in the bottom tab bar…" | Row 26 | 4 | — |
-| 285 | Results paragraph | unchanged | 4 | — |
+| 220 | "I defined the relationship between channels…" | **REMOVED** (cross-channel retired) | 4 | yes (deleted) |
+| 245 | "I consolidated four messaging systems…" | Row 24 | 4 | yes |
+| 253 | "I tested chronological, nested, and tabbed layouts…" | Row 25 (third sentence reworked to absorb switchboard salvage) | 4 | yes |
+| 267 | "I designed a system that pins contributions…" | **REMOVED** (NOT-13 retire sticky) | 4 | yes (deleted) |
+| 271 | "The unified inbox freed a slot in the bottom tab bar…" | Row 26 | 4 | yes |
+| 285 | Results paragraph | unchanged | 4 | yes (untouched) |
 
 ---
 
@@ -221,15 +283,15 @@ Tracked here as the refactor proceeds.
 | Row | Filename target | Status |
 |---|---|---|
 | 2 | `diagram-not02b-disconnected-surfaces-v5.html` | placeholder |
-| 7 | `diagram-not02b-swipe-actions-v5.html` (with GIF slot) | — |
-| 9 | `diagram-not04b-unread-color-fix-v5.html` | — |
-| 10 | `diagram-not10-three-inboxes-v5.html` | — |
-| 13 | `diagram-not13-taxonomy-detail-v5.html` | — |
-| 17 | `diagram-not17-context-defaults-v5.html` | — |
-| 19 | `diagram-not19-pipeline-entanglement-v5.html` | — |
-| 22 | `diagram-not22-contextual-suggestions-v5.html` | — |
-| 24 | `diagram-not24-surface-tradeoffs-v5.html` | — |
-| 27 | `diagram-not14-unified-inbox-v5.html` (with GIF slot) | — |
+| 7 | `diagram-not02b-swipe-actions-v5.html` (with GIF slot) | placeholder |
+| 9 | `diagram-not04b-unread-color-fix-v5.html` | placeholder |
+| 10 | `diagram-not10-three-inboxes-v5.html` | placeholder |
+| 13 | `diagram-not13-taxonomy-detail-v5.html` | placeholder |
+| 17 | `diagram-not17-context-defaults-v5.html` | placeholder |
+| 19 | `diagram-not19-pipeline-entanglement-v5.html` | placeholder |
+| 22 | `diagram-not22-contextual-suggestions-v5.html` | placeholder |
+| 24 | `diagram-not24-surface-tradeoffs-v5.html` | placeholder |
+| 27 | `diagram-not14-unified-inbox-v5.html` (with GIF slot) | placeholder |
 
 ---
 
