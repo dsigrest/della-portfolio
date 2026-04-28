@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="figma-source" content="layer:PNupsell_communityVisit+inbox_rpl3 page:29:43 file:TArUrZsBUocaAsqetjXq7V">
+<title>NOT-22 — Contextual suggestions</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --accent: #7FB5B0;
+    --glass-bg: rgba(224,223,228,0.04);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 100%;
+    max-width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    padding: 48px;
+  }
+
+  .pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+  .col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+    opacity: 0;
+    animation: fadeUp 0.6s ease-out forwards;
+  }
+  .col.push  { animation-delay: 0.05s; }
+  .col.inbox { animation-delay: 0.18s; }
+
+  .col-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .col-label .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  /* Asset slots — Della drops the PNupsell_communityVisit and inbox_rpl3
+     UI exports in here once exported from Figma. Aspect ratios chosen
+     to match a typical mobile-portrait push card and an inbox row strip;
+     adjust if her exports come in different ratios. */
+  .asset-slot {
+    position: relative;
+    width: 100%;
+    border-radius: 12px;
+    border: 1px dashed var(--glass-border);
+    background: linear-gradient(135deg, rgba(224,223,228,0.04), rgba(224,223,228,0.01));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-shadow: var(--glass-highlight);
+  }
+  .asset-slot.push  { aspect-ratio: 1170 / 1100; }
+  .asset-slot.inbox { aspect-ratio: 1170 / 1100; }
+  .asset-slot .slot-tag {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.7;
+  }
+  .asset-slot .slot-text {
+    font-size: 12px;
+    color: var(--text-sec);
+    font-weight: 500;
+    text-align: center;
+    max-width: 220px;
+    line-height: 1.45;
+  }
+  .asset-slot .slot-meta {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+
+  .caption {
+    font-size: 12px;
+    color: var(--text-sec);
+    line-height: 1.45;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .diagram::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(127,181,176,0.04), transparent 70%);
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="pair">
+
+      <div class="col push">
+        <div class="col-label">
+          <span class="dot"></span>
+          <span>Push upsell</span>
+        </div>
+        <div class="asset-slot push" role="img" aria-label="Placeholder for the PNupsell_communityVisit Figma asset">
+          <span class="slot-tag">Asset slot</span>
+          <span class="slot-text">PNupsell_communityVisit&mdash;subscription suggestion tied to a recent community visit</span>
+          <span class="slot-meta">awaiting Figma export</span>
+        </div>
+        <p class="caption">A push notification offers a subscription tied to the user&rsquo;s most recent community visit&mdash;turning a passive recommendation into an active subscription opportunity.</p>
+      </div>
+
+      <div class="col inbox">
+        <div class="col-label">
+          <span class="dot"></span>
+          <span>Inbox row variant</span>
+        </div>
+        <div class="asset-slot inbox" role="img" aria-label="Placeholder for the inbox_rpl3 Figma asset">
+          <span class="slot-tag">Asset slot</span>
+          <span class="slot-text">inbox_rpl3&mdash;recommendation card with inline subscribe affordance</span>
+          <span class="slot-meta">awaiting Figma export</span>
+        </div>
+        <p class="caption">An inbox card surfaces the same subscription on-ramp inline with the recommendation&mdash;no detour through settings.</p>
+      </div>
+
+    </div>
+  </div>
+<!-- diagram-height-poster v1 -->
+<script>
+(function () {
+  function compute() {
+    var d = document.querySelector('.diagram');
+    if (!d) return 0;
+    return Math.max(
+      d.scrollHeight, d.offsetHeight,
+      document.documentElement ? document.documentElement.scrollHeight : 0,
+      document.body ? document.body.scrollHeight : 0
+    );
+  }
+  function send() {
+    if (!window.parent || window.parent === window) return;
+    var h = compute();
+    if (h > 0) {
+      window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', send);
+  } else {
+    send();
+  }
+  window.addEventListener('load', send);
+  setTimeout(send, 50);
+  setTimeout(send, 250);
+  setTimeout(send, 1000);
+  if (window.ResizeObserver) {
+    var ro = new ResizeObserver(send);
+    var d = document.querySelector('.diagram');
+    if (d) ro.observe(d);
+    if (document.body) ro.observe(document.body);
+  }
+  window.addEventListener('resize', send);
+})();
+</script>
+</body>
+</html>

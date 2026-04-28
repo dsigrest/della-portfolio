@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="figma-source" content="node:1176:2685 page:29:43 file:TArUrZsBUocaAsqetjXq7V">
+<title>NOT-14 v2 — Unified inbox reveal</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --accent: #7FB5B0;
+    --glass-border: rgba(224,223,228,0.08);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 100%;
+    max-width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    padding: 15px 0 48px;
+  }
+
+  .stage {
+    padding: 28px 48px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: stretch;
+  }
+
+  .col-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1;
+    width: 100%;
+    opacity: 0;
+    animation: fadeUp 0.5s ease-out forwards;
+  }
+  .col-label .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .gap { height: 14px; }
+
+  .mock-frame { padding: 0 8px; }
+  .mock {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 322 / 697;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+    opacity: 0;
+    animation: fadeUp 0.7s ease-out 0.18s forwards;
+  }
+  .mock img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .tabs-tag {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 18px;
+    font-weight: 400;
+    color: rgba(127,181,176,0.18);
+    text-align: center;
+    letter-spacing: 0.05em;
+    margin-top: 8px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease-out 0.45s forwards;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .diagram::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(127,181,176,0.04), transparent 70%);
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="stage">
+      <div class="col-label">
+        <span class="dot"></span>
+        <span>Unified inbox</span>
+      </div>
+      <div class="gap"></div>
+      <div class="mock-frame">
+        <div class="mock">
+          <img src="assets/not14-inbox-results.gif" alt="Recording: scrolling the unified inbox showing Notifications and Chat tabs, mixed feed, and the simplified 3-tab bottom navigation in action" loading="lazy">
+        </div>
+      </div>
+      <div class="tabs-tag">3&ndash;4</div>
+    </div>
+  </div>
+<!-- diagram-height-poster v1 -->
+<script>
+(function () {
+  function compute() {
+    var d = document.querySelector('.diagram');
+    if (!d) return 0;
+    return Math.max(
+      d.scrollHeight, d.offsetHeight,
+      document.documentElement ? document.documentElement.scrollHeight : 0,
+      document.body ? document.body.scrollHeight : 0
+    );
+  }
+  function send() {
+    if (!window.parent || window.parent === window) return;
+    var h = compute();
+    if (h > 0) {
+      window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', send);
+  } else {
+    send();
+  }
+  window.addEventListener('load', send);
+  setTimeout(send, 50);
+  setTimeout(send, 250);
+  setTimeout(send, 1000);
+  if (window.ResizeObserver) {
+    var ro = new ResizeObserver(send);
+    var d = document.querySelector('.diagram');
+    if (d) ro.observe(d);
+    if (document.body) ro.observe(document.body);
+  }
+  window.addEventListener('resize', send);
+})();
+</script>
+</body>
+</html>

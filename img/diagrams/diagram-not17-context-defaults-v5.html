@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="figma-source" content="node:1176:2158 page:29:43 file:TArUrZsBUocaAsqetjXq7V">
+<title>NOT-17 — Without context vs With context</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --accent: #7FB5B0;
+    --red: #C47878;
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 100%;
+    max-width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .hover-hint-wrap {
+    padding: 12px 48px 0;
+    display: flex;
+    justify-content: center;
+  }
+  .hover-hint {
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .comparison-wrap {
+    padding: 24px 48px 16px;
+  }
+  .comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+  .col {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
+    opacity: 0;
+    animation: fadeUp 0.6s ease-out forwards;
+  }
+  .col.before { animation-delay: 0.05s; }
+  .col.after  { animation-delay: 0.20s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .col-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .col-label.before { color: var(--red); }
+  .col-label.after  { color: var(--accent); }
+  .col-label .dot {
+    width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+  }
+  .col-label.before .dot { background: var(--red); }
+  .col-label.after  .dot { background: var(--accent); }
+
+  .row-frame {
+    padding: 16px 8px 8px;
+    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .row-frame.lower { padding: 8px 8px 16px; }
+
+  /* Each row image is a vertical crop of a longer screenshot — mirrors
+     Figma's clipping transforms exactly. Top-row crops differ between
+     legacy (1170/247 ratio) and unified (520/112 ratio) sources. */
+  .mock {
+    position: relative;
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #F6F6F6;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+  }
+  .mock img {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    max-width: none;
+    object-fit: cover;
+    pointer-events: none;
+  }
+
+  .mock.legacy-amioverreacting { aspect-ratio: 1170 / 247; }
+  .mock.legacy-amioverreacting img { height: 1025.1%; top: -229.15%; }
+
+  .mock.legacy-bushwick { aspect-ratio: 306 / 52; }
+  .mock.legacy-bushwick img { height: 99.59%; top: 0; }
+
+  .mock.context-amioverreacting { aspect-ratio: 520 / 112; }
+  .mock.context-amioverreacting img { height: 1009.82%; top: -175.89%; left: -0.02%; width: 100.04%; }
+
+  .mock.context-bushwick { aspect-ratio: 306 / 51; }
+  .mock.context-bushwick img { height: 1305%; top: -229.64%; left: -0.02%; width: 100.04%; }
+
+  /* Hover treatment — when hovering one column, dim the other gently to
+     pull attention to the differences. */
+  .comparison:hover .col:not(:hover) {
+    opacity: 0.55;
+    transition: opacity 0.4s ease;
+  }
+  .col:hover .row-frame {
+    transform: translateY(-1px);
+  }
+
+  .diagram::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(127,181,176,0.04), transparent 70%);
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="hover-hint-wrap">
+      <span class="hover-hint">Hover annotations to see linked changes</span>
+    </div>
+    <div class="comparison-wrap">
+      <div class="comparison">
+
+        <div class="col before">
+          <div class="col-label before">
+            <span class="dot"></span>
+            <span>Without context</span>
+          </div>
+          <div class="row-frame upper">
+            <div class="mock legacy-amioverreacting">
+              <img src="assets/not17-legacy-amioverreacting.png" alt="Legacy notification: 'AmIOverreacting · 1h — Am I overreacting to my bf going to twin peaks multiple times despite me saying it makes me…'" loading="lazy">
+            </div>
+          </div>
+          <div class="row-frame lower">
+            <div class="mock legacy-bushwick">
+              <img src="assets/not17-legacy-bushwick.png" alt="Legacy notification: 'r/Bushwick — I rebuilt DanceBuddy to be our Dancers Home. — 3h'" loading="lazy">
+            </div>
+          </div>
+        </div>
+
+        <div class="col after">
+          <div class="col-label after">
+            <span class="dot"></span>
+            <span>With context</span>
+          </div>
+          <div class="row-frame upper">
+            <div class="mock context-amioverreacting">
+              <img src="assets/not17-context-amioverreacting.png" alt="Reframed notification: 'Because you joined r/AmIOverreacting — AIO Random Guy Messaging Me — 12h'" loading="lazy">
+            </div>
+          </div>
+          <div class="row-frame lower">
+            <div class="mock context-bushwick">
+              <img src="assets/not17-context-bushwick.png" alt="Reframed notification: 'Because you visited r/Bushwick — Gyms in Bushwick — 17m'" loading="lazy">
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+<!-- diagram-height-poster v1 -->
+<script>
+(function () {
+  function compute() {
+    var d = document.querySelector('.diagram');
+    if (!d) return 0;
+    return Math.max(
+      d.scrollHeight, d.offsetHeight,
+      document.documentElement ? document.documentElement.scrollHeight : 0,
+      document.body ? document.body.scrollHeight : 0
+    );
+  }
+  function send() {
+    if (!window.parent || window.parent === window) return;
+    var h = compute();
+    if (h > 0) {
+      window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', send);
+  } else {
+    send();
+  }
+  window.addEventListener('load', send);
+  setTimeout(send, 50);
+  setTimeout(send, 250);
+  setTimeout(send, 1000);
+  if (window.ResizeObserver) {
+    var ro = new ResizeObserver(send);
+    var d = document.querySelector('.diagram');
+    if (d) ro.observe(d);
+    if (document.body) ro.observe(document.body);
+  }
+  window.addEventListener('resize', send);
+})();
+</script>
+</body>
+</html>

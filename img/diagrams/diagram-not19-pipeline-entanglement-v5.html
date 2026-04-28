@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="figma-source" content="node:1176:3267 page:29:43 file:TArUrZsBUocaAsqetjXq7V">
+<title>NOT-19 — Pipeline entanglement</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --accent: #7FB5B0;
+    --gold: #C4B078;
+    --red: #C47878;
+    --row-bg:     rgba(127,181,176,0.06);
+    --row-border: rgba(127,181,176,0.12);
+    --glass-border:    rgba(224,223,228,0.08);
+    --glass-overlay:   rgba(224,223,228,0.04);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    --ranker:         #6EDCC8;
+    --ranker-fill:    rgba(110,220,200,0.15);
+    --ranker-border:  rgba(110,220,200,0.4);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 100%;
+    max-width: 760px;
+    background: var(--card);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .eyebrow {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    color: #8C94A6;
+    opacity: 0;
+    animation: fadeUp 0.5s ease-out forwards;
+  }
+
+  .pipeline {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  /* ---- Spokes row (User subscriptions + Discovery suggestions) ---- */
+  .spokes-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 32px;
+    gap: 64px;
+    width: 100%;
+  }
+  .spoke {
+    flex: 1 0 0;
+    min-width: 0;
+    max-width: 300px;
+  }
+  .comp-card {
+    position: relative;
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: var(--glass-highlight);
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeUp 0.6s ease-out forwards;
+  }
+  .comp-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--glass-overlay);
+    border-radius: inherit;
+    pointer-events: none;
+  }
+  .spoke.subscriptions .comp-card { animation-delay: 0.10s; }
+  .spoke.discovery     .comp-card { animation-delay: 0.20s; }
+  .hub-wrap .comp-card             { animation-delay: 0.45s; }
+
+  .card-header {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: var(--text-dim);
+    text-align: center;
+    width: 100%;
+  }
+
+  .mini-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    position: relative;
+  }
+  .mini-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 10px;
+    background: var(--row-bg);
+    border: 1px solid var(--row-border);
+    border-radius: 7px;
+  }
+  .mini-row .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .mini-row.gold .dot { background: var(--gold); }
+  .mini-row.red  .dot { background: var(--red); }
+  .mini-row .label {
+    flex: 1 0 0;
+    min-width: 0;
+    font-size: 12px;
+    color: var(--text-sec);
+    line-height: 1.2;
+  }
+
+  /* ---- Connections (SVG dashed paths) ---- */
+  .connections {
+    width: 100%;
+    height: 28px;
+    overflow: visible;
+    display: block;
+  }
+  .connections .line {
+    fill: none;
+    stroke-width: 1.25;
+    stroke-dasharray: 3 4;
+    stroke-linecap: round;
+    opacity: 0;
+    animation: drawIn 0.6s ease-out 0.30s forwards;
+  }
+  .connections .line.gold { stroke: var(--gold); }
+  .connections .line.red  { stroke: var(--red); }
+
+  /* ---- Hub (RANKER badge) ---- */
+  .hub {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 32px;
+    align-items: center;
+  }
+  .hub-badge {
+    background: var(--ranker-fill);
+    border: 1px solid var(--ranker-border);
+    border-radius: 16px;
+    padding: 0 14px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ranker);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    opacity: 0;
+    animation: fadeUp 0.5s ease-out 0.32s forwards;
+  }
+
+  /* ---- Hub-to-inbox connector ---- */
+  .down-line {
+    width: 100%;
+    height: 28px;
+    overflow: visible;
+    display: block;
+  }
+  .down-line .line {
+    fill: none;
+    stroke: var(--red);
+    stroke-width: 1.25;
+    stroke-dasharray: 3 4;
+    stroke-linecap: round;
+    opacity: 0;
+    animation: drawIn 0.5s ease-out 0.55s forwards;
+  }
+
+  /* ---- User inbox card (centered) ---- */
+  .hub-wrap {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+  .hub-wrap .spoke {
+    width: 300px;
+    flex: 0 0 auto;
+  }
+  .hub-wrap .comp-card { padding: 18px; gap: 14px; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes drawIn {
+    from { opacity: 0; }
+    to   { opacity: 0.7; }
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="eyebrow">Notification candidates</div>
+
+    <div class="pipeline">
+      <div class="spokes-row">
+        <div class="spoke subscriptions">
+          <div class="comp-card">
+            <div class="card-header">User subscriptions</div>
+            <div class="mini-rows">
+              <div class="mini-row gold"><span class="dot"></span><span class="label">Popular post in r/design</span></div>
+              <div class="mini-row gold"><span class="dot"></span><span class="label">New post in r/Claude</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="spoke discovery">
+          <div class="comp-card">
+            <div class="card-header">Discovery suggestions</div>
+            <div class="mini-rows">
+              <div class="mini-row red"><span class="dot"></span><span class="label">Trending in r/technology</span></div>
+              <div class="mini-row red"><span class="dot"></span><span class="label">Because you visited r/ux</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Both pipelines feed the ranker — so dashed lines converge from
+           the spokes to the central RANKER badge. -->
+      <svg class="connections" viewBox="0 0 728 28" preserveAspectRatio="none" aria-hidden="true">
+        <path class="line gold" d="M 213 26 Q 290 14 318 2" />
+        <path class="line red"  d="M 515 26 Q 438 14 410 2" />
+      </svg>
+
+      <div class="hub">
+        <div class="hub-badge">RANKER</div>
+      </div>
+
+      <!-- Ranker outputs only the discovery candidates downstream — note
+           the connector and the inbox rows below are red, not gold. -->
+      <svg class="down-line" viewBox="0 0 728 28" preserveAspectRatio="none" aria-hidden="true">
+        <path class="line" d="M 364 1 L 364 27" />
+      </svg>
+
+      <div class="hub-wrap">
+        <div class="spoke inbox">
+          <div class="comp-card">
+            <div class="card-header">User inbox</div>
+            <div class="mini-rows">
+              <div class="mini-row red"><span class="dot"></span><span class="label">Trending in r/technology</span></div>
+              <div class="mini-row red"><span class="dot"></span><span class="label">Because you visited r/ux</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- diagram-height-poster v1 -->
+<script>
+(function () {
+  function compute() {
+    var d = document.querySelector('.diagram');
+    if (!d) return 0;
+    return Math.max(
+      d.scrollHeight, d.offsetHeight,
+      document.documentElement ? document.documentElement.scrollHeight : 0,
+      document.body ? document.body.scrollHeight : 0
+    );
+  }
+  function send() {
+    if (!window.parent || window.parent === window) return;
+    var h = compute();
+    if (h > 0) {
+      window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', send);
+  } else {
+    send();
+  }
+  window.addEventListener('load', send);
+  setTimeout(send, 50);
+  setTimeout(send, 250);
+  setTimeout(send, 1000);
+  if (window.ResizeObserver) {
+    var ro = new ResizeObserver(send);
+    var d = document.querySelector('.diagram');
+    if (d) ro.observe(d);
+    if (document.body) ro.observe(document.body);
+  }
+  window.addEventListener('resize', send);
+})();
+</script>
+</body>
+</html>
