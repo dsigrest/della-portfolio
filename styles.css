@@ -325,6 +325,56 @@
         }
     }
 
+    /* ---------- Summary block (case-notifications.html exec summary) ---------- */
+    .case-summary {
+      margin: var(--spacing-2xl) 0;
+    }
+    .case-summary > h2 {
+      margin-bottom: var(--spacing-lg);
+    }
+    .summary-pair {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--spacing-lg);
+      margin-bottom: var(--spacing-xl);
+    }
+    .summary-tile {
+      background: var(--surface-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: var(--spacing-lg);
+    }
+    .summary-tile h3 {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin: 0 0 var(--spacing-sm);
+    }
+    .summary-tile p {
+      margin: 0;
+      color: var(--text-primary);
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    @media (max-width: 768px) {
+      .summary-pair {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+      }
+    }
+
+    /* ---------- Diagram embed iframe baseline ----------
+       No height constraints. Auto-resize script (in case-*.html) sizes
+       iframes to their .diagram scrollHeight after load. Iframe hugs
+       content exactly. */
+    .diagram-embed iframe {
+      width: 100%;
+      display: block;
+      border: 0;
+    }
+
     .case-img-full {
       margin: var(--spacing-xl) 0;
       opacity: 0;
