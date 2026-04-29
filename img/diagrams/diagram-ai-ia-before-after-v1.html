@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="figma-source" content="node:1202:5101 page:29:42 file:TArUrZsBUocaAsqetjXq7V">
+<title>Page IA — Before vs After</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #14161E;
+    --card-border: rgba(224,223,228,0.06);
+    --eyebrow: rgba(224,223,228,0.42);
+    --label: rgba(224,223,228,0.55);
+    --label-strong: rgba(224,223,228,0.78);
+    --hairline: rgba(224,223,228,0.07);
+    --dim: rgba(224,223,228,0.32);
+    --dot-dim: rgba(224,223,228,0.30);
+    --casual: #C9A98E;
+    --casual-dot-red: #C47878;
+    --casual-dot-orange: #D4A574;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 32px 16px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 644px;
+    background: var(--canvas);
+    border-radius: 12px;
+  }
+
+  .ia-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .ia-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 22px 24px 22px;
+    display: flex;
+    flex-direction: column;
+    min-height: 314px;
+  }
+
+  .ia-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--eyebrow);
+    margin-bottom: 18px;
+  }
+
+  /* BEFORE — 5 stacked thread rows */
+  .thread-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0 10px;
+    border-bottom: 1px solid var(--hairline);
+    font-size: 12px;
+    color: var(--label-strong);
+    font-weight: 400;
+  }
+  .thread-row:last-of-type { border-bottom: none; }
+  .thread-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--dot-dim);
+    flex-shrink: 0;
+  }
+
+  .ia-caption {
+    margin-top: auto;
+    padding-top: 22px;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--dim);
+  }
+  .ia-caption.casual { color: var(--casual); }
+
+  /* AFTER — single consolidated card stack */
+  .after-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .search-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 12px 18px;
+    color: var(--label-strong);
+    font-size: 12px;
+  }
+  .search-display .magnifier {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    border: 1.4px solid var(--label);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .search-display .magnifier::after {
+    content: '';
+    position: absolute;
+    width: 4px; height: 1.4px;
+    background: var(--label);
+    border-radius: 1px;
+    right: -3px;
+    bottom: -1px;
+    transform: rotate(45deg);
+    transform-origin: left center;
+  }
+
+  .section-eyebrow-row {
+    display: flex;
+    flex-direction: column;
+  }
+  .section-eyebrow {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--eyebrow);
+    padding: 14px 0 10px;
+  }
+  .section-line {
+    height: 1px;
+    background: var(--hairline);
+    margin-bottom: 4px;
+  }
+
+  .source-thread-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    font-size: 12px;
+    color: var(--label-strong);
+  }
+  .source-thread-row .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .source-thread-row .dot.red { background: var(--casual-dot-red); }
+  .source-thread-row .dot.orange { background: var(--casual-dot-orange); }
+
+  /* Embedded mode */
+  body.embedded {
+    padding: 0;
+    background: transparent;
+    min-height: auto;
+    display: block;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+
+  /* Narrow viewport: stack columns */
+  @media (max-width: 620px) {
+    .ia-grid { grid-template-columns: 1fr; gap: 14px; }
+    .ia-card { min-height: auto; }
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="ia-grid">
+
+      <!-- ===== BEFORE — 5 competing threads ===== -->
+      <div class="ia-card before">
+        <div class="ia-eyebrow">Before</div>
+
+        <div class="thread-row"><span class="thread-dot"></span>r/headphones · Thread 1</div>
+        <div class="thread-row"><span class="thread-dot"></span>r/headphones · Thread 2</div>
+        <div class="thread-row"><span class="thread-dot"></span>r/BudgetAudio · Thread</div>
+        <div class="thread-row"><span class="thread-dot"></span>r/gadgets · Thread</div>
+        <div class="thread-row"><span class="thread-dot"></span>r/tech · Thread</div>
+
+        <p class="ia-caption">Multiple threads compete<br>for one search query</p>
+      </div>
+
+      <!-- ===== AFTER — one consolidated page ===== -->
+      <div class="ia-card after">
+        <div class="ia-eyebrow">After</div>
+
+        <div class="after-stack">
+          <div class="search-display">
+            <span class="magnifier" aria-hidden="true"></span>
+            <span>best budget headphones</span>
+          </div>
+
+          <div class="section-eyebrow-row">
+            <div class="section-eyebrow">AI Summary</div>
+            <div class="section-line"></div>
+          </div>
+
+          <div class="section-eyebrow-row">
+            <div class="section-eyebrow">Source Threads</div>
+            <div class="section-line"></div>
+          </div>
+
+          <div class="source-thread-row"><span class="dot red"></span>r/headphones</div>
+          <div class="source-thread-row"><span class="dot orange"></span>r/BudgetAudiophile</div>
+          <div class="source-thread-row"><span class="dot red"></span>r/gadgets</div>
+        </div>
+
+        <p class="ia-caption casual">One page answers the query<br>with sourced AI summary</p>
+      </div>
+
+    </div>
+  </div>
+
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+<script>
+(function () {
+  function compute() {
+    var d = document.querySelector('.diagram');
+    if (!d) return 0;
+    return Math.max(
+      d.scrollHeight, d.offsetHeight,
+      document.documentElement ? document.documentElement.scrollHeight : 0,
+      document.body ? document.body.scrollHeight : 0
+    );
+  }
+  function send() {
+    if (!window.parent || window.parent === window) return;
+    var h = compute();
+    if (h > 0) {
+      window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', send);
+  } else {
+    send();
+  }
+  window.addEventListener('load', send);
+  setTimeout(send, 50);
+  setTimeout(send, 250);
+  setTimeout(send, 1000);
+  if (window.ResizeObserver) {
+    var ro = new ResizeObserver(send);
+    var d = document.querySelector('.diagram');
+    if (d) ro.observe(d);
+    if (document.body) ro.observe(document.body);
+  }
+  window.addEventListener('resize', send);
+})();
+</script>
+</body>
+</html>

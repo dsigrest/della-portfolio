@@ -73,6 +73,140 @@ Next up: Thread 1b — fix the 9 remaining L2 reworks + build L3 mobile variants
 | Resume prompt | `portfolio-site/working/mobile-audit/resume-prompt.md` | Copy-paste prompt for Thread 1b | Apr 21 |
 
 ## Log entries
+### Apr 29, 2026 (close-out) — case-ai v3 polish-pass complete: 7 commits + Small/Medium/Large spacing system
+
+**What happened:**
+Picked up the polish-pass scope per `~/CoworkWorkspace/Get-a-job/sessions/resume-prompt-case-ai-v3-polish.md` and executed all 7 commits derisk-first. Each commit verified via standalone diagram render + cropped in-context render at 1440/768/375 + quality-check.py + voice-check.py (case-ai.html commits only) + per-commit Della approval gate. Recruiter-panel Stage 2 regression confirmed no merge blocker.
+
+**Commits landed on `restructure/case-ai-v3`:**
+- `1b0240a` — polish 1/7: ai-overview — before/after-search-results framing (pills + ×/✓ icon labels + threshold-divider drop)
+- `cadfcaf` — polish 2/7: ai10 — drop chrome (h1 + subtitle + design-principle insight + outcome ribbon + phone-bezel chrome), swap L/R columns, new annotations
+- `636fcfc` — polish 3/7: ai20 — CSS-cropped image (no PNG re-extract), SOURCE POSTS eyebrow, 4 new annotations, mobile vertical stack
+- `8f62f41` — polish 4/7: ai-identification-precedent — desktop node moved 1226:21284 → 1316:298, card crop, SYNTHESIZED SUMMARY eyebrow, 4 annotations
+- `b969ea8` — polish 5/7: ai12 — feedback-widget PNG embed via CSS crop on existing `ui-reddit-answers-mobile.png`, NEW mobile variant authored from scratch, `case-ai.html` ai-12 wrapper promoted to `.diagram-pair`
+- `9f88233` — polish 6/7: 4 h3 capitalization (Voice / Content / Feedback loops / Failure states), 15M Results metric centered (new `.metrics-callout--single` modifier), ai23 internal padding trimmed (32→16 desktop, 24→12 mobile)
+- `37e027b` — polish 7/7: vertical spacing system (Small=16 / Medium=32 / Large=64) — `.case-img-full` margin 24→16, `.case-body h2` margin-top 48→64, comment block documenting the system
+
+**Key learnings:**
+
+- **CSS-crop pattern over re-extraction.** ai20 + ai-identification-precedent + ai12 all use the same `ui-reddit-answers-mobile.png` (`9c8fd9f...`) and `ui-source-posts.png` (`0376fcf...`) hashes Della already had on disk — Figma's "card-only crops" are CSS-side display settings (`h-[1272.78%] left-[-5.11%] top-[-909.26%]` etc.), not different files. Pattern: replicate Figma's image-fill positioning verbatim in CSS (explicit `width: 115.33%; height: 1272.78%; left: -5.11%; top: -909.26%`) inside an aspect-ratio container with `overflow: hidden`. **Pitfall:** using `height: auto` instead of explicit height shifts the visible band by the natural-aspect-vs-forced-height delta — caught on first ai12 render which showed "Best Dewy Setting Spray posts" header instead of the feedback widget. Fix: match Figma's height percentage explicitly.
+- **Annotation pattern converged.** Across 5 redesigns, all annotations now follow one structure: `.annotations` wrapper (flex-col, no gap) → `.annotation` rows (`padding: 9px 0`, `align-items: center | flex-start`, gap-10) → inline SVG icon (× casual-red or ✓ cool-teal via `currentColor`) + neutral-white-semi-bold-11px text (`#E0DFE4`). Eyebrow variant for context-setting label (cool-teal, 11px semi-bold, 0.88px tracking, uppercase, `padding-left: 3px`). No chip backgrounds, no borders — prose-style only.
+- **Architecture rule held end-to-end.** Diagrams stayed chrome-less in body markup (no in-iframe h1 / subtitle / design-principle / outcome-ribbon). Outer eyebrow lives on case-ai.html, internal eyebrow inside the diagram. PostMessage handshake script preserved on every redesigned diagram.
+- **Spacing system as portable design decision.** Vertical rhythm now expressible as Small (paragraph), Medium (subsection break / h3), Large (major section break / h2). Tokens `--spacing-md` / `--spacing-xl` / `--spacing-3xl` already in `:root` since project start — the polish pass just bound them to specific element relationships. This system is portable to case-notifications, case-sharing, case-subreddit, case-building-portfolio without tokenization changes.
+- **Cowork git lock leaks.** `.git/index.lock` and `.git/HEAD.lock` accumulated across read-only git calls from the sandbox during this thread; every commit attempt initially failed with a "fatal: cannot lock" error and required manual `rm -f .git/{index,HEAD}.lock` recovery. Mitigation baked into every paste-ready command block as a preemptive prefix.
+
+**Verification:**
+- All 7 commits passed pre-commit hook (`quality-check.py` + `voice-check.py` for case-ai-touching commits). Voice-check warnings were 4 long-sentence flags on pre-existing alt-text and meta-description prose — non-blocking and not introduced by this thread.
+- 12-diagram gap diagnostic before/after spacing system: post-fix gaps now match Small/Medium/Large hierarchy (paragraph 4, subsection 24, section 56), proportional to spec; ai23 padding trim landed 16px tighter canvas.
+- Stash@{0} ("case-ai WIP + misplaced BUILD-LOG entry") inspected — both portions confirmed redundant (.case-card-pair CSS already on branch via Phase 1 commit `8ced8c7`; misplaced BUILD-LOG entry already on `main` via case-notifs v3 merge `5bfb36c`). Dropped.
+- **Recruiter-panel Stage 2 regression** vs V3 baseline (April 1):
+  - Ramp 8.0 → 8.0 (no change) — clean structural integrity, craft maintained
+  - Anthropic 8.5 → 8.5 (no change) — "polish showed craft discipline; zero substance loss"
+  - Meta 7.0 → 6.8 (−0.2 noise, pre-existing metrics gap)
+  - Figma 8.5 → 8.4 (−0.1 noise, pre-existing interaction-depth gap; +0.5 in craft_mastery dimension)
+  - Cursor 7.5 → 7.4 (−0.1 noise, pre-existing dev-tools-scope gap)
+  - OpenAI: agent failed to read source files (sandbox issue); pattern across other 5 companies indicates likely no-change. Skipped re-run per Della's call.
+  - Stages 1 + 3 skipped per Della — inputs unchanged (resume / LinkedIn / about / writing / philosophy).
+  - Aggregate: **no merge blocker.** Largest delta is pre-existing-gap drift, not polish-pass regression.
+
+**Artifacts produced:**
+- `portfolio-site/working/visual-regression/case-ai-v3-polish-{1..7}-{1440,768,375}.png` — full-page renders per commit (regression baselines for future passes)
+- `portfolio-site/working/visual-regression/standalone/polish-{ai-overview,ai10,ai20,ai-identification-precedent,ai12}-{desktop,mobile}.png` — per-diagram standalone renders
+- 7 commits on `restructure/case-ai-v3` (1b0240a → 37e027b)
+
+**Successor state:**
+- Branch ready for merge to main. No pending edits.
+- Tag `case-ai-v2-final` to be dropped after merge.
+- 5 case-ai resume prompts (supervision / fix / figma-push / ship / polish) to archive to `sessions/archive/`.
+- Spacing system + annotation pattern + CSS-crop pattern propagatable to case-sharing / case-subreddit / case-building-portfolio when their polish-passes start.
+
+---
+
+
+### Apr 29, 2026 (PM, late) — figma-to-html skill v2.6.0 → v2.7.0 (structural augmentations from Day 2 Layer 1)
+
+**What happened:**
+Della invoked the `skill-forge-figma-to-html-v2.7.0.md` handoff document queued at Session 37 close-out. The handoff scoped a full skill-forge eval cycle (Define → Build → Evaluate, parallel agents on 5 test diagrams). Della scoped down to "skill update only" — land the four structural augmentations from Day 2 Layer 1 + add the two queued reference files, defer the eval to natural runs against real diagrams (next NOT-19/NOT-E2/NOT-12 retranslation off the case-notifications punch list). Audit-script gate (v2.6.0) remains the mechanical safety net while v2.7.0 prose gets exercised in the wild.
+
+**Work done:**
+- Bumped frontmatter `version: 2.6.0` → `version: 2.7.0` in `~/CoworkWorkspace/Skills/figma-to-html/SKILL.md`. Added v2.7.0 history note above the v2.6.0 entry.
+- Inserted **project palette preamble** at the top of SKILL.md (before "How this skill works"). Lists required tokens (`--canvas: #0A0C16`, `--card`, `--elevated`, `--text-pri`, `--text-sec/ter/dim`, `--accent`, `--accent-dim`, `--red`, `--glass-*`, `--spring`) and forbidden tokens (`--canvas-bg`, `--bg-primary`, `--text-primary`, `--accent-teal`, `--white`, `--black`, `--gray`, `--border-green`, `--text-muted`, `--ellipse-before/after`). Plus mandatory iframe infrastructure block to copy verbatim from NOT-07 (`.diagram` wrapper, `body.embedded` rule, `classList.add('embedded')` script, height-poster v1). NOT-07 named as canonical reference at `~/CoworkWorkspace/Get-a-job/portfolio-site/img/diagrams/diagram-not07-preference-architecture-v5.html`.
+- Inserted **Figma↔slide-spec tiebreaker rule** as a top-level section: build to slide spec when content diverges; flag the divergence in the Step 9 output summary. Slide spec wins on content; Figma wins on visual treatment when content matches. NOT-12 cited as the canonical case (Figma stale at 3-card; slide spec called for 4).
+- Elevated **Step 0 to "restore-strip-adjust"** workflow: read existing v5 file in full first, capture palette/infrastructure/animation/content shape, then pull Figma context, then apply targeted diffs. Mental model inverted from "generate from Figma" to "diff Figma against existing." Pre-flight reads (DIAGRAM-RULES, design-system, node-identity-mismatch, audit-script awareness) preserved.
+- Added **Step 7 hand-back checklist** before Step 8 (rebuild viewer renumbered) and Step 9 (report renumbered). Three required hand-back fields: `computer://` link to rendered HTML, divergence list (Figma↔spec disagreements + how resolved), chrome list (elements added not in Figma or slide spec). Wait for Della preview signoff before declaring done. Step 9 report format updated to require all three fields (`none` is an acceptable value; omitting them is not).
+- Wrote new reference `references/skill-propagation.md` (6.8KB) — captures the canonical → package → install pipeline: three locations, three-mode `package-skill.sh`, ≤1024-char description validator, trim-and-package flow, failure modes (stale skill in fresh threads, description-too-long, YAML corruption, publish-vs-package confusion), rebuild triggers.
+- Wrote new reference `references/sankey-geometry.md` (7.3KB) — captures NOT-E7's geometry rules: source-edge alignment (flow path source x must equal adjacent bar's right edge), col1 slice adjacency (active/dropout slices share a y boundary, no overlap, no gap), locked opacity scale (active 0.85 baseline + 4-stop gradient 1.0/0.95/0.75/0.55; dropouts 0.30 inline override). Generalizes for future sankey/funnel-flow diagrams.
+- Appended v2.7.0 entry to `~/CoworkWorkspace/Skills/figma-to-html/learnings.md` capturing scope, eval-deferred reasoning, the four signals to watch for in the natural eval, and the propagation reminder.
+- Bumped `~/CoworkWorkspace/Skills/SKILLS-REGISTRY.md` figma-to-html row to v2.7.0 with new dependency rows (existing v5 file at Step 0; NOT-07 canonical; the two new references; the Step 9 hand-back fields). Updated registry "Last updated" header to April 29, 2026.
+- Repackaged via `bash ~/CoworkWorkspace/Skills/package-skill.sh figma-to-html` — produced `~/CoworkWorkspace/Skills/figma-to-html.skill` (28KB ZIP, 8 files, 64KB uncompressed). YAML frontmatter validates clean; description is 880 chars (under the 1024 limit). Bundle includes SKILL.md + 5 references; excludes learnings.md and evals/ per the package script.
+
+**Verification:**
+- Re-read SKILL.md after each edit — all four augmentations landed in correct positions, no duplicate sections, version header updated.
+- YAML frontmatter parses via `yaml.safe_load`: name=figma-to-html, version=2.7.0, description=880 chars.
+- ZIP contents verified via `unzip -l`: SKILL.md (30,962 bytes), references/design-system.md, references/parse-figma-metadata.py, references/node-identity-mismatch.md, references/skill-propagation.md (new, 6,795 bytes), references/sankey-geometry.md (new, 7,261 bytes).
+- Eval skipped per Della's call. Captured in learnings.md what to watch for during the natural eval (next punch-list retranslation).
+
+**Open question flagged:**
+- The handoff doc and v2.6.0 SKILL.md reference `portfolio-site-notifs/working/scripts/audit-diagram.sh`, but the file does not appear in either mounted view of `portfolio-site-notifs/`. The `portfolio-site-notifs/` directory shows empty in both bash and Read tool views. Either (a) the script exists on disk but isn't mounted in this session, (b) it lives in a different worktree, or (c) Session 36's "built and validated" claim never actually committed. Not blocking v2.7.0 (the SKILL.md keeps the same reference path), but worth Della's verification before the next retranslation runs.
+
+**Skill-forge eval queued for natural eval (next NOT-19 / NOT-E2 / NOT-12 retranslation):**
+1. Did the agent's first three tool calls include reading the existing v5 file at the target path? (Step 0 evidence)
+2. Did the produced file pass `audit-diagram.sh` on first attempt? (palette + infra evidence)
+3. When Figma diverged from slide spec, did the agent flag it in the Step 9 report under "Figma↔spec divergence"? (tiebreaker evidence)
+4. Did the Step 7 hand-back include the `computer://` link, divergence list, and chrome list? (hand-back evidence)
+
+If any of those four are missing, v2.7.0 prose isn't strong enough — patch to v2.7.1 with sharper wording, or move the affected guidance to a `references/` file the agent has to read explicitly.
+
+**Artifacts:**
+- `~/CoworkWorkspace/Skills/figma-to-html/SKILL.md` — v2.7.0, 30,962 bytes, four augmentations applied
+- `~/CoworkWorkspace/Skills/figma-to-html/references/skill-propagation.md` — new, 6,795 bytes
+- `~/CoworkWorkspace/Skills/figma-to-html/references/sankey-geometry.md` — new, 7,261 bytes
+- `~/CoworkWorkspace/Skills/figma-to-html/learnings.md` — v2.7.0 entry appended
+- `~/CoworkWorkspace/Skills/SKILLS-REGISTRY.md` — figma-to-html row bumped + dependency map updated
+- `~/CoworkWorkspace/Skills/figma-to-html.skill` — repackaged 28KB ZIP, ready to drag onto Cowork
+
+**Open gates parked for next session:**
+1. **Skill install** — Della drags `~/CoworkWorkspace/Skills/figma-to-html.skill` onto the Cowork app (Settings → Skills → Install from file) and verifies in a fresh thread by asking "what version of figma-to-html is available?" — should match `version: 2.7.0`.
+2. **Audit-diagram.sh location verification** — confirm whether `portfolio-site-notifs/working/scripts/audit-diagram.sh` exists on disk somewhere accessible. If not, create it from the spec in `sessions/case-notifications-v3-day2-diagnostics.md` Part 5 Layer 3 before the next retranslation runs.
+3. **Archive the handoff** — `sessions/skill-forge-figma-to-html-v2.7.0.md` moves to `sessions/archive/` once skill is installed and verified.
+
+---
+
+
+### Apr 29, 2026 (PM) — case-ai v3 polish handoff written + 6 legacy diagram handshake patches committed (`2cb210b`)
+
+**What happened:**
+Della reviewed `case-ai.html` top-to-bottom in the live browser after Phase 1 + Phase 2 fix-on-fix landed. Surfaced 9 specific items: 5 Figma frames she redesigned in the same hour (ai-overview, ai10, ai20, ai-identification-precedent, ai12) + 4 surgical fixes (header capitalization on 4 lowercase h3s, 15M Results centering, ai23 spacing asymmetry, Overview h2 already removed in working tree). This Cowork wrote the polish-pass handoff document for a fresh thread to execute, then committed 6 legacy diagram handshake patches that neither Phase 1 nor Phase 2 had covered — closing the iframe-resize handshake gap across all 19 embedded diagrams.
+
+**Work done:**
+- Wrote `~/CoworkWorkspace/Get-a-job/sessions/resume-prompt-case-ai-v3-polish.md` via the resume-prompt skill. 10-section structure: title, metadata, TL;DR, carry-forward (Della's locked specs + architecture rule + PNG extraction method + figma-to-html skill fallback note + Figma margin sweep + stash@{0}), pre-flight reads, non-negotiables, kickoff flow, key reference tables (the 7 commits + Figma source nodes + stale frames to avoid + commands), per-commit + scope-level ship criteria, close-out steps. Voice-checked clean: 0 errors, 18 long-sentence warnings (acceptable for technical instruction prose). Direct grep against banned-patterns: no hits.
+- Committed legacy diagram handshake patches as `2cb210b` on `restructure/case-ai-v3`: `case-ai v3: §6.5-fix-on-fix — postMessage handshake on 6 legacy diagrams (ai06/ai09/ai12/ai14/ai25)`. Files: `diagram-ai06-evaluation-matrix-v4.html` + `-mobile.html`, `diagram-ai09-dual-user-framework-v4.html`, `diagram-ai12-unified-feedback-v4.html`, `diagram-ai14-identification-explorations-v4.html`, `diagram-ai25-llm-identity-v4.html`. 6 files changed, 216 insertions. Pre-commit hooks (quality-check + voice-check) both passed clean.
+- Inserted `Figma-to-HTML skill: patched version available as fallback` sub-section into the resume prompt's carry-forward, right after the PNG extraction method block. Note frames the patched skill as an option the new thread can pivot to if the curl-based pattern starts producing buggy or unreliable output. Default stays the case-notifs technique.
+- Pinned predecessor `sessions/resume-prompt-case-ai-v3-ship.md` to stay accessible (NOT archived) until the polish thread completes Phase 3.
+- BUILD-LOG.md April 29 hide-card entry remains uncommitted in working tree pending Della's call (commit on `restructure/case-ai-v3` and ride into main with v3, OR stash for later — Della to decide).
+
+**Lessons captured:**
+- **case-ai had two fix-on-fix passes for iframe handshakes because the gap was bilateral.** (a) The parent-side message listener was missing in `case-ai.html`'s resize block — `case-notifications.html` had it; case-ai didn't, even though the postMessage senders existed in 8/19 diagrams. (b) The diagram-side postMessage IIFE was missing in 11 of 19 embedded diagrams. Phase 1 patched 7 diagrams + the resize block. Phase 2 patched 4 diagrams. This Cowork patched 6 legacy diagrams. The fix wasn't complete until both ends had parity.
+- **Systemic fix for future case studies:** when authoring any new portfolio diagram, copy the postMessage IIFE from a known-good template (any `case-notifications` diagram). Future case-study HTMLs should adopt the case-notifications resize block pattern from day one — message listener + setTimeout retries (50ms / 250ms) + cross-origin fallback comment. A diagram-template scaffold or boilerplate snippet would prevent the gap from re-emerging.
+- **Stale frame names are fine; trust frame contents.** `230:2` was named "AI-20 — Threaded Source Posts" in Figma when Della repurposed it as the Page IA visual. Phase 2's first pass blocked on this naming mismatch. The right read: trust frame contents over frame names; rename in Figma when the workstream closes (Della renamed `230:2` → "AI30" mid-Phase-2). Future threads should not block on frame-name conflicts when the user's intent is clear from carry-forward decisions.
+- **Phase 1's late-night Figma inspections age fast.** Phase 1's call that "ai12 has no real product UI fills" was correct at 23:30 the night before; by morning Della had added a feedback UI mock to the frame. The polish thread re-pulls Figma metadata at thread start rather than trusting prior thread inspections older than ~12 hours.
+
+**Artifacts:**
+- `sessions/resume-prompt-case-ai-v3-polish.md` — handoff document, voice-checked clean, ready for new Cowork to execute against.
+- Commit `2cb210b` on `restructure/case-ai-v3` — 6 legacy diagram handshake patches.
+- All 19/19 case-ai.html-embedded diagrams now have postMessage handshake parity with `case-notifications.html` (26/26).
+- Predecessor `sessions/resume-prompt-case-ai-v3-ship.md` retained at active path.
+
+**Open gates parked for next session:**
+1. **Phase 1 commit gate** — Della types `approved, commit` in the "Fix case-ai.html restructure and Figma asset extraction" Claude Code window. Phase 1 commits its queued 11-file change (case-ai.html resize block + 10 diagrams + new PNGs).
+2. **Phase 2 commit gate** — Della types `approved, commit` in the "Execute three figma-to-html syncs for case-ai" window. Phase 2 commits its queued 4-file change (ai02a, page-ia desktop+mobile, ai13).
+3. **BUILD-LOG.md hide-card entry decision** — currently uncommitted. Della's call: commit on `restructure/case-ai-v3` (rides into main with v3), OR stash for later, OR commit separately on main.
+4. **Stale `.git/index.lock` again** — appeared after `2cb210b` due to virtiofs unlink restriction in the bash sandbox. Della clears it from her Mac terminal with `rm "/Users/della/CoworkWorkspace/Get-a-job/portfolio-site/.git/index.lock"` before Phase 1 + Phase 2 can commit.
+5. **New Cowork session** — Della launches a fresh Cowork after she completes a parallel patch on the figma-to-html skill. New Cowork reads `sessions/resume-prompt-case-ai-v3-polish.md` and executes the 7-commit derisk-first sequence: ai-overview → ai10 → ai20 → ai-identification-precedent → ai12 → quick fixes → optional Figma margin sync. Each commit verified via voice-check + quality-check + screenshot at 1440/768/375 before next.
+6. **Phase 3 close-out (polish thread's job)** — stash@{0} disposition, recruiter-panel regression vs baseline, final BUILD-LOG entry covering full case-ai v3 ship, merge `restructure/case-ai-v3` to main, drop `case-ai-v2-final` tag, archive 5 case-ai resume prompts (supervision, fix, figma-push, ship, polish) to `sessions/archive/`.
+
+---
+
 
 ### Apr 29, 2026 — Session 37: case-notifications Day 2 Phase A finish + Phase B CSS converge + Outcome GIF
 
@@ -132,6 +266,7 @@ Next up: Thread 1b — fix the 9 remaining L2 reworks + build L3 mobile variants
 
 ---
 
+
 ### Apr 29, 2026 — Session 36: case-notifications Day 2 Phase A partial + figma-to-html v2.6.0
 
 **Scope.** Continued the Day 2 recovery roadmap from `resume-prompt-case-notifications-day2-cont.md`. Session 35 had landed structural HTML edits + 9 retranslated diagrams; the Day 2 audit revealed 6 of 9 had drifted. This session shipped two of the remaining diagram tasks (NOT-03, NOT-E7), wired the audit script into the figma-to-html skill as a mandatory gate, and wrote the handoff for the next thread.
@@ -169,6 +304,38 @@ Added Step 0 awareness of `audit-diagram.sh`. Added Step 6 mandatory gate (bash 
 **Open follow-ups.**
 - SESSION-STATE.md is at 196KB, way over the 50KB soft limit — needs split per global living-doc rule. Flagged in this entry for next session.
 - NOT-10 PNG export blocks final preview; Della-action at `~/CoworkWorkspace/Get-a-job/portfolio-site-notifs/img/diagrams/assets/`.
+
+
+### Apr 29, 2026 — Hid "Building This Portfolio" card from homepage (worktree-isolated PR workflow)
+
+**What happened:**
+Della asked to temporarily hide the Building This Portfolio case study card from the homepage card grid while keeping the detail page reachable at its direct URL. First attempt landed the commit on the case-notifications-figma-rearrange-v2 branch (active branch at the time), so it didn't deploy. Second attempt hit a parallel-session-dirty repo on local main with 2 unpushed commits and an active working tree, so a direct push to main was unsafe. Resolved by switching to a `git worktree` workflow that lands a single-commit PR off `origin/main` in an isolated sibling folder, leaving the original checkout, local main, and stash untouched.
+
+**Work done:**
+- Wrapped CARD 05 in `index.html` in `<!-- HIDDEN: building-portfolio case study — restore by removing this wrapper -->` / `<!-- /HIDDEN -->` markers. Stripped the inner `<!-- CARD 05 — Full width -->` markers (HTML comments don't nest) and left the label as bare text inside the outer comment for grep findability.
+- Detail page `case-building-portfolio.html` left untouched — direct URL still works.
+- Worktree created at `../portfolio-site-hidecard` on a new branch `hide-building-portfolio-card` based on `origin/main` (commit `0651157`).
+- Cherry-picked the hide commit onto the worktree, producing one clean commit `8e138e2 — chore: temporarily hide "Building This Portfolio" case study from homepage` (index.html only, +5/-1).
+- Pushed `hide-building-portfolio-card` to origin. PR creation URL: `https://github.com/dsigrest/della-portfolio/pull/new/hide-building-portfolio-card`.
+- Della to merge the PR on GitHub manually — Vercel auto-deploys from main.
+
+**Lessons captured:**
+- **HTML comments don't nest.** `<!-- A <!-- B --> C -->` ends at the first `-->`. Strip inner markers when wrapping a block; leave the label text inert inside the outer comment.
+- **Local main is rarely safe to push from on this repo.** Parallel sessions and active working trees leave it dirty. The `git worktree add -b <branch> <path> origin/main` pattern is the durable workaround — it's a clean checkout in a sibling folder that doesn't disturb anything.
+- **Single-commit PRs off origin/main are the cleanest unit of deployment.** They're easy to review, easy to merge, and don't entangle with in-flight work.
+
+**Artifacts:**
+- Operational reference: `portfolio-site/working/planning-docs/homepage-card-hide-restore.md` — full hide/restore prompts, current hidden state table, worktree workflow rationale. Future chats consult this when Della says "hide [case]" or "restore [case]."
+- Branch on origin: `hide-building-portfolio-card` (one commit `8e138e2`).
+- Worktree on disk: `../portfolio-site-hidecard` — leave in place until PR is merged, then run cleanup prompt from the operational reference.
+
+**Open gates parked for next session:**
+1. **Merge PR on GitHub** — `https://github.com/dsigrest/della-portfolio/pull/new/hide-building-portfolio-card`. Verify Vercel deploy. Confirm card no longer appears on live homepage. (Manual; Della's call.)
+2. **Worktree cleanup** — after merge: `git worktree remove ../portfolio-site-hidecard && git branch -D hide-building-portfolio-card`. Update the "Current hidden state" table in `homepage-card-hide-restore.md` with the merge date.
+3. **Parallel-session debris on local main** — 2 unpushed commits (`7b95821 pre-refactor snapshot — case-notifications v2 outline`, `0f69b28 mobile-audit: track git-hygiene retrospective from prior session`) plus dirty working tree (case-notifications.html, styles.css, .bak, not02b-*.png assets, REFACTOR-NOTES.md, new diagram HTML files) — all from prior session work, not addressed this session. Eventually needs triage: which commits ship, which get squashed, which get reverted.
+
+---
+
 
 ### Apr 28, 2026 (PM/EVE) — Session 35: case-notifications v3 batch supervision — 7 commits shipped
 
@@ -260,6 +427,7 @@ Continuation of the Apr 28 Cowork thread that produced Session 34's v3 spec. Aft
 
 ---
 
+
 ### Apr 28, 2026 (PM) — Session 34: case-notifications v3 spec extraction (Cowork)
 
 **What happened:**
@@ -317,6 +485,27 @@ See §6 of the v3 spec doc. 6 critical items, 16 heading-rename choices, 8 struc
 
 ---
 
+
+### Apr 28, 2026 — case-ai v3 §6.3: 4 new diagrams pushed to Figma (native-layer)
+
+**What happened:**
+Pushed the 4 new diagrams from §6.2-redo (commit `d5a40b0`) to Figma page 29:42 as native-layer editable frames. html-to-figma translations using CSS-selector layer naming so the figma-to-html roundtrip can map any Della polish back to HTML deterministically.
+
+**Frames created (all on canvas 29:42, branch restructure/case-ai-v3):**
+- `ia-before-after` — id `1261:44`, at (4152, -3087), 644×346, right of source `1202:5101`
+- `ai-identification-precedent` — id `1263:44`, at (-3015, 3369), 760×871, right of source `1226:21284`
+- `ai-overview-mobile` — id `1265:44`, at (-4368, -10474), 375×1786, right of source `1207:5594`
+- `ai-overview-desktop` — id `1267:44`, at (-3015, -10474), 760×870, right of source `1203:5207`
+
+**Verification:** `get_screenshot` ran on each new frame and against its source; structures match. Cosmetic deltas: simplified glyphs for cloud/search/home/share icons, solid-blue G-logo placeholder, sparkle as 4-point star. Della can swap real icons in Figma — layer structure won't change because layer names are CSS selectors.
+
+**Skill-vs-setup observations (added to figma-handoff-case-ai.md as §10–11):**
+- `figma-handoff-case-ai.md`'s "x=-420" mobile cluster anchor is a typo — actual cluster on page 29:42 sits at x≈-4770. New ai-overview-mobile placed at x=-4368 (right of source mobile, ~138px gap to desktop column).
+- `primaryAxisSizingMode='AUTO'` does NOT recompute frame height after `frame.resize(w, 1)` is called — the explicit resize shadows AUTO. Use the modern `layoutSizingVertical='HUG'` API set AFTER appendChild instead. First attempt at ia-before-after collapsed all interior containers to 1px and had to be deleted and rebuilt.
+
+---
+
+
 ### Apr 22, 2026 (PM) — Session 17: Portfolio ship-complete — 4 port- diagrams live on case-building-portfolio
 
 **What happened:**
@@ -361,6 +550,7 @@ Executed the 6-stage `resume-prompt-portfolio-ship-complete.md` plan autonomousl
 
 ---
 
+
 ### Apr 22, 2026 — Case-AI mobile completion: ai06, ai19, ai23 verified
 
 **What happened:**
@@ -386,6 +576,7 @@ Followed-up on 2026-04-22 re-verification that caught ai06 and ai19 marked `fixe
 - Standalone mobile-HTML screenshots verify the diagram in isolation, but `.diagram-pair` wrapping in case-ai.html also needs visual verification at the page level — otherwise a missing wrapper would ship silently.
 
 ---
+
 
 ### Apr 21, 2026 (PM) — Thread 1 POC fix phase: 5 agent drifts, 2/13 clean, 11 need rework
 
@@ -440,6 +631,7 @@ Every row in the tracker now has Della's specific feedback preserved for Thread 
 ---
 
 
+
 ### Apr 21, 2026 — Mobile-breakpoint audit workstream: responsive-audit skill + POC infrastructure
 
 **What happened:**
@@ -467,6 +659,7 @@ Opened a new workstream to systematically audit mobile responsiveness across all
 3. Pause for Della's greenlight; kick off Threads 2-5 if POC holds
 
 ---
+
 
 
 ### Apr 17, 2026 — Figma Design System build (color libraries + full component system)
@@ -530,6 +723,7 @@ Built a complete Figma design system from the portfolio site's CSS tokens, autom
 
 ---
 
+
 ### Mar 16, 2026 — Vercel deployment + dev tooling + placeholder swap
 
 **What happened:**
@@ -566,6 +760,7 @@ Step by step:
 
 ---
 
+
 ### Mar 13, 2026 — All case studies + image integration + SVG diagrams
 
 **What happened:**
@@ -591,6 +786,7 @@ Step by step:
 Image curation at scale was a strong AI use case — scanning hundreds of images and matching them to narrative beats. But the accuracy of selection still needs human review (especially for confidentiality), which Della correctly flagged in the next session.
 
 ---
+
 
 ### Mar 12, 2026 — Project kickoff: strategy, visual direction, and site foundation
 

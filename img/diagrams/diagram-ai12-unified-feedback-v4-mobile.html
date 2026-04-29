@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="figma-source" content="node:956:71 page:29:42 file:TArUrZsBUocaAsqetjXq7V">
+<title>One Pattern, Three Teams (mobile) — unified feedback component</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --cool-teal: #7FB5B0;
+    --text-primary: #E0DFE4;
+    --text-tertiary: rgba(224,223,228,0.4);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 24px 12px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 375px;
+    background: var(--canvas);
+    border-radius: 16px;
+    padding: 24px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* Hub area — central card with subtle teal glow behind */
+  .hub-area {
+    padding: 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+    position: relative;
+  }
+  .hub-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 220px 180px at 50% 50%, rgba(127,181,176,0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .hub-card-wrap {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+  }
+  .hub-card {
+    width: 295px;
+    max-width: 100%;
+    background: rgba(224,223,228,0.03);
+    border: 1px solid rgba(127,181,176,0.18);
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .hub-eyebrow {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--cool-teal);
+    text-align: center;
+    line-height: normal;
+  }
+  .hub-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.16px;
+    line-height: normal;
+    text-align: center;
+    margin-top: 6px;
+  }
+  .feedback-shot {
+    width: 274px;
+    max-width: 100%;
+    height: 54px;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    margin-top: 10px;
+    margin-bottom: 6px;
+  }
+  .feedback-shot img.ui-screenshot {
+    position: absolute;
+    width: 115.33%;
+    height: 1272.78%;
+    left: -5.11%;
+    top: -909.26%;
+    max-width: none;
+    display: block;
+  }
+
+  /* Connectors — three down-arrows from hub to spokes */
+  .connections {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 80px;
+    position: relative;
+    z-index: 1;
+  }
+  .conn-line-wrap {
+    width: 9px;
+    height: 34px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .conn-line {
+    width: 1px;
+    height: 28px;
+    background: rgba(224,223,228,0.07);
+  }
+  .conn-arrow {
+    width: 9px;
+    height: 6px;
+    color: rgba(224,223,228,0.18);
+  }
+
+  /* Spokes — three team cards stacked */
+  .spokes {
+    padding: 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+  .spoke-card {
+    border: 1px solid rgba(224,223,228,0.08);
+    border-radius: 10px;
+    padding: 16px;
+    background: rgba(224,223,228,0.03);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .spoke-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .spoke-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: normal;
+    text-align: center;
+    margin-top: 10px;
+  }
+  .spoke-desc {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text-tertiary);
+    line-height: 1.4;
+    text-align: center;
+    margin-top: 4px;
+  }
+
+  /* Embedded mode */
+  body.embedded {
+    padding: 0;
+    background: transparent;
+    min-height: auto;
+    display: block;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+
+    <!-- Hub area -->
+    <div class="hub-area">
+      <div class="hub-card-wrap">
+        <div class="hub-card">
+          <div class="hub-eyebrow">Shared Component</div>
+          <div class="hub-title">Unified Feedback Pattern</div>
+          <div class="feedback-shot">
+            <img class="ui-screenshot" src="../ui-reddit-answers-mobile.png" alt="Feedback widget — 'Is this summary helpful?' with thumbs up / thumbs down options" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Connector arrows from hub down to spokes -->
+      <div class="connections" aria-hidden="true">
+        <div class="conn-line-wrap">
+          <div class="conn-line"></div>
+          <svg class="conn-arrow" viewBox="0 0 9 6" fill="none">
+            <path d="M0.5 0.5 L4.5 5.5 L8.5 0.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="conn-line-wrap">
+          <div class="conn-line"></div>
+          <svg class="conn-arrow" viewBox="0 0 9 6" fill="none">
+            <path d="M0.5 0.5 L4.5 5.5 L8.5 0.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="conn-line-wrap">
+          <div class="conn-line"></div>
+          <svg class="conn-arrow" viewBox="0 0 9 6" fill="none">
+            <path d="M0.5 0.5 L4.5 5.5 L8.5 0.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Three team spokes -->
+    <div class="spokes">
+      <div class="spoke-card">
+        <div class="spoke-icon" aria-hidden="true">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <rect x="10" y="12" width="20" height="16" rx="3" stroke="rgba(127,181,176,0.55)" stroke-width="1.2" fill="rgba(127,181,176,0.05)"/>
+            <line x1="14" y1="18" x2="26" y2="18" stroke="rgba(127,181,176,0.4)" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="14" y1="22" x2="22" y2="22" stroke="rgba(127,181,176,0.3)" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="spoke-name">KLPs Team</div>
+        <div class="spoke-desc">AI-generated content pages</div>
+      </div>
+
+      <div class="spoke-card">
+        <div class="spoke-icon" aria-hidden="true">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <circle cx="18" cy="18" r="6" stroke="rgba(138,158,196,0.55)" stroke-width="1.4" fill="rgba(138,158,196,0.05)"/>
+            <line x1="22.5" y1="22.5" x2="28" y2="28" stroke="rgba(138,158,196,0.55)" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="spoke-name">Search Team</div>
+        <div class="spoke-desc">Search result quality signals</div>
+      </div>
+
+      <div class="spoke-card">
+        <div class="spoke-icon" aria-hidden="true">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <circle cx="20" cy="20" r="8" stroke="rgba(212,165,116,0.55)" stroke-width="1.2" fill="rgba(212,165,116,0.05)"/>
+            <ellipse cx="20" cy="20" rx="4" ry="8" stroke="rgba(212,165,116,0.4)" stroke-width="1" fill="none"/>
+            <line x1="12" y1="20" x2="28" y2="20" stroke="rgba(212,165,116,0.3)" stroke-width="1"/>
+          </svg>
+        </div>
+        <div class="spoke-name">i18n Team</div>
+        <div class="spoke-desc">Localized content quality</div>
+      </div>
+    </div>
+
+  </div>
+
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+<script>
+(function () {
+  function compute() {
+    var d = document.querySelector('.diagram');
+    if (!d) return 0;
+    return Math.max(
+      d.scrollHeight, d.offsetHeight,
+      document.documentElement ? document.documentElement.scrollHeight : 0,
+      document.body ? document.body.scrollHeight : 0
+    );
+  }
+  function send() {
+    if (!window.parent || window.parent === window) return;
+    var h = compute();
+    if (h > 0) {
+      window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', send);
+  } else {
+    send();
+  }
+  window.addEventListener('load', send);
+  setTimeout(send, 50);
+  setTimeout(send, 250);
+  setTimeout(send, 1000);
+  if (window.ResizeObserver) {
+    var ro = new ResizeObserver(send);
+    var d = document.querySelector('.diagram');
+    if (d) ro.observe(d);
+    if (document.body) ro.observe(document.body);
+  }
+  window.addEventListener('resize', send);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="figma-source" content="node:1226:21387 page:29:42 file:TArUrZsBUocaAsqetjXq7V">
+<title>Identification precedent (mobile) — inbox identification pattern</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --cool-teal: #7FB5B0;
+    --text-primary: #E0DFE4;
+    --text-tertiary: rgba(224,223,228,0.4);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 24px 12px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 375px;
+    background: var(--canvas);
+    border-radius: 16px;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.88px;
+    color: var(--cool-teal);
+    text-transform: uppercase;
+    line-height: 1.4;
+    padding-left: 3px;
+  }
+
+  /* Embedded UI screenshot — CSS-cropped, max 205px wide, centered */
+  .shot-wrapper {
+    padding: 0 24px;
+    display: flex;
+    justify-content: center;
+  }
+  .shot {
+    width: 205px;
+    max-width: 100%;
+    aspect-ratio: 322 / 438;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+  .shot img.ui-screenshot {
+    position: absolute;
+    left: 0;
+    top: -31.05%;
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Annotations stacked below image */
+  .annotations {
+    padding: 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .annotation {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px 0;
+  }
+  .annotation .ann-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+    color: var(--cool-teal);
+  }
+  .annotation .ann-icon svg { display: block; }
+  .ann-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .ann-heading {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: normal;
+  }
+  .ann-desc {
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--text-tertiary);
+    line-height: 1.4;
+  }
+
+  /* Embedded mode */
+  body.embedded {
+    padding: 0;
+    background: transparent;
+    min-height: auto;
+    display: block;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+
+    <div class="eyebrow">Synthesized summary</div>
+
+    <div class="shot-wrapper">
+      <div class="shot">
+        <img class="ui-screenshot" src="../ui-reddit-answers-mobile.png" alt="Reddit Answers mobile mock — synthesized summary card with citations, source post excerpts, and feedback unit visible above fold" />
+      </div>
+    </div>
+
+    <div class="annotations">
+      <div class="annotation">
+        <span class="ann-icon" aria-hidden="true">
+          <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
+          </svg>
+        </span>
+        <div class="ann-content">
+          <div class="ann-heading">Visual separation</div>
+          <div class="ann-desc">Stroke, icon, and color treatment clearly distinguish generated content</div>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <span class="ann-icon" aria-hidden="true">
+          <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
+          </svg>
+        </span>
+        <div class="ann-content">
+          <div class="ann-heading">Linked attribution</div>
+          <div class="ann-desc">Users can quickly see and explore source content</div>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <span class="ann-icon" aria-hidden="true">
+          <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
+          </svg>
+        </span>
+        <div class="ann-content">
+          <div class="ann-heading">Truncated container</div>
+          <div class="ann-desc">Balances providing users an immediate answer without burying critical source posts</div>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <span class="ann-icon" aria-hidden="true">
+          <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
+          </svg>
+        </span>
+        <div class="ann-content">
+          <div class="ann-heading">Feedback unit</div>
+          <div class="ann-desc">Provides user control and generation quality</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+<script>
+(function () {
+  function compute() {
+    var d = document.querySelector('.diagram');
+    if (!d) return 0;
+    return Math.max(
+      d.scrollHeight, d.offsetHeight,
+      document.documentElement ? document.documentElement.scrollHeight : 0,
+      document.body ? document.body.scrollHeight : 0
+    );
+  }
+  function send() {
+    if (!window.parent || window.parent === window) return;
+    var h = compute();
+    if (h > 0) {
+      window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', send);
+  } else {
+    send();
+  }
+  window.addEventListener('load', send);
+  setTimeout(send, 50);
+  setTimeout(send, 250);
+  setTimeout(send, 1000);
+  if (window.ResizeObserver) {
+    var ro = new ResizeObserver(send);
+    var d = document.querySelector('.diagram');
+    if (d) ro.observe(d);
+    if (document.body) ro.observe(document.body);
+  }
+  window.addEventListener('resize', send);
+})();
+</script>
+</body>
+</html>

@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="figma-source" content="node:1227:21658 page:29:42 file:TArUrZsBUocaAsqetjXq7V">
-<title>Threaded Source Posts — pattern anatomy</title>
+<meta name="figma-source" content="node:1227:21731 page:29:42 file:TArUrZsBUocaAsqetjXq7V">
+<title>Threaded Source Posts (mobile) — pattern anatomy</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -18,28 +18,25 @@
     background: #08090F;
     display: flex;
     justify-content: center;
-    padding: 40px 16px;
+    padding: 24px 12px;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     -webkit-font-smoothing: antialiased;
   }
   .diagram {
-    width: 760px;
+    width: 375px;
     background: var(--canvas);
     border-radius: 16px;
-    padding: 14px 48px 14px 100px;
-  }
-
-  .row {
+    padding: 24px;
     display: flex;
-    gap: 32px;
-    align-items: flex-start;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
   }
 
   /* Embedded UI screenshot — CSS-cropped to the source-post card portion */
   .shot {
-    width: 268px;
-    flex-shrink: 0;
-    aspect-ratio: 268 / 279;
+    width: 100%;
+    aspect-ratio: 322 / 335;
     border-radius: 16px;
     overflow: hidden;
     position: relative;
@@ -53,14 +50,11 @@
     display: block;
   }
 
-  /* Annotations column — vertically centered against the shot */
+  /* Annotations stacked vertically */
   .annotations {
-    width: 276px;
-    flex-shrink: 0;
-    height: 279px;
+    width: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     gap: 4px;
   }
 
@@ -122,65 +116,55 @@
     width: 100%;
     border-radius: 0;
   }
-
-  /* Narrow viewport: stack image and annotations */
-  @media (max-width: 720px) {
-    .diagram { padding: 24px 20px; }
-    .row { flex-direction: column; align-items: stretch; gap: 24px; }
-    .shot { width: 100%; aspect-ratio: 322 / 335; }
-    .annotations { width: 100%; height: auto; }
-  }
 </style>
 </head>
 <body>
   <div class="diagram">
-    <div class="row">
 
-      <div class="shot">
-        <img class="ui-screenshot" src="../ui-source-posts.png" alt="Threaded source post card — metadata row at top, core post body in the middle, threaded comments below" />
-      </div>
-
-      <div class="annotations">
-        <div class="eyebrow">Source posts</div>
-
-        <div class="annotation">
-          <span class="ann-icon" aria-hidden="true">
-            <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
-            </svg>
-          </span>
-          <div class="ann-content">
-            <div class="ann-heading">Metadata row</div>
-            <div class="ann-desc">Consolidating metadata simplifies how users scan multiple robust units</div>
-          </div>
-        </div>
-
-        <div class="annotation">
-          <span class="ann-icon" aria-hidden="true">
-            <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
-            </svg>
-          </span>
-          <div class="ann-content">
-            <div class="ann-heading">Core post</div>
-            <div class="ann-desc">Including both the title and body of the post gives users a flavor of the discussion topic</div>
-          </div>
-        </div>
-
-        <div class="annotation">
-          <span class="ann-icon" aria-hidden="true">
-            <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
-            </svg>
-          </span>
-          <div class="ann-content">
-            <div class="ann-heading">Threaded comments</div>
-            <div class="ann-desc">Showing comments at the top level helps summarize the conversation</div>
-          </div>
-        </div>
-      </div>
-
+    <div class="shot">
+      <img class="ui-screenshot" src="../ui-source-posts.png" alt="Threaded source post card — metadata row at top, core post body in the middle, threaded comments below" />
     </div>
+
+    <div class="annotations">
+      <div class="eyebrow">Source posts</div>
+
+      <div class="annotation">
+        <span class="ann-icon" aria-hidden="true">
+          <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
+          </svg>
+        </span>
+        <div class="ann-content">
+          <div class="ann-heading">Metadata row</div>
+          <div class="ann-desc">Consolidating metadata simplifies how users scan multiple robust units</div>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <span class="ann-icon" aria-hidden="true">
+          <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
+          </svg>
+        </span>
+        <div class="ann-content">
+          <div class="ann-heading">Core post</div>
+          <div class="ann-desc">Including both the title and body of the post gives users a flavor of the discussion topic</div>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <span class="ann-icon" aria-hidden="true">
+          <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
+          </svg>
+        </span>
+        <div class="ann-content">
+          <div class="ann-heading">Threaded comments</div>
+          <div class="ann-desc">Showing comments at the top level helps summarize the conversation</div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
 <script>if(window!==window.parent)document.body.classList.add("embedded");</script>

@@ -68,20 +68,87 @@
     <section class="case-body">
 
       <!-- ============================================
-           CHALLENGE
+           OPENING CALLOUT — Challenge / Strategy card-pair
+           Reference pattern: case-notifications.html ~lines 50-75.
+           Challenge tile = v2 line 76 verbatim (was Pos 1 Overview lede).
+           Strategy tile = v2 line 114 verbatim (was Pos 3b first paragraph).
            ============================================ -->
 
-      <h2>Challenge</h2>
-
-      <p><strong>Reddit content was scattered</strong> across posts and communities. Users arriving from Google had no way to piece answers together — most bounced. SEO was the primary entry point and the primary exit.</p>
-
-      <div class="case-img-full">
-        <div class="img-placeholder">Diagram — user query hits Google → lands on Reddit → scattered partial answers across communities → bounce</div>
+      <div class="case-card-pair">
+        <div class="case-card">
+          <div class="card-eyebrow">Challenge</div>
+          <p><strong>Reddit content was scattered</strong> across posts and communities. Users arriving from Google had no way to piece answers together — most bounced. SEO was the primary entry point and the primary exit.</p>
+        </div>
+        <div class="case-card">
+          <div class="card-eyebrow">Strategy</div>
+          <p>I designed an <strong>LLM-powered synthesis</strong> that consolidated content across posts and communities into a single entry point matched to the user's search intent — with source posts threaded below.</p>
+        </div>
       </div>
 
-      <h3>Proving the Concept</h3>
+      <!-- ============================================
+           1. OVERVIEW (was: Challenge)
+           Pos 1, v2 §2.1 — paired diagram only, no H2 and no body prose
+           (line 76 moved into Challenge tile of opening card-pair above;
+           H2 removed per Della 2026-04-29 review).
+           ============================================ -->
+
+      <div class="case-img-full diagram-embed diagram-pair" data-diagram="ai-overview">
+        <iframe
+          class="desktop-variant"
+          src="img/diagrams/diagram-ai-overview-v1.html"
+          loading="lazy"
+          scrolling="no"
+          title="Reddit Answers — page contract, synthesis vs sources-only"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
+        <iframe
+          class="mobile-variant"
+          src="img/diagrams/diagram-ai-overview-v1-mobile.html"
+          loading="lazy"
+          scrolling="no"
+          title="Reddit Answers — page contract (mobile), vertical-stacked threshold comparison"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
+      </div>
+
+      <!-- ============================================
+           2. COMPETING USER NEEDS (was: Quality Control h3 → h2)
+           Pos 2, v2 §2.2 — lines 189, 201, 213, 215 verbatim.
+           Order: 189 → ai09 → 201 → 213 → 215. ai08 retired.
+           ============================================ -->
+
+      <h2>Competing user needs</h2>
+
+      <p>Two users with competing needs: <strong>Googlebot and humans.</strong> Underlinking and underusing keywords hurt SEO. Overusing keywords hurt humans. I didn't know what Googlebot needed; engineers weren't familiar with Reddit's users or the SEO cohort. A healthy back-and-forth led to capturing both full sets of needs.</p>
+
+      <div class="case-img-full diagram-embed" data-diagram="ai-09">
+        <iframe
+          src="img/diagrams/diagram-ai09-dual-user-framework-v4.html"
+          loading="lazy"
+          scrolling="no"
+          title="Dual-user framework — Googlebot needs vs human needs, alignment and tension"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
+      </div>
+
+      <p><strong>Framing Googlebot as a user was the breakthrough.</strong> When I told designers we needed something for SEO, they pushed back — that's not a user need. But anthropomorphizing it as a competing set of needs instead of a technical constraint opened doors across the team.</p>
+
+      <p>I pushed back on <strong>resurfacing the query multiple times on the page.</strong> SEO loved keyword repetition; it did nothing for users. The compromise: pre-populate the search bar with the user's query, as if they'd already searched Reddit. SEO got the keyword on the page; the design <strong>reinforced the mental model</strong> that users should be searching on Reddit directly.</p>
+
+      <p>Keywords were embedded in <strong>structured page elements outside the summary</strong> — synthesis stayed natural while the page still ranked.</p>
+
+      <!-- ============================================
+           3a. PROOF OF CONCEPT / RESEARCH (was: Proving the Concept h3)
+           Pos 3a, v2 §2.3a — lines 84 + 106 verbatim, then ai02a iframe.
+           Card-pair shell removed: now a regular full-width section in normal flow.
+           ai02b retired.
+           ============================================ -->
+
+      <h2>Proof of concept / research</h2>
 
       <p>To get the resources for dynamic generation, we had to <strong>prove the idea first.</strong> Chicken-and-egg: the team needed proof of concept before investing in infrastructure, but building proof of concept required building the product.</p>
+
+      <p>We started with <strong>static pages refreshed periodically</strong>, targeting the verticals with the strongest source coverage and the largest audiences — maximum impact with the resources we had.</p>
 
       <div class="case-img-full diagram-embed" data-diagram="ai-02a">
         <iframe
@@ -93,59 +160,199 @@
         ></iframe>
       </div>
 
-      <div class="case-img-full diagram-embed" data-diagram="ai-02b">
-        <iframe
-          src="img/diagrams/diagram-ai02b-process-v4.html"
-          loading="lazy"
-          scrolling="no"
-          title="Static MVP process — periodic refresh cycle from generation to deployment"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-      </div>
-
-      <p>We started with <strong>static pages refreshed periodically</strong>, targeting the verticals with the strongest source coverage and the largest audiences — maximum impact with the resources we had.</p>
-
       <!-- ============================================
-           SOLUTION
+           3b. PAGE INFORMATION ARCHITECTURE (was: Solution h2)
+           Pos 3b, v2 §2.3b — lines 120 + 126 verbatim, then Phase-2 placeholder iframe.
+           Line 114 moved into Strategy tile of opening card-pair.
+           ai-ia-before-after iframe retired; Phase 2 will create diagram-ai-page-ia-v1.html
+           from Figma 230:2 + 983:8 via figma-to-html.
            ============================================ -->
 
-      <h2>Solution</h2>
-
-      <p>I designed an <strong>LLM-powered synthesis</strong> that consolidated content across posts and communities into a single entry point matched to the user's search intent — with source posts threaded below.</p>
-
-      <div class="case-img-full">
-        <div class="img-placeholder">Page architecture — synthesis summary on top (standardized size, expandable), threaded source posts with comments below, links in both layers</div>
-      </div>
+      <h2>Page information architecture</h2>
 
       <p>The <strong>dual-layer layout</strong> was the core design decision. Synthesis on top gave users instant answers; source posts below let them verify and go deeper. Links across both layers created endless on-ramps into the platform — and Googlebot loved the link density. One page, both users served.</p>
 
-      <div class="case-img-full">
-        <div class="img-placeholder">Flow — search query → synthesized summary + source posts → on-ramps deeper into Reddit (PDPs, search bar, community pages)</div>
-      </div>
-
       <p>The long bet: shift the mental model from appending <em>reddit</em> to a Google search toward searching Reddit directly.</p>
 
-      <!-- ============================================
-           VALUE
-           ============================================ -->
-
-      <h2>Value</h2>
-
-      <p><strong>User value was foundational.</strong> We wanted to consolidate answers — not replicate another SEO page where users land on more links to click. The balance was three-way: what SEO needed to rank, what users needed to stay, and what Reddit needed to pull them deeper.</p>
-
-      <div class="case-img-full diagram-embed" data-diagram="ai-05">
+      <!-- Phase 2: figma-to-html on 230:2 + 983:8 will create this file -->
+      <div class="case-img-full diagram-embed" data-diagram="ai-page-ia">
         <iframe
-          src="img/diagrams/diagram-ai05-three-way-balance-v4.html"
+          src="img/diagrams/diagram-ai-page-ia-v1.html"
           loading="lazy"
           scrolling="no"
-          title="Three-way balance — SEO ranking signals, user engagement, platform depth"
+          title="Page IA — before vs after, scattered threads vs single AI-summary page with cited sources"
           style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
         ></iframe>
       </div>
 
+      <!-- ============================================
+           4. ESTABLISHING PRINCIPLES (was: Value)
+           Pos 4, v2 §2.4 — line 146 verbatim per resolved §6.2 (no bridge).
+           ai13 moves here from old Transparency opener.
+           ai05 + line 134 retired.
+           ============================================ -->
+
+      <h2>Establishing principles for generated content (summary)</h2>
+
       <p>The page was also <strong>training users</strong> — showing them what a search result on Reddit could look like. Ideal behavior: click into a post for more detail, or search again from the bar at the top. Both paths pull deeper into the platform.</p>
 
-      <h3>Prompt Design Workflow</h3>
+      <div class="case-img-full diagram-embed" data-diagram="ai-13">
+        <iframe
+          src="img/diagrams/diagram-ai13-transparency-framework-v4.html"
+          loading="lazy"
+          scrolling="no"
+          title="Transparency framework — identification, scalability, attribution pillars"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
+      </div>
+
+      <!-- ============================================
+           5. IDENTIFICATION + UI to distinguish AI gen content
+           Pos 5, v2 §2.5 — lines 274, 288, 300, 312 verbatim.
+           Order: H2 + 274 → H3 + 288 → ai14 → 300 → 312 → identification
+           precedent (no bridge per resolved §6.3).
+           ai15, ai16 paired, ai19 paired, Scalability + Content Attribution
+           subsections all retired.
+           ============================================ -->
+
+      <h2>Identification</h2>
+
+      <p>We needed to define the <strong>first precedent for AI-generated content at Reddit</strong> — across the entire platform. I partnered with brand, legal, and design systems to establish what AI content would be, how it would identify itself, and how it would attribute its sources.</p>
+
+      <h3>UI to distinguish AI gen content</h3>
+
+      <p>The question was bigger than visual design: <strong>what's a scalable, instantly recognizable, but unobtrusive signal</strong> that content was AI-generated? User research confirmed people valued knowing — but this was peak AI backlash. The signal had to build trust without feeling like a trend.</p>
+
+      <div class="case-img-full diagram-embed" data-diagram="ai-14">
+        <iframe
+          src="img/diagrams/diagram-ai14-identification-explorations-v4.html"
+          loading="lazy"
+          scrolling="no"
+          title="Identification explorations — icons, tags, containers, text treatments tested"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
+      </div>
+
+      <p>We explored icons, tags, containers, disclaimers, a talking Snoo, and text treatments. The <strong>sparkle icon got negative reactions</strong> — users saw it as a cliché. Like Sharing &amp; Embeds, this crossed beyond design systems into identity.</p>
+
+      <p>We landed on <strong>a system, not a single solution.</strong> It scaled across surfaces depending on context, with persistent elements: same color, same name, always visually separated from other content. Flexible by surface, consistent in identity.</p>
+
+      <div class="case-img-full diagram-embed diagram-pair" data-diagram="ai-identification-precedent">
+        <iframe
+          class="desktop-variant"
+          src="img/diagrams/diagram-ai-identification-precedent-v1.html"
+          loading="lazy"
+          scrolling="no"
+          title="Identification precedent — inbox identification pattern applied in-page for AI content"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
+        <iframe
+          class="mobile-variant"
+          src="img/diagrams/diagram-ai-identification-precedent-v1-mobile.html"
+          loading="lazy"
+          scrolling="no"
+          title="Identification precedent (mobile) — inbox identification pattern applied in-page for AI content"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
+      </div>
+
+      <!-- ============================================
+           6. UI TO DISPLAY SOURCE POSTS (was: Threaded Source Posts h3 → h2)
+           Pos 6, v2 §2.6 — lines 374, 386, 398 verbatim.
+           Order (per §6.5-fix): 374 → 386 → 398 → ai20. All prose first, then diagram.
+           ai21 retired.
+           ============================================ -->
+
+      <h2>UI to display source posts</h2>
+
+      <p>User research kept surfacing the same question: <strong>where is this coming from?</strong> The source posts below the synthesis were the answer — and displaying them required a new UI pattern. Posts appeared in a threaded structure with comments for the first time at Reddit.</p>
+
+      <p>I worked with data science on <strong>comment truncation</strong>: the vast majority of comments fit 1–2 lines, with severe diminishing returns after that. We landed on <strong>two comments per post</strong> — enough to show a conversation without overwhelming the unit.</p>
+
+      <p>The text truncation system <strong>reused a pattern I'd built for Sharing &amp; Embeds</strong> — already defined and validated, which made this work go faster.</p>
+
+      <div class="case-img-full diagram-embed diagram-pair" data-diagram="ai-20">
+        <iframe
+          class="desktop-variant"
+          src="img/diagrams/diagram-ai20-threaded-posts-v4.html"
+          loading="lazy"
+          scrolling="no"
+          title="Threaded source posts — posts with comments, first instance at Reddit"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
+        <iframe
+          class="mobile-variant"
+          src="img/diagrams/diagram-ai20-threaded-posts-v4-mobile.html"
+          loading="lazy"
+          scrolling="no"
+          title="Threaded source posts (mobile) — phone mock above stacked annotations"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
+      </div>
+
+      <!-- ============================================
+           7. CONTENT (was: Voice)
+           Pos 7a + 7b + 7c, v2 §2.7 — line 406 verbatim opener per resolved §6.6.
+           Pos 7b "voice" pulls from LLM-as-Narrator (lines 459, 471 + ai25).
+           Pos 7c "content" pulls from Tone (line 420 + ai23 paired).
+           ai22, ai24 + Clarity subsection retired.
+           ============================================ -->
+
+      <h2>Content</h2>
+
+      <p>Defining what the LLM produced was as much a design problem as defining how it looked. I led the decisions around <strong>tone, clarity, and the model's relationship to Reddit.</strong></p>
+
+      <h3>Voice</h3>
+
+      <p>The team debated: is the LLM <strong>Reddit, the Snoo, a character, a tool, or omnipresent?</strong> We explored each. Giving the synthesis a product identity conflicted with how people expected results in search — is it "Answers" or is it search?</p>
+
+      <div class="case-img-full diagram-embed" data-diagram="ai-25">
+        <iframe
+          src="img/diagrams/diagram-ai25-llm-identity-v4.html"
+          loading="lazy"
+          scrolling="no"
+          title="LLM identity explorations — character, tool, narrator, no identity"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
+      </div>
+
+      <p>We landed on <strong>omnipresent narrator without a character.</strong> It preserves scalability, smooths integration, and resolves the core tension: the synthesis isn't a separate product. It's part of the product. It is the product.</p>
+
+      <h3>Content</h3>
+
+      <p><strong>Closeness to source posts drove trust.</strong> Broad generalizations — a consistent failure mode in early outputs — killed it immediately. Synthesizing across communities without losing the source voice was the harder question.</p>
+
+      <div class="case-img-full diagram-embed diagram-pair" data-diagram="ai-23">
+        <iframe
+          class="desktop-variant"
+          src="img/diagrams/diagram-ai23-trust-comparison-v4.html"
+          loading="lazy"
+          scrolling="no"
+          title="Trust spectrum — high-trust attributed output vs low-trust generalization"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
+        <iframe
+          class="mobile-variant"
+          src="img/diagrams/diagram-ai23-trust-comparison-v4-mobile.html"
+          loading="lazy"
+          scrolling="no"
+          title="Trust spectrum (mobile) — vertical signal layout"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
+      </div>
+
+      <!-- ============================================
+           8. ENSURING QUALITY (new umbrella)
+           Pos 8a (no opener per resolved §6.4) + 8b/8c/8d.
+           v2 §2.8 — all verbatim lines preserved across the 3 H3 subsections.
+           Pos 8b "Generating summaries: XFN workflow": 150 → 152 → ai06 → 173 → 185. ai07 retired.
+           Pos 8c "feedback loops": 244 → 256 → ai12 (per resolved §6.7). ai11 retired.
+           Pos 8d "failure states": 219 → 221 → ai10 paired.
+           ============================================ -->
+
+      <h2>Ensuring quality</h2>
+
+      <h3>Generating summaries: XFN workflow</h3>
 
       <p><strong>No evaluation criteria, no feedback loop, no shared language</strong> for how synthesis should work. Prompt iteration was one engineer, vibes-based. This team had started as a top-of-funnel SEO team and later specialized into ML — they'd <strong>never worked with a designer before.</strong> Kickoffs, iteration walkthroughs, design systems — all new.</p>
 
@@ -172,49 +379,34 @@
 
       <p>Parameters: <strong>sentence structure</strong> variation, <strong>accuracy to source</strong> (sliding scale — reference where useful, don't replicate the post), <strong>novel synthesized info</strong> across posts, <strong>length adherence</strong>, <strong>tone</strong> (not mechanical, not cold — like a friend), content design guidelines (remember the human, be direct, consider i18n), and <strong>SEO signals</strong> (keywords, connected links).</p>
 
-      <div class="case-img-full diagram-embed" data-diagram="ai-07">
-        <iframe
-          src="img/diagrams/diagram-ai07-scoring-session-v4.html"
-          loading="lazy"
-          scrolling="no"
-          title="Scoring session — cross-functional team rating outputs against the rubric"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-      </div>
-
       <p>I partnered with content design to define <strong>evaluation dimensions</strong>, then facilitated <strong>scoring sessions</strong> where our cross-functional team rated outputs against the rubric. It had to be precise enough for non-designers to apply consistently.</p>
 
-      <h3>Quality Control</h3>
+      <h3>Feedback loops</h3>
 
-      <p>Two users with competing needs: <strong>Googlebot and humans.</strong> Underlinking and underusing keywords hurt SEO. Overusing keywords hurt humans. I didn't know what Googlebot needed; engineers weren't familiar with Reddit's users or the SEO cohort. A healthy back-and-forth led to capturing both full sets of needs.</p>
+      <p>Flagged outputs surfaced where the model was weakest. The rubric <strong>evolved based on what users actually valued</strong> versus what we'd assumed. We shipped roughly <strong>twice a quarter</strong> — test with UXR, build, ship, collect data, then back to UXR with new questions. Iterations overlapped; multiple elements were in different stages of the cycle at any time.</p>
 
-      <div class="case-img-full diagram-embed" data-diagram="ai-08">
+      <p>The <strong>feedback UI was a cross-org effort</strong>: three teams (KLPs, search, i18n) were independently building feedback patterns. I worked across pillars to define one recognizable component — users see it and know where to give their opinion. Another pattern built for this project, adopted org-wide.</p>
+
+      <div class="case-img-full diagram-embed diagram-pair" data-diagram="ai-12">
         <iframe
-          src="img/diagrams/diagram-ai08-page-anatomy-v4.html"
+          class="desktop-variant"
+          src="img/diagrams/diagram-ai12-unified-feedback-v4.html"
           loading="lazy"
           scrolling="no"
-          title="Page anatomy — elements for humans vs elements optimized for Googlebot"
+          title="Unified feedback component — one pattern adopted across KLPs, search, and i18n"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
+        <iframe
+          class="mobile-variant"
+          src="img/diagrams/diagram-ai12-unified-feedback-v4-mobile.html"
+          loading="lazy"
+          scrolling="no"
+          title="Unified feedback component (mobile) — hub-and-spokes vertical layout"
           style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
         ></iframe>
       </div>
 
-      <p><strong>Framing Googlebot as a user was the breakthrough.</strong> When I told designers we needed something for SEO, they pushed back — that's not a user need. But anthropomorphizing it as a competing set of needs instead of a technical constraint opened doors across the team.</p>
-
-      <div class="case-img-full diagram-embed" data-diagram="ai-09">
-        <iframe
-          src="img/diagrams/diagram-ai09-dual-user-framework-v4.html"
-          loading="lazy"
-          scrolling="no"
-          title="Dual-user framework — Googlebot needs vs human needs, alignment and tension"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-      </div>
-
-      <p>I pushed back on <strong>resurfacing the query multiple times on the page.</strong> SEO loved keyword repetition; it did nothing for users. The compromise: pre-populate the search bar with the user's query, as if they'd already searched Reddit. SEO got the keyword on the page; the design <strong>reinforced the mental model</strong> that users should be searching on Reddit directly.</p>
-
-      <p>Keywords were embedded in <strong>structured page elements outside the summary</strong> — synthesis stayed natural while the page still ranked.</p>
-
-      <h3>Failure States</h3>
+      <h3>Failure states</h3>
 
       <p><strong>Below-threshold summaries didn't appear.</strong> Instead, the page surfaced the aggregated source posts — still valuable, still pulling users deeper into the platform.</p>
 
@@ -239,237 +431,6 @@
         ></iframe>
       </div>
 
-      <h3>User Feedback Loops</h3>
-
-      <p>Flagged outputs surfaced where the model was weakest. The rubric <strong>evolved based on what users actually valued</strong> versus what we'd assumed. We shipped roughly <strong>twice a quarter</strong> — test with UXR, build, ship, collect data, then back to UXR with new questions. Iterations overlapped; multiple elements were in different stages of the cycle at any time.</p>
-
-      <div class="case-img-full diagram-embed" data-diagram="ai-11">
-        <iframe
-          src="img/diagrams/diagram-ai11-feedback-loop-v4.html"
-          loading="lazy"
-          scrolling="no"
-          title="Feedback loop — user flags, rubric updates, model improvement cycle"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-      </div>
-
-      <p>The <strong>feedback UI was a cross-org effort</strong>: three teams (KLPs, search, i18n) were independently building feedback patterns. I worked across pillars to define one recognizable component — users see it and know where to give their opinion. Another pattern built for this project, adopted org-wide.</p>
-
-      <div class="case-img-full diagram-embed" data-diagram="ai-12">
-        <iframe
-          src="img/diagrams/diagram-ai12-unified-feedback-v4.html"
-          loading="lazy"
-          scrolling="no"
-          title="Unified feedback component — one pattern adopted across KLPs, search, and i18n"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-      </div>
-
-      <!-- ============================================
-           TRANSPARENCY
-           ============================================ -->
-
-      <h2>Transparency</h2>
-
-      <p>We needed to define the <strong>first precedent for AI-generated content at Reddit</strong> — across the entire platform. I partnered with brand, legal, and design systems to establish what AI content would be, how it would identify itself, and how it would attribute its sources.</p>
-
-      <div class="case-img-full diagram-embed" data-diagram="ai-13">
-        <iframe
-          src="img/diagrams/diagram-ai13-transparency-framework-v4.html"
-          loading="lazy"
-          scrolling="no"
-          title="Transparency framework — identification, scalability, attribution pillars"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-      </div>
-
-      <h3>Identification (UI)</h3>
-
-      <p>The question was bigger than visual design: <strong>what's a scalable, instantly recognizable, but unobtrusive signal</strong> that content was AI-generated? User research confirmed people valued knowing — but this was peak AI backlash. The signal had to build trust without feeling like a trend.</p>
-
-      <div class="case-img-full diagram-embed" data-diagram="ai-14">
-        <iframe
-          src="img/diagrams/diagram-ai14-identification-explorations-v4.html"
-          loading="lazy"
-          scrolling="no"
-          title="Identification explorations — icons, tags, containers, text treatments tested"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-      </div>
-
-      <p>We explored icons, tags, containers, disclaimers, a talking Snoo, and text treatments. The <strong>sparkle icon got negative reactions</strong> — users saw it as a cliché. Like Sharing &amp; Embeds, this crossed beyond design systems into identity.</p>
-
-      <div class="case-img-full diagram-embed" data-diagram="ai-15">
-        <iframe
-          src="img/diagrams/diagram-ai15-sparkle-reactions-v4.html"
-          loading="lazy"
-          scrolling="no"
-          title="Sparkle icon reactions — negative sentiment data and alternative approaches"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-      </div>
-
-      <p>We landed on <strong>a system, not a single solution.</strong> It scaled across surfaces depending on context, with persistent elements: same color, same name, always visually separated from other content. Flexible by surface, consistent in identity.</p>
-
-      <div class="case-img-full diagram-embed diagram-pair" data-diagram="ai-16">
-        <iframe
-          class="desktop-variant"
-          src="img/diagrams/diagram-ai16-final-identification-v4.html"
-          loading="lazy"
-          scrolling="no"
-          title="Final identification system — color, name, and separation persistent across KLP, search, feed, and reply surfaces"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-        <iframe
-          class="mobile-variant"
-          src="img/diagrams/diagram-ai16-final-identification-v4-mobile.html"
-          loading="lazy"
-          scrolling="no"
-          title="Final identification system (mobile) — 2x2 surface grid with persistent color, name, separation strip"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-      </div>
-
-      <h3>Scalability</h3>
-
-      <p>The component library, identification patterns, and feedback UI shipped as <strong>reusable system components</strong> — built to scale to wherever AI content appeared next.</p>
-
-      <div class="case-img-full">
-        <div class="img-placeholder">Component library — AI badge, attribution block, feedback controls deployed across surfaces beyond KLPs</div>
-      </div>
-
-      <h3>Content Attribution</h3>
-
-      <p>A <strong>deep exercise with content design and UXR</strong> to ensure users understood the posts below were sources for the summary above. We tested three attribution patterns.</p>
-
-      <div class="case-img-full">
-        <div class="img-placeholder">Three attribution patterns tested — inline hyperlinks, bottom pills, collapsible list inside summary</div>
-      </div>
-
-      <p><strong>Inline hyperlinks won</strong> — established in UI, universally understood, and kept attribution next to the content being sourced. Pills at the bottom caused visual noise and moved attribution away from the source. Collapsible lists duplicated the source posts below and disappeared when collapsed.</p>
-
-      <div class="case-img-full diagram-embed diagram-pair" data-diagram="ai-19">
-        <iframe
-          class="desktop-variant"
-          src="img/diagrams/diagram-ai19-attribution-comparison-v4.html"
-          loading="lazy"
-          scrolling="no"
-          title="Attribution comparison — hyperlinks vs pills vs collapsible patterns"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-        <iframe
-          class="mobile-variant"
-          src="img/diagrams/diagram-ai19-attribution-comparison-v4-mobile.html"
-          loading="lazy"
-          scrolling="no"
-          title="Attribution comparison (mobile) — hyperlinks vs pills vs collapsible, compact grade bars"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-      </div>
-
-      <p>The study results also informed <strong>how source content should be sorted</strong> (by time, popularity, or order in synthesis) and what <strong>page utilities to prioritize</strong> (sort controls, collapsible summary).</p>
-
-      <h3>Threaded Source Posts</h3>
-
-      <p>User research kept surfacing the same question: <strong>where is this coming from?</strong> The source posts below the synthesis were the answer — and displaying them required a new UI pattern. Posts appeared in a threaded structure with comments for the first time at Reddit.</p>
-
-      <div class="case-img-full diagram-embed" data-diagram="ai-20">
-        <iframe
-          src="img/diagrams/diagram-ai20-threaded-posts-v4.html"
-          loading="lazy"
-          scrolling="no"
-          title="Threaded source posts — posts with comments, first instance at Reddit"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-      </div>
-
-      <p>I worked with data science on <strong>comment truncation</strong>: the vast majority of comments fit 1–2 lines, with severe diminishing returns after that. We landed on <strong>two comments per post</strong> — enough to show a conversation without overwhelming the unit.</p>
-
-      <div class="case-img-full diagram-embed" data-diagram="ai-21">
-        <iframe
-          src="img/diagrams/diagram-ai21-comment-truncation-v4.html"
-          loading="lazy"
-          scrolling="no"
-          title="Comment truncation — data-driven threshold, distribution analysis"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-      </div>
-
-      <p>The text truncation system <strong>reused a pattern I'd built for Sharing &amp; Embeds</strong> — already defined and validated, which made this work go faster.</p>
-
-      <!-- ============================================
-           VOICE
-           ============================================ -->
-
-      <h2>Voice</h2>
-
-      <p>Defining what the LLM produced was as much a design problem as defining how it looked. I led the decisions around <strong>tone, clarity, and the model's relationship to Reddit.</strong></p>
-
-      <div class="case-img-full diagram-embed" data-diagram="ai-22">
-        <iframe
-          src="img/diagrams/diagram-ai22-voice-framework-v4.html"
-          loading="lazy"
-          scrolling="no"
-          title="Voice framework — tone, clarity, and LLM identity dimensions"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-      </div>
-
-      <h3>Tone</h3>
-
-      <p><strong>Closeness to source posts drove trust.</strong> Broad generalizations — a consistent failure mode in early outputs — killed it immediately. Synthesizing across communities without losing the source voice was the harder question.</p>
-
-      <div class="case-img-full diagram-embed diagram-pair" data-diagram="ai-23">
-        <iframe
-          class="desktop-variant"
-          src="img/diagrams/diagram-ai23-trust-comparison-v4.html"
-          loading="lazy"
-          scrolling="no"
-          title="Trust spectrum — high-trust attributed output vs low-trust generalization"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-        <iframe
-          class="mobile-variant"
-          src="img/diagrams/diagram-ai23-trust-comparison-v4-mobile.html"
-          loading="lazy"
-          scrolling="no"
-          title="Trust spectrum (mobile) — vertical signal layout"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-      </div>
-
-      <h3>Clarity</h3>
-
-      <p>Too little context produced <strong>empty platitudes</strong>; too much produced verbatim quotes with zero synthesis. The model's range was narrow — the evaluation rubric was how we found the edges.</p>
-
-      <div class="case-img-full diagram-embed" data-diagram="ai-24">
-        <iframe
-          src="img/diagrams/diagram-ai24-clarity-spectrum-v4.html"
-          loading="lazy"
-          scrolling="no"
-          title="Clarity spectrum — platitudes to verbatim quotes, synthesis sweet spot"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-      </div>
-
-      <p>Display patterns and truncation logic became <strong>reusable across later products.</strong></p>
-
-      <h3>The LLM as Narrator</h3>
-
-      <p>The team debated: is the LLM <strong>Reddit, the Snoo, a character, a tool, or omnipresent?</strong> We explored each. Giving the synthesis a product identity conflicted with how people expected results in search — is it "Answers" or is it search?</p>
-
-      <div class="case-img-full diagram-embed" data-diagram="ai-25">
-        <iframe
-          src="img/diagrams/diagram-ai25-llm-identity-v4.html"
-          loading="lazy"
-          scrolling="no"
-          title="LLM identity explorations — character, tool, narrator, no identity"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-      </div>
-
-      <p>We landed on <strong>omnipresent narrator without a character.</strong> It preserves scalability, smooths integration, and resolves the core tension: the synthesis isn't a separate product. It's part of the product. It is the product.</p>
-
       <!-- ============================================
            RESULTS
            ============================================ -->
@@ -480,7 +441,7 @@
 
       <p>I handed off the framework and foundation to the next designer, and the systems I built — identification library, synthesis patterns, feedback UI, evaluation rubric, governance framework — were <strong>inherited directly</strong> by a new team that shipped them as Reddit Answers.</p>
 
-      <div class="metrics-callout">
+      <div class="metrics-callout metrics-callout--single">
         <div class="metric">
           <span class="metric-value">15M</span>
           <span class="metric-label">Weekly active users (Reddit Answers, year one)</span>
@@ -571,32 +532,66 @@
       imageObserver.observe(heading);
     });
 
+  </script>
+
+  <script>
   // Auto-resize diagram iframes to their content height.
-  // Tracks inner reflows via ResizeObserver so viewport-driven media-query
-  // restacks (desktop → mobile stacked layout) grow the iframe instead of clipping.
+  //
+  // Two channels, in order of preference:
+  //   1. postMessage from inside each diagram (cross-origin safe — works on
+  //      file:// previews where each local file is its own origin and the
+  //      parent cannot read iframe.contentDocument).
+  //   2. Direct DOM read of iframe.contentDocument (same-origin only — used
+  //      as a fallback for legacy diagrams that don't post).
+  //
+  // ResizeObserver tracks inner reflows so viewport-driven media-query
+  // restacks (desktop → mobile stacked layout) grow the iframe instead of
+  // clipping.
+  window.addEventListener('message', function(event) {
+    const data = event.data;
+    if (!data || data.type !== 'diagram-height') return;
+    const h = parseInt(data.height, 10);
+    if (!h || h < 50) return;
+    document.querySelectorAll('.diagram-embed iframe').forEach(iframe => {
+      if (iframe.contentWindow === event.source) {
+        iframe.style.height = h + 'px';
+      }
+    });
+  });
+
   function resizeDiagramIframes() {
     document.querySelectorAll('.diagram-embed iframe').forEach(iframe => {
       let observer = null;
       function setHeight() {
         try {
-          const diagram = iframe.contentDocument.querySelector('.diagram');
+          const doc = iframe.contentDocument;
+          const diagram = doc && doc.querySelector('.diagram');
           if (diagram) {
-            iframe.style.height = diagram.offsetHeight + 'px';
+            const h = Math.max(
+              diagram.scrollHeight,
+              diagram.offsetHeight,
+              doc.documentElement ? doc.documentElement.scrollHeight : 0,
+              doc.body ? doc.body.scrollHeight : 0
+            );
+            if (h > 0) iframe.style.height = h + 'px';
           }
-        } catch(e) {
-          iframe.style.height = '600px';
-        }
+        } catch(e) { /* cross-origin — postMessage path will handle it */ }
       }
       function onLoad() {
         setHeight();
+        setTimeout(setHeight, 50);
+        setTimeout(setHeight, 250);
         try {
           const diagram = iframe.contentDocument.querySelector('.diagram');
           if (diagram && window.ResizeObserver) {
             if (observer) observer.disconnect();
             observer = new ResizeObserver(setHeight);
             observer.observe(diagram);
+            if (iframe.contentDocument.body) {
+              observer.observe(iframe.contentDocument.body);
+            }
           }
-        } catch(e) { /* cross-origin — fallback height already set */ }
+        } catch(e) { /* cross-origin — postMessage path will handle it */ }
       }
       if (iframe.contentDocument && iframe.contentDocument.readyState === 'complete') {
         onLoad();
@@ -604,7 +599,12 @@
       iframe.addEventListener('load', onLoad);
     });
   }
-  resizeDiagramIframes();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', resizeDiagramIframes);
+  } else {
+    resizeDiagramIframes();
+  }
+  window.addEventListener('load', resizeDiagramIframes);
   </script>
 </body>
 </html>

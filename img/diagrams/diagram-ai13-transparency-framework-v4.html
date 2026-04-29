@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="figma-source" content="node:394:2 page:29:42 file:TArUrZsBUocaAsqetjXq7V">
 <title>First Precedent</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -262,7 +263,7 @@
               <rect x="36" y="36" width="4" height="4" rx="1" fill="rgba(127,181,176,0.2)"/>
             </svg>
           </div>
-          <div class="pillar-name">Scalability</div>
+          <div class="pillar-name">Content</div>
           <div class="pillar-question">Component library, identification, and feedback UI as reusable system components</div>
           <div class="pillar-divider"></div>
           <div class="pillar-explored"><strong>Shipped to:</strong> KLPs, Search, i18n, future surfaces</div>
@@ -281,7 +282,7 @@
               <line x1="25" y1="31" x2="31" y2="25" stroke="rgba(138,158,196,0.15)" stroke-width="0.8" stroke-dasharray="2 2"/>
             </svg>
           </div>
-          <div class="pillar-name">Attribution</div>
+          <div class="pillar-name">Quality</div>
           <div class="pillar-question">Ensuring users understand posts below are sources for the summary above</div>
           <div class="pillar-divider"></div>
           <div class="pillar-explored"><strong>Tested:</strong> hyperlinks, pills, collapsible lists</div>
@@ -292,4 +293,40 @@
   </div>
 </body>
 <script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+<script>
+(function () {
+  function compute() {
+    var d = document.querySelector('.diagram');
+    if (!d) return 0;
+    return Math.max(
+      d.scrollHeight, d.offsetHeight,
+      document.documentElement ? document.documentElement.scrollHeight : 0,
+      document.body ? document.body.scrollHeight : 0
+    );
+  }
+  function send() {
+    if (!window.parent || window.parent === window) return;
+    var h = compute();
+    if (h > 0) {
+      window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', send);
+  } else {
+    send();
+  }
+  window.addEventListener('load', send);
+  setTimeout(send, 50);
+  setTimeout(send, 250);
+  setTimeout(send, 1000);
+  if (window.ResizeObserver) {
+    var ro = new ResizeObserver(send);
+    var d = document.querySelector('.diagram');
+    if (d) ro.observe(d);
+    if (document.body) ro.observe(document.body);
+  }
+  window.addEventListener('resize', send);
+})();
+</script>
 </html>

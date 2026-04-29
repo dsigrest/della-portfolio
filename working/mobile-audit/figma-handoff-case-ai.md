@@ -115,6 +115,23 @@ The html-to-figma skill's default pattern assumed image-fill translation with ba
 **Conflict:** after a long build run, the conversation compacted. The resume directive from the user said "pick up as if the break never happened" — no recap, no preface.
 **Resolution:** pre-load critical tools (use_figma, get_screenshot, TaskList, TaskUpdate) via ToolSearch immediately, then execute the next task. Don't re-state context the user already has.
 
+### 10. "x=-420" mobile cluster anchor is a typo (case-ai v3 §6.3)
+**Conflict:** earlier sections of this doc (and the v3 resume prompt) write the case-ai mobile cluster anchor as "x=-420". Querying actual frame positions on page 29:42 shows the case-ai mobile column sits at x≈-4770 (specifically: existing ai02a-mobile at x=-4767, ai20-mobile at x=-4770, 1207:5594 source at x=-4773). No frame on the page sits anywhere near x=-420.
+**Resolution:** treat any "x=-420" reference in this doc / resume prompts as shorthand for "the case-ai mobile cluster column", and resolve to actual coordinates ~x=-4770 by querying frame metadata. New mobile frames on page 29:42 should land at x≈-4770 (or, if pairing right-of-source, at source_x + 375 + ~30 — the gap before the desktop column at x≈-3855). The v3 §6.3 ai-overview-mobile landed at x=-4368 (right of source 1207:5594).
+
+### 11. `primaryAxisSizingMode='AUTO'` doesn't recompute after `resize()` shadowing
+**Conflict:** the older auto-layout sizing API (`primaryAxisSizingMode='AUTO'`) silently fails to grow frames vertically when `frame.resize(w, 1)` is called after the AUTO setting — the explicit resize value persists and the AUTO never recomputes when children are appended. First-attempt §6.3a (ia-before-after) shipped with all interior containers stuck at 1px tall (only the captions visible); had to delete the whole frame and rebuild.
+**Resolution:** use the modern API and set sizing AFTER appendChild. Pattern:
+```javascript
+const frame = figma.createFrame();
+parent.appendChild(frame);            // append FIRST
+frame.layoutMode = 'VERTICAL';
+frame.layoutSizingHorizontal = 'FILL';  // relative to parent
+frame.layoutSizingVertical = 'HUG';     // grows with children
+// then add children — frame height auto-resolves
+```
+Helper functions (e.g. `vstack(parent, name, opts)`) should encapsulate this ordering: createFrame → appendChild → set layoutMode → set layoutSizingHorizontal/Vertical → add children. Never call `frame.resize()` on a HUG-sized axis after children exist — it forces FIXED back on.
+
 ---
 
 ## Per-diagram translator notes (the 14 new native-layer frames)

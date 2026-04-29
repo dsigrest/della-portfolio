@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="figma-source" content="node:1227:21658 page:29:42 file:TArUrZsBUocaAsqetjXq7V">
-<title>Threaded Source Posts — pattern anatomy</title>
+<meta name="figma-source" content="node:1316:298 page:29:42 file:TArUrZsBUocaAsqetjXq7V">
+<title>Identification precedent — inbox identification pattern</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -26,20 +26,22 @@
     width: 760px;
     background: var(--canvas);
     border-radius: 16px;
-    padding: 14px 48px 14px 100px;
+    padding: 24px 0;
   }
 
   .row {
     display: flex;
-    gap: 32px;
-    align-items: flex-start;
+    gap: 24px;
+    align-items: stretch;
+    justify-content: center;
+    padding-left: 120px;
   }
 
-  /* Embedded UI screenshot — CSS-cropped to the source-post card portion */
+  /* Embedded UI screenshot — CSS-cropped to top-of-page synthesized summary view */
   .shot {
-    width: 268px;
+    width: 205px;
     flex-shrink: 0;
-    aspect-ratio: 268 / 279;
+    aspect-ratio: 322 / 438;
     border-radius: 16px;
     overflow: hidden;
     position: relative;
@@ -47,7 +49,7 @@
   .shot img.ui-screenshot {
     position: absolute;
     left: 0;
-    top: -59.7%;
+    top: -31.05%;
     width: 100%;
     height: auto;
     display: block;
@@ -57,7 +59,6 @@
   .annotations {
     width: 276px;
     flex-shrink: 0;
-    height: 279px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -125,10 +126,10 @@
 
   /* Narrow viewport: stack image and annotations */
   @media (max-width: 720px) {
-    .diagram { padding: 24px 20px; }
-    .row { flex-direction: column; align-items: stretch; gap: 24px; }
-    .shot { width: 100%; aspect-ratio: 322 / 335; }
-    .annotations { width: 100%; height: auto; }
+    .diagram { padding: 24px 16px; }
+    .row { flex-direction: column; align-items: stretch; gap: 14px; padding-left: 0; }
+    .shot { width: 205px; max-width: 100%; margin: 0 auto; }
+    .annotations { width: 100%; padding: 0 24px; }
   }
 </style>
 </head>
@@ -137,11 +138,11 @@
     <div class="row">
 
       <div class="shot">
-        <img class="ui-screenshot" src="../ui-source-posts.png" alt="Threaded source post card — metadata row at top, core post body in the middle, threaded comments below" />
+        <img class="ui-screenshot" src="../ui-reddit-answers-mobile.png" alt="Reddit Answers mobile mock — synthesized summary card with citations, source post excerpts, and feedback unit visible above fold" />
       </div>
 
       <div class="annotations">
-        <div class="eyebrow">Source posts</div>
+        <div class="eyebrow">Synthesized summary</div>
 
         <div class="annotation">
           <span class="ann-icon" aria-hidden="true">
@@ -150,8 +151,8 @@
             </svg>
           </span>
           <div class="ann-content">
-            <div class="ann-heading">Metadata row</div>
-            <div class="ann-desc">Consolidating metadata simplifies how users scan multiple robust units</div>
+            <div class="ann-heading">Visual separation</div>
+            <div class="ann-desc">Stroke, icon, and color treatment clearly distinguish generated content</div>
           </div>
         </div>
 
@@ -162,8 +163,8 @@
             </svg>
           </span>
           <div class="ann-content">
-            <div class="ann-heading">Core post</div>
-            <div class="ann-desc">Including both the title and body of the post gives users a flavor of the discussion topic</div>
+            <div class="ann-heading">Linked attribution</div>
+            <div class="ann-desc">Users can quickly see and explore source content</div>
           </div>
         </div>
 
@@ -174,8 +175,20 @@
             </svg>
           </span>
           <div class="ann-content">
-            <div class="ann-heading">Threaded comments</div>
-            <div class="ann-desc">Showing comments at the top level helps summarize the conversation</div>
+            <div class="ann-heading">Truncated container</div>
+            <div class="ann-desc">Balances providing users an immediate answer without burying critical source posts</div>
+          </div>
+        </div>
+
+        <div class="annotation">
+          <span class="ann-icon" aria-hidden="true">
+            <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
+            </svg>
+          </span>
+          <div class="ann-content">
+            <div class="ann-heading">Feedback unit</div>
+            <div class="ann-desc">Provides user control and generation quality</div>
           </div>
         </div>
       </div>

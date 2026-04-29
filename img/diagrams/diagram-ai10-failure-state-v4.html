@@ -3,566 +3,228 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Graceful Degradation</title>
+<meta name="figma-source" content="node:390:2 page:29:42 file:TArUrZsBUocaAsqetjXq7V">
+<title>Graceful Degradation — above vs below threshold</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --canvas: #0A0C16;
-    --card: #10121C;
-    --elevated: #151722;
-    --highest: #1A1C28;
-    --text-pri: #E0DFE4;
-    --text-sec: rgba(224,223,228,0.6);
-    --text-ter: rgba(224,223,228,0.4);
-    --text-dim: rgba(224,223,228,0.2);
-    --border-normal: rgba(224,223,228,0.07);
-    --accent: #7FB5B0;
-    --accent-dim: rgba(127,181,176,0.12);
-    --casual: #D4A574;
-    --resur: #C4B078;
-    --new-seg: #8A9EC4;
-    --red: #C47878;
-    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
-    --glass-border: rgba(224,223,228,0.08);
-    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    --casual-red: #C47878;
+    --cool-teal: #7FB5B0;
+    --text-primary: #E0DFE4;
   }
-  * { margin:0; padding:0; box-sizing:border-box; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     background: #08090F;
     display: flex;
     justify-content: center;
-    padding: 40px;
-    font-family: 'Inter', -apple-system, sans-serif;
+    padding: 40px 16px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     -webkit-font-smoothing: antialiased;
   }
   .diagram {
     width: 760px;
     background: var(--canvas);
     border-radius: 16px;
-    overflow: hidden;
-    position: relative;
+    padding: 24px 48px;
   }
 
-  .title-area { padding: 48px 48px 0; }
-  .label {
-    font-size: 11px; font-weight: 500;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--accent); opacity: 0.8; margin-bottom: 8px;
-  }
-  h1 {
-    font-size: 36px; font-weight: 700;
-    color: var(--text-pri); letter-spacing: -0.025em;
-    margin-bottom: 8px; line-height: 1.15;
-  }
-  .subtitle {
-    font-size: 15px; color: var(--text-sec);
-    line-height: 1.55; max-width: 580px;
-  }
-
-  /* Comparison area */
-  .comparison-area {
-    padding: 40px 48px 32px;
-    position: relative;
-  }
-  .comparison-area::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 200px 300px at 30% 50%, rgba(196,120,120,0.04) 0%, transparent 70%),
-      radial-gradient(ellipse 200px 300px at 70% 50%, rgba(127,181,176,0.05) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .comparison {
+  .columns {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 32px;
-    position: relative;
-    z-index: 1;
+    align-items: start;
   }
-
-  .state-col {
+  .column {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 16px;
   }
 
-  .state-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+  /* State pills (ABOVE / BELOW) */
+  .pill {
+    display: inline-flex;
+    align-items: center;
     padding: 6px 14px;
     border-radius: 20px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    white-space: nowrap;
   }
-  .state-label.degraded {
-    color: var(--red);
+  .pill.below {
+    color: var(--casual-red);
     background: rgba(196,120,120,0.08);
     border: 1px solid rgba(196,120,120,0.18);
   }
-  .state-label.full {
-    color: var(--accent);
-    background: var(--accent-dim);
+  .pill.above {
+    color: var(--cool-teal);
+    background: rgba(127,181,176,0.08);
     border: 1px solid rgba(127,181,176,0.18);
   }
 
-  /* NOT-03 phone mocks */
-  .phone-mock {
-    aspect-ratio: 9 / 16;
-    max-height: 380px;
+  /* Embedded UI screenshot — clean rounded image, no bezel chrome */
+  .shot {
     width: 100%;
-    max-width: 214px;
-    border-radius: 20px;
-    position: relative;
-    overflow: hidden;
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    display: block;
   }
-  .phone-mock.degraded {
-    background: linear-gradient(135deg, rgba(196,120,120,0.06) 0%, rgba(224,223,228,0.02) 100%);
-    border: 1.5px dashed rgba(196,120,120,0.25);
-  }
-  .phone-mock.full-exp {
-    background: linear-gradient(135deg, rgba(127,181,176,0.06) 0%, rgba(224,223,228,0.02) 100%);
-    border: 1.5px dashed rgba(127,181,176,0.25);
+  .shot img.ui-screenshot {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 16px;
   }
 
-  /* Phone internal UI elements */
-  .ph-status-bar {
-    height: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 4px;
-  }
-  .ph-time {
-    width: 24px; height: 4px; border-radius: 2px;
-    background: rgba(224,223,228,0.15);
-  }
-  .ph-icons {
-    width: 32px; height: 4px; border-radius: 2px;
-    background: rgba(224,223,228,0.1);
-  }
-
-  .ph-search {
-    height: 22px;
-    border-radius: 11px;
-    background: rgba(224,223,228,0.04);
-    border: 1px solid rgba(224,223,228,0.06);
-    display: flex;
-    align-items: center;
-    padding: 0 8px;
-    gap: 4px;
-  }
-  .ph-search-icon {
-    width: 8px; height: 8px; border-radius: 50%;
-    border: 1px solid rgba(224,223,228,0.15);
-  }
-  .ph-search-text {
-    height: 3px; width: 50%; border-radius: 2px;
-    background: rgba(224,223,228,0.1);
-  }
-
-  /* Synthesis card inside phone */
-  .ph-synthesis {
-    border-radius: 8px;
-    padding: 10px;
-    min-height: 64px;
-    position: relative;
-  }
-  .ph-synthesis.suppressed {
-    background: rgba(196,120,120,0.04);
-    border: 1px dashed rgba(196,120,120,0.15);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .ph-synthesis.active {
-    background: rgba(127,181,176,0.06);
-    border: 1px solid rgba(127,181,176,0.12);
-  }
-
-  .suppressed-x {
-    width: 20px; height: 20px;
-    position: relative;
-    opacity: 0.3;
-  }
-  .suppressed-x::before, .suppressed-x::after {
-    content: '';
-    position: absolute;
-    top: 50%; left: 50%;
-    width: 14px; height: 1.5px;
-    background: var(--red);
-    border-radius: 1px;
-  }
-  .suppressed-x::before { transform: translate(-50%, -50%) rotate(45deg); }
-  .suppressed-x::after { transform: translate(-50%, -50%) rotate(-45deg); }
-
-  .ph-synth-lines {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .ph-synth-line {
-    height: 3px;
-    border-radius: 2px;
-    background: rgba(127,181,176,0.25);
-  }
-  .ph-synth-line:nth-child(1) { width: 90%; }
-  .ph-synth-line:nth-child(2) { width: 75%; }
-  .ph-synth-line:nth-child(3) { width: 82%; }
-  .ph-synth-line:nth-child(4) { width: 55%; }
-
-  /* SHR-05 ambient animation on active synthesis lines */
-  .ph-synthesis.active .ph-synth-line {
-    animation: synth-dance 4s ease-in-out infinite;
-  }
-  .ph-synthesis.active .ph-synth-line:nth-child(1) { animation-delay: 0s; }
-  .ph-synthesis.active .ph-synth-line:nth-child(2) { animation-delay: 0.3s; }
-  .ph-synthesis.active .ph-synth-line:nth-child(3) { animation-delay: 0.6s; }
-  .ph-synthesis.active .ph-synth-line:nth-child(4) { animation-delay: 0.15s; }
-  @keyframes synth-dance {
-    0%, 100% { opacity: 0.4; }
-    50% { opacity: 0.8; }
-  }
-
-  /* Source posts inside phone */
-  .ph-posts {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    flex: 1;
-  }
-  .ph-post {
-    border-radius: 6px;
-    padding: 8px;
-    background: rgba(224,223,228,0.02);
-    border: 1px solid rgba(224,223,228,0.04);
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .ph-post-header {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .ph-avatar {
-    width: 10px; height: 10px; border-radius: 50%;
-    background: rgba(224,223,228,0.08);
-  }
-  .ph-username {
-    height: 3px; width: 36px; border-radius: 2px;
-    background: rgba(224,223,228,0.1);
-  }
-  .ph-post-line {
-    height: 2.5px; border-radius: 2px;
-    background: rgba(224,223,228,0.06);
-  }
-  .ph-post-line:nth-child(1) { width: 85%; }
-  .ph-post-line:nth-child(2) { width: 60%; }
-
-  /* Cited post variant (for full experience) */
-  .ph-post.cited {
-    border-color: rgba(127,181,176,0.08);
-  }
-  .ph-post.cited .ph-avatar {
-    background: rgba(127,181,176,0.15);
-  }
-  .ph-cite-dot {
-    width: 4px; height: 4px; border-radius: 50%;
-    background: rgba(127,181,176,0.4);
-    margin-left: auto;
-  }
-
-  /* Dimmed posts for degraded state */
-  .phone-mock.degraded .ph-post {
-    opacity: 0.6;
-  }
-
-  /* Hotspot overlays */
-  .hotspot {
-    position: absolute;
-    border-radius: 4px;
-    pointer-events: none;
-  }
-  .hotspot.problem {
-    border: 1.5px solid rgba(196,120,120,0.5);
-    background: rgba(196,120,120,0.06);
-    box-shadow: 0 0 10px rgba(196,120,120,0.1);
-  }
-  .hotspot.solution {
-    border: 1.5px solid rgba(127,181,176,0.5);
-    background: rgba(127,181,176,0.06);
-    box-shadow: 0 0 10px rgba(127,181,176,0.1);
-  }
-
-  /* Annotations below phones */
+  /* Annotation list — prose style, no chip backgrounds */
   .annotations {
     display: flex;
     flex-direction: column;
-    gap: 6px;
     width: 100%;
-    max-width: 214px;
   }
   .annotation {
-    font-size: 10px;
-    line-height: 1.4;
-    padding: 6px 10px;
-    border-radius: 6px;
     display: flex;
-    align-items: flex-start;
-    gap: 6px;
-  }
-  .annotation.problem {
-    color: var(--red);
-    background: rgba(196,120,120,0.06);
-    border: 1px solid rgba(196,120,120,0.12);
-  }
-  .annotation.solution {
-    color: var(--accent);
-    background: rgba(127,181,176,0.06);
-    border: 1px solid rgba(127,181,176,0.12);
-  }
-  .ann-marker {
-    width: 4px; height: 4px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    margin-top: 3px;
-  }
-  .ann-marker.problem { background: var(--red); }
-  .ann-marker.solution { background: var(--accent); }
-
-  /* Connector arrow between phones */
-  .transition-arrow {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 4px;
-  }
-  .arrow-line {
-    width: 24px;
-    height: 1px;
-    background: linear-gradient(90deg, rgba(196,120,120,0.2), rgba(224,223,228,0.08), rgba(127,181,176,0.2));
-  }
-  .arrow-label {
-    font-size: 9px;
-    font-weight: 500;
-    letter-spacing: 0.04em;
-    color: var(--text-dim);
-    white-space: nowrap;
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-  }
-
-  /* Insight callout */
-  .insight {
-    margin: 0 48px;
-    padding: 14px 18px;
-    background: rgba(212,165,116,0.06);
-    border: 1px solid rgba(212,165,116,0.12);
-    border-radius: 8px;
-    position: relative;
-    z-index: 1;
-  }
-  .insight p {
-    font-size: 12px;
-    color: var(--text-sec);
-    line-height: 1.55;
-  }
-  .insight strong {
-    color: var(--casual);
+    gap: 10px;
+    padding: 9px 0;
+    font-size: 11px;
     font-weight: 600;
+    line-height: normal;
+    color: var(--text-primary);
+  }
+  .annotation .ann-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .annotation .ann-icon svg { display: block; }
+  .annotation.below .ann-icon { color: var(--casual-red); }
+  .annotation.above .ann-icon { color: var(--cool-teal); }
+
+  /* Embedded mode */
+  body.embedded {
+    padding: 0;
+    background: transparent;
+    min-height: auto;
+    display: block;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
   }
 
-  /* Outcome */
-  .outcome {
-    margin: 16px 48px 48px;
-    background: var(--accent-dim);
-    border-radius: 10px;
-    padding: 14px 20px;
-    display: flex; align-items: center; gap: 12px;
-  }
-  .outcome-arrow {
-    font-size: 16px; color: var(--accent);
-    opacity: 0.55; flex-shrink: 0;
-  }
-  .outcome p {
-    font-size: 13px; font-weight: 500;
-    color: var(--text-sec); line-height: 1.5;
-  }
-
-  @media (max-width: 680px) {
-    .title-area, .comparison-area, .insight, .outcome { padding-left: 24px; padding-right: 24px; }
-    body { padding: 16px; }
-    .comparison { grid-template-columns: 1fr; }
+  /* Narrow viewport: stack columns */
+  @media (max-width: 720px) {
+    .diagram { padding: 24px 20px; }
+    .columns { grid-template-columns: 1fr; gap: 32px; }
   }
 </style>
 </head>
 <body>
   <div class="diagram">
-    <div class="title-area">
-      <div class="label">Failure States</div>
-      <h1>Graceful Degradation</h1>
-      <p class="subtitle">When synthesis quality dips below threshold, the page doesn't break — it falls back to sourced answers instead</p>
-    </div>
+    <div class="columns">
 
-    <div class="comparison-area">
-      <div class="comparison">
-        <!-- Degraded state -->
-        <div class="state-col">
-          <div class="state-label degraded">Below Threshold</div>
+      <!-- ===== ABOVE THRESHOLD — left ===== -->
+      <div class="column">
+        <span class="pill above">Above Threshold</span>
 
-          <div class="phone-mock degraded">
-            <div class="ph-status-bar">
-              <div class="ph-time"></div>
-              <div class="ph-icons"></div>
-            </div>
-            <div class="ph-search">
-              <div class="ph-search-icon"></div>
-              <div class="ph-search-text"></div>
-            </div>
-
-            <!-- Suppressed synthesis -->
-            <div class="ph-synthesis suppressed">
-              <div class="suppressed-x"></div>
-              <div class="hotspot problem" style="inset: 0;"></div>
-            </div>
-
-            <!-- Source posts (visible but dimmed) -->
-            <div class="ph-posts">
-              <div class="ph-post">
-                <div class="ph-post-header">
-                  <div class="ph-avatar"></div>
-                  <div class="ph-username"></div>
-                </div>
-                <div class="ph-post-line" style="width: 85%;"></div>
-                <div class="ph-post-line" style="width: 60%;"></div>
-              </div>
-              <div class="ph-post">
-                <div class="ph-post-header">
-                  <div class="ph-avatar"></div>
-                  <div class="ph-username"></div>
-                </div>
-                <div class="ph-post-line" style="width: 78%;"></div>
-                <div class="ph-post-line" style="width: 50%;"></div>
-              </div>
-              <div class="ph-post">
-                <div class="ph-post-header">
-                  <div class="ph-avatar"></div>
-                  <div class="ph-username"></div>
-                </div>
-                <div class="ph-post-line" style="width: 70%;"></div>
-                <div class="ph-post-line" style="width: 45%;"></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="annotations">
-            <div class="annotation problem">
-              <div class="ann-marker problem"></div>
-              Synthesis suppressed — quality below confidence threshold
-            </div>
-            <div class="annotation problem">
-              <div class="ann-marker problem"></div>
-              Raw source posts surface as fallback
-            </div>
-          </div>
+        <div class="shot">
+          <img class="ui-screenshot" src="../ui-reddit-answers-mobile.png" alt="Reddit Answers mobile mock — AI synthesis visible above fold with citations, source posts available below" />
         </div>
 
-        <!-- Full experience -->
-        <div class="state-col">
-          <div class="state-label full">Above Threshold</div>
-
-          <div class="phone-mock full-exp">
-            <div class="ph-status-bar">
-              <div class="ph-time"></div>
-              <div class="ph-icons"></div>
-            </div>
-            <div class="ph-search">
-              <div class="ph-search-icon"></div>
-              <div class="ph-search-text"></div>
-            </div>
-
-            <!-- Active synthesis -->
-            <div class="ph-synthesis active">
-              <div class="ph-synth-lines">
-                <div class="ph-synth-line"></div>
-                <div class="ph-synth-line"></div>
-                <div class="ph-synth-line"></div>
-                <div class="ph-synth-line"></div>
-              </div>
-              <div class="hotspot solution" style="inset: 0;"></div>
-            </div>
-
-            <!-- Cited source posts -->
-            <div class="ph-posts">
-              <div class="ph-post cited">
-                <div class="ph-post-header">
-                  <div class="ph-avatar"></div>
-                  <div class="ph-username"></div>
-                  <div class="ph-cite-dot"></div>
-                </div>
-                <div class="ph-post-line" style="width: 85%;"></div>
-                <div class="ph-post-line" style="width: 60%;"></div>
-              </div>
-              <div class="ph-post cited">
-                <div class="ph-post-header">
-                  <div class="ph-avatar"></div>
-                  <div class="ph-username"></div>
-                  <div class="ph-cite-dot"></div>
-                </div>
-                <div class="ph-post-line" style="width: 78%;"></div>
-                <div class="ph-post-line" style="width: 50%;"></div>
-              </div>
-              <div class="ph-post">
-                <div class="ph-post-header">
-                  <div class="ph-avatar"></div>
-                  <div class="ph-username"></div>
-                </div>
-                <div class="ph-post-line" style="width: 70%;"></div>
-                <div class="ph-post-line" style="width: 45%;"></div>
-              </div>
-            </div>
+        <div class="annotations">
+          <div class="annotation above">
+            <span class="ann-icon" aria-hidden="true">
+              <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
+              </svg>
+            </span>
+            AI synthesis visible above fold with citations
           </div>
-
-          <div class="annotations">
-            <div class="annotation solution">
-              <div class="ann-marker solution"></div>
-              AI synthesis visible above fold with citations
-            </div>
-            <div class="annotation solution">
-              <div class="ann-marker solution"></div>
-              Source posts linked as cited references
-            </div>
+          <div class="annotation above">
+            <span class="ann-icon" aria-hidden="true">
+              <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
+              </svg>
+            </span>
+            Source posts available below
           </div>
-        </div>
-
-        <!-- Arrow between states -->
-        <div class="transition-arrow">
-          <div class="arrow-label">threshold</div>
         </div>
       </div>
-    </div>
 
-    <div class="insight">
-      <p><strong>Design principle:</strong> Degradation is not failure. When synthesis quality drops, suppress the synthesis — don't show low-confidence content. The fallback (threaded sources) is the reliable baseline; synthesis is the enhancement.</p>
-    </div>
+      <!-- ===== BELOW THRESHOLD — right ===== -->
+      <div class="column">
+        <span class="pill below">Below Threshold</span>
 
-    <div class="outcome">
-      <span class="outcome-arrow">↳</span>
-      <p>Users always get a functional page — the quality floor is original Reddit threads, not a broken experience</p>
+        <div class="shot">
+          <img class="ui-screenshot" src="../ui-source-posts.png" alt="Reddit threaded source posts mock — synthesis suppressed below confidence threshold, raw source posts surface as fallback" />
+        </div>
+
+        <div class="annotations">
+          <div class="annotation below">
+            <span class="ann-icon" aria-hidden="true">
+              <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+                <line x1="4" y1="4" x2="12" y2="12"/>
+                <line x1="12" y1="4" x2="4" y2="12"/>
+              </svg>
+            </span>
+            Synthesis suppressed — quality below confidence threshold
+          </div>
+          <div class="annotation below">
+            <span class="ann-icon" aria-hidden="true">
+              <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+                <line x1="4" y1="4" x2="12" y2="12"/>
+                <line x1="12" y1="4" x2="4" y2="12"/>
+              </svg>
+            </span>
+            Raw source posts surface as fallback
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
+
+<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+<script>
+(function () {
+  function compute() {
+    var d = document.querySelector('.diagram');
+    if (!d) return 0;
+    return Math.max(
+      d.scrollHeight, d.offsetHeight,
+      document.documentElement ? document.documentElement.scrollHeight : 0,
+      document.body ? document.body.scrollHeight : 0
+    );
+  }
+  function send() {
+    if (!window.parent || window.parent === window) return;
+    var h = compute();
+    if (h > 0) {
+      window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', send);
+  } else {
+    send();
+  }
+  window.addEventListener('load', send);
+  setTimeout(send, 50);
+  setTimeout(send, 250);
+  setTimeout(send, 1000);
+  if (window.ResizeObserver) {
+    var ro = new ResizeObserver(send);
+    var d = document.querySelector('.diagram');
+    if (d) ro.observe(d);
+    if (document.body) ro.observe(document.body);
+  }
+  window.addEventListener('resize', send);
+})();
+</script>
 </body>
 </html>
