@@ -73,6 +73,42 @@ Next up: Thread 1b — fix the 9 remaining L2 reworks + build L3 mobile variants
 | Resume prompt | `portfolio-site/working/mobile-audit/resume-prompt.md` | Copy-paste prompt for Thread 1b | Apr 21 |
 
 ## Log entries
+
+### Apr 29, 2026 (retrospective) — Polish-pass close-out lessons: Cowork merge patterns, recruiter-panel scope optimization, multi-branch hygiene
+
+**Context:** Capturing learnings from the case-ai v3 polish-pass close-out (squashed onto main as `cf6c259`). The polish itself shipped clean across all 7 commits; the close-out hit several friction points worth documenting for future case-study polish-passes (case-sharing, case-subreddit, case-building-portfolio).
+
+**Lessons captured:**
+
+1. **Cowork sandbox leaks `.git/index.lock` and `.git/HEAD.lock` files.** Even read-only git operations from sandbox occasionally leave lock files that block subsequent writes from Terminal. **Mitigation:** prefix every paste-ready commit block with `rm -f ~/CoworkWorkspace/<repo>/.git/{index,HEAD}.lock`. One extra line per commit block; zero "fatal: cannot lock ref" surprises.
+
+2. **Branches that diverged for weeks don't merge cleanly — use surgical file-checkout.** When `restructure/case-ai-v3` and `main` had ~150 file overlap (most of it stale case-notifs versions on case-ai-v3 vs canonical newer versions on main), the standard `git merge` produced 18 conflicts, mostly noise. Pivoting to `git checkout <source-branch> -- <case-ai-only-files>` for the in-scope files plus a manual merge for two cross-cutting files (BUILD-LOG, styles.css) produced one clean squash commit on main with zero case-notifs noise. **Pattern:** when merging a long-lived feature branch where the feature's file scope is small relative to the divergence surface, surgical checkout beats full merge.
+
+3. **Recruiter-panel regression checks: scope to Stage 2 only for visual/structural polish.** Stage 1 (recruiter screen) reads resume + LinkedIn + portfolio overview — these don't change in polish-passes. Stage 3 (XFN panel) reads about page + writing + design philosophy — also don't change. Stage 2 (hiring manager deep dive) is the only stage that deep-reads case-study craft signals. For visual/structural polish, running Stages 1 and 3 burns context for no signal. Stage 2 alone catches the relevant regression vector. (Confirmed empirically: 5 of 6 Stage 2 agents reported zero or noise-level deltas; the visual changes didn't move case-study scoring up or down.)
+
+4. **Multi-branch worktree hygiene: separate worktrees beat branch-switching when both branches need active work.** Mid-thread branch switches between `restructure/case-ai-v3` → `main` → `case-notifications-deferred-retranslations` created 3 minor incidents (lost-edit confusion, stash growth, cross-branch file leakage). The Path 1 pattern (`git worktree add` for each active branch, separate Terminal tabs) is the right structure when juggling parallel scopes. Branch-switching in a single worktree forces stash-and-restore at every crossover — works for occasional pivots, breaks at scale.
+
+5. **CSS-crop pattern: replicate Figma percentages exactly, including `height`.** When porting Figma image-fill displays to CSS, copy ALL Figma percentages — `width`, `height`, `left`, `top` — verbatim. Using `height: auto` for natural-aspect rendering can shift the visible crop band by 5-10% off Figma's intent. Caught on the ai12 feedback-widget crop, where `height: auto` rendered the source-posts section header instead of the "Is this summary helpful?" feedback bar. Fix: `height: 1272.78%` (or whatever Figma's percentage spec is) verbatim.
+
+6. **Annotation pattern converged across 5 redesigns — codify for future case studies.** All polish-pass annotations now follow one structure: `.annotations` wrapper (flex-col, no gap) → `.annotation` rows (`padding: 9px 0`, `gap: 10px`, `align-items: center | flex-start`) → inline SVG icon (× casual-red or ✓ cool-teal via `currentColor`) + neutral-white-semi-bold-11px text (`#E0DFE4`). Eyebrow variant for context labels (cool-teal, 11px semi-bold, 0.88px tracking, uppercase, `padding-left: 3px`). No chip backgrounds, no borders. **Portable to case-sharing / case-subreddit / case-building-portfolio annotations without per-case adjustment.**
+
+7. **Small/Medium/Large spacing system as portable design decision.** Page-level vertical rhythm now expressible as Small (16px, paragraph), Medium (32px, h3 subsection), Large (64px, h2 section break). Tokens (`--spacing-md` / `--spacing-xl` / `--spacing-3xl`) already in `:root` from project start; the polish-pass bound them to specific element relationships in `.case-body h2`, `.case-img-full`, etc. Pattern transfers verbatim to other case studies. Already applies page-wide via `styles.css` — case-notifications, case-sharing, case-subreddit, case-building-portfolio inherit the new rhythm.
+
+**Patterns to propagate to upcoming case-study polish-passes:**
+- Architecture rule: HTML structure + `<img>` PNG embeds for product UI. Never reconstruct UI in HTML/CSS/SVG. Never export whole Figma frames as single PNGs (bakes in chrome). Extract image fills only.
+- Annotation pattern (item 6).
+- S/M/L spacing system (item 7).
+- CSS-crop pattern (item 5).
+- Cowork commit-block prefix mitigation (item 1).
+- Surgical file-checkout merge when divergence is high (item 2).
+- Stage-2-only recruiter-panel regression check for polish-pass scope (item 3).
+
+**Open follow-ups (not blockers for case-ai):**
+- 3 stashes on `restructure/case-ai-v3` hold case-notifs WIP (case-notifications.html edits, not08 silent-toggle/inline-picker, original case-notifs work). Pop on the `case-notifications-deferred-retranslations` worktree when that scope opens.
+- Untracked image assets in `img/diagrams/assets/` (Group 23 1.png, Group 4.png, Phone 3.png, not08-inline-picker-card.png, not08-silent-toggle-card.png) are case-notifs scope leftover in the case-ai worktree from cross-branch contamination. Triage on the deferred branch.
+
+---
+
 ### Apr 29, 2026 (close-out) — case-ai v3 polish-pass complete: 7 commits + Small/Medium/Large spacing system
 
 **What happened:**
