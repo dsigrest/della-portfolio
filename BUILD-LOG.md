@@ -74,6 +74,64 @@ Next up: Thread 1b — fix the 9 remaining L2 reworks + build L3 mobile variants
 
 ## Log entries
 
+### Apr 29, 2026 — Session 37: case-notifications Day 2 Phase A finish + Phase B CSS converge + Outcome GIF
+
+**Scope.** Picked up `resume-prompt-case-notifications-day2-cont-2.md` to finish Phase A (NOT-02b refresh, NOT-17 verify, NOT-02/NOT-08 verify, NOT-E3 node ID + verify, NOT-10 PNG flag) and execute Phase B (CSS converge per diagnostics doc Part 7). Della reviewed end-to-end at preview; surfaced one CSS-cache/server-root diagnosis (worktree gotcha) and 6 out-of-scope diagram retranslations to defer.
+
+**Phase A diagrams.**
+- **NOT-02b** (`1170:766`) — restore-strip-adjust against existing v5. Color-hierarchy fix: column header keeps `--accent` (teal), annotation body moved to `--text-sec` (dim white). Was: both elements rendered in `--accent`, breaking title→body hierarchy. Min-height equalization: 66px on `.annotation` block + `align-items: center` so all four columns (Push 1-line, Chat 2-bullet, Inbox/PMs 3-bullet) align. Padding stayed at Figma-faithful 28px 48px 0 per Della's preview ("keep current 48px L/R"). Audit passes (1 WARN — decorative `.col:hover .mock` lift, kept). Figma divergence flagged: Figma source has annotation text in `--accent` too — HTML diverges intentionally for clearer hierarchy.
+- **NOT-17** (`1176:2158`) — verification fetch only; Della confirmed "fine as-is" after browser preview. Already-clean state: `max-width: 760px` (matches NOT-02), hover stripped per #34, audit passes. Figma divergence flagged: Figma 1176:2158 still shows the "HOVER ANNOTATIONS TO SEE LINKED CHANGES" hint header — HTML correctly strips this.
+- **NOT-02** (`707:112`) — drift fixes: `classList.add('embedded')` quoting standardized to single quotes (audit greps for single-quote form); `@media (max-width: 600px)` collapse moved to 480px to satisfy iframe-width rule. Audit passes. Figma divergence flagged: Figma frame has a 5px green debug border — same NOT-14-style debug pattern from Day 2 diagnostics. HTML correctly does not pull it in.
+- **NOT-08** (`709:668`) — same audit-fix pair (single-quote classList; 600 → 480). Plus per Della's call: dropped `.hover-hint-wrap` ("From one-off banner to consistent on-ramp") header AND the `.takeaway` block ("Pattern shift: subreddit headers...") to match Figma 709:668 exactly. Removed corresponding CSS, animations, and 768px/400px media-query overrides. `comparison-wrap` top padding bumped 8px → 32px to absorb chrome loss. Audit passes.
+- **NOT-E3** (`1214:15655` desktop / `1214:18257` mobile) — Della provided node IDs mid-thread (resume prompt had open question). Content match: 3 pillars (Build habits / Enable curation / Create focus) and descriptions identical to Figma. New ask from Della preview: remove the dark rounded container behind the 3 pillar cards. Applied: `body.embedded .diagram` now sets `background: transparent; background-image: none;` so cards sit directly on case study canvas. Mobile node `1214:18257` queued for the broader mobile-companion audit (punch list #40, separate scope). Audit passes.
+- **NOT-10 PNGs** — flagged: `assets/not10-{newuser,subscriber,contributor}.png` are 74-byte JSON 404 error responses, not real PNGs. Della-action: manually export from Figma `1214:17236` (right-click → Export → PNG @ 2x). Not blocking but case study renders broken at P3 until done.
+
+**Phase B — CSS converge in `portfolio-site-notifs/styles.css`.** Applied Day 2 diagnostics §7 spec.
+- `.impact-callout` (P11 ×2 / P12 +1%) — converged from 64px hero block to 24px quiet pullout: transparent bg, 1px `--border-normal` + 2px accent left rule, padding 14px 18px, body 14px `--text-sec`. Mobile media tightens to 22px metric / 13px body.
+- `.decision-callout` (P8 v1→v2) — caption-style pill: 8px 14px padding, 999px radius, 10px/12px/11px sizes for eyebrow/heading/body, mobile media collapses radius to 12px block.
+- `.learnings-strip` (P19 closing) — pushed back: transparent, border-top only (no left rule), eyebrow 500w `--text-tertiary`, body 14px `--text-sec`. Was: filled card with warm-accent left rule.
+- **Orphan drops** (HTML scan confirmed not referenced): `.section-eyebrow`, `.case-approach-pivot` block + `.approach-steps` + variants, `.microformat` block + `.mechanic-*`, `.hierarchy-cards` block + variants, `.microformat.decision-row`, `.impact-callout-stack`, `.impact-callout .metric-sublabel`. Standalone `.metric-sublabel` definitions for the P19 metrics panel (`.results-metrics-panel .hero-metric .metric-sublabel`, `.metric-row .metric-sublabel`) preserved.
+- CSS brace balance after edit: 256 / 256 (clean). File grew from 30,609 → 36,179 bytes despite drops (the new converged blocks are well-commented and explicit).
+
+**Outcome GIF swap.** Resolves recovered punch list #2. Replaced the `data-asset-pending="unified-inbox-gif"` placeholder (`<div class="placeholder-text">Unified inbox screen recording — Della to provide</div>`) with `<img src="img/diagrams/assets/not14-inbox-results.gif">` (893KB, already on disk). Added `.has-asset` modifier on `.results-phone-slot` for solid-border styling. Added `.results-phone-gif` rule (max-width 280px, 24px radius, soft shadow) so the GIF reads as a phone-mockup-styled element.
+
+**Documentation update — global CLAUDE.md.** Della preference captured: visual reviews must use direct browser links (`computer://` or `localhost:8001/...`) to rendered HTML/PDF/image files, NOT screenshots in chat. Added "Visual review (Non-Negotiable)" subsection under Working Preferences. Six rules for handling visual review surfaces.
+
+**Server-root diagnosis.** Della's first preview pass showed all Phase A + B work invisible (decision callout still 20px, impact callouts still 64px, NOT-08 still had takeaway, etc.). Diagnosis: localhost:8001 was rooted in `portfolio-site/` (main repo, untouched) instead of `portfolio-site-notifs/` (worktree where edits live). Hard-refresh alone doesn't fix this — the running `python -m http.server` had to stop and restart from the correct directory. Captured for future-Claude as a worktree gotcha.
+
+**Quality checks.**
+- `voice-check.py case-notifications.html`: 0 errors, 12 WARN (all pre-existing — long sentences in narrative, stat repetition between prose body and metrics panel which is by design). No new warnings introduced by Phase B.
+- `quality-check.py case-notifications.html`: 0 errors, 0 warnings (clean).
+- `audit-diagram.sh` on all touched diagrams: PASS (NOT-02, NOT-02b, NOT-08, NOT-17, NOT-E3 — single WARN each on decorative hover lifts where applicable).
+
+**Della preview pass — surfaced 6 deferred diagram retranslations + 1 deferred fix.**
+- NOT-19 ranker (#38, Figma `1242:370`) — old, needs full retranslation.
+- NOT-22 preferences-in-context (#41 revived from deleted, Figma `1214:14656`) — PNG crop wrong, diagram out of date.
+- NOT-E2 flywheel (#42, Figma `1242:964`) — broken.
+- NOT-24 three surfaces title bolding (#47, Figma `1214:17210`).
+- NOT-12 layout testing should be 3-in-a-row not 4-quad (#49, Figma `1214:15064`) — meaningful rework: Session 35 deliberately built 4-up per slide spec when Figma was stale; Della has now updated Figma to 3-up.
+- NOT-14 5-tabs-to-three PNG crop (#50, Figma `1214:15389`) — broken.
+- NOT-E4 left labels need wider extent (NEW, folds into #32 retranslation, Figma `1214:16414`) — labels currently clipped/squished.
+
+**Decisions logged.**
+- NOT-02b color hierarchy: Title `--accent` + body `--text-sec` (Della picked this over alternatives "Title `--text-pri` + body `--text-sec`" and "Title `--text-pri` + accent dot + body `--text-sec`").
+- NOT-02b L/R margin: keep current 48px (Della rejected tighter options after browser preview).
+- NOT-08 chrome: drop both hover-hint header and takeaway block (Della picked "match Figma" over "keep both" or "drop takeaway only").
+- Phase B converge timing: apply all 4 in one batch with diff shown before save (Della approved batched apply over per-converge).
+- Close-out timing: hold all close-out for the very end (recommendation accepted — avoids fabricating progress in BUILD-LOG mid-flight).
+
+**Files touched (working tree, uncommitted at session close).**
+- `portfolio-site-notifs/img/diagrams/diagram-not02b-disconnected-surfaces-v5.html`
+- `portfolio-site-notifs/img/diagrams/diagram-not02-inbox-row-unit-v5.html`
+- `portfolio-site-notifs/img/diagrams/diagram-not08-subreddit-onramps-v5.html`
+- `portfolio-site-notifs/img/diagrams/diagram-not-e3-strategic-pillars-v5.html`
+- `portfolio-site-notifs/styles.css` (~5.5KB net delta)
+- `portfolio-site-notifs/case-notifications.html` (Outcome GIF swap)
+- `~/CoworkWorkspace/CLAUDE.md` (Visual review preference)
+- `~/CoworkWorkspace/Get-a-job/sessions/recovered-47-task-punch-list.md` (status sync — Session 37 close-out)
+
+---
+
 ### Apr 29, 2026 — Session 36: case-notifications Day 2 Phase A partial + figma-to-html v2.6.0
 
 **Scope.** Continued the Day 2 recovery roadmap from `resume-prompt-case-notifications-day2-cont.md`. Session 35 had landed structural HTML edits + 9 retranslated diagrams; the Day 2 audit revealed 6 of 9 had drifted. This session shipped two of the remaining diagram tasks (NOT-03, NOT-E7), wired the audit script into the figma-to-html skill as a mandatory gate, and wrote the handoff for the next thread.

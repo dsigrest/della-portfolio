@@ -1236,253 +1236,94 @@ main {
         }
 
 /* ============================================================
-   case-notifications v3 — Batch 1 additions
-   Eyebrow / Approach pivot / Impact callout
-   Spec: working/planning-docs/case-notifications-change-outline-v3.md §3
+   case-notifications v3 — Batch 1 additions (Day 2 converged)
+   Impact callout / Decision callout (caption pill)
+   Orphans dropped 2026-04-29: .section-eyebrow, .case-approach-pivot,
+   .approach-steps, .step-done, .step-active, .microformat (block),
+   .mechanic-* , .hierarchy-cards, .hierarchy-card, .hierarchy-eyebrow,
+   .hierarchy-body, .microformat.decision-row, .impact-callout-stack,
+   .impact-callout .metric-sublabel. All un-referenced in HTML; safe to drop.
+   Spec: sessions/case-notifications-v3-day2-diagnostics.md §7
    ============================================================ */
 
-.section-eyebrow {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.88px;
-  text-transform: uppercase;
-  color: var(--color-accent, #7fb5b0);
-  margin: 0 0 12px 0;
-}
-
-.case-approach-pivot {
-  margin: var(--spacing-xl) 0;
-}
-.approach-steps {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
-}
-.approach-steps li {
-  display: flex;
-  align-items: center;
-  gap: 40px;
-  font-weight: 700;
-  letter-spacing: -1.92px;
-  line-height: 1.1;
-}
-.approach-steps .step-num {
-  font-size: 32px;
-  letter-spacing: -0.64px;
-}
-.approach-steps .step-text {
-  font-size: 64px;
-}
-.approach-steps .step-done {
-  color: var(--text-tertiary, rgba(224, 223, 228, 0.4));
-}
-.approach-steps .step-active {
-  color: var(--text-primary, #e0dfe4);
-}
-
+/* ---------- Impact callout (P11 ×2 / P12 +1%) — quiet pullout, not hero ---------- */
 .impact-callout {
   display: flex;
-  gap: 24px;
-  align-items: center;
-  padding: 24px 32px;
-  background: var(--surface-1);
-  border: 1px solid var(--color-accent);
-  border-radius: 10px;
-  margin: var(--spacing-lg) 0;
+  gap: 16px;
+  align-items: baseline;
+  padding: 14px 18px;
+  background: transparent;
+  border: 1px solid var(--border-normal);
+  border-left: 2px solid var(--color-accent);
+  border-radius: 6px;
+  margin: var(--spacing-sm) 0 var(--spacing-md);
 }
 .impact-callout .metric {
-  font-size: 64px;
-  font-weight: 700;
-  letter-spacing: -1.92px;
-  line-height: 1.1;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  line-height: 1;
   color: var(--color-accent);
+  flex-shrink: 0;
 }
 .impact-callout .body {
   flex: 1;
-  font-size: 24px;
-  font-weight: 600;
-  letter-spacing: -0.48px;
-  line-height: 1.2;
-  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.5;
+  color: var(--text-secondary);
 }
 
 @media (max-width: 768px) {
-  .approach-steps li {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-  .approach-steps .step-text {
-    font-size: 36px;
-    letter-spacing: -1px;
-  }
   .impact-callout {
     flex-direction: column;
     align-items: flex-start;
-    padding: 20px 24px;
+    gap: 6px;
+    padding: 12px 14px;
   }
-  .impact-callout .metric {
-    font-size: 48px;
-  }
-  .impact-callout .body {
-    font-size: 18px;
-  }
+  .impact-callout .metric { font-size: 22px; }
+  .impact-callout .body   { font-size: 13px; }
 }
 
-/* ---------- Microformat: EXPERIMENT / RESULT (Position 7; reused at Position 17 in Batch 5) ---------- */
-.microformat {
-  margin: var(--spacing-lg) 0;
-  padding: var(--spacing-lg);
-  background: var(--surface-1);
+/* ---------- Decision callout (P8 v1→v2) — caption-style pill ----------
+   Preserves existing 3-element HTML (.decision-eyebrow + .decision-heading +
+   .decision-body). All inner text shrinks; container becomes a pill. */
+.decision-callout {
+  margin: var(--spacing-sm) 0;
+  padding: 8px 14px;
+  background: transparent;
   border: 1px solid var(--border-normal);
-  border-radius: 10px;
-}
-.microformat-eyebrow {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-secondary);
-  letter-spacing: 0.2px;
-  margin: 0;
-}
-.microformat-eyebrow + .microformat-mechanics {
-  margin-top: var(--spacing-md);
-}
-.microformat-mechanics + .microformat-eyebrow {
-  margin-top: var(--spacing-md);
-}
-.microformat-tag {
+  border-radius: 999px;
   display: inline-block;
-  font-size: 11px;
-  font-weight: 700;
+  max-width: 100%;
+}
+.decision-eyebrow {
+  font-size: 10px;
+  font-weight: 600;
   letter-spacing: 0.88px;
   text-transform: uppercase;
-  color: var(--accent-warm);
-  margin-right: 4px;
+  color: var(--text-tertiary);
+  margin: 0 0 2px 0;
 }
-.microformat-mechanics {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--spacing-md);
-}
-.mechanic-card {
-  padding: var(--spacing-md) var(--spacing-lg);
-  background: var(--surface-2);
-  border: 1px solid var(--border-subtle);
-  border-radius: 8px;
-}
-.mechanic-tag {
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
+.decision-heading {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
   color: var(--text-primary);
-  margin: 0 0 6px 0;
+  margin: 0 0 2px 0;
 }
-.mechanic-dot {
-  color: var(--accent-warm);
-  margin-right: 2px;
-}
-.mechanic-body {
-  font-size: 14px;
-  color: var(--text-secondary);
-  line-height: 1.5;
-  margin: 0;
-}
-@media (max-width: 640px) {
-  .microformat-mechanics {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* ---------- Hierarchy cards (Position 8 — 3-level unread system) ---------- */
-.hierarchy-cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-md);
-  margin: var(--spacing-lg) 0;
-}
-.hierarchy-card {
-  padding: var(--spacing-lg);
-  background: var(--surface-1);
-  border: 1px solid var(--border-subtle);
-  border-radius: 10px;
-}
-.hierarchy-eyebrow {
+.decision-body {
   font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.88px;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin: 0 0 var(--spacing-sm) 0;
-}
-.hierarchy-body {
-  font-size: 14px;
-  color: var(--text-primary);
-  line-height: 1.5;
+  color: var(--text-tertiary);
+  line-height: 1.4;
   margin: 0;
 }
 @media (max-width: 768px) {
-  .hierarchy-cards {
-    grid-template-columns: 1fr;
+  .decision-callout {
+    border-radius: 12px;
+    display: block;
   }
-}
-
-/* ---------- Decision callout (Position 8 — v1 → v2 unread color fix story) ---------- */
-.decision-callout {
-  margin: var(--spacing-lg) 0;
-  padding: var(--spacing-lg) var(--spacing-xl);
-  background: var(--surface-1);
-  border-left: 3px solid var(--accent);
-  border-radius: 6px;
-}
-.decision-eyebrow {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.88px;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin: 0 0 var(--spacing-xs) 0;
-}
-.decision-heading {
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: -0.2px;
-  color: var(--text-primary);
-  margin: 0 0 var(--spacing-sm) 0;
-}
-.decision-body {
-  font-size: 15px;
-  color: var(--text-secondary);
-  line-height: 1.6;
-  margin: 0;
-}
-
-/* ---------- Decision row (Position 17 — AMBIGUITY NAVIGATED, single-line variant of microformat) ---------- */
-.microformat.decision-row {
-  padding: var(--spacing-md) var(--spacing-lg);
-}
-.microformat.decision-row .microformat-eyebrow {
-  font-size: 14px;
-  color: var(--text-primary);
-}
-
-/* ---------- Impact callout sublabel variant (Position 18 — 1 NAV SLOT FREED) ---------- */
-.impact-callout.impact-callout-stack .metric-group {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-}
-.impact-callout .metric-sublabel {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.88px;
-  text-transform: uppercase;
-  color: var(--accent);
-  white-space: nowrap;
 }
 
 /* ---------- Results metrics panel (Position 19 — 5 metrics with sublabels and captions) ---------- */
@@ -1503,6 +1344,21 @@ main {
   justify-content: center;
   min-height: 480px;
   gap: var(--spacing-md);
+}
+/* When the slot has the actual GIF (not the placeholder) — solid border,
+   GIF sized as a phone-mockup-ish element. Della call 2026-04-29. */
+.results-phone-slot.has-asset {
+  border: 1px solid var(--border-normal);
+  border-style: solid;
+}
+.results-phone-slot .results-phone-gif {
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  border-radius: 24px;
+  display: block;
+  margin-bottom: var(--spacing-md);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
 }
 .results-phone-slot .placeholder-text {
   font-size: 14px;
@@ -1633,25 +1489,28 @@ main {
   }
 }
 
-/* ---------- Learnings strip (Position 19 closing) ---------- */
+/* ---------- Learnings strip (P19 closing) — pushed back per Day 2 diagnostics §7
+   Was: filled card with warm accent left rule + bright eyebrow.
+   Now: dimmer text, transparent bg, top border only. Reads as a quiet closer. */
 .learnings-strip {
   margin: var(--spacing-xl) 0 var(--spacing-2xl) 0;
-  padding: var(--spacing-lg) var(--spacing-xl);
-  background: var(--surface-1);
-  border-left: 3px solid var(--accent-warm);
-  border-radius: 6px;
+  padding: var(--spacing-md) 0;
+  background: transparent;
+  border-top: 1px solid var(--border-normal);
+  border-left: none;
+  border-radius: 0;
 }
 .learnings-eyebrow {
   font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.88px;
+  font-weight: 500;
+  letter-spacing: 0.6px;
   text-transform: uppercase;
-  color: var(--accent-warm);
-  margin: 0 0 var(--spacing-sm) 0;
+  color: var(--text-tertiary);
+  margin: 0 0 6px 0;
 }
 .learnings-body {
-  font-size: 16px;
-  color: var(--text-primary);
-  line-height: 1.6;
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.55;
   margin: 0;
 }

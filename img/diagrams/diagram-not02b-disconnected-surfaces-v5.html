@@ -107,26 +107,35 @@
     transform: translateY(-2px);
   }
 
+  /* Annotation block — title (col-label) carries --accent above; body text
+     pushed back to --text-sec for clear title→body hierarchy. min-height
+     equalizes all four columns regardless of bullet count (Push: 1 line,
+     Chat: 2 bullets, Inbox/PMs: 3 bullets). */
   .annotation {
     border: 1px solid var(--glass-border);
     background: var(--glass-bg);
     border-radius: 8px;
-    padding: 7px 10px;
-    color: var(--accent);
+    padding: 9px 12px;
+    color: var(--text-sec);
     font-size: 11px;
     line-height: 1.4;
     box-shadow: var(--glass-highlight);
     margin-top: 10px;
+    min-height: 66px;
+    display: flex;
+    align-items: center;
   }
   .annotation ul {
     list-style: disc;
     padding-left: 16px;
+    width: 100%;
   }
   .annotation ul li {
     margin: 0;
   }
   .annotation p {
     margin: 0;
+    width: 100%;
   }
 
   /* Soft radial glow behind cards */

@@ -262,9 +262,10 @@
     .comparison-wrap { padding: 8px 16px 20px; }
     .comparison { gap: 12px; }
   }
-  /* 600 and below: collapse to single column — PNG mocks need real width.
-     Stacked Before → After preserves the reading order. */
-  @media (max-width: 600px) {
+  /* 480 and below: collapse to single column — PNG mocks need real width.
+     Stacked Before → After preserves the reading order. iframe-width rule:
+     1-col collapse only at ≤480px (was 600px — violated audit gate). */
+  @media (max-width: 480px) {
     .comparison { grid-template-columns: 1fr; gap: 24px; }
     .comparison-wrap { padding: 12px 16px 24px; }
   }
@@ -519,7 +520,7 @@
     el.setAttribute('tabindex', '0');
   });
 </script>
-<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
 <!-- diagram-height-poster v1 -->
 <script>
 (function () {

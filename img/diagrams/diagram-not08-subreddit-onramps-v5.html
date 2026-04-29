@@ -46,22 +46,11 @@
     gap: 16px;
   }
 
-  /* ── Hover hint (top) ── */
-  .hover-hint-wrap {
-    padding: 20px 48px 0;
-    display: flex;
-    justify-content: center;
-  }
-  .hover-hint {
-    font-size: 10px;
-    color: var(--text-dim);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-
   /* ── Comparison ── */
+  /* hover-hint header dropped to match Figma 709:668 (Della call 2026-04-29).
+     Comparison-wrap top padding raised to 32px to absorb the visual space. */
   .comparison-wrap {
-    padding: 8px 48px 48px;
+    padding: 32px 48px 48px;
   }
   .comparison {
     display: grid;
@@ -159,26 +148,12 @@
   }
   .shift-indicator svg { color: var(--accent); }
 
-  /* ── Footer takeaway ── */
-  .takeaway {
-    margin: 0 48px 40px;
-    padding: 14px 18px;
-    background: rgba(127,181,176,0.06);
-    border-left: 3px solid var(--accent);
-    border-radius: 10px;
-    font-size: 12px;
-    color: var(--accent);
-    line-height: 1.5;
-  }
-  .takeaway strong { font-weight: 600; }
+  /* .takeaway block dropped to match Figma 709:668 (Della call 2026-04-29). */
 
   /* ── Load animations ── */
   @keyframes fadeSlideIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
-  }
-  .hover-hint-wrap {
-    animation: fadeSlideIn 0.5s ease-out 0ms forwards;
   }
   .col.before {
     animation: fadeSlideIn 0.5s ease-out 120ms forwards;
@@ -192,26 +167,21 @@
     animation: fadeSlideIn 0.5s ease-out 320ms forwards;
     opacity: 0;
   }
-  .takeaway {
-    animation: fadeSlideIn 0.5s ease-out 260ms forwards;
-    opacity: 0;
-  }
 
   /* ─ Mobile fit — progressively restructure as viewport narrows ─ */
   @media (max-width: 768px) {
     body { padding: 16px; }
-    .hover-hint-wrap { padding: 14px 16px 0; }
-    .comparison-wrap { padding: 8px 16px 20px; }
+    .comparison-wrap { padding: 24px 16px 20px; }
     .comparison { gap: 12px; }
   }
-  @media (max-width: 600px) {
+  /* iframe-width rule: 1-col collapse only at ≤480px (was 600px — audit gate). */
+  @media (max-width: 480px) {
     .comparison { grid-template-columns: 1fr; gap: 24px; }
     .comparison-wrap { padding: 12px 16px 24px; }
   }
   @media (max-width: 400px) {
     body { padding: 10px; }
-    .hover-hint-wrap { padding: 12px 10px 0; }
-    .comparison-wrap { padding: 10px 10px 18px; }
+    .comparison-wrap { padding: 18px 10px 18px; }
     .comparison { gap: 20px; }
   }
 
@@ -223,12 +193,7 @@
 <body>
 <div class="diagram" data-diagram-id="not08">
 
-  <!-- Hover hint header -->
-  <div class="hover-hint-wrap">
-    <p class="hover-hint">From one-off banner to consistent on-ramp</p>
-  </div>
-
-  <!-- Comparison -->
+  <!-- Comparison (hover-hint header dropped — Della call 2026-04-29 to match Figma 709:668) -->
   <div class="comparison-wrap">
     <div class="comparison">
 
@@ -265,13 +230,10 @@
     </div>
   </div>
 
-  <!-- Takeaway -->
-  <div class="takeaway">
-    <strong>Pattern shift:</strong> subreddit headers moved from bespoke banner treatments to a reusable on-ramp component. The same slot now serves notification opt-ins, joins, and pinned updates — no new one-off builds needed.
-  </div>
+  <!-- .takeaway block dropped — Della call 2026-04-29 to match Figma 709:668. -->
 
 </div>
-<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
 <!-- diagram-height-poster v1 -->
 <script>
 (function () {

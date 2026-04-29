@@ -160,9 +160,10 @@
     to { opacity: 1; transform: translateY(0) scale(1); }
   }
 
-  /* Embed mode */
+  /* Embed mode — Della call 2026-04-29: remove the diagram's container background
+     so the three pillar cards sit on the case study canvas directly. */
   body.embedded { padding: 0; min-height: auto; display: block; background: transparent; overflow: hidden; }
-  body.embedded .diagram { border-radius: 0; }
+  body.embedded .diagram { border-radius: 0; background: transparent; background-image: none; }
 </style>
 </head>
 <body>
