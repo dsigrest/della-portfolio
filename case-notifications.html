@@ -49,7 +49,7 @@
 
     <section class="case-body">
       <section class="case-summary">
-        <h2>From fragmented legacy to unified system</h2>
+        <h2>From fragmented surfaces to a unified system</h2>
         <div class="summary-pair">
           <div class="summary-tile">
             <h3>Challenge</h3>
@@ -65,15 +65,13 @@
             src="img/diagrams/diagram-not03-full-inbox-redesign-v5.html"
             loading="lazy"
             scrolling="no"
-            title="Full Inbox Redesign — hover-annotated before/after with paired bullets"
+            title="Full Inbox Redesign — before/after with annotations flanking each phone"
             style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
           ></iframe>
         </div>
       </section>
 
-      <h2>Challenge</h2>
-
-      <h3>Four systems. Three platforms. Six years.</h3>
+      <h2>Four systems. Three platforms. Six years.</h2>
 
       <p>Reddit messaging had drifted across four disconnected surfaces, off the design system &mdash; hard to scale, harder to experiment.</p>
 
@@ -121,11 +119,6 @@
         ></iframe>
       </div>
 
-      <div class="impact-callout">
-        <div class="metric">2%</div>
-        <div class="body">of all comments on Reddit come from the inbox &mdash; the datapoint that shifted leadership investment.</div>
-      </div>
-
       <h2>Scalable foundation</h2>
 
       <h3>Create a global inbox row component</h3>
@@ -148,22 +141,7 @@
 
       <p>Platform-native gestures replaced the overflow menu &mdash; actions without an extra tap, and the trailing slot freed for a flex element.</p>
 
-      <p>I removed the <strong>overflow menu, icon-based message type indicators</strong>, and segmented inbox sections that pushed content below the fold. Icons had low comprehension&mdash;I replaced them with clear, embedded copy. Swipe actions and long press handled secondary options. Engagement held steady.</p>
-
-      <div class="microformat experiment-result">
-        <p class="microformat-eyebrow"><span class="microformat-tag">Experiment</span> &middot; What gesture is most intuitive for users?</p>
-        <div class="microformat-mechanics">
-          <div class="mechanic-card">
-            <p class="mechanic-tag">Swipe &rarr;</p>
-            <p class="mechanic-body">Primary secondary action</p>
-          </div>
-          <div class="mechanic-card">
-            <p class="mechanic-tag"><span class="mechanic-dot">&bull;</span> Long press</p>
-            <p class="mechanic-body">Access secondary menu</p>
-          </div>
-        </div>
-        <p class="microformat-eyebrow"><span class="microformat-tag">Result</span> &middot; swipe</p>
-      </div>
+      <p>I removed the <strong>overflow menu, icon-based message type indicators</strong>, and segmented inbox sections that pushed content below the fold. Icons had low comprehension&mdash;I replaced them with clear, embedded copy. Swipe actions and long press handled secondary options. I tested both for the primary gesture; swipe won on intuitiveness. Engagement held steady.</p>
 
       <div class="case-img-full diagram-embed" data-diagram="not-02b-swipe" data-mobile-pending="true">
         <iframe
@@ -177,8 +155,6 @@
 
       <h3>Simplify badging with progressive disclosure</h3>
 
-      <p>Every badge maps 1:1 to a visible item &mdash; users never have to do math.</p>
-
       <p>I rebuilt the unread system around <strong>progressive disclosure</strong>: a single numeric badge at the inbox level, a dot indicator at the tab level, typography plus subtle color at the row level. Every badge mapped 1:1 to a visible item&mdash;users never had to do math.</p>
 
       <div class="case-img-full diagram-embed" data-diagram="not-04" data-mobile-pending="true">
@@ -191,21 +167,6 @@
         ></iframe>
       </div>
 
-      <div class="hierarchy-cards">
-        <div class="hierarchy-card">
-          <p class="hierarchy-eyebrow">Level 01 &middot; Inbox badge count</p>
-          <p class="hierarchy-body">Aggregate count at the single entry point &mdash; exact, scannable.</p>
-        </div>
-        <div class="hierarchy-card">
-          <p class="hierarchy-eyebrow">Level 02 &middot; Tab indicator</p>
-          <p class="hierarchy-body">Boolean signal &mdash; new items exist in this tab, without counting.</p>
-        </div>
-        <div class="hierarchy-card">
-          <p class="hierarchy-eyebrow">Level 03 &middot; Row highlight</p>
-          <p class="hierarchy-body">Per-item read/unread via typographic weight and subtle tint shift.</p>
-        </div>
-      </div>
-
       <p>The migration introduced a <strong>less prominent unread color</strong> and click-through dropped. I used the data to identify the cause, partnered with the design systems team to adjust, and the fix influenced design system usage beyond the inbox.</p>
 
       <div class="decision-callout">
@@ -214,19 +175,7 @@
         <p class="decision-body">DS migration introduced a less prominent unread color &rarr; click-through dropped &rarr; data identified the cause &rarr; v2 restored contrast &rarr; recovery beyond the inbox.</p>
       </div>
 
-      <div class="case-img-full diagram-embed" data-diagram="not-04b" data-mobile-pending="true">
-        <iframe
-          src="img/diagrams/diagram-not04b-unread-color-fix-v5.html"
-          loading="lazy"
-          scrolling="no"
-          title="Unread color fix &mdash; two literal color swatches showing v1 (low contrast, #f6f6f6 unread vs #fefefe read) and v2 (higher contrast, #eef0f1 unread vs white read)"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-      </div>
-
-      <h2>Frameworks</h2>
-
-      <h3>Identify needs by user signal and intent</h3>
+      <h2>Identify needs by user signal and intent</h2>
 
       <p>We can target beneficial experiences by understanding a user&rsquo;s goal and what we know about them.</p>
 
@@ -270,11 +219,6 @@
 
       <p>I shipped <strong>decay logic</strong> for breaking news, recommendations, and subreddit updates: if a user doesn&rsquo;t open a notification type after a threshold, the system asks whether to turn it off. The ML team ran parallel experiments on signal thresholds while I defined the user-facing behavior&mdash;a <strong>continuous dialogue</strong> between design and engineering, each side&rsquo;s findings reshaping the other&rsquo;s approach.</p>
 
-      <div class="impact-callout">
-        <div class="metric">&times;2</div>
-        <div class="body">click-through on contextualized notifications vs. generic framing.</div>
-      </div>
-
       <div class="case-img-full diagram-embed" data-diagram="not-17" data-mobile-pending="true">
         <iframe
           src="img/diagrams/diagram-not17-context-defaults-v5.html"
@@ -285,7 +229,12 @@
         ></iframe>
       </div>
 
-      <h3>History, not just the latest.</h3>
+      <div class="impact-callout">
+        <div class="metric">&times;2</div>
+        <div class="body">click-through on contextualized notifications vs. generic framing.</div>
+      </div>
+
+      <h3>Display history, not just the latest</h3>
 
       <p>Each new push wiped older ones from the inbox; which defied user expectations and interrupted discovery. I restored the history &mdash; discovery flows stay intact mid-stream.</p>
 
@@ -326,7 +275,7 @@
         ></iframe>
       </div>
 
-      <h3>Preferences at the point of decision.</h3>
+      <h3>Clarifying notification preferences</h3>
 
       <p>Subscription settings used vague and hidden under an overflow; I collaborated with eng to establish concrete options. Then, I surfaced them on the subreddit page itself.</p>
 
@@ -341,6 +290,8 @@
           style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
         ></iframe>
       </div>
+
+      <h3>Preferences at the point of decision</h3>
 
       <p>I then surfaced these preferences <strong>on the subreddit page itself</strong>&mdash;point of decision, not buried three screens deep.</p>
 
@@ -366,36 +317,6 @@
           loading="lazy"
           scrolling="no"
           title="Strategy flywheel — leverage signal, deliver value, tune experience"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-      </div>
-
-      <h3>Contextual suggestions</h3>
-
-      <p>Beyond the subreddit page, recommendation surfaces also gained on-ramps. Push notifications and inbox cards offered subscription suggestions tied to the user&rsquo;s recent activity&mdash;turning a passive recommendation into an active subscription opportunity at the moment of engagement.</p>
-
-      <div class="case-img-full diagram-embed" data-diagram="not-22" data-mobile-pending="true">
-        <iframe
-          src="img/diagrams/diagram-not22-contextual-suggestions-v5.html"
-          loading="lazy"
-          scrolling="no"
-          title="Contextual suggestions &mdash; push upsell tied to a community visit and inbox row variant with an inline subscribe affordance (asset slots awaiting Figma exports)"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-      </div>
-
-      <h3>Global settings</h3>
-
-      <p>&hellip;and simplified subscription management in global settings.</p>
-
-      <p>The flat list replaced a nested per-community drill-down&mdash;every community and its alert state visible in one view.</p>
-
-      <div class="case-img-full diagram-embed" data-diagram="not-09" data-mobile-pending="true">
-        <iframe
-          src="img/diagrams/diagram-not09-global-settings-v5.html"
-          loading="lazy"
-          scrolling="no"
-          title="Global notification settings — before nested hierarchy vs. after flat unified view"
           style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
         ></iframe>
       </div>
@@ -426,10 +347,6 @@
 
       <p>I tested <strong>four layouts</strong> &mdash; moving chat to the header, complete unification, group-by-activity-type, and tabs. Users wanted to navigate the inbox as little as possible&mdash;scan, act, leave. The inbox wasn&rsquo;t a destination&mdash;it was a switchboard that guided users through their session.</p>
 
-      <div class="microformat decision-row">
-        <p class="microformat-eyebrow"><span class="microformat-tag">Ambiguity navigated</span> &middot; Chose Tabbed because scan speed was the controlling constraint &mdash; inbox as switchboard, not feed.</p>
-      </div>
-
       <div class="case-img-full diagram-embed" data-diagram="not-12" data-mobile-pending="true">
         <iframe
           src="img/diagrams/diagram-not12-inbox-layout-experiments-v5.html"
@@ -458,27 +375,7 @@
 
       <p>The result: one inbox, two tabs (Notifications + Chat), all messaging consolidated. The mental model is finally what users expected from the start&mdash;a single source of truth where every kind of communication lands and every kind of action is one tap away.</p>
 
-      <div class="impact-callout impact-callout-stack">
-        <div class="metric-group">
-          <div class="metric">1</div>
-          <div class="metric-sublabel">Nav slot freed</div>
-        </div>
-        <div class="body">Consolidating four messaging surfaces into one returned a slot to the bottom nav &mdash; the downstream effect of the inbox rebuild on surface experiments.</div>
-      </div>
-
-      <div class="case-img-full diagram-embed" data-diagram="not-14-v2" data-mobile-pending="true">
-        <iframe
-          src="img/diagrams/diagram-not14-unified-inbox-v5.html"
-          loading="lazy"
-          scrolling="no"
-          title="Unified inbox &mdash; full mobile mockup with Notifications and Chat tabs, mixed feed, and simplified bottom navigation"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-      </div>
-
-      <h2>Results</h2>
-
-      <h3>Four surfaces, one scalable system</h3>
+      <h2>Outcome: four surfaces &rarr; one scalable system</h2>
 
       <p>The segmentation framework became the foundation for notification design across Reddit. The unified inbox reshaped app navigation and enabled product experimentation in spaces that didn&rsquo;t exist before.</p>
 

@@ -74,6 +74,134 @@ Next up: Thread 1b — fix the 9 remaining L2 reworks + build L3 mobile variants
 
 ## Log entries
 
+### Apr 29, 2026 — Session 36: case-notifications Day 2 Phase A partial + figma-to-html v2.6.0
+
+**Scope.** Continued the Day 2 recovery roadmap from `resume-prompt-case-notifications-day2-cont.md`. Session 35 had landed structural HTML edits + 9 retranslated diagrams; the Day 2 audit revealed 6 of 9 had drifted. This session shipped two of the remaining diagram tasks (NOT-03, NOT-E7), wired the audit script into the figma-to-html skill as a mandatory gate, and wrote the handoff for the next thread.
+
+**Diagrams shipped.**
+- **NOT-03 v5** — full rebuild from Figma `1310:731`. Three iterations: (1) restructured annotations from below → flanking each phone; (2) Della updated Figma to move column headers ("Before"/"After") into the annotation stacks, dropped dot indicators, white titles with colored icons, dimmer After descriptions; (3) image scaling fix — switched from `aspect-ratio + object-fit:cover` to natural `width: 100%; height: auto` to eliminate horizontal cropping at narrow widths. Audit passes. iframe title attr in `case-notifications.html` updated from "hover-annotated" → "before/after with annotations flanking each phone".
+- **NOT-E7 v5** — full re-sync from Figma `1214:16053` (Della had pointed me at `816:17` first; corrected mid-session). Stripped: 3 stage cards, 2% callout, all click-to-isolate JS, hover handlers, `.flow-glow` paths, `.flow-path.secondary` class. Restructured: legend bottom (3 items), DAU/CLICKERS/CONTRIBUTORS row removed, "didn't contribute" dropout bar relocated `x=630, y=220` → `x=580, y=287`, segments collapsed 4 → 3. Per-segment dropout flows added (was core-only). Col2→col3 source x snapped 346 → 339 to close the bar gap. Col1 sources split into adjacent non-overlapping slices per segment. Final opacity values: main flow `fill-opacity: 0.85` with 4-stop gradient `1.0 / 0.95 / 0.75 / 0.55`, dropouts `fill-opacity: 0.30`. Six iterations across this session to land geometry + opacity.
+
+**Skill update — figma-to-html v2.5.0 → v2.6.0.**
+Added Step 0 awareness of `audit-diagram.sh`. Added Step 6 mandatory gate (bash run, exit 0 required, lists 8 failure classes the script catches inline). Description trimmed 1190 → 946 chars to satisfy Cowork's 1024-char validator while preserving every trigger phrase. Packaged via `~/CoworkWorkspace/Skills/package-skill.sh figma-to-html`, installed via Cowork drag-drop. SKILLS-REGISTRY.md row updated. learnings.md appended with v2.6.0 entry capturing the mechanical-gate-vs-vibes-check insight.
+
+**Handoff.** Wrote `~/CoworkWorkspace/Get-a-job/sessions/resume-prompt-case-notifications-day2-cont-2.md` (220 lines, voice-lint clean) covering Phase A finish (NOT-02b `1170:766`, NOT-17 `1176:2158`, NOT-02 `707:112`, NOT-08 `709:668`, NOT-E3 open question, NOT-10 PNGs Della-action), Phase B CSS converge per diagnostics doc Part 7, Phase C preview + close-out.
+
+**Decisions logged.**
+- NOT-03 After-column copy: kept v5's solution-language ("Single update entry point", etc.) over Figma's literal duplicate-of-Before text. Della implicitly approved by accepting the rendered output.
+- NOT-E7 segment merge: resurrected + new buckets merged into one "New users" red bar/flow per segment, mirroring Figma's design.
+- Skill propagation pipeline: canonical `Skills/<name>/` → `package-skill.sh` → `.skill` ZIP → drag onto Cowork. Legacy `~/CoworkWorkspace/.claude/skills/figma-to-html/SKILL.md` (read-only, Apr 21 v2.4.0 era) is abandoned infrastructure — leave it alone.
+- Skill-forge eval pass for figma-to-html v2.7.0 (broader restore-strip-adjust + palette preamble + Della-reviews-before-commit) queued for post-Phase-D close-out, not in next thread's scope.
+
+**Files touched (working tree, uncommitted at session close).**
+- `portfolio-site-notifs/img/diagrams/diagram-not03-full-inbox-redesign-v5.html`
+- `portfolio-site-notifs/img/diagrams/diagram-not-e7-sankey-flow-v5.html`
+- `portfolio-site-notifs/case-notifications.html` (iframe title attr only)
+- `~/CoworkWorkspace/Skills/figma-to-html/SKILL.md`
+- `~/CoworkWorkspace/Skills/figma-to-html/learnings.md`
+- `~/CoworkWorkspace/Skills/SKILLS-REGISTRY.md`
+- `~/CoworkWorkspace/Skills/figma-to-html.skill` (packaged bundle)
+- `~/CoworkWorkspace/Get-a-job/sessions/resume-prompt-case-notifications-day2-cont-2.md` (new)
+
+**Lessons captured (for skill references on next pass).**
+- Cowork validator rejects skill descriptions >1024 chars. Trim before packaging — preserve every trigger phrase. Worth a `references/skill-propagation.md` in figma-to-html on the next pass.
+- Sankey path geometry: col1 sources must split into adjacent non-overlapping y-slices for active vs dropout flows; stage 2→3 source x must equal col2 bar's right edge (not start past it). Worth a `references/sankey-geometry.md` if the pattern recurs.
+- Mechanical verification gates beat self-reported checks. v2.6.0's audit-script-as-gate codifies this — agents' "all checks pass" summaries proved unreliable across the Day 1/Day 2 batches.
+
+**Open follow-ups.**
+- SESSION-STATE.md is at 196KB, way over the 50KB soft limit — needs split per global living-doc rule. Flagged in this entry for next session.
+- NOT-10 PNG export blocks final preview; Della-action at `~/CoworkWorkspace/Get-a-job/portfolio-site-notifs/img/diagrams/assets/`.
+
+### Apr 28, 2026 (PM/EVE) — Session 35: case-notifications v3 batch supervision — 7 commits shipped
+
+**What happened:**
+Continuation of the Apr 28 Cowork thread that produced Session 34's v3 spec. After the spec was written and the metric registry gap was resolved (Della verbally confirmed the Slide 20 metrics; registry updated), the same thread supervised Claude Code through the full 5-batch HTML refactor against `case-notifications-figma-rearrange-v2`. All 19 v3 positions shipped. Pattern: Cowork-side wrote focused kickoff prompts → Della pasted into a separate Claude Code session → Claude Code edited + committed in the worktree → Della previewed at localhost → next batch.
+
+**Commits supervised (in order on `case-notifications-figma-rearrange-v2`):**
+
+| # | Commit | Scope |
+|---|---|---|
+| 1 | `aa8f64f` | Batch 1: Positions 1–5 (Summary, Challenge, 3 inboxes, engagement funnel, Approach NEW) — Slide 09 Approach pivot inserted, v2 Rows 3 + 4 retired (taxonomy gap, decaying retention) |
+| 2 | (next) | Batch 1.5: slide-voice headings retroactively swapped on Positions 1–5 — Della reviewed Batch 1, decided slide-voice reads as more skimmable than v2 structural labels |
+| 3 | (next) | Batch 1.5 cleanup: removed duplicate ledes at P1 + P2 — heading swap had collided with Batch 1's "preserve heading + add slide title as lede" default, leaving the same text in both spots |
+| 4 | (next) | Batch 2: Positions 6–8 (Foundation, swipe, unread merged) — EXPERIMENT/RESULT microformat added at P7, v2 Rows 8 + 9 collapsed to a single h3 with 3-card hierarchy + decision callout |
+| 5 | (next) | Batch 3: Positions 9–12 (frameworks, pillars, build habits, push-to-inbox); v2 Row 13 (activity prioritization) retired |
+| 6 | (next) | Batch 4: Positions 13–15 (enable curation pillar, merge prefs+onramps, relocate flywheel) — v2 Rows 20 + 21 collapsed at P14, Growth flywheel block relocated from between P9–P10 into Enable Curation as P15 |
+| 7 | (next) | Batch 5: Positions 16–19 (create focus pillar, results merged + metrics relocated) — v2 Strategy section demolished, metrics-callout extracted and rebuilt as 5-metric panel at P19, AMBIGUITY NAVIGATED decision row added at P17 (reused Batch 2's microformat CSS), LEARNINGS strip + GIF placeholder slot added at P19 |
+
+(Actual SHAs after `aa8f64f` weren't surfaced during the supervision; the next thread can run `git log --oneline -10` from the worktree to recover them.)
+
+**Three pattern discoveries during supervision:**
+
+1. **Worktree split was forced mid-thread.** Two parallel Cowork threads were each running their own Claude Code sessions, both physically inside `~/CoworkWorkspace/Get-a-job/portfolio-site/`. A branch switch in either session moved the shared HEAD; the case-ai session's `styles.css` edits leaked into the case-notifs working tree and vice versa. Caught by the case-ai session mid-execution (it stashed its leaked content with labeled messages and recovered into commit `3567300`). Permanent fix: created sibling worktrees via `git worktree add` so each Claude Code session pins to its own physical directory + branch — case-notifs at `portfolio-site-notifs/` on `case-notifications-figma-rearrange-v2`, case-ai at `portfolio-site/` on `restructure/case-ai-v3`. After the split, no more cross-leaks.
+
+2. **Cadence mode shifted between batches.** Batches 1, 1.5, cleanup, 2, 3 ran with **preview-per-commit cadence** — each commit got a localhost refresh and Della's eyes before the next batch kicked off. Batches 4 + 5 ran in **run-through mode** — one paste, two commits, no preview between, Della reviewed at the end. Run-through saved time on a tightly-specced run with no prior drift. Preview-per-commit caught the duplicate-lede bug from Batch 1.5 early, before it propagated. The trade-off: run-through works when the spec is solid and the patterns are established; preview-per-commit works when patterns are still being defined or when structural changes risk drift.
+
+3. **Della's review style was "ignore polish, flag bugs."** Claude Code surfaced "open questions for your preview" after most batches — typically 2–4 polish/preference items per batch (eyebrow color choices, card placement, chip rendering, etc.). Della consistently directed: "ignore those for now, focus on actual carryover bugs." The duplicate-lede issue from Batch 1.5 was the only actual bug; everything else parked for the edit pass. This pattern is worth preserving in future batch supervision: separate "is this a bug or a preference?" before assigning urgency.
+
+**Decisions locked during supervision:**
+
+- Spelling: "scalable" (one e) is canonical. Applied throughout (was "scaleable" in v2).
+- Slide-voice h3s at every position. h2 wrappers stay structural ("Summary," "Challenge," "Frameworks," "1./2./3. <pillar>," "Results").
+- Foundation eyebrow drops "PILLAR 1" — just `FOUNDATION`. Foundation is pre-pillar.
+- Position 19 strategy lede dropped (Position 5 Approach now covers it). v2 Strategy section + h2 demolished entirely.
+- Position 19 metrics: 5-metric panel matching Slide 20 structure (hero `+1.3M` + four secondary).
+- Slide 18 confirmed 4 layout options; line 433 prose updated.
+- Slide 17 confirmed 4 attribute rows (Sort / Engagement / Navigation / Utilities).
+- 2% datapoint deferred (currently renders at both P4 callout AND P9 prose — Della to dedupe in edit pass).
+- Pillar tag chips deferred (skipped at all 6 pillar sections; Della to decide in edit pass).
+- EXPERIMENT/RESULT mechanic-tag color deferred (chips render in white; warm accent on framing eyebrows only).
+
+**Verified-facts-registry updates (Verbal — Apr 28, 2026):**
+
+- `+1.3M incremental DAU` — absolute-headcount conversion of `+1.4% DAU` lift
+- `+2.7M daily good visits` — absolute-headcount conversion of `+5.4% good visits` lift
+- `1 nav slot freed` — unified inbox returned one tab to product surface experiments
+- 4 layout options on Slide 18 confirmation (counter to v2 spec's 3-layout assumption)
+- 4 attribute rows on Slide 17 confirmation (counter to v2 spec's 3-row assumption)
+
+**Verification (across all 7 commits):**
+
+- All metrics in case-notifications.html trace to `verified-facts-registry.md`. Zero invented values.
+- Existing v2 prose preserved verbatim except line 433 (4-layout update at P17) and the v2 Strategy section demolition.
+- voice-check on case-notifications.html: error count tracked per batch; net-new errors investigated and resolved before commit. (Note: voice-check on the v3 spec doc + this BUILD-LOG entry both produce false positives on quoted slide content — pattern logged in Session 34.)
+- Claude Code direct edits only. No subagent delegation for prose, slide content, or merge work.
+- No push to origin. Branch stays local until ship-ready.
+
+**What didn't happen (intentional):**
+
+- No diagram retranslations. Slide 18's 4th layout option, Slide 17's Utilities row, Slide 14's AFTER pipeline state — all deferred to a separate diagram-retranslation scope (figma-to-html skill territory).
+- No mobile responsiveness audit. Separate scope.
+- No push to main. Della reviews end-to-end at localhost:8001 first; ship decision happens in the edit pass.
+- No subagent runs. Direct Claude Code edits only.
+
+**Punch list handed off to edit pass:**
+
+1. Slide 15 typo "Subscription settings used vague" preserved verbatim at P14 lede — Della to confirm or correct
+2. Position 19 unified inbox GIF asset — placeholder slot in HTML, Della to provide
+3. Pillar tag chips at 6 pillar sections — currently skipped, Della to decide
+4. 2% datapoint dedupe (P4 callout vs P9 prose) — both render today
+5. EXPERIMENT/RESULT mechanic-tag color at P7 — white chips, Della to choose final palette
+6. Position 8 placement order — current: prose1 → NOT-04 → 3-card hierarchy → prose2 → decision callout → NOT-04b. Della to review.
+7. Diagram retranslations (separate scope): NOT-19, NOT-12, NOT-24, NOT-E2, NOT-E3.
+
+**Artifacts produced:**
+- 6 Claude Code kickoff prompts in `~/CoworkWorkspace/Get-a-job/sessions/`: Batch 1, Batch 1.5, Batch 1.5 cleanup (inline in chat, not a file), Batch 2, Batch 3, Batches 4+5 (combined run-through)
+- `~/CoworkWorkspace/Get-a-job/portfolio-site-notifs/working/planning-docs/case-notifications-REFACTOR-NOTES.md` — manifest of every change per batch (Claude Code maintained)
+- 30+ new CSS classes in `styles.css` (eyebrow, approach pivot, impact callout, microformat, hierarchy cards, decision callout, results metrics panel, learnings strip, phone slot)
+- This thread's terminal handoff: `~/CoworkWorkspace/Get-a-job/sessions/resume-prompt-case-notifications-v3-edit-pass.md`
+
+**Lessons captured for future scopes:**
+
+1. **Two Cowork sessions touching the same git directory will collide.** Default to worktree-split when two parallel scopes are running. Faster than recovering from a leak. Pattern worth adding to the resume-prompt skill's setup checklist.
+2. **Run-through mode is faster than preview-per-commit when the spec is solid AND the user trusts the pattern.** Preview-per-commit catches drift early; run-through ships volume. Decide based on (a) how confident the spec is, (b) how much pattern-establishing happens in the batch, (c) how much the user wants to drive vs. delegate.
+3. **Della's review style during execution is "ignore polish, flag bugs."** Don't ask her to weigh in on color choices, chip placement, microcopy nuances mid-batch. Park those for a final review pass. She'll review the whole thing at the end and prioritize from her own viewing.
+4. **Heading-swap retroactive passes need duplicate-content audits.** When Batch 1 added slide titles as supplementary ledes and Batch 1.5 promoted those titles to h3s, the lede-and-heading combo became identical text in two slots. Trivial cleanup commit, but worth predicting when running an additive-then-promotive sequence.
+
+**Next state:** edit pass thread reads `~/CoworkWorkspace/Get-a-job/sessions/resume-prompt-case-notifications-v3-edit-pass.md` and executes the punch list. Predecessor resume prompt (`resume-prompt-case-notifications-v3-spec-extraction.md`) remains in `sessions/` until edit pass closes; archive both at end of next thread.
+
+---
+
 ### Apr 28, 2026 (PM) — Session 34: case-notifications v3 spec extraction (Cowork)
 
 **What happened:**
