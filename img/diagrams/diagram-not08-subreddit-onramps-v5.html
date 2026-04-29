@@ -96,8 +96,11 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     background: #F6F6F6;
   }
-  .mock.before-mock { aspect-ratio: 520 / 150; }
-  .mock.after-mock  { aspect-ratio: 520 / 197; }
+  /* PNG aspect ratios match the pre-cropped Figma exports — no crop math in HTML.
+     before = silent-toggle (r/Seattle, no bell)  : 572 / 166
+     after  = inline-picker (r/williamsburg, bell): 572 / 165 */
+  .mock.before-mock { aspect-ratio: 572 / 166; }
+  .mock.after-mock  { aspect-ratio: 572 / 165; }
 
   .mock.before-mock img,
   .mock.after-mock img {
@@ -112,41 +115,10 @@
     top: 0;
   }
 
-  /* ── Caption (under each card) ── */
-  .caption {
-    font-size: 11px;
-    font-weight: 500;
-    line-height: 1.4;
-    color: var(--text-sec);
-    padding: 0 8px;
-  }
-  .caption strong {
-    font-weight: 600;
-    color: var(--text-pri);
-  }
-  .col.before .caption strong { color: var(--red); }
-  .col.after .caption strong { color: var(--accent); }
+  /* .caption rule + body markup dropped — matches Figma 709:668 which has no captions
+     under the cards (Della call 2026-04-29: "drop the captions"). */
 
-  /* ── Shift arrow (center overlay) ── */
-  .shift-indicator {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 18px;
-    background: rgba(127,181,176,0.08);
-    border: 1px solid rgba(127,181,176,0.2);
-    pointer-events: none;
-    z-index: 3;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-  }
-  .shift-indicator svg { color: var(--accent); }
+  /* .shift-indicator rule kept-then-dropped — markup was already absent; CSS was orphan. */
 
   /* .takeaway block dropped to match Figma 709:668 (Della call 2026-04-29). */
 
@@ -161,10 +133,6 @@
   }
   .col.after {
     animation: fadeSlideIn 0.5s ease-out 180ms forwards;
-    opacity: 0;
-  }
-  .shift-indicator {
-    animation: fadeSlideIn 0.5s ease-out 320ms forwards;
     opacity: 0;
   }
 
@@ -199,32 +167,24 @@
 
       <!-- ── BEFORE ── -->
       <div class="col before">
-        <div class="col-label before"><span class="dot"></span>Before — Header banner only</div>
+        <div class="col-label before"><span class="dot"></span>Before — Silent toggle</div>
 
         <div class="screenshot">
-          <div class="mock before-mock" aria-label="Legacy subreddit header — static banner, no notification on-ramp">
-            <img src="assets/not08-legacy-subreddit.png" alt="Legacy subreddit header banner with no notification entry point" width="520" height="150">
+          <div class="mock before-mock" aria-label="r/Seattle subreddit row — silent join, no notification on-ramp prompt">
+            <img src="assets/not08-silent-toggle-card.png" alt="r/Seattle subreddit row showing a silent Joined state with no bell prompt" width="572" height="166">
           </div>
         </div>
-
-        <p class="caption">
-          <strong>One-off banners.</strong> Header had no consistent way to surface notifications, opt-ins, or updates. Each subreddit team built ad-hoc solutions.
-        </p>
       </div>
 
       <!-- ── AFTER ── -->
       <div class="col after">
-        <div class="col-label after"><span class="dot"></span>After — Standard on-ramp</div>
+        <div class="col-label after"><span class="dot"></span>After — Inline picker</div>
 
         <div class="screenshot">
-          <div class="mock after-mock" aria-label="Unified subreddit header with standard notification on-ramp">
-            <img src="assets/not08-unified-subreddit.png" alt="Unified subreddit header with standard notification on-ramp below banner" width="520" height="197">
+          <div class="mock after-mock" aria-label="r/williamsburg subreddit row with inline-picker on-ramp — bell prompt visible">
+            <img src="assets/not08-inline-picker-card.png" alt="r/williamsburg subreddit row with a bell icon offering a notification on-ramp" width="572" height="165">
           </div>
         </div>
-
-        <p class="caption">
-          <strong>Standard on-ramp.</strong> Below the banner, every subreddit gets a consistent slot for notifications, joins, and pinned updates — built once, deployed everywhere.
-        </p>
       </div>
 
     </div>

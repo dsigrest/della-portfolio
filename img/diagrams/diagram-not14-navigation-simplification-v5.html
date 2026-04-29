@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NOT-14 Navigation Simplification</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --canvas: #0A0C16; --card: #10121C; --elevated: #151722;
@@ -75,6 +76,11 @@
 
     .spacer { height: 14px; }
 
+    /* .screenshot wraps the pill with breathing-room padding.
+       Previously had height: 44px hardcoded — that was sized for the old
+       306/43 aspect (very short pill). New 644/110 pill is taller; the
+       fixed height was forcing it to overflow into the label above.
+       Letting the screenshot size to its content fixes the visual crash. */
     .screenshot {
       position: relative;
       width: 100%;
@@ -83,31 +89,29 @@
       padding: 8px;
     }
 
-    .col.before .screenshot { height: 44px; }
-    .col.after .screenshot { height: 44px; }
-
+    /* Pill slot — sized to match the pre-cropped PNG exports (644×110 / 644×112).
+       Was previously 306/43 + percentage-crop hacks (height: 1540.04%; top: -1387.2%)
+       to clip an uncropped phone screenshot. New PNGs are pre-cropped, so the slot
+       just frames the image directly — no crop math needed. */
     .mock {
       flex: 1;
       min-width: 0;
-      aspect-ratio: 306 / 43;
-      border: 6px solid #fff;       /* phone bezel — intentional white */
+      aspect-ratio: 644 / 110;
+      border: 6px solid #fff;       /* white pill bezel — intentional */
       border-radius: 20px;
       position: relative;
       overflow: hidden;
       background: #fff;
     }
-    .col.after .mock { aspect-ratio: 306 / 44; }
+    .col.after .mock { aspect-ratio: 644 / 112; }
 
     .mock img {
-      position: absolute;
+      display: block;
       width: 100%;
-      height: auto;
-      left: 0;
+      height: 100%;
       object-fit: cover;
-      object-position: top center;
+      object-position: center;
     }
-    .col.before .mock img { height: 1540.04%; top: -1387.2%; }
-    .col.after  .mock img { height: 1512.01%; top: -1368.18%; }
 
     .spacer-bottom { height: 6px; }
 
