@@ -28,6 +28,10 @@
     font-family: 'Inter', -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
+
+  body.embedded { padding: 0; min-height: auto; display: block; background: transparent; overflow: hidden; }
+  body.embedded .diagram { width: 100%; max-width: none; border-radius: 0; }
+
   .diagram {
     width: 100%;
     max-width: 760px;
@@ -40,17 +44,7 @@
     gap: 16px;
   }
 
-  .hover-hint-wrap {
-    padding: 12px 48px 0;
-    display: flex;
-    justify-content: center;
-  }
-  .hover-hint {
-    font-size: 10px;
-    color: var(--text-dim);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
+  /* hover-hint stripped per task #34 */
 
   .comparison-wrap {
     padding: 24px 48px 16px;
@@ -133,15 +127,7 @@
   .mock.context-bushwick { aspect-ratio: 306 / 51; }
   .mock.context-bushwick img { height: 1305%; top: -229.64%; left: -0.02%; width: 100.04%; }
 
-  /* Hover treatment — when hovering one column, dim the other gently to
-     pull attention to the differences. */
-  .comparison:hover .col:not(:hover) {
-    opacity: 0.55;
-    transition: opacity 0.4s ease;
-  }
-  .col:hover .row-frame {
-    transform: translateY(-1px);
-  }
+  /* hover dim/lift effects stripped per task #34 */
 
   .diagram::before {
     content: "";
@@ -153,10 +139,8 @@
 </style>
 </head>
 <body>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
   <div class="diagram">
-    <div class="hover-hint-wrap">
-      <span class="hover-hint">Hover annotations to see linked changes</span>
-    </div>
     <div class="comparison-wrap">
       <div class="comparison">
 

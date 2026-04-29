@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NOT-07 — Preference Architecture</title>
+<title>NOT-07 — Preference Architecture (mobile)</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -19,34 +19,40 @@
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   body {
-    background: var(--canvas); display: flex; justify-content: center; padding: 40px;
+    background: var(--canvas); display: flex; justify-content: center; padding: 0;
     font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased;
   }
   .diagram {
-    width: 760px; background: var(--canvas); border-radius: 16px; overflow: hidden;
+    width: 375px; background: var(--canvas); border-radius: 16px; overflow: hidden;
+    padding: 16px 0; display: flex; flex-direction: column;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
   }
 
-  /* ── Transform area: side-by-side BEFORE / AFTER ── */
+  /* ── Hover hint (mobile-only top strip) ── */
+  .hover-hint {
+    height: 24px; padding: 8px 16px;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    font-size: 10px; color: var(--text-dim);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
+    animation-delay: calc(var(--ai, 0) * 60ms);
+  }
+
+  /* ── Transform area (vertical stack) ── */
   .transform-area {
-    padding: 16px 48px;
-    display: flex; flex-direction: column; gap: 24px;
+    padding: 16px;
+    display: flex; flex-direction: column; gap: 12px;
     position: relative;
   }
   .transform-area::before {
     content: ''; position: absolute; inset: 0;
-    background: radial-gradient(ellipse 400px 250px at 50% 50%, rgba(127,181,176,0.03) 0%, transparent 70%);
+    background: radial-gradient(ellipse 280px 320px at 50% 50%, rgba(127,181,176,0.03) 0%, transparent 70%);
     pointer-events: none;
-  }
-
-  .pref-columns {
-    display: grid; grid-template-columns: 1fr 60px 1fr; gap: 0; align-items: start;
-    position: relative; z-index: 1;
   }
 
   .pref-side {
     display: flex; flex-direction: column; gap: 10px;
-    min-width: 0;
+    width: 100%; position: relative; z-index: 1;
   }
   .pref-side-label {
     font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
@@ -58,7 +64,7 @@
   .pref-side-label.after { color: var(--accent); }
   .pref-side-label.after .dot { background: var(--accent); }
 
-  /* Image-screenshot wrapper — aspect-ratio matches Figma frame */
+  /* Image-screenshot wrapper */
   .pref-shot {
     aspect-ratio: 520 / 345; width: 100%;
     border-radius: 16px; overflow: hidden; position: relative;
@@ -69,7 +75,6 @@
   .pref-shot img {
     position: absolute; max-width: none; display: block;
   }
-  /* Crop positions transcribed from Figma frame transforms */
   .pref-shot.before img {
     left: -0.02%; top: -124.06%; width: 100.04%; height: 327.83%;
   }
@@ -77,17 +82,17 @@
     left: 0; top: -227.62%; width: 100%; height: 327.69%;
   }
 
-  /* Center column: vertical gradient lines + breathing arrow */
+  /* Center transform arrow (just icon, no gradient lines on mobile) */
   .transform-arrow {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding-top: 32px; gap: 12px;
-  }
-  .arrow-line {
-    width: 1px; height: 40px;
-    background: linear-gradient(to bottom, transparent, rgba(127,181,176,0.3), transparent);
+    display: flex; align-items: center; justify-content: center;
+    padding: 4px 0; width: 100%; position: relative; z-index: 1;
   }
 
-  /* ── Problem bar ── */
+  /* ── Annotations (problem bar) ── */
+  .annotations {
+    padding: 4px 16px 16px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
   .problem-bar {
     padding: 14px 20px;
     background: rgba(196,120,120,0.06); border-left: 3px solid rgba(196,120,120,0.4); border-radius: 10px;
@@ -108,19 +113,11 @@
     50% { opacity: 0.7; }
   }
 
-  /* ─ Iframe-fit narrow widths (case study column ≈ 580px) keep horizontal 3-col ─
-     The mobile companion file (-mobile.html) handles true narrow viewports.
-     This desktop file only collapses at standalone-viewing extremes (<480px). ─ */
-  @media (max-width: 600px) {
-    body { padding: 16px; }
-    .transform-area { padding: 16px; gap: 16px; }
-    .pref-columns { grid-template-columns: 1fr 40px 1fr; }
-    .transform-arrow { padding-top: 24px; }
-  }
-  @media (max-width: 480px) {
-    .pref-columns { grid-template-columns: 1fr; gap: 16px; }
-    .transform-arrow { padding-top: 4px; flex-direction: row; }
-    .transform-arrow .arrow-line { display: none; }
+  /* ─ Allow diagram to fill its iframe at any width ─ */
+  @media (max-width: 374px) {
+    .diagram { width: 100%; padding: 12px 0; }
+    .transform-area { padding: 12px; }
+    .annotations { padding: 4px 12px 12px; }
   }
 
   /* Embed mode */
@@ -131,36 +128,44 @@
 <body>
 <div class="diagram">
 
+  <!-- Hover hint (mobile-only) -->
+  <div class="hover-hint" style="--ai:1">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+      <path d="M6 1v4M4 3l2 2 2-2" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+      <rect x="1" y="6" width="10" height="5" rx="1.5" stroke="currentColor" stroke-width="1" fill="none"/>
+    </svg>
+    Tap to compare
+  </div>
+
+  <!-- Transform area: vertical BEFORE → ARROW → AFTER -->
   <div class="transform-area">
-    <div class="pref-columns">
-      <!-- BEFORE column -->
-      <div class="pref-side">
-        <div class="pref-side-label before"><span class="dot"></span>Before — Vague labels</div>
-        <div class="pref-shot before" style="--ai:1">
-          <img src="assets/not07-preferences-before.png" alt="Set community alerts — Off / Low / Frequent">
-        </div>
-      </div>
-
-      <!-- Center transform arrow -->
-      <div class="transform-arrow">
-        <div class="arrow-line"></div>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="opacity:0.5; animation: breathe 2.5s ease-in-out infinite;">
-          <path d="M5 12h14M15 8l4 4-4 4" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <div class="arrow-line"></div>
-      </div>
-
-      <!-- AFTER column -->
-      <div class="pref-side">
-        <div class="pref-side-label after"><span class="dot"></span>After — Concrete labels</div>
-        <div class="pref-shot after" style="--ai:1">
-          <img src="assets/not07-preferences-after.png" alt="Concrete labels — Mute / All new posts / Popular posts / Off">
-        </div>
+    <!-- BEFORE -->
+    <div class="pref-side">
+      <div class="pref-side-label before"><span class="dot"></span>Before — Vague labels</div>
+      <div class="pref-shot before" style="--ai:2">
+        <img src="assets/not07-preferences-before.png" alt="Set community alerts — Off / Low / Frequent">
       </div>
     </div>
 
-    <!-- Problem bar -->
-    <div class="problem-bar" style="--ai:3">
+    <!-- Vertical arrow (icon only) -->
+    <div class="transform-arrow">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="opacity:0.5; animation: breathe 2.5s ease-in-out infinite; transform: rotate(90deg);">
+        <path d="M5 12h14M15 8l4 4-4 4" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <!-- AFTER -->
+    <div class="pref-side">
+      <div class="pref-side-label after"><span class="dot"></span>After — Concrete labels</div>
+      <div class="pref-shot after" style="--ai:3">
+        <img src="assets/not07-preferences-after.png" alt="Concrete labels — Mute / All new posts / Popular posts / Off">
+      </div>
+    </div>
+  </div>
+
+  <!-- Annotations: problem bar -->
+  <div class="annotations">
+    <div class="problem-bar" style="--ai:4">
       <div class="problem-icon">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
           <circle cx="8" cy="8" r="7" stroke="var(--red)" stroke-width="1.2" opacity="0.7"/>
@@ -198,7 +203,6 @@
     send();
   }
   window.addEventListener('load', send);
-  // Re-send to catch font swaps, image loads, animations.
   setTimeout(send, 50);
   setTimeout(send, 250);
   setTimeout(send, 1000);

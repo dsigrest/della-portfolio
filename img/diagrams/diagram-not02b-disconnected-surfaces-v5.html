@@ -31,6 +31,10 @@
     font-family: 'Inter', -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
+
+  body.embedded { padding: 0; min-height: auto; display: block; background: transparent; overflow: hidden; }
+  body.embedded .diagram { width: 100%; max-width: none; border-radius: 0; }
+
   .diagram {
     width: 100%;
     max-width: 760px;
@@ -38,7 +42,7 @@
     border-radius: 16px;
     overflow: hidden;
     position: relative;
-    padding: 48px 0;
+    padding: 24px 0;
   }
 
   .comparison {
@@ -133,9 +137,16 @@
     background: radial-gradient(ellipse at center 40%, rgba(127,181,176,0.04), transparent 70%);
     pointer-events: none;
   }
+
+
+  /* iframe-width rule: collapse only at ≤480px */
+  @media (max-width: 480px) {
+    .comparison { grid-template-columns: 1fr 1fr; gap: 16px; }
+  }
 </style>
 </head>
 <body>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
   <div class="diagram">
     <div class="comparison">
       <div class="col">

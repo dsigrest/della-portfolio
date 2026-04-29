@@ -3,534 +3,236 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NOT-E7 — Sankey Flow: User Segmentation & Contribution</title>
+<meta name="figma-source" content="node:1214:16053 file:TArUrZsBUocaAsqetjXq7V">
+<title>NOT-E7 — Sankey Flow: User Segmentation &amp; Contribution</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
   :root {
     --canvas: #0A0C16; --card: #10121C; --elevated: #151722;
     --text-pri: #E0DFE4; --text-sec: rgba(224,223,228,0.6); --text-ter: rgba(224,223,228,0.4); --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
     --accent: #7FB5B0; --accent-dim: rgba(127,181,176,0.12);
-    --gold: #C4B078; --red: #C47878; --blue: #8A9EC4;
-    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
-    --glass-border: rgba(224,223,228,0.08);
-    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    --gold: #C4B078; --red: #C47878;
     --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-  * { margin:0; padding:0; box-sizing:border-box; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
   body {
-    background: var(--canvas); display: flex; justify-content: center; padding: 40px;
-    font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased;
+    background: var(--canvas);
+    display: flex;
+    justify-content: center;
+    padding: 24px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
   }
+
+  body.embedded { padding: 0; min-height: auto; display: block; background: transparent; overflow: hidden; }
+  body.embedded .diagram { width: 100%; max-width: none; border-radius: 0; }
+
+  /* Frame standard: 24px top + 24px bottom on .diagram (matches Figma 1214:16053 outer frame padding) */
   .diagram {
-    width: 760px; background: var(--canvas); border-radius: 16px; overflow: hidden; position: relative;
+    width: 100%;
+    max-width: 760px;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    padding: 24px 0;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
   }
 
-  /* ── Title ── */
-  .title-area {
-    padding: 48px 48px 0;
-    opacity: 0; animation: mount 0.5s var(--spring) forwards;
-  }
-  .label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); opacity: 0.8; margin-bottom: 8px; }
-  h1 { font-size: 24px; font-weight: 700; color: var(--text-pri); letter-spacing: -0.025em; margin-bottom: 8px; line-height: 1.15; }
-  .subtitle { font-size: 13px; color: var(--text-sec); line-height: 1.55; max-width: 600px; }
-
-  /* ── Legend ── */
-  .legend-bar {
-    padding: 16px 48px; display: flex; gap: 20px; align-items: center;
-    opacity: 0; animation: mount 0.5s var(--spring) 0.1s forwards;
-  }
-  .legend-item {
-    display: flex; align-items: center; gap: 6px;
-    font-size: 11px; color: var(--text-sec); cursor: pointer;
-    transition: opacity 0.2s ease;
-    padding: 4px 8px; border-radius: 6px;
-  }
-  .legend-item:hover { background: rgba(224,223,228,0.04); }
-  .legend-item.active { background: rgba(224,223,228,0.06); }
-  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
-  .legend-dot.core { background: var(--accent); }
-  .legend-dot.casual { background: var(--gold); }
-  .legend-dot.resurrected { background: var(--red); }
-  .legend-dot.new { background: var(--blue); }
-  .legend-hint {
-    margin-left: auto; font-size: 10px; color: var(--text-dim);
-    letter-spacing: 0.06em; text-transform: uppercase;
-  }
-
-  /* ── Sankey area ── */
+  /* ── Sankey area (top) ── */
   .sankey-area {
-    padding: 0 48px; position: relative; height: 440px;
-    opacity: 0; animation: mount 0.5s var(--spring) 0.15s forwards;
+    padding: 0 48px;
+    position: relative;
+    height: 420px;
+    opacity: 0;
+    animation: mount 0.5s var(--spring) forwards;
   }
   .sankey-area::before {
     content: ''; position: absolute; inset: 0;
     background: radial-gradient(ellipse 500px 300px at 50% 50%, rgba(127,181,176,0.025) 0%, transparent 70%);
     pointer-events: none;
   }
-  .sankey-svg {
-    width: 100%; height: 100%; overflow: visible;
-  }
+  .sankey-svg { width: 100%; height: 100%; overflow: visible; }
 
-  /* Flow paths */
+  /* Main flow base opacity — gradient stops carry the within-flow fade nuance.
+     Dropouts override inline with fill-opacity:0.30 for the dimmed-past look. */
   .flow-path {
-    fill-opacity: 0.22; stroke: none;
-    transition: fill-opacity 0.3s ease;
+    fill-opacity: 0.85; stroke: none;
   }
-  .flow-path.secondary { fill-opacity: 0.32; } /* boost small segments */
-  .flow-path.dimmed { fill-opacity: 0.03; }
-  .flow-path.highlighted { fill-opacity: 0.4; }
 
-  /* Glow behind active flows */
-  .flow-glow {
-    fill-opacity: 0; stroke: none;
-    filter: blur(8px);
-    transition: fill-opacity 0.3s ease;
-  }
-  .flow-glow.highlighted { fill-opacity: 0.12; }
-
-  /* Node bars */
   .node-bar {
     rx: 3; ry: 3;
-    transition: opacity 0.3s ease;
   }
-  .node-bar.dimmed { opacity: 0.2; }
 
-  /* Column labels */
-  .col-label {
-    font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600;
-    letter-spacing: 0.06em; text-transform: uppercase;
-    fill: var(--text-ter); text-anchor: middle;
-  }
   .col-metric {
     font-family: 'Inter', sans-serif; font-weight: 700;
     fill: var(--text-pri); text-anchor: middle;
   }
   .col-sub {
     font-family: 'JetBrains Mono', monospace; font-size: 10px;
-    fill: var(--text-dim); text-anchor: middle;
+    fill: var(--text-ter); text-anchor: middle;
   }
 
-  /* ── Stage cards — hover-activated ── */
-  .stage-cards {
-    padding: 8px 48px 0;
-    display: grid; grid-template-columns: 1fr 1fr 1fr;
-    gap: 12px;
-    opacity: 0; animation: mount 0.5s var(--spring) 0.25s forwards;
-    max-height: 0; overflow: hidden;
-    transition: max-height 0.4s ease, opacity 0.3s ease;
-  }
-  .stage-cards.visible {
-    max-height: 260px;
-  }
-  .stage-card {
-    background: var(--glass-bg); border: 1px solid var(--glass-border);
-    border-radius: 10px; padding: 16px;
-    position: relative; backdrop-filter: blur(8px);
-  }
-  .stage-card::before {
-    content: ''; position: absolute; inset: 0;
-    box-shadow: var(--glass-highlight); border-radius: 10px; pointer-events: none;
-  }
-  .stage-title {
-    font-size: 15px; font-weight: 700; color: var(--text-pri);
-    margin-bottom: 2px;
-  }
-  .stage-sub {
-    font-size: 10px; color: var(--text-dim);
-    font-family: 'JetBrains Mono', monospace;
-    margin-bottom: 10px;
-  }
-  .stage-rows { display: flex; flex-direction: column; gap: 4px; }
-  .stage-row {
-    display: flex; align-items: center; gap: 6px;
-    font-size: 11px; color: var(--text-sec);
-  }
-  .stage-row .dot {
-    width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
-  }
-  .stage-row .pct {
-    font-weight: 600; min-width: 28px;
-    font-family: 'JetBrains Mono', monospace; font-size: 11px;
-  }
-  .stage-row.core .dot { background: var(--accent); }
-  .stage-row.core .pct { color: var(--accent); }
-  .stage-row.casual .dot { background: var(--gold); }
-  .stage-row.casual .pct { color: var(--gold); }
-  .stage-row.resurrected .dot { background: var(--red); }
-  .stage-row.resurrected .pct { color: var(--red); }
-  .stage-row.new .dot { background: var(--blue); }
-  .stage-row.new .pct { color: var(--blue); }
-
-  /* ── Non-click / non-contrib labels ── */
   .dropout-label {
     font-family: 'JetBrains Mono', monospace; font-size: 9px;
-    fill: var(--text-dim); text-anchor: middle;
+    fill: var(--text-sec); text-anchor: start;
   }
 
-  /* ── Bottom insight ── */
-  .insight-bar {
-    margin: 20px 48px 48px; padding: 18px 22px;
-    background: rgba(127,181,176,0.06);
-    border-left: 3px solid rgba(127,181,176,0.4);
-    border-radius: 10px;
-    display: flex; align-items: flex-start; gap: 12px;
-    opacity: 0; animation: mount 0.5s var(--spring) 0.35s forwards;
+  /* ── Legend (bottom) ── */
+  .legend-bar {
+    padding: 16px 48px 0;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    opacity: 0;
+    animation: mount 0.5s var(--spring) 0.15s forwards;
   }
-  .insight-icon { width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px; }
-  .insight-text { font-size: 12px; color: var(--text-sec); line-height: 1.55; }
-  .insight-text strong { color: var(--accent); font-weight: 600; }
-  .insight-formula {
-    display: block; margin-top: 6px;
-    font-family: 'JetBrains Mono', monospace; font-size: 10px;
-    color: var(--text-dim);
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text-sec);
+    padding: 4px 8px;
+    border-radius: 6px;
   }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .legend-dot.core { background: var(--accent); }
+  .legend-dot.casual { background: var(--gold); }
+  .legend-dot.new { background: var(--red); }
 
-  @keyframes mount { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes mount { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-  /* Embed mode */
-  body.embedded { padding: 0; min-height: auto; display: block; background: transparent; overflow: hidden; }
-  body.embedded .diagram { border-radius: 0; }
+  /* iframe-width rule: collapse only at ≤480px */
+  @media (max-width: 480px) {
+    .sankey-area { padding: 0 16px; height: 320px; }
+    .legend-bar { flex-wrap: wrap; gap: 8px; padding: 12px 16px 0; }
+  }
 </style>
 </head>
 <body>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
 <div class="diagram">
 
-  <div class="legend-bar">
-    <div class="legend-item" data-seg="core"><div class="legend-dot core"></div>Core</div>
-    <div class="legend-item" data-seg="casual"><div class="legend-dot casual"></div>Casual</div>
-    <div class="legend-item" data-seg="resurrected"><div class="legend-dot resurrected"></div>Resurrected</div>
-    <div class="legend-item" data-seg="new"><div class="legend-dot new"></div>New</div>
-    <span class="legend-hint">Click segment to isolate · hover flows for detail</span>
-  </div>
-
   <div class="sankey-area">
-    <!--
-      SVG Sankey: viewBox 0 0 664 420
-      Three columns of stacked bars:
-        Col 1 (DAU): x=20, bar width=14
-        Col 2 (Clickers): x=325, bar width=14
-        Col 3 (Contributors): x=630, bar width=14
-
-      Vertical space: y=40 to y=400 (360px total)
-
-      Col 1 heights (total 360):
-        Core: 85% → 306px (y=40..346)
-        Casual: 8% → 29px (y=350..379)
-        Resurrected: 5% → 18px (y=383..401)
-        New: 2% → 7px (y=405..412)
-
-      Col 2 — Clickers (47% = 170px equivalent top section):
-        Total clicker height = 170px
-        Core clickers: 85%×48% = 40.8% → scaled to ~148px in clicker section
-        Actually let me recalculate. Clickers as proportion of total:
-        Core: 6.375m × 48% = 3.06m
-        Casual: 0.6m × 35% = 0.21m
-        Resurrected: 0.375m × 39% = 0.146m
-        New: 0.15m × 50% = 0.075m
-        Total clickers: 3.491m
-
-        Non-clickers:
-        Core: 6.375m × 52% = 3.315m
-        Casual: 0.6m × 65% = 0.39m
-        Resurrected: 0.375m × 61% = 0.229m
-        New: 0.15m × 50% = 0.075m
-        Total non-clickers: 4.009m
-
-        Scale: 7.5m → 360px, so 1m ≈ 48px
-
-        Clicker bars (top group):
-        Core: 3.06m → 147px (y=40..187)
-        Casual: 0.21m → 10px (y=191..201)
-        Resurrected: 0.146m → 7px (y=205..212)
-        New: 0.075m → 4px (y=216..220)
-
-        Non-clicker bars (bottom group, with gap):
-        Core: 3.315m → 159px (y=244..403)
-        → Actually too complex to render perfectly. Simplify.
-
-      I'll use approximate proportional heights that look correct.
-    -->
-    <svg class="sankey-svg" viewBox="0 0 664 420" preserveAspectRatio="xMidYMid meet">
+    <svg class="sankey-svg" preserveAspectRatio="xMidYMid meet" viewBox="0 0 664 420">
       <defs>
-        <!-- Flow gradients — left-to-right with fade at split point -->
-        <linearGradient id="gCore" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="#7FB5B0"/><stop offset="60%" stop-color="#7FB5B0"/><stop offset="100%" stop-color="#7FB5B0" stop-opacity="0.7"/>
+        <!-- Each gradient: gentler fade than before — saturated end stays bright (~0.95),
+             dim end at ~0.55. With fill-opacity 0.85, effective range is 85% → 47%. -->
+        <linearGradient id="gCore" x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0%"   stop-color="#7FB5B0" stop-opacity="1.0"/>
+          <stop offset="30%"  stop-color="#7FB5B0" stop-opacity="0.95"/>
+          <stop offset="70%"  stop-color="#7FB5B0" stop-opacity="0.75"/>
+          <stop offset="100%" stop-color="#7FB5B0" stop-opacity="0.55"/>
         </linearGradient>
-        <linearGradient id="gCasual" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="#C4B078"/><stop offset="50%" stop-color="#C4B078"/><stop offset="100%" stop-color="#C4B078" stop-opacity="0.6"/>
+        <linearGradient id="gCasual" x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0%"   stop-color="#C4B078" stop-opacity="1.0"/>
+          <stop offset="30%"  stop-color="#C4B078" stop-opacity="0.95"/>
+          <stop offset="70%"  stop-color="#C4B078" stop-opacity="0.75"/>
+          <stop offset="100%" stop-color="#C4B078" stop-opacity="0.55"/>
         </linearGradient>
-        <linearGradient id="gResurrected" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="#C47878"/><stop offset="50%" stop-color="#C47878"/><stop offset="100%" stop-color="#C47878" stop-opacity="0.6"/>
-        </linearGradient>
-        <linearGradient id="gNew" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="#8A9EC4"/><stop offset="50%" stop-color="#8A9EC4"/><stop offset="100%" stop-color="#8A9EC4" stop-opacity="0.6"/>
-        </linearGradient>
-        <!-- Dropout gradient (fades to nothing) -->
-        <linearGradient id="gDrop" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="#E0DFE4" stop-opacity="0.08"/><stop offset="100%" stop-color="#E0DFE4" stop-opacity="0.02"/>
+        <linearGradient id="gNew" x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0%"   stop-color="#C47878" stop-opacity="1.0"/>
+          <stop offset="30%"  stop-color="#C47878" stop-opacity="0.95"/>
+          <stop offset="70%"  stop-color="#C47878" stop-opacity="0.75"/>
+          <stop offset="100%" stop-color="#C47878" stop-opacity="0.55"/>
         </linearGradient>
       </defs>
 
-      <!-- Column headers -->
-      <text class="col-metric" x="27" y="24" font-size="16">7.5m</text>
-      <text class="col-sub" x="27" y="38">inbox DAU</text>
+      <!-- Column headers — labels per Figma 1214:16053 -->
+      <text class="col-metric" font-size="16" x="27" y="24">~7.5m</text>
+      <text class="col-sub" x="27" y="38">inbox visitors</text>
+      <text class="col-metric" font-size="16" x="332" y="24">~47%</text>
+      <text class="col-sub" x="332" y="38">of visitors click</text>
+      <text class="col-metric" font-size="16" x="637" y="24">~75%</text>
+      <text class="col-sub" x="637" y="38">of clickers contributed</text>
 
-      <text class="col-metric" x="332" y="24" font-size="16">47%</text>
-      <text class="col-sub" x="332" y="38">click (3.2m)</text>
+      <!-- Stage 1 → Stage 2 main flows — each col1 bar splits cleanly into a top "active"
+           slice (here) and a bottom "dropout" slice (below). No source overlap. -->
+      <!-- Core main: col1 y=50-195 (top half of core bar) → col2 active y=50-195 -->
+      <path class="flow-path" d="M34,50 C180,50 180,50 332,50 L332,195 C180,195 180,195 34,195 Z" fill="url(#gCore)"/>
+      <!-- Casual main: col1 y=344-354 (top slice of casual bar) → col2 active y=197-207 -->
+      <path class="flow-path" d="M34,344 C180,344 180,197 332,197 L332,207 C180,207 180,354 34,354 Z" fill="url(#gCasual)"/>
+      <!-- New main: col1 y=376-387 (top slice of new bar) → col2 active y=209-220 -->
+      <path class="flow-path" d="M34,376 C180,376 180,209 332,209 L332,220 C180,220 180,387 34,387 Z" fill="url(#gNew)"/>
 
-      <text class="col-metric" x="637" y="24" font-size="16">75%</text>
-      <text class="col-sub" x="637" y="38">contribute</text>
+      <!-- Stage 1 → Stage 2 dropout flows — each sources from the BOTTOM slice of its col1
+           bar (adjacent to the active slice above), terminating in col2 dropout bar y=256-414. -->
+      <!-- Core dropout: col1 y=195-340 (bottom half of core bar) → dropout bar y=256-396 -->
+      <path class="flow-path" d="M34,195 C180,195 180,256 332,256 L332,396 C180,396 180,340 34,340 Z" fill="url(#gCore)" style="fill-opacity:0.30"/>
+      <!-- Casual dropout: col1 y=354-372 (bottom slice of casual bar) → dropout bar y=396-405 -->
+      <path class="flow-path" d="M34,354 C180,354 180,396 332,396 L332,405 C180,405 180,372 34,372 Z" fill="url(#gCasual)" style="fill-opacity:0.30"/>
+      <!-- New dropout: col1 y=387-406 (bottom slice of new bar) → dropout bar y=405-414 -->
+      <path class="flow-path" d="M34,387 C180,387 180,405 332,405 L332,414 C180,414 180,406 34,406 Z" fill="url(#gNew)" style="fill-opacity:0.30"/>
 
-      <!-- ═══ FLOW PATHS — Stage 1 → Stage 2 (DAU → Clickers) ═══ -->
+      <!-- Stage 2 → Stage 3 main flows (terminate at right column x=637) -->
+      <path class="flow-path" d="M339,51 C490,51 490,51 637,51 L637,159 C490,159 490,155 339,155 Z" fill="url(#gCore)"/>
+      <path class="flow-path" d="M339,197 C490,197 490,162 637,162 L637,170 C490,170 490,207 339,207 Z" fill="url(#gCasual)"/>
+      <path class="flow-path" d="M339,209 C490,209 490,172 637,172 L637,182 C490,182 490,220 339,220 Z" fill="url(#gNew)"/>
 
-      <!-- Core → Clickers (largest flow) -->
-      <path class="flow-glow" data-seg="core"
-            d="M34,50 C180,50 180,50 332,50 L332,195 C180,195 180,190 34,340 Z" fill="url(#gCore)"/>
-      <path class="flow-path" data-seg="core"
-            d="M34,50 C180,50 180,50 332,50 L332,195 C180,195 180,190 34,340 Z" fill="url(#gCore)"/>
+      <!-- Stage 2 → Stage 3 dropout flows (terminate at x=594, "25% didn't contribute" bar y=287-343) -->
+      <!-- Core dropout — bulk of dropout bar -->
+      <path class="flow-path" d="M339,159 C470,159 470,287 594,287 L594,326 C470,326 470,195 339,195 Z" fill="url(#gCore)" style="fill-opacity:0.30"/>
+      <!-- Casual dropout — middle slice -->
+      <path class="flow-path" d="M339,205 C470,205 470,326 594,326 L594,335 C470,335 470,208 339,208 Z" fill="url(#gCasual)" style="fill-opacity:0.30"/>
+      <!-- New dropout — bottom slice -->
+      <path class="flow-path" d="M339,217 C470,217 470,335 594,335 L594,343 C470,343 470,220 339,220 Z" fill="url(#gNew)" style="fill-opacity:0.30"/>
 
-      <!-- Core → Non-clickers -->
-      <path class="flow-path" data-seg="core" style="fill-opacity:0.06"
-            d="M34,342 C180,342 180,280 332,260 L332,410 C180,410 180,412 34,412 Z" fill="url(#gCore)"/>
+      <!-- Column 1 (DAU) node bars — 3 segments per Figma 1214:16053 -->
+      <rect class="node-bar" fill="#7FB5B0" height="290" width="14" x="20" y="50"/>
+      <rect class="node-bar" fill="#C4B078" height="28" width="14" x="20" y="344"/>
+      <rect class="node-bar" fill="#C47878" height="30" width="14" x="20" y="376"/>
 
-      <!-- Casual → Clickers -->
-      <path class="flow-glow" data-seg="casual"
-            d="M34,344 C180,344 180,197 332,197 L332,207 C180,207 180,370 34,370 Z" fill="url(#gCasual)"/>
-      <path class="flow-path secondary" data-seg="casual"
-            d="M34,344 C180,344 180,197 332,197 L332,207 C180,207 180,370 34,370 Z" fill="url(#gCasual)"/>
+      <!-- Column 2 (Clickers) node bars -->
+      <rect class="node-bar" fill="#7FB5B0" height="145" width="14" x="325" y="50"/>
+      <rect class="node-bar" fill="#C4B078" height="10" width="14" x="325" y="197"/>
+      <rect class="node-bar" fill="#C47878" height="11" width="14" x="325" y="209"/>
+      <!-- Col 2 dropout bar (53% visitors don't click) -->
+      <rect class="node-bar" fill="rgba(224,223,228,0.08)" height="158" rx="3" width="14" x="325" y="256"/>
+      <text class="dropout-label" x="347" y="340">53%</text>
+      <text class="dropout-label" font-size="8" x="346.5" y="353">visitors don&rsquo;t click</text>
 
-      <!-- Casual → Non-clickers -->
-      <path class="flow-path" data-seg="casual" style="fill-opacity:0.06"
-            d="M34,372 C180,372 180,412 332,412 L332,418 C180,418 180,380 34,380 Z" fill="url(#gCasual)"/>
-
-      <!-- Resurrected → Clickers -->
-      <path class="flow-glow" data-seg="resurrected"
-            d="M34,382 C180,382 180,209 332,209 L332,216 C180,216 180,398 34,398 Z" fill="url(#gResurrected)"/>
-      <path class="flow-path secondary" data-seg="resurrected"
-            d="M34,382 C180,382 180,209 332,209 L332,216 C180,216 180,398 34,398 Z" fill="url(#gResurrected)"/>
-
-      <!-- New → Clickers -->
-      <path class="flow-glow" data-seg="new"
-            d="M34,400 C180,400 180,218 332,218 L332,222 C180,222 180,408 34,408 Z" fill="url(#gNew)"/>
-      <path class="flow-path secondary" data-seg="new"
-            d="M34,400 C180,400 180,218 332,218 L332,222 C180,222 180,408 34,408 Z" fill="url(#gNew)"/>
-
-      <!-- ═══ FLOW PATHS — Stage 2 → Stage 3 (Clickers → Contributors) ═══ -->
-
-      <!-- Core clickers → Contributors -->
-      <path class="flow-glow" data-seg="core"
-            d="M346,50 C490,50 490,50 637,50 L637,165 C490,165 490,155 346,155 Z" fill="url(#gCore)"/>
-      <path class="flow-path" data-seg="core"
-            d="M346,50 C490,50 490,50 637,50 L637,165 C490,165 490,155 346,155 Z" fill="url(#gCore)"/>
-
-      <!-- Core clickers → Non-contributors -->
-      <path class="flow-path" data-seg="core" style="fill-opacity:0.06"
-            d="M346,157 C490,157 490,290 637,290 L637,330 C490,330 490,195 346,195 Z" fill="url(#gCore)"/>
-
-      <!-- Casual clickers → Contributors -->
-      <path class="flow-glow" data-seg="casual"
-            d="M346,197 C490,197 490,167 637,167 L637,175 C490,175 490,207 346,207 Z" fill="url(#gCasual)"/>
-      <path class="flow-path secondary" data-seg="casual"
-            d="M346,197 C490,197 490,167 637,167 L637,175 C490,175 490,207 346,207 Z" fill="url(#gCasual)"/>
-
-      <!-- Casual clickers → Non-contributors -->
-      <path class="flow-path" data-seg="casual" style="fill-opacity:0.06"
-            d="M346,207 C490,207 490,332 637,332 L637,345 C490,345 490,210 346,210 Z" fill="url(#gCasual)"/>
-
-      <!-- Resurrected clickers → Contributors -->
-      <path class="flow-glow" data-seg="resurrected"
-            d="M346,209 C490,209 490,177 637,177 L637,183 C490,183 490,216 346,216 Z" fill="url(#gResurrected)"/>
-      <path class="flow-path secondary" data-seg="resurrected"
-            d="M346,209 C490,209 490,177 637,177 L637,183 C490,183 490,216 346,216 Z" fill="url(#gResurrected)"/>
-
-      <!-- New clickers → Contributors -->
-      <path class="flow-glow" data-seg="new"
-            d="M346,218 C490,218 490,185 637,185 L637,189 C490,189 490,222 346,222 Z" fill="url(#gNew)"/>
-      <path class="flow-path secondary" data-seg="new"
-            d="M346,218 C490,218 490,185 637,185 L637,189 C490,189 490,222 346,222 Z" fill="url(#gNew)"/>
-
-      <!-- ═══ NODE BARS — Column 1 (DAU) ═══ -->
-      <rect class="node-bar" data-seg="core" x="20" y="50" width="14" height="290" fill="#7FB5B0"/>
-      <rect class="node-bar" data-seg="casual" x="20" y="344" width="14" height="28" fill="#C4B078"/>
-      <rect class="node-bar" data-seg="resurrected" x="20" y="376" width="14" height="22" fill="#C47878"/>
-      <rect class="node-bar" data-seg="new" x="20" y="402" width="14" height="10" fill="#8A9EC4"/>
-
-      <!-- ═══ NODE BARS — Column 2 (Clickers) ═══ -->
-      <rect class="node-bar" data-seg="core" x="325" y="50" width="14" height="145" fill="#7FB5B0"/>
-      <rect class="node-bar" data-seg="casual" x="325" y="197" width="14" height="10" fill="#C4B078"/>
-      <rect class="node-bar" data-seg="resurrected" x="325" y="209" width="14" height="7" fill="#C47878"/>
-      <rect class="node-bar" data-seg="new" x="325" y="218" width="14" height="4" fill="#8A9EC4"/>
-
-      <!-- Non-clicker bar (muted) -->
-      <rect class="node-bar" x="325" y="256" width="14" height="158" fill="rgba(224,223,228,0.08)" rx="3"/>
-      <text class="dropout-label" x="332" y="340">53%</text>
-      <text class="dropout-label" x="332" y="352" font-size="8">don't click</text>
-
-      <!-- ═══ NODE BARS — Column 3 (Contributors) ═══ -->
-      <rect class="node-bar" data-seg="core" x="630" y="50" width="14" height="115" fill="#7FB5B0"/>
-      <rect class="node-bar" data-seg="casual" x="630" y="167" width="14" height="8" fill="#C4B078"/>
-      <rect class="node-bar" data-seg="resurrected" x="630" y="177" width="14" height="6" fill="#C47878"/>
-      <rect class="node-bar" data-seg="new" x="630" y="185" width="14" height="4" fill="#8A9EC4"/>
-
-      <!-- Non-contributor bar (muted) -->
-      <rect class="node-bar" x="630" y="220" width="14" height="60" fill="rgba(224,223,228,0.08)" rx="3"/>
-      <text class="dropout-label" x="637" y="254">25%</text>
-      <text class="dropout-label" x="637" y="266" font-size="8">non-contrib</text>
-
-      <!-- Column base labels -->
-      <text class="col-label" x="27" y="428">DAU</text>
-      <text class="col-label" x="332" y="428">Clickers</text>
-      <text class="col-label" x="637" y="428">Contributors</text>
+      <!-- Column 3 (Contributors) node bars -->
+      <rect class="node-bar" fill="#7FB5B0" height="108" width="14" x="632" y="51"/>
+      <rect class="node-bar" fill="#C4B078" height="8" width="14" x="632" y="162"/>
+      <rect class="node-bar" fill="#C47878" height="10" width="14" x="632" y="172"/>
+      <!-- Col 3 dropout bar (25% didn't contribute) -->
+      <rect class="node-bar" fill="rgba(224,223,228,0.08)" height="56" rx="3" width="14" x="580" y="287"/>
+      <text class="dropout-label" x="602" y="309">25%</text>
+      <text class="dropout-label" font-size="8" x="602" y="322">didn&rsquo;t</text>
+      <text class="dropout-label" font-size="8" x="602" y="333">contribute</text>
     </svg>
   </div>
 
-  <!-- Stage breakdown cards -->
-  <div class="stage-cards">
-    <div class="stage-card">
-      <div class="stage-title">7.5m inbox DAU</div>
-      <div class="stage-sub">daily active inbox users</div>
-      <div class="stage-rows">
-        <div class="stage-row core"><div class="dot"></div><span class="pct">85%</span> core</div>
-        <div class="stage-row casual"><div class="dot"></div><span class="pct">8%</span> casual</div>
-        <div class="stage-row resurrected"><div class="dot"></div><span class="pct">5%</span> resurrected</div>
-        <div class="stage-row new"><div class="dot"></div><span class="pct">2%</span> new</div>
-      </div>
-    </div>
-    <div class="stage-card">
-      <div class="stage-title">47% click</div>
-      <div class="stage-sub">3.2m clickers</div>
-      <div class="stage-rows">
-        <div class="stage-row core"><div class="dot"></div><span class="pct">48%</span> of core</div>
-        <div class="stage-row casual"><div class="dot"></div><span class="pct">35%</span> of casual</div>
-        <div class="stage-row resurrected"><div class="dot"></div><span class="pct">39%</span> of resurrected</div>
-        <div class="stage-row new"><div class="dot"></div><span class="pct">50%</span> of new</div>
-      </div>
-    </div>
-    <div class="stage-card">
-      <div class="stage-title">75% contribute</div>
-      <div class="stage-sub">of clickers become contributors</div>
-      <div class="stage-rows">
-        <div class="stage-row core"><div class="dot"></div><span class="pct">78%</span> of core clickers</div>
-        <div class="stage-row casual"><div class="dot"></div><span class="pct">40%</span> of casual clickers</div>
-        <div class="stage-row resurrected"><div class="dot"></div><span class="pct">45%</span> of resurrected clickers</div>
-        <div class="stage-row new"><div class="dot"></div><span class="pct">65%</span> of new clickers</div>
-      </div>
-    </div>
-  </div></div>
+  <div class="legend-bar">
+    <div class="legend-item"><div class="legend-dot core"></div>Core users</div>
+    <div class="legend-item"><div class="legend-dot casual"></div>Casual users</div>
+    <div class="legend-item"><div class="legend-dot new"></div>New users</div>
+  </div>
 
-<script>
-  // Segment isolation on legend click
-  const legendItems = document.querySelectorAll('.legend-item');
-  const flowPaths = document.querySelectorAll('.flow-path');
-  const flowGlows = document.querySelectorAll('.flow-glow');
-  const nodeBars = document.querySelectorAll('.node-bar[data-seg]');
-  let activeSeg = null;
+</div>
 
-  function setActive(seg) {
-    if (activeSeg === seg) { // toggle off
-      activeSeg = null;
-      legendItems.forEach(li => li.classList.remove('active'));
-      flowPaths.forEach(fp => { fp.classList.remove('dimmed', 'highlighted'); fp.style.fillOpacity = ''; });
-      flowGlows.forEach(fg => fg.classList.remove('highlighted'));
-      nodeBars.forEach(nb => nb.classList.remove('dimmed'));
-      stageCards.classList.remove('visible');
-      stageRows.forEach(r => r.style.opacity = '');
-      return;
-    }
-    activeSeg = seg;
-    legendItems.forEach(li => {
-      li.classList.toggle('active', li.dataset.seg === seg);
-    });
-    flowPaths.forEach(fp => {
-      if (fp.dataset.seg === seg) {
-        fp.classList.remove('dimmed');
-        fp.classList.add('highlighted');
-      } else {
-        fp.classList.remove('highlighted');
-        fp.classList.add('dimmed');
-      }
-    });
-    flowGlows.forEach(fg => {
-      fg.classList.toggle('highlighted', fg.dataset.seg === seg);
-    });
-    nodeBars.forEach(nb => {
-      nb.classList.toggle('dimmed', nb.dataset.seg !== seg);
-    });
-    // Show cards and highlight the active segment's rows
-    stageCards.classList.add('visible');
-    stageRows.forEach(r => {
-      r.style.opacity = r.classList.contains(seg) ? '1' : '0.3';
-    });
-  }
-
-  legendItems.forEach(li => {
-    li.addEventListener('click', () => setActive(li.dataset.seg));
-  });
-
-  // Show stage cards on flow hover
-  const stageCards = document.querySelector('.stage-cards');
-  const sankeyArea = document.querySelector('.sankey-area');
-  const stageRows = document.querySelectorAll('.stage-row');
-
-  sankeyArea.addEventListener('mouseenter', () => {
-    stageCards.classList.add('visible');
-  });
-  sankeyArea.addEventListener('mouseleave', () => {
-    if (!activeSeg) stageCards.classList.remove('visible');
-    stageRows.forEach(r => r.style.opacity = '');
-  });
-
-  // Highlight matching segment rows in cards on flow path hover
-  flowPaths.forEach(fp => {
-    fp.addEventListener('mouseenter', () => {
-      const seg = fp.dataset.seg;
-      if (seg) {
-        stageCards.classList.add('visible');
-        stageRows.forEach(r => {
-          r.style.opacity = r.classList.contains(seg) ? '1' : '0.3';
-        });
-      }
-    });
-    fp.addEventListener('mouseleave', () => {
-      stageRows.forEach(r => r.style.opacity = '');
-    });
-  });
-
-  // Keep cards visible while a segment is active
-  const origSetActive = setActive;
-  // (cards persist when segment is clicked)
-</script>
-<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
 <!-- diagram-height-poster v1 -->
 <script>
 (function () {
   function compute() {
     var d = document.querySelector('.diagram');
     if (!d) return 0;
-    return Math.max(
-      d.scrollHeight, d.offsetHeight,
+    return Math.max(d.scrollHeight, d.offsetHeight,
       document.documentElement ? document.documentElement.scrollHeight : 0,
-      document.body ? document.body.scrollHeight : 0
-    );
+      document.body ? document.body.scrollHeight : 0);
   }
   function send() {
     if (!window.parent || window.parent === window) return;
     var h = compute();
-    if (h > 0) {
-      window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
-    }
+    if (h > 0) window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
   }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', send);
-  } else {
-    send();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', send);
+  else send();
   window.addEventListener('load', send);
-  // Re-send to catch font swaps, image loads, animations.
-  setTimeout(send, 50);
-  setTimeout(send, 250);
-  setTimeout(send, 1000);
+  setTimeout(send, 50); setTimeout(send, 250); setTimeout(send, 1000);
   if (window.ResizeObserver) {
     var ro = new ResizeObserver(send);
     var d = document.querySelector('.diagram');

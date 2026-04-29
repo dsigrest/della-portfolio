@@ -3,54 +3,60 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="figma-source" content="node:1176:1726 page:29:43 file:TArUrZsBUocaAsqetjXq7V">
+<meta name="figma-source" content="node:1214:17236 file:TArUrZsBUocaAsqetjXq7V">
 <title>NOT-10 — Three different inboxes</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --canvas: #0A0C16;
-    --card: #10121C;
-    --text-pri: #E0DFE4;
-    --text-sec: rgba(224,223,228,0.6);
-    --text-ter: rgba(224,223,228,0.4);
-    --accent: #7FB5B0;
+    --canvas: #0A0C16; --card: #10121C; --elevated: #151722;
+    --text-pri: #E0DFE4; --text-sec: rgba(224,223,228,0.6); --text-ter: rgba(224,223,228,0.4); --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --border-subtle: rgba(224,223,228,0.04);
+    --accent: #7FB5B0; --accent-dim: rgba(127,181,176,0.12);
+    --red: #C47878;
     --glass-bg: rgba(224,223,228,0.04);
     --glass-border: rgba(224,223,228,0.08);
     --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-  * { margin:0; padding:0; box-sizing:border-box; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
   body {
     background: var(--canvas);
     display: flex;
     justify-content: center;
-    padding: 40px;
     font-family: 'Inter', -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
+    padding: 24px;
   }
+
+  body.embedded { padding: 0; min-height: auto; display: block; background: transparent; overflow: hidden; }
+  body.embedded .diagram { width: 100%; max-width: none; border-radius: 0; }
+
   .diagram {
     width: 100%;
     max-width: 760px;
     background: var(--canvas);
     border-radius: 16px;
     overflow: hidden;
-    position: relative;
-    padding: 48px 0;
+    padding: 24px 0;
   }
 
   .comparison {
-    padding: 28px 48px 0;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
+    padding: 0 48px;
     align-items: start;
   }
 
   .col {
     display: flex;
     flex-direction: column;
+    gap: 5px;
     min-width: 0;
     opacity: 0;
-    animation: fadeUp 0.6s ease-out forwards;
+    animation: fadeUp 0.6s var(--spring) forwards;
   }
   .col:nth-child(1) { animation-delay: 0.05s; }
   .col:nth-child(2) { animation-delay: 0.18s; }
@@ -61,31 +67,69 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  .col-label {
+  /* Header: numbered prefix + bullet + label stack */
+  .col-header {
     display: flex;
-    justify-content: center;
-    color: var(--accent);
-    font-size: 10px;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+  }
+  .col-num {
+    font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.1em;
+    line-height: 1.4;
+    letter-spacing: 0.88px;
     text-transform: uppercase;
-    margin-bottom: 14px;
-    line-height: 1;
+    color: var(--text-ter);
+    flex-shrink: 0;
+  }
+  .col-bullet {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--text-ter);
+    flex-shrink: 0;
+  }
+  .col-label-stack {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+  }
+  .col-label {
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.88px;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .col-sublabel {
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.88px;
+    text-transform: uppercase;
+    color: var(--text-ter);
   }
 
+  .spacer { height: 14px; }
+
+  /* Phone mock area */
   .mock-frame {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 0 8px;
-    margin-bottom: 6px;
+    width: 100%;
   }
   .mock {
     width: 100%;
     aspect-ratio: 1040 / 2250;
     overflow: hidden;
     background: #fff;
-    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  .col:hover .mock {
-    transform: translateY(-2px);
+    border-radius: 16px;
+    border: 1px solid var(--border-subtle);
   }
   .mock img {
     display: block;
@@ -94,59 +138,163 @@
     object-fit: cover;
   }
 
+  /* Stacked-phones variant for column 2 (Casual user — layered three views) */
+  .mock-stack {
+    position: relative;
+    width: 194px;
+    height: 420px;
+    flex-shrink: 0;
+  }
+  .mock-stack .phone {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    border: 1px solid var(--border-subtle);
+    background: #fff;
+  }
+  .mock-stack .phone-1 {
+    top: 0;
+    height: 100%;
+    border-radius: 18px;
+  }
+  .mock-stack .phone-1 img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 18px;
+  }
+  .mock-stack .phone-2 {
+    top: 128px;
+    height: 249px;
+  }
+  .mock-stack .phone-2 img {
+    position: absolute;
+    width: 100.04%;
+    height: 237.29%;
+    left: -0.02%;
+    top: -112.99%;
+    max-width: none;
+  }
+  .mock-stack .phone-3 {
+    top: 312px;
+    height: 60px;
+  }
+  .mock-stack .phone-3 img {
+    position: absolute;
+    width: 100.07%;
+    height: 700%;
+    left: -0.03%;
+    top: -113.33%;
+    max-width: none;
+  }
+
+  .spacer-bottom { height: 6px; }
+
+  /* Annotation card with quote */
   .annotation {
     border: 1px solid var(--glass-border);
     background: var(--glass-bg);
+    box-shadow: var(--glass-highlight);
     border-radius: 8px;
     padding: 7px 10px;
-    color: var(--accent);
+    width: 100%;
+  }
+  .annotation p {
     font-size: 11px;
+    font-weight: 400;
     line-height: 1.4;
-    box-shadow: var(--glass-highlight);
-    margin-top: 10px;
+    color: var(--text-pri);
+    margin: 0;
   }
 
-  .diagram::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at center 35%, rgba(127,181,176,0.04), transparent 70%);
-    pointer-events: none;
+  /* iframe-width rule: collapse only at ≤480px */
+  @media (max-width: 480px) {
+    .comparison { grid-template-columns: 1fr; gap: 24px; padding: 0 16px; }
+    .mock-stack { width: 100%; max-width: 240px; margin: 0 auto; }
   }
 </style>
 </head>
 <body>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
   <div class="diagram">
     <div class="comparison">
+
+      <!-- Column 1: NEW USER -->
       <div class="col">
-        <div class="col-label">New user</div>
+        <div class="col-header">
+          <span class="col-num">01</span>
+          <span class="col-bullet"></span>
+          <div class="col-label-stack">
+            <span class="col-label">New user</span>
+            <span class="col-sublabel">Just getting started</span>
+          </div>
+        </div>
+        <div class="spacer"></div>
         <div class="mock-frame">
           <div class="mock">
             <img src="assets/not10-newuser.png" alt="Inbox for a new user — empty state with 'Wow, such empty' illustration" loading="lazy">
           </div>
         </div>
-        <div class="annotation">The inbox is empty</div>
+        <div class="spacer-bottom"></div>
+        <div class="annotation">
+          <p>&ldquo;I don&rsquo;t know where to start&rdquo;</p>
+        </div>
       </div>
 
+      <!-- Column 2: Casual user (stacked layered phones) -->
       <div class="col">
-        <div class="col-label">Subscriber</div>
-        <div class="mock-frame">
-          <div class="mock">
-            <img src="assets/not10-subscriber.png" alt="Inbox for a subscriber — three or four notification cards from joined communities" loading="lazy">
+        <div class="col-header">
+          <span class="col-num">02</span>
+          <span class="col-bullet"></span>
+          <div class="col-label-stack">
+            <span class="col-label">Casual user</span>
+            <span class="col-sublabel">Visit 1&ndash;2 times a week</span>
           </div>
         </div>
-        <div class="annotation">The inbox is hard to customize</div>
+        <div class="spacer"></div>
+        <div class="mock-frame">
+          <div class="mock-stack">
+            <div class="phone phone-1">
+              <img src="assets/not10-newuser.png" alt="">
+            </div>
+            <div class="phone phone-2">
+              <img src="assets/not10-subscriber.png" alt="Subscriber inbox view (cropped)">
+            </div>
+            <div class="phone phone-3">
+              <img src="assets/not10-contributor.png" alt="Contributor inbox view (cropped bottom)">
+            </div>
+          </div>
+        </div>
+        <div class="spacer-bottom"></div>
+        <div class="annotation">
+          <p>&ldquo;I don&rsquo;t care about these updates&rdquo;</p>
+        </div>
       </div>
 
+      <!-- Column 3: Core user -->
       <div class="col">
-        <div class="col-label">Contributor</div>
-        <div class="mock-frame">
-          <div class="mock">
-            <img src="assets/not10-contributor.png" alt="Inbox for a contributor — long stack of replies, post-view stats, and chat invites" loading="lazy">
+        <div class="col-header">
+          <span class="col-num">03</span>
+          <span class="col-bullet"></span>
+          <div class="col-label-stack">
+            <span class="col-label">Core user</span>
+            <span class="col-sublabel">Visit daily / Create</span>
           </div>
         </div>
-        <div class="annotation">The inbox is crowded</div>
+        <div class="spacer"></div>
+        <div class="mock-frame">
+          <div class="mock">
+            <img src="assets/not10-contributor.png" alt="Inbox for a core user — long stack of replies, post-view stats, and chat invites" loading="lazy">
+          </div>
+        </div>
+        <div class="spacer-bottom"></div>
+        <div class="annotation">
+          <p>&ldquo;Where is my stuff??&rdquo;</p>
+        </div>
       </div>
+
     </div>
   </div>
 <!-- diagram-height-poster v1 -->
@@ -155,29 +303,19 @@
   function compute() {
     var d = document.querySelector('.diagram');
     if (!d) return 0;
-    return Math.max(
-      d.scrollHeight, d.offsetHeight,
+    return Math.max(d.scrollHeight, d.offsetHeight,
       document.documentElement ? document.documentElement.scrollHeight : 0,
-      document.body ? document.body.scrollHeight : 0
-    );
+      document.body ? document.body.scrollHeight : 0);
   }
   function send() {
     if (!window.parent || window.parent === window) return;
     var h = compute();
-    if (h > 0) {
-      window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
-    }
+    if (h > 0) window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
   }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', send);
-  } else {
-    send();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', send);
+  else send();
   window.addEventListener('load', send);
-  // Re-send to catch font swaps, image loads, animations.
-  setTimeout(send, 50);
-  setTimeout(send, 250);
-  setTimeout(send, 1000);
+  setTimeout(send, 50); setTimeout(send, 250); setTimeout(send, 1000);
   if (window.ResizeObserver) {
     var ro = new ResizeObserver(send);
     var d = document.querySelector('.diagram');

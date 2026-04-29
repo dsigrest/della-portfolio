@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="figma-source" content="node:1176:3267 page:29:43 file:TArUrZsBUocaAsqetjXq7V">
-<title>NOT-19 — Pipeline entanglement</title>
+<meta name="figma-source" content="node:1242:370 page:29:43 file:TArUrZsBUocaAsqetjXq7V">
+<title>NOT-19 — Separating asks from recommendations</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -37,7 +37,7 @@
   }
   .diagram {
     width: 100%;
-    max-width: 760px;
+    max-width: 580px;
     background: var(--card);
     border-radius: 16px;
     overflow: hidden;
@@ -48,40 +48,48 @@
     gap: 16px;
   }
 
-  .eyebrow {
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    color: #8C94A6;
+  .diagram-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-pri);
+    text-align: center;
+    margin-bottom: 8px;
     opacity: 0;
     animation: fadeUp 0.5s ease-out forwards;
   }
 
-  .pipeline {
-    display: flex;
-    flex-direction: column;
+  .two-column {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
     width: 100%;
   }
 
-  /* ---- Spokes row (User subscriptions + Discovery suggestions) ---- */
-  .spokes-row {
+  .column {
     display: flex;
-    justify-content: space-between;
-    padding: 0 32px;
-    gap: 64px;
-    width: 100%;
+    flex-direction: column;
+    gap: 12px;
   }
-  .spoke {
-    flex: 1 0 0;
-    min-width: 0;
-    max-width: 300px;
+
+  .column-header {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--text-ter);
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeUp 0.5s ease-out 0.05s forwards;
   }
+
+  .column.left .column-header { color: var(--gold); }
+  .column.right .column-header { color: var(--red); }
+
   .comp-card {
     position: relative;
     border: 1px solid var(--glass-border);
     border-radius: 10px;
-    padding: 16px;
+    padding: 14px;
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -98,187 +106,201 @@
     border-radius: inherit;
     pointer-events: none;
   }
-  .spoke.subscriptions .comp-card { animation-delay: 0.10s; }
-  .spoke.discovery     .comp-card { animation-delay: 0.20s; }
-  .hub-wrap .comp-card             { animation-delay: 0.45s; }
 
-  .card-header {
+  .column.left .comp-card:nth-child(2) { animation-delay: 0.10s; }
+  .column.left .comp-card:nth-child(3) { animation-delay: 0.15s; }
+  .column.right .comp-card:nth-child(2) { animation-delay: 0.20s; }
+  .column.right .comp-card:nth-child(3) { animation-delay: 0.25s; }
+
+  .card-label {
     font-family: 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 9px;
+    font-size: 8px;
     font-weight: 400;
     letter-spacing: 0.04em;
     color: var(--text-dim);
     text-align: center;
-    width: 100%;
   }
 
   .mini-rows {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
     width: 100%;
-    position: relative;
   }
   .mini-row {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 7px 10px;
+    gap: 8px;
+    padding: 6px 8px;
     background: var(--row-bg);
     border: 1px solid var(--row-border);
-    border-radius: 7px;
+    border-radius: 6px;
+    font-size: 11px;
+    color: var(--text-sec);
+    line-height: 1.3;
   }
   .mini-row .dot {
-    width: 7px;
-    height: 7px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     flex-shrink: 0;
   }
   .mini-row.gold .dot { background: var(--gold); }
   .mini-row.red  .dot { background: var(--red); }
-  .mini-row .label {
-    flex: 1 0 0;
-    min-width: 0;
-    font-size: 12px;
-    color: var(--text-sec);
-    line-height: 1.2;
-  }
 
-  /* ---- Connections (SVG dashed paths) ---- */
-  .connections {
-    width: 100%;
-    height: 28px;
-    overflow: visible;
-    display: block;
-  }
-  .connections .line {
-    fill: none;
-    stroke-width: 1.25;
-    stroke-dasharray: 3 4;
-    stroke-linecap: round;
-    opacity: 0;
-    animation: drawIn 0.6s ease-out 0.30s forwards;
-  }
-  .connections .line.gold { stroke: var(--gold); }
-  .connections .line.red  { stroke: var(--red); }
-
-  /* ---- Hub (RANKER badge) ---- */
-  .hub {
+  .hub-section {
     display: flex;
     justify-content: center;
     width: 100%;
-    height: 32px;
-    align-items: center;
+    margin: 8px 0;
   }
   .hub-badge {
     background: var(--ranker-fill);
     border: 1px solid var(--ranker-border);
-    border-radius: 16px;
-    padding: 0 14px;
-    height: 32px;
+    border-radius: 14px;
+    padding: 0 12px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--ranker);
     font-family: 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 9px;
+    font-size: 8px;
     font-weight: 500;
     letter-spacing: 0.16em;
     opacity: 0;
     animation: fadeUp 0.5s ease-out 0.32s forwards;
   }
 
-  /* ---- Hub-to-inbox connector ---- */
-  .down-line {
+  .connector-svg {
     width: 100%;
-    height: 28px;
+    height: 20px;
     overflow: visible;
     display: block;
+    opacity: 0;
+    animation: fadeUp 0.5s ease-out forwards;
   }
-  .down-line .line {
+  .connector-svg.gold { animation-delay: 0.30s; }
+  .connector-svg.red { animation-delay: 0.35s; }
+  .connector-svg .line {
     fill: none;
-    stroke: var(--red);
     stroke-width: 1.25;
     stroke-dasharray: 3 4;
     stroke-linecap: round;
-    opacity: 0;
-    animation: drawIn 0.5s ease-out 0.55s forwards;
+    opacity: 0.7;
   }
+  .connector-svg.gold .line { stroke: var(--gold); }
+  .connector-svg.red .line { stroke: var(--red); }
 
-  /* ---- User inbox card (centered) ---- */
-  .hub-wrap {
+  .inbox-section {
+    margin-top: 8px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease-out 0.40s forwards;
+  }
+  .inbox-card {
+    position: relative;
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 14px;
     display: flex;
-    justify-content: center;
-    width: 100%;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: var(--glass-highlight);
+    overflow: hidden;
   }
-  .hub-wrap .spoke {
-    width: 300px;
-    flex: 0 0 auto;
+  .inbox-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--glass-overlay);
+    border-radius: inherit;
+    pointer-events: none;
   }
-  .hub-wrap .comp-card { padding: 18px; gap: 14px; }
+  .inbox-label {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 8px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: var(--text-dim);
+    text-align: center;
+  }
 
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(6px); }
     to   { opacity: 1; transform: translateY(0); }
   }
-  @keyframes drawIn {
-    from { opacity: 0; }
-    to   { opacity: 0.7; }
+
+  /* Responsive: stack columns below 480px */
+  @media (max-width: 479px) {
+    .two-column {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .column-header {
+      font-size: 8px;
+    }
   }
+
+  /* Iframe embed normalizer — added by QA pass */
+  body.embedded { padding: 0; min-height: auto; display: block; background: transparent; overflow: hidden; }
+  body.embedded .diagram { width: 100%; max-width: none; border-radius: 0; }
 </style>
 </head>
 <body>
   <div class="diagram">
-    <div class="eyebrow">Notification candidates</div>
+    <div class="diagram-title">P13 — Separating asks from recommendations</div>
 
-    <div class="pipeline">
-      <div class="spokes-row">
-        <div class="spoke subscriptions">
-          <div class="comp-card">
-            <div class="card-header">User subscriptions</div>
-            <div class="mini-rows">
-              <div class="mini-row gold"><span class="dot"></span><span class="label">Popular post in r/design</span></div>
-              <div class="mini-row gold"><span class="dot"></span><span class="label">New post in r/Claude</span></div>
-            </div>
+    <div class="two-column">
+      <div class="column left">
+        <div class="column-header">Updates you asked for</div>
+        <div class="comp-card">
+          <div class="card-label">Subscriptions 1</div>
+          <div class="mini-rows">
+            <div class="mini-row gold"><span class="dot"></span><span>Popular post in r/design</span></div>
           </div>
         </div>
-        <div class="spoke discovery">
-          <div class="comp-card">
-            <div class="card-header">Discovery suggestions</div>
-            <div class="mini-rows">
-              <div class="mini-row red"><span class="dot"></span><span class="label">Trending in r/technology</span></div>
-              <div class="mini-row red"><span class="dot"></span><span class="label">Because you visited r/ux</span></div>
-            </div>
+        <div class="comp-card">
+          <div class="card-label">Subscriptions 2</div>
+          <div class="mini-rows">
+            <div class="mini-row gold"><span class="dot"></span><span>New post in r/Claude</span></div>
           </div>
         </div>
       </div>
 
-      <!-- Both pipelines feed the ranker — so dashed lines converge from
-           the spokes to the central RANKER badge. -->
-      <svg class="connections" viewBox="0 0 728 28" preserveAspectRatio="none" aria-hidden="true">
-        <path class="line gold" d="M 213 26 Q 290 14 318 2" />
-        <path class="line red"  d="M 515 26 Q 438 14 410 2" />
-      </svg>
-
-      <div class="hub">
-        <div class="hub-badge">RANKER</div>
-      </div>
-
-      <!-- Ranker outputs only the discovery candidates downstream — note
-           the connector and the inbox rows below are red, not gold. -->
-      <svg class="down-line" viewBox="0 0 728 28" preserveAspectRatio="none" aria-hidden="true">
-        <path class="line" d="M 364 1 L 364 27" />
-      </svg>
-
-      <div class="hub-wrap">
-        <div class="spoke inbox">
-          <div class="comp-card">
-            <div class="card-header">User inbox</div>
-            <div class="mini-rows">
-              <div class="mini-row red"><span class="dot"></span><span class="label">Trending in r/technology</span></div>
-              <div class="mini-row red"><span class="dot"></span><span class="label">Because you visited r/ux</span></div>
-            </div>
+      <div class="column right">
+        <div class="column-header">What the algorithm surfaces</div>
+        <div class="comp-card">
+          <div class="card-label">Suggestions 1</div>
+          <div class="mini-rows">
+            <div class="mini-row red"><span class="dot"></span><span>Trending in r/technology</span></div>
           </div>
+        </div>
+        <div class="comp-card">
+          <div class="card-label">Suggestions 2</div>
+          <div class="mini-rows">
+            <div class="mini-row red"><span class="dot"></span><span>Because you visited r/ux</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hub-section">
+      <div class="hub-badge">RANKER</div>
+    </div>
+
+    <svg class="connector-svg gold" viewBox="0 0 580 20" preserveAspectRatio="none" aria-hidden="true">
+      <path class="line" d="M 150 18 Q 290 10 290 2" />
+    </svg>
+    <svg class="connector-svg red" viewBox="0 0 580 20" preserveAspectRatio="none" aria-hidden="true">
+      <path class="line" d="M 430 2 Q 290 10 290 18" />
+    </svg>
+
+    <div class="inbox-section">
+      <div class="inbox-card">
+        <div class="inbox-label">User inbox</div>
+        <div class="mini-rows">
+          <div class="mini-row red"><span class="dot"></span><span>Recommended content</span></div>
+          <div class="mini-row red"><span class="dot"></span><span>Curated by algorithm</span></div>
         </div>
       </div>
     </div>
@@ -320,5 +342,6 @@
   window.addEventListener('resize', send);
 })();
 </script>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
 </body>
 </html>

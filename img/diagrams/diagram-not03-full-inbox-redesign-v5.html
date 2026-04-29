@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="figma-source" content="node:709:283 page:29:43 file:TArUrZsBUocaAsqetjXq7V">
+<meta name="figma-source" content="node:1310:731 page:29:43 file:TArUrZsBUocaAsqetjXq7V">
 <title>NOT-03 — Full Inbox Redesign: Before & After</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -30,7 +30,7 @@
     background: var(--canvas);
     display: flex;
     justify-content: center;
-    padding: 40px;
+    padding: 16px;
     font-family: 'Inter', -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
@@ -41,70 +41,102 @@
     border-radius: 16px;
     overflow: hidden;
     position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    /* 24px frame standard — matches Figma py-[24px] on 1310:731 */
+    padding: 24px 0;
   }
 
-  /* ── Hover hint ── */
-  .hover-hint-wrap {
-    padding: 20px 48px 0;
-    display: flex;
-    justify-content: center;
-  }
-  .hover-hint {
-    font-size: 10px;
-    color: var(--text-dim);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-
-  /* ── Comparison ── */
+  /* ── Comparison wrapper ── */
   .comparison-wrap {
-    padding: 8px 48px 48px;
+    padding: 0 24px;
   }
   .comparison {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    align-items: start;
+    gap: 24px;
+    align-items: stretch;
   }
   .col {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    min-width: 0;
   }
 
-  .col-label {
+  /* ── Column body: annotations flank phones ── */
+  .col-body {
+    display: flex;
+    gap: 16px;
+    align-items: stretch;
+    width: 100%;
+    flex: 1;
+  }
+  .col-body .annotations,
+  .col-body .screenshot { flex: 1 0 0; min-width: 0; }
+
+  /* ── Annotations stack (column header lives inside) ── */
+  .annotations {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    justify-content: center;
+  }
+  /* Column header (Frame 47) — sits at top of annotation stack */
+  .col-header {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 10px;
+    padding-left: 3px;
+    font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.1em;
+    line-height: 1.4;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
+    white-space: nowrap;
   }
-  .col-label.before { color: var(--red); }
-  .col-label.after { color: var(--accent); }
-  .col-label .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-  .col-label.before .dot { background: var(--red); }
-  .col-label.after .dot { background: var(--accent); }
+  .col.before .col-header { color: var(--red); }
+  .col.after  .col-header { color: var(--accent); }
 
-  /* ── Full-phone screenshot ── */
+  /* Individual annotation row */
+  .annotation {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px 0;
+    border-radius: 10px;
+  }
+  .annotation .ann-icon {
+    width: 16px; height: 16px;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .annotation .ann-content {
+    display: flex; flex-direction: column; gap: 1px;
+    min-width: 0; flex: 1 0 0;
+  }
+  .annotation .ann-title {
+    font-size: 11px; font-weight: 600; line-height: 1.25;
+    color: var(--text-pri);          /* white in both columns; icon carries color */
+  }
+  .annotation .ann-desc {
+    font-size: 10px; font-weight: 400; line-height: 1.4;
+  }
+  /* Description dimming differs by column */
+  .col.before .annotation .ann-desc { color: var(--text-sec); }
+  .col.after  .annotation .ann-desc { color: var(--text-ter); }
+  /* Icon color carries the column meaning */
+  .annotation.problem  .ann-icon { color: var(--red); }
+  .annotation.solution .ann-icon { color: var(--accent); }
+
+  /* ── Phone screenshot ── */
+  /* Phone height is driven by the image's natural aspect ratio.
+     Centered vertically when annotations stack is taller than the phone. */
   .screenshot {
-    position: relative;
-    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .mock {
     position: relative;
     width: 100%;
-    /* Cap phone mock at ~200px wide (≈433px tall) so both phones plus
-       the labeled comparison rows below fit in a 1440x900 viewport
-       (after ~80px nav) without scrolling. Aspect-ratio preserved. */
-    max-width: 200px;
-    margin: 0 auto;
-    aspect-ratio: 322 / 697;
-    border-radius: 20px;
+    border-radius: 11px;
     overflow: hidden;
     background: #F6F6F6;
     box-shadow:
@@ -112,111 +144,12 @@
       0 8px 24px rgba(0,0,0,0.25);
   }
   .mock img {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: top center;
     display: block;
+    width: 100%;
+    height: auto;
     pointer-events: none;
     user-select: none;
     -webkit-user-drag: none;
-  }
-
-  /* ── Hotspot overlays ── */
-  .hotspot-layer {
-    position: absolute;
-    inset: 12px 24px;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-  .hotspot-layer.active { opacity: 1; }
-  .hotspot {
-    position: absolute;
-    border-radius: 4px;
-    pointer-events: none;
-  }
-  .hotspot.problem {
-    border: 1.5px dashed rgba(196,120,120,0.5);
-    background: rgba(196,120,120,0.06);
-    box-shadow: 0 0 16px rgba(196,120,120,0.15);
-  }
-  .hotspot.solution {
-    border: 1.5px dashed rgba(127,181,176,0.5);
-    background: rgba(127,181,176,0.06);
-    box-shadow: 0 0 16px rgba(127,181,176,0.15);
-  }
-
-  /* ── Annotations ── */
-  .annotations {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
-  .annotation {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 10px 12px;
-    border-radius: 10px;
-    transition: background 0.25s ease, opacity 0.25s ease, transform 0.35s var(--spring);
-    cursor: default;
-  }
-  .annotation .ann-num {
-    width: 14px; height: 14px;
-    border-radius: 7px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 8px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    line-height: 1;
-    padding-top: 1px;
-  }
-  .annotation.problem .ann-num {
-    background: var(--red-15);
-    color: rgba(196,120,120,0.8);
-  }
-  .annotation.solution .ann-num {
-    background: var(--accent-15);
-    color: rgba(127,181,176,0.8);
-  }
-  .annotation .ann-icon {
-    width: 18px; height: 18px;
-    flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .annotation .ann-content {
-    display: flex; flex-direction: column; gap: 2px;
-    min-width: 0; flex: 1;
-  }
-  .annotation .ann-title {
-    font-size: 11px; font-weight: 600; line-height: 1.3;
-  }
-  .annotation .ann-desc {
-    font-size: 10px; font-weight: 400; line-height: 1.4;
-    opacity: 0.7;
-  }
-  .annotation.problem { color: var(--red); }
-  .annotation.solution { color: var(--accent); }
-
-  /* Hover states */
-  .annotation.active-pair {
-    transform: translateX(4px);
-  }
-  .annotation.problem.active-pair {
-    background: rgba(196,120,120,0.08);
-  }
-  .annotation.solution.active-pair {
-    background: rgba(127,181,176,0.08);
-  }
-  .annotations.has-active .annotation:not(.active-pair) {
-    opacity: 0.28;
   }
 
   /* ── Load animations ── */
@@ -224,206 +157,149 @@
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
   }
-  .hover-hint-wrap { animation: fadeSlideIn 0.5s ease-out 0ms forwards; }
-  .col.before { animation: fadeSlideIn 0.5s ease-out 120ms forwards; opacity: 0; }
-  .col.after { animation: fadeSlideIn 0.5s ease-out 180ms forwards; opacity: 0; }
+  .col.before { animation: fadeSlideIn 0.5s ease-out 80ms forwards; opacity: 0; }
+  .col.after  { animation: fadeSlideIn 0.5s ease-out 160ms forwards; opacity: 0; }
 
   /* ─ Mobile fit — progressively restructure as viewport narrows ─ */
   @media (max-width: 768px) {
-    body { padding: 16px; }
-    .hover-hint-wrap { padding: 14px 16px 0; }
-    .comparison-wrap { padding: 8px 16px 20px; }
-    .comparison { gap: 12px; }
+    .comparison-wrap { padding: 0 16px; }
+    .comparison { gap: 16px; }
+    .col-body { gap: 12px; }
   }
-  @media (max-width: 600px) {
-    .comparison { grid-template-columns: 1fr; gap: 24px; }
-    .comparison-wrap { padding: 12px 16px 24px; }
-  }
-  @media (max-width: 400px) {
-    body { padding: 10px; }
-    .hover-hint-wrap { padding: 12px 10px 0; }
-    .comparison-wrap { padding: 10px 10px 18px; }
-    .comparison { gap: 20px; }
+  /* iframe-width rule: columns stack only at ≤480px */
+  @media (max-width: 480px) {
+    .comparison { grid-template-columns: 1fr; gap: 28px; }
+    .comparison-wrap { padding: 0 16px; }
+    /* Inside each column at mobile: phone above annotations */
+    .col-body {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 14px;
+    }
+    .col-body .screenshot,
+    .col-body .annotations { flex: none; width: 100%; }
+    .mock { max-width: 240px; margin: 0 auto; }
   }
 
   /* Embed mode — strip body chrome when iframed on a case study page */
-  body.embedded { padding: 0; background: transparent; min-height: auto; display: block; }
+  body.embedded { padding: 0; background: transparent; min-height: auto; display: block; overflow: hidden; }
   body.embedded .diagram { width: 100%; max-width: none; border-radius: 0; }
 </style>
 </head>
 <body>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
 <div class="diagram" data-diagram-id="not03">
-
-  <div class="hover-hint-wrap">
-    <p class="hover-hint">Hover annotations to see linked changes</p>
-  </div>
 
   <div class="comparison-wrap">
     <div class="comparison">
 
-      <!-- ── BEFORE ── -->
+      <!-- ── BEFORE column: annotations | phone ── -->
       <div class="col before">
-        <div class="col-label before"><span class="dot"></span>Before — Fragmented inbox</div>
+        <div class="col-body">
+          <!-- Annotations on the left flank (header lives in this stack) -->
+          <div class="annotations">
+            <div class="col-header">Before</div>
 
-        <div class="screenshot">
-          <div class="mock" aria-label="Legacy Reddit inbox — fragmented channels and buried utilities">
-            <img src="assets/not03-legacy-inbox.png" alt="Legacy Reddit inbox with multiple update channels, section headers, and buried utilities">
-          </div>
-
-          <!-- Hotspot overlays -->
-          <div class="hotspot-layer" id="hl-before-channels">
-            <div class="hotspot problem" style="top:6%; left:4%; width:92%; height:8%;"></div>
-          </div>
-          <div class="hotspot-layer" id="hl-before-headers">
-            <div class="hotspot problem" style="top:18%; left:4%; width:40%; height:4%;"></div>
-            <div class="hotspot problem" style="top:48%; left:4%; width:40%; height:4%;"></div>
-          </div>
-          <div class="hotspot-layer" id="hl-before-oneoffs">
-            <div class="hotspot problem" style="top:26%; left:4%; width:92%; height:10%;"></div>
-          </div>
-          <div class="hotspot-layer" id="hl-before-utilities">
-            <div class="hotspot problem" style="top:6%; right:4%; width:14%; height:6%;"></div>
-          </div>
-        </div>
-
-        <div class="annotations" id="beforeAnnotations">
-          <div class="annotation problem" data-pair="channels">
-            <div class="ann-num">1</div>
-            <div class="ann-icon">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
-                <path d="M4.5 4.5L9.5 9.5M9.5 4.5L4.5 9.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-              </svg>
+            <div class="annotation problem">
+              <div class="ann-icon">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+                  <path d="M5.25 5.25L10.75 10.75M10.75 5.25L5.25 10.75" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="ann-content">
+                <div class="ann-title">No overarching strategy</div>
+                <div class="ann-desc">A &ldquo;one size fits all&rdquo; approach created experience gaps</div>
+              </div>
             </div>
-            <div class="ann-content">
-              <div class="ann-title">Multiple update channels</div>
-              <div class="ann-desc">Tabs split updates across unrelated surfaces</div>
-            </div>
-          </div>
 
-          <div class="annotation problem" data-pair="headers">
-            <div class="ann-num">2</div>
-            <div class="ann-icon">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
-                <path d="M4.5 4.5L9.5 9.5M9.5 4.5L4.5 9.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-              </svg>
+            <div class="annotation problem">
+              <div class="ann-icon">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+                  <path d="M5.25 5.25L10.75 10.75M10.75 5.25L5.25 10.75" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="ann-content">
+                <div class="ann-title">One-off elements</div>
+                <div class="ann-desc">Made it difficult to scale and experiment</div>
+              </div>
             </div>
-            <div class="ann-content">
-              <div class="ann-title">Section headers provide little value</div>
-              <div class="ann-desc">"Today" / "This week" fragment the scan</div>
+
+            <div class="annotation problem">
+              <div class="ann-icon">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+                  <path d="M5.25 5.25L10.75 10.75M10.75 5.25L5.25 10.75" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="ann-content">
+                <div class="ann-title">Multiple channels</div>
+                <div class="ann-desc">Duplicate surfaces cause missed communication</div>
+              </div>
             </div>
           </div>
 
-          <div class="annotation problem" data-pair="oneoffs">
-            <div class="ann-num">3</div>
-            <div class="ann-icon">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
-                <path d="M4.5 4.5L9.5 9.5M9.5 4.5L4.5 9.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-              </svg>
-            </div>
-            <div class="ann-content">
-              <div class="ann-title">One-off elements</div>
-              <div class="ann-desc">Bespoke rows for every notification type</div>
-            </div>
-          </div>
-
-          <div class="annotation problem" data-pair="utilities">
-            <div class="ann-num">4</div>
-            <div class="ann-icon">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
-                <path d="M4.5 4.5L9.5 9.5M9.5 4.5L4.5 9.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-              </svg>
-            </div>
-            <div class="ann-content">
-              <div class="ann-title">Key utilities buried</div>
-              <div class="ann-desc">Mark-all-read hidden in overflow menus</div>
+          <!-- Phone on the right -->
+          <div class="screenshot">
+            <div class="mock" aria-label="Legacy Reddit inbox — fragmented channels and one-off elements">
+              <img src="assets/not03-legacy-inbox.png" alt="Legacy Reddit inbox with multiple update channels, section headers, and one-off elements">
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ── AFTER ── -->
+      <!-- ── AFTER column: phone | annotations ── -->
       <div class="col after">
-        <div class="col-label after"><span class="dot"></span>After — Unified inbox</div>
-
-        <div class="screenshot">
-          <div class="mock" aria-label="Redesigned Reddit inbox — single entry point, clean chronology, scalable rows">
-            <img src="assets/not03-unified-inbox.png" alt="Redesigned Reddit inbox with single entry point, chronological feed, and surfaced utilities">
-          </div>
-
-          <!-- Hotspot overlays -->
-          <div class="hotspot-layer" id="hl-after-channels">
-            <div class="hotspot solution" style="top:6%; left:4%; width:60%; height:6%;"></div>
-          </div>
-          <div class="hotspot-layer" id="hl-after-headers">
-            <div class="hotspot solution" style="top:16%; left:4%; width:92%; height:70%;"></div>
-          </div>
-          <div class="hotspot-layer" id="hl-after-oneoffs">
-            <div class="hotspot solution" style="top:22%; left:4%; width:92%; height:12%;"></div>
-            <div class="hotspot solution" style="top:38%; left:4%; width:92%; height:12%;"></div>
-          </div>
-          <div class="hotspot-layer" id="hl-after-utilities">
-            <div class="hotspot solution" style="top:6%; right:4%; width:24%; height:6%;"></div>
-          </div>
-        </div>
-
-        <div class="annotations" id="afterAnnotations">
-          <div class="annotation solution" data-pair="channels">
-            <div class="ann-num">1</div>
-            <div class="ann-icon">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
-                <path d="M4 7.5L6 9.5L10 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <div class="ann-content">
-              <div class="ann-title">Single update entry point</div>
-              <div class="ann-desc">One inbox, no fragmenting tabs</div>
+        <div class="col-body">
+          <!-- Phone on the left -->
+          <div class="screenshot">
+            <div class="mock" aria-label="Redesigned Reddit inbox — single entry point, scalable rows, framework-informed">
+              <img src="assets/not03-unified-inbox.png" alt="Redesigned Reddit inbox with single entry point and scalable rows informed by user framework">
             </div>
           </div>
 
-          <div class="annotation solution" data-pair="headers">
-            <div class="ann-num">2</div>
-            <div class="ann-icon">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
-                <path d="M4 7.5L6 9.5L10 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <div class="ann-content">
-              <div class="ann-title">Clean chronology</div>
-              <div class="ann-desc">Continuous recency, no visual breaks</div>
-            </div>
-          </div>
+          <!-- Annotations on the right flank (header lives in this stack) -->
+          <div class="annotations">
+            <div class="col-header">After</div>
 
-          <div class="annotation solution" data-pair="oneoffs">
-            <div class="ann-num">3</div>
-            <div class="ann-icon">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
-                <path d="M4 7.5L6 9.5L10 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
+            <div class="annotation solution">
+              <div class="ann-icon">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+                  <path d="M4.75 8.5L7 10.75L11.25 5.75" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="ann-content">
+                <div class="ann-title">Informed by user framework</div>
+                <div class="ann-desc">Experience scales across multiple user needs</div>
+              </div>
             </div>
-            <div class="ann-content">
-              <div class="ann-title">Scalable inbox row components</div>
-              <div class="ann-desc">One row pattern, every notification type</div>
-            </div>
-          </div>
 
-          <div class="annotation solution" data-pair="utilities">
-            <div class="ann-num">4</div>
-            <div class="ann-icon">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
-                <path d="M4 7.5L6 9.5L10 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
+            <div class="annotation solution">
+              <div class="ann-icon">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+                  <path d="M4.75 8.5L7 10.75L11.25 5.75" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="ann-content">
+                <div class="ann-title">Scalable components</div>
+                <div class="ann-desc">Ensures consistency and quick development</div>
+              </div>
             </div>
-            <div class="ann-content">
-              <div class="ann-title">"Mark all read" surfaced</div>
-              <div class="ann-desc">Primary utility in the header, one tap away</div>
+
+            <div class="annotation solution">
+              <div class="ann-icon">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+                  <path d="M4.75 8.5L7 10.75L11.25 5.75" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="ann-content">
+                <div class="ann-title">Single entry point</div>
+                <div class="ann-desc">One place for all a user&rsquo;s updates</div>
+              </div>
             </div>
           </div>
         </div>
@@ -434,42 +310,6 @@
 
 </div>
 
-<script>
-  (function() {
-    const allAnnotations = document.querySelectorAll('.annotation');
-    const allLayers = document.querySelectorAll('.hotspot-layer');
-    const beforeAnnotations = document.getElementById('beforeAnnotations');
-    const afterAnnotations = document.getElementById('afterAnnotations');
-
-    function setActive(pairId) {
-      allLayers.forEach(l => l.classList.remove('active'));
-      allAnnotations.forEach(a => a.classList.remove('active-pair'));
-      beforeAnnotations.classList.add('has-active');
-      afterAnnotations.classList.add('has-active');
-
-      document.getElementById('hl-before-' + pairId)?.classList.add('active');
-      document.getElementById('hl-after-' + pairId)?.classList.add('active');
-      document.querySelectorAll('[data-pair="' + pairId + '"]').forEach(el => el.classList.add('active-pair'));
-    }
-
-    function clearActive() {
-      allLayers.forEach(l => l.classList.remove('active'));
-      allAnnotations.forEach(a => a.classList.remove('active-pair'));
-      beforeAnnotations.classList.remove('has-active');
-      afterAnnotations.classList.remove('has-active');
-    }
-
-    allAnnotations.forEach(ann => {
-      const pairId = ann.dataset.pair;
-      ann.setAttribute('tabindex', '0');
-      ann.addEventListener('mouseenter', () => setActive(pairId));
-      ann.addEventListener('focus', () => setActive(pairId));
-      ann.addEventListener('mouseleave', clearActive);
-      ann.addEventListener('blur', clearActive);
-    });
-  })();
-</script>
-<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
 <!-- diagram-height-poster v1 -->
 <script>
 (function () {
