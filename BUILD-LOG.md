@@ -74,6 +74,29 @@ Next up: Thread 1b — fix the 9 remaining L2 reworks + build L3 mobile variants
 
 ## Log entries
 
+### Apr 30, 2026 (Session 44b — Notifications grandparent fully closed)
+
+**Context:** Closing the case-notifications-deferred-finish grandparent prompt. NOT-22 (item B) closed as superseded by NOT-08 — the original flag was about NOT-08 cropping issues which Session 38 already resolved; the deleted Contextual suggestions section is not being reinstated. With item B closed, the grandparent's 4 items are all done: A (NOT-12) ✅ Session 42, B (NOT-22) ✅ closed-superseded, C (NOT-19) ✅ Session 43 commit `66a5044`, D (NOT-E4) ✅ Session 44 commit `b56a8fc`.
+
+**What shipped (sessions/ — outside git, no commit needed):**
+- Grandparent `resume-prompt-case-notifications-deferred-finish.md` — item B marked closed; status updated to CLOSED; ready to archive to `sessions/archive/`
+- Predecessor `resume-prompt-case-notifications-deferred-retranslations.md` — also ready to archive (Session 38's predecessor, all items shipped)
+- Punch-list `recovered-47-task-punch-list.md` — items #41 + #46 already synced as completed in prior sessions; no further edits needed
+
+**Notifications scope status:** ✅ COMPLETE. Both NOT-19 and NOT-E4 commits on main + origin/main. Grandparent ready to archive. The multi-week notifications close-out arc is done.
+
+**Working tree at close (out-of-scope, will be triaged by case-sharing thread):**
+- Modified: `case-sharing.html`
+- Untracked (case-sharing assets): `img/diagrams/assets/SHAR-screenshotToshare.gif`, `img/diagrams/diagram-shr01-before-share-sheet-v5.html`, `img/screenshot to share gif base screens/`
+- Untracked stragglers (harmless, can be gitignored or deleted in a future hygiene pass): `outputs/`, `working/discarded/`, `working/png-review-2026-04-29.html`, `working/visual-regression/`
+
+**Open follow-ups (not blocking case-sharing):**
+- [ ] Optional: delete the orphan `diagram-not22-contextual-suggestions-v5.html` in a future cleanup pass (no embed exists)
+- [ ] BUILD-LOG.md still over 1500-line / 50KB threshold — quarterly archive split overdue
+- [ ] Untracked stragglers above — can be gitignored or deleted
+
+---
+
 ### Apr 30, 2026 (Session 44 — NOT-E4 signal/intent matrix axis copy fix + L2 responsive)
 
 **Context:** Mid-stream pivot during the NOT-19 close-out. Della pasted Figma `1214:16414` showing the 2×2 signal/intent matrix and flagged the y-axis sub-copy as broken. Diagnosis: y-axis title-to-sub mapping was inverted in HTML — "High Intent" was paired with "Provide the user guidance" (low-intent strategy) and "Low Intent" with "Empower the user to achieve goals" (high-intent strategy). Quadrant cards rendered correctly; only the axis labels were swapped. Quadrant developer-comments (lines 207, 219, 231, 243) carried the same inversion. After axis fix, Della's preview at narrow widths surfaced a second issue: the diagram had no responsive CSS, so at <840px viewport it overflowed the iframe and crashed persona-header layout (icon + multi-word name colliding).
