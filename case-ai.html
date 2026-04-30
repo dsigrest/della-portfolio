@@ -68,22 +68,14 @@
     <section class="case-body">
 
       <!-- ============================================
-           OPENING CALLOUT — Challenge / Strategy card-pair
-           Reference pattern: case-notifications.html ~lines 50-75.
-           Challenge tile = v2 line 76 verbatim (was Pos 1 Overview lede).
-           Strategy tile = v2 line 114 verbatim (was Pos 3b first paragraph).
+           OPENING — single paragraph under H2
+           (was: case-card-pair with Challenge / Strategy eyebrows;
+           flattened and merged in Session 45.)
            ============================================ -->
 
-      <div class="case-card-pair">
-        <div class="case-card">
-          <div class="card-eyebrow">Challenge</div>
-          <p><strong>Reddit content was scattered</strong> across posts and communities. Users arriving from Google had no way to piece answers together — most bounced. SEO was the primary entry point and the primary exit.</p>
-        </div>
-        <div class="case-card">
-          <div class="card-eyebrow">Strategy</div>
-          <p>I designed an <strong>LLM-powered synthesis</strong> that consolidated content across posts and communities into a single entry point matched to the user's search intent — with source posts threaded below.</p>
-        </div>
-      </div>
+      <h2>Reddit had the answers &mdash; but not the answer experience</h2>
+
+      <p><strong>Reddit content was scattered</strong> across posts and communities. Users arriving from Google had no way to piece answers together — most bounced. SEO was the primary entry point and the primary exit. An <strong>LLM-powered synthesis</strong> consolidated content across posts and communities into a single entry point matched to the user's search intent — with source posts threaded below.</p>
 
       <!-- ============================================
            1. OVERVIEW (was: Challenge)
@@ -605,6 +597,34 @@
     resizeDiagramIframes();
   }
   window.addEventListener('load', resizeDiagramIframes);
+
+  // Re-measure on window resize so iframes don't leave blank gaps when their
+  // inner content reflows (Session 45 fix).
+  let __diagramResizeTimer;
+  window.addEventListener('resize', function() {
+    clearTimeout(__diagramResizeTimer);
+    __diagramResizeTimer = setTimeout(function() {
+      document.querySelectorAll('.diagram-embed iframe').forEach(iframe => {
+        try {
+          const doc = iframe.contentDocument;
+          const diagram = doc && doc.querySelector('.diagram');
+          if (diagram) {
+            const h = Math.max(
+              diagram.scrollHeight,
+              diagram.offsetHeight,
+              doc.documentElement ? doc.documentElement.scrollHeight : 0,
+              doc.body ? doc.body.scrollHeight : 0
+            );
+            if (h > 0) iframe.style.height = h + 'px';
+          }
+          // Cross-origin path: ask the diagram to re-post its height
+          if (iframe.contentWindow) {
+            iframe.contentWindow.postMessage({ type: 'request-diagram-height' }, '*');
+          }
+        } catch(e) { /* cross-origin — postMessage will handle */ }
+      });
+    }, 100);
+  });
   </script>
 </body>
 </html>

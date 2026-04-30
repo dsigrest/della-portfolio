@@ -48,28 +48,21 @@
     </section>
 
     <section class="case-body">
-      <section class="case-summary">
-        <h2>From fragmented surfaces to a unified system</h2>
-        <div class="summary-pair">
-          <div class="summary-tile">
-            <h3>Challenge</h3>
-            <p>Reddit&rsquo;s communication systems &mdash; Chat, Messages, and Notifications &mdash; reached hundreds of millions of users every day, but were fragmented across platforms with no shared architecture. The result was an inbox experience that didn&rsquo;t behave the way users expected.</p>
-          </div>
-          <div class="summary-tile">
-            <h3>Strategy</h3>
-            <p>I built a user segmentation framework, defined the inbox vision, and led the move toward a unified engagement system. Through working prototypes and user testing, our team turned abstract debates into evidence-backed product decisions.</p>
-          </div>
-        </div>
-        <div class="case-img-full diagram-embed" data-diagram="not-03" data-mobile-pending="true">
-          <iframe
-            src="img/diagrams/diagram-not03-full-inbox-redesign-v5.html"
-            loading="lazy"
-            scrolling="no"
-            title="Full Inbox Redesign — before/after with annotations flanking each phone"
-            style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-          ></iframe>
-        </div>
-      </section>
+      <h2>From fragmented surfaces to a unified system</h2>
+
+      <p>Reddit&rsquo;s communication systems &mdash; Chat, Messages, and Notifications &mdash; reached hundreds of millions of users every day, but were fragmented across platforms with no shared architecture. The result was an inbox experience that didn&rsquo;t behave the way users expected.</p>
+
+      <p>I built a user segmentation framework, defined the inbox vision, and led the move toward a unified engagement system. Through working prototypes and user testing, our team turned abstract debates into evidence-backed product decisions.</p>
+
+      <div class="case-img-full diagram-embed" data-diagram="not-03" data-mobile-pending="true">
+        <iframe
+          src="img/diagrams/diagram-not03-full-inbox-redesign-v5.html"
+          loading="lazy"
+          scrolling="no"
+          title="Full Inbox Redesign — before/after with annotations flanking each phone"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
+      </div>
 
       <h2>A messaging system that hadn&rsquo;t evolved with the product</h2>
 
@@ -428,11 +421,6 @@
         </div>
       </div>
 
-      <div class="learnings-strip">
-        <p class="learnings-eyebrow">Learnings</p>
-        <p class="learnings-body">Framework-first scoping made the metrics inevitable &mdash; every decision mapped back to the three pillars and the signal-intent matrix.</p>
-      </div>
-
     </section>
 
     <div class="case-next">
@@ -593,6 +581,33 @@
     resizeDiagramIframes();
   }
   window.addEventListener('load', resizeDiagramIframes);
+
+  // Re-measure on window resize so iframes don't leave blank gaps when their
+  // inner content reflows (Session 45 fix).
+  let __diagramResizeTimer;
+  window.addEventListener('resize', function() {
+    clearTimeout(__diagramResizeTimer);
+    __diagramResizeTimer = setTimeout(function() {
+      document.querySelectorAll('.diagram-embed iframe').forEach(iframe => {
+        try {
+          const doc = iframe.contentDocument;
+          const diagram = doc && doc.querySelector('.diagram');
+          if (diagram) {
+            const h = Math.max(
+              diagram.scrollHeight,
+              diagram.offsetHeight,
+              doc.documentElement ? doc.documentElement.scrollHeight : 0,
+              doc.body ? doc.body.scrollHeight : 0
+            );
+            if (h > 0) iframe.style.height = h + 'px';
+          }
+          if (iframe.contentWindow) {
+            iframe.contentWindow.postMessage({ type: 'request-diagram-height' }, '*');
+          }
+        } catch(e) { /* cross-origin — postMessage will handle */ }
+      });
+    }, 100);
+  });
   </script>
 </body>
 </html>

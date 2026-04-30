@@ -244,7 +244,7 @@
     .case-body {
       max-width: 800px;
       margin: 0 auto;
-      padding: 0 var(--spacing-lg) var(--spacing-3xl);
+      padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-3xl);
     }
 
     .case-body h2 {
@@ -336,79 +336,6 @@
         .metric-value {
             font-size: 28px;
         }
-    }
-
-    /* ---------- Summary block (case-notifications.html exec summary) ---------- */
-    .case-summary {
-      margin: var(--spacing-2xl) 0;
-    }
-    .case-summary > h2 {
-      margin-bottom: var(--spacing-lg);
-    }
-    .summary-pair {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: var(--spacing-lg);
-      margin-bottom: var(--spacing-xl);
-    }
-    .summary-tile {
-      background: var(--surface-1);
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: var(--spacing-lg);
-    }
-    .summary-tile h3 {
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-tertiary);
-      margin: 0 0 var(--spacing-sm);
-    }
-    .summary-tile p {
-      margin: 0;
-      color: var(--text-primary);
-      font-size: 16px;
-      line-height: 1.5;
-    }
-    @media (max-width: 768px) {
-      .summary-pair {
-        grid-template-columns: 1fr;
-        gap: var(--spacing-md);
-      }
-    }
-
-    /* ---------- Case card pair ----------
-       Side-by-side narrative cards with eyebrow + body. Used for the
-       opening Challenge / Strategy callout (sits after case-hero, before
-       Overview H2). Pattern matches case-notifications.html opening. */
-    .case-card-pair {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--spacing-lg);
-      margin: var(--spacing-xl) 0 var(--spacing-2xl);
-    }
-    .case-card {
-      background: var(--surface-1);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: var(--spacing-xl);
-    }
-    .card-eyebrow {
-      font-size: 12px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-tertiary);
-      margin-bottom: var(--spacing-md);
-    }
-    @media (max-width: 768px) {
-      .case-card-pair {
-        grid-template-columns: 1fr;
-        gap: var(--spacing-md);
-      }
-      .case-card {
-        padding: var(--spacing-lg);
-      }
     }
 
     /* ---------- Diagram embed iframe baseline ----------
@@ -702,7 +629,7 @@
       }
 
       .case-body {
-        padding: 0 var(--spacing-md) var(--spacing-2xl);
+        padding: var(--spacing-lg) var(--spacing-md) var(--spacing-2xl);
       }
 
       .case-next {
@@ -980,8 +907,13 @@ main {
 
 .hero {
             margin-top: 0;
+            min-height: 100vh;
             padding: 120px var(--spacing-lg) 60px;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-sizing: border-box;
         }
 
 .hero-content {
@@ -1026,15 +958,6 @@ main {
             opacity: 1;
         }
 
-.hero-role {
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            letter-spacing: 0.02em;
-            margin-bottom: var(--spacing-md);
-            animation: fadeIn 1s ease-out 0.2s both;
-        }
-
 .hero-subtitle {
             font-size: 18px;
             font-weight: 500;
@@ -1045,6 +968,7 @@ main {
             max-width: 720px;
             margin-left: auto;
             margin-right: auto;
+            text-wrap: balance;
             animation: fadeIn 1s ease-out 0.4s both;
         }
 
@@ -1222,16 +1146,6 @@ main {
             animation: fadeInUp 0.8s ease-out 0.7s both;
         }
 
-.tech-proof-label {
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--text-tertiary);
-            margin-bottom: var(--spacing-md);
-            display: block;
-        }
-
 .tech-proof code {
             color: var(--accent);
             font-weight: 500;
@@ -1403,7 +1317,7 @@ main {
 }
 .results-phone-slot .results-phone-gif {
   width: 100%;
-  max-width: 360px;
+  max-width: 260px;
   height: auto;
   border-radius: 24px;
   display: block;
@@ -1535,32 +1449,6 @@ main {
   .metric-row .metric-value {
     font-size: 24px;
   }
-}
-
-/* ---------- Learnings strip (P19 closing) — pushed back per Day 2 diagnostics §7
-   Was: filled card with warm accent left rule + bright eyebrow.
-   Now: dimmer text, transparent bg, top border only. Reads as a quiet closer. */
-.learnings-strip {
-  margin: var(--spacing-xl) 0 var(--spacing-2xl) 0;
-  padding: var(--spacing-md) 0;
-  background: transparent;
-  border-top: 1px solid var(--border-normal);
-  border-left: none;
-  border-radius: 0;
-}
-.learnings-eyebrow {
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-  color: var(--text-tertiary);
-  margin: 0 0 6px 0;
-}
-.learnings-body {
-  font-size: 14px;
-  color: var(--text-secondary);
-  line-height: 1.55;
-  margin: 0;
 }
 
 /* ---------- Outcome cards (single-column stacked) ----------

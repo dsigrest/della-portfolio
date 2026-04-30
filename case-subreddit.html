@@ -421,6 +421,23 @@
       resizeDiagramIframes();
     }
     window.addEventListener('load', resizeDiagramIframes);
+
+    // Re-measure on window resize so iframes don't leave blank gaps when their
+    // inner content reflows (Session 45 fix).
+    let __diagramResizeTimer;
+    window.addEventListener('resize', function() {
+      clearTimeout(__diagramResizeTimer);
+      __diagramResizeTimer = setTimeout(function() {
+        document.querySelectorAll('.diagram-embed iframe').forEach(iframe => {
+          try {
+            const diagram = iframe.contentDocument.querySelector('.diagram');
+            if (diagram) {
+              iframe.style.height = diagram.offsetHeight + 'px';
+            }
+          } catch(e) { /* cross-origin */ }
+        });
+      }, 100);
+    });
     </script>
 </body>
 </html>
