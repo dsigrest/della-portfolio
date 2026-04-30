@@ -74,6 +74,35 @@ Next up: case-sharing thread resumes from `sessions/case-sharing-thread-pause-ha
 
 ## Log entries
 
+### Apr 30, 2026 (Session 45 — Homepage refresh + Reddit Answers MVP rename)
+
+**Context:** Pre-publish polish before Della ships portfolio today. Hero copy didn't reflect current positioning, two case studies (Sharing & Embeds, Subreddit Success) needed to come off as polished public links until further work lands, and the existing tagline locked her into "Senior" rather than broader "Product Designer." Also caught a `g` descender getting clipped in the hero h1 — root cause was `-webkit-background-clip: text` with `line-height: 1.05` too tight to contain descenders inside the gradient's line-box.
+
+**What shipped (branch `homepage-refresh`):**
+- **Hero**: deleted `.hero-role` element, replaced subtitle with new tagline framing systems work + AI exploration. Meta description updated to match.
+- **Card 01 (Notifications & Inbox)**: rewritten copy, NDA-safe (dropped DAU / push CTR / good visits metrics).
+- **Card 02**: renamed `Keyword Landing Pages / AI` → `Reddit Answers MVP`, copy rewrite emphasizing LLM-powered synthesis.
+- **Cards 03 & 04 (Sharing, Subreddit)**: swapped from `<a>` to `<div class="card card-disabled">`, added `Coming soon` italic eyebrow above description, copy rewrite. Reversal: swap div→a, remove eyebrow span. `<!-- DISABLED: ... -->` comments in markup document the swap.
+- **Tech-proof callout**: relocated from `<main>` to footer below the credit line; stripped fill (background, border, padding, margin-top) — now plain mono text.
+- **About page**: deleted `.subtitle` element, full body rewrite (5 paragraphs, "nearly five years at Reddit"), swapped footer credit to match home (original linked to building-portfolio, now hidden via HTML comment).
+- **styles.css**: added `.card-disabled` (opacity 0.55 `!important` to beat the entrance animation's final keyframe), `.card-coming-soon` (italic eyebrow matching `.card-label` rhythm), stripped `.tech-proof` chrome, fixed `.hero h1` descender clip with `padding-bottom: 0.15em`.
+- **Sitewide rename**: case-notifications.html "Next case study" link updated. case-ai.html title/h1/hero copy already on "Reddit Answers MVP" from prior session — confirmed, no change needed. Short "AI" labels in case-nav rails kept.
+
+**Verification:**
+- `voice-check.py` + `quality-check.py`: PASS on index.html and about.html (0 errors, 0 warnings).
+- Visual at 1440px (desktop): hero `g` descender intact, disabled cards visibly dimmed with COMING SOON eyebrows, tech-proof in footer with no fill, sitewide rename consistent. ✓
+- Visual at 480px (mobile): hero h1 wraps cleanly, `g` descender intact. ✓
+- About page: clean hero, body rewritten, footer matches home. ✓
+
+**Notes:**
+- `.hero-role` CSS class at styles.css:1028 is now orphaned (harmless). Future cleanup pass.
+- Reverting disabled cards to clickable: search `index.html` for `<!-- DISABLED:` comments — each documents the swap.
+- Reverting about footer to building-portfolio link: search `about.html` for `<!-- HIDDEN: original about footer` — uncomment the original line, delete the home-style replacement.
+- Share work (`case-sharing.html` modified + `diagram-shr01-before-share-sheet-v5.html` + `SHAR-screenshotToshare.gif`) intentionally untouched — paused in another thread.
+- Cleanup commit pending after homepage-refresh ships: `.gitignore` additions for `.claude/`, `outputs/`, `working/discarded/`, `working/visual-regression/`, `working/png-review-*.html`. Will commit to main separately so this branch stays scoped.
+
+**Files changed (this branch):** index.html, styles.css, about.html, case-notifications.html, BUILD-LOG.md.
+
 ### Apr 30, 2026 (Session 44b — Notifications grandparent fully closed)
 
 **Context:** Closing the case-notifications-deferred-finish grandparent prompt. NOT-22 (item B) closed as superseded by NOT-08 — the original flag was about NOT-08 cropping issues which Session 38 already resolved; the deleted Contextual suggestions section is not being reinstated. With item B closed, the grandparent's 4 items are all done: A (NOT-12) ✅ Session 42, B (NOT-22) ✅ closed-superseded, C (NOT-19) ✅ Session 43 commit `66a5044`, D (NOT-E4) ✅ Session 44 commit `b56a8fc`.
