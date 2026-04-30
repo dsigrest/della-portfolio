@@ -53,11 +53,11 @@
         <div class="summary-pair">
           <div class="summary-tile">
             <h3>Challenge</h3>
-            <p>Reddit communicates with hundreds of millions of users daily across four separate systems&mdash;Chat, Messages, Mod Mail, and Notifications&mdash;fragmented across native mobile, mobile web, and desktop with no connecting architecture and a system that didn&rsquo;t behave as users expected.</p>
+            <p>Reddit&rsquo;s communication systems &mdash; Chat, Messages, and Notifications &mdash; reached hundreds of millions of users every day, but were fragmented across platforms with no shared architecture. The result was an inbox experience that didn&rsquo;t behave the way users expected.</p>
           </div>
           <div class="summary-tile">
             <h3>Strategy</h3>
-            <p>I built the segmentation framework, defined the inbox vision, and led the evolution from disconnected surfaces into a <strong>unified system that drives growth and engagement</strong>. Every stage was validated through fully operable prototypes tested with real users&mdash;shifting internal conversations from opinion to evidence.</p>
+            <p>I built a user segmentation framework, defined the inbox vision, and led the move toward a unified engagement system. Through working prototypes and user testing, our team turned abstract debates into evidence-backed product decisions.</p>
           </div>
         </div>
         <div class="case-img-full diagram-embed" data-diagram="not-03" data-mobile-pending="true">
@@ -71,11 +71,11 @@
         </div>
       </section>
 
-      <h2>Four systems. Three platforms. Six years.</h2>
+      <h2>A messaging system that hadn&rsquo;t evolved with the product</h2>
 
-      <p>Reddit messaging had drifted across four disconnected surfaces, off the design system &mdash; hard to scale, harder to experiment.</p>
+      <p>Reddit&rsquo;s messaging surfaces had drifted across four disconnected systems and three platforms. The experience was off the design system, hard to scale, and difficult to experiment with &mdash; and it hadn&rsquo;t had a dedicated design pass in six years.</p>
 
-      <p>Beyond fragmentation, the surfaces had no overarching user strategy: limited inventory, limited controls, no prioritization model. Push notifications, the inbox, private messages, and chat operated independently&mdash;each with a distinct content type and no shared architecture.</p>
+      <p>Beyond the visual fragmentation, there was no overarching user strategy: limited inventory, limited controls, and no clear prioritization model. Push notifications, inbox, private messages, and chat operated independently, each with its own content type and architecture.</p>
 
       <div class="case-img-full diagram-embed" data-diagram="not-02b" data-mobile-pending="true">
         <iframe
@@ -87,11 +87,11 @@
         ></iframe>
       </div>
 
-      <h3>Three activity levels. Three problems.</h3>
+      <h3>One inbox had to serve three very different users</h3>
 
-      <p>Each cohort shows up in the inbox differently &mdash; the system has to serve all three without trade-offs.</p>
+      <p>Each user cohort experienced the inbox differently. New users saw an empty state, casual users lacked control over what they saw, and core users struggled to find what mattered.</p>
 
-      <p>Strategy doesn&rsquo;t translate without understanding who&rsquo;s receiving the notification. Three user journeys define the inbox experience, and each surfaces a different problem: new users see an empty state, subscribers can&rsquo;t customize what they see, and contributors get crowded with activity that doesn&rsquo;t surface what matters.</p>
+      <p>The strategy had to serve all three without creating tradeoffs: help new users get started, give casual users more control, and help core users prioritize high-signal activity.</p>
 
       <div class="case-img-full diagram-embed" data-diagram="not-10" data-mobile-pending="true">
         <iframe
@@ -103,11 +103,11 @@
         ></iframe>
       </div>
 
-      <h3>The inbox drives engagement; but not for everyone</h3>
+      <h3>The inbox was powerful, but under-leveraged</h3>
 
-      <p>Users had a bias for action &mdash; the more content felt personally actionable, the more likely they engaged.</p>
+      <p>Users engaged when inbox content felt personally actionable &mdash; tied to something they posted, joined, or cared about. That made the inbox a high-intent contribution surface, not a passive discovery surface.</p>
 
-      <p>The inbox itself wasn&rsquo;t a discovery surface&mdash;it was a contribution surface. <strong>7.5M DAU</strong> enter the inbox; <strong>47% click through</strong>; <strong>75% of those go on to contribute</strong>. That funnel is shaped almost entirely by Core users&mdash;Casual, Resurrected, and New cohorts barely make it past the first step. The inbox was serving only the most engaged.</p>
+      <p>Millions of users entered the inbox each day, nearly half clicked through, and most clickers contributed. But the funnel was dominated by core users; casual and new users rarely made it past the first step.</p>
 
       <div class="case-img-full diagram-embed" data-diagram="not-e7" data-mobile-pending="true">
         <iframe
@@ -121,11 +121,13 @@
 
       <h2>Scalable foundation</h2>
 
-      <h3>Create a global inbox row component</h3>
+      <h3>Standardize the messaging row</h3>
 
-      <p>Scalable, reusable, on the design system &mdash; new notification types in days, not weeks.</p>
+      <p>Reusable design-system component for Inbox, Messages, and Chat &mdash; new types in days, not weeks.</p>
 
-      <p>The inbox wasn&rsquo;t on Reddit&rsquo;s design system. Every component was a <strong>one-off engineer build</strong>&mdash;growing technical debt, no quality assurance, and each new feature built from scratch. I designed the inbox row component as a scalable, reusable unit intended for distributed messaging surfaces across the platform, then migrated the full surface to the design system. Every project ran through a <strong>technical kickoff with the eng IC</strong> picking up the work&mdash;pressure-testing edge cases, building buy-in, and aligning on decisions before a line of code was written.</p>
+      <p>Inbox, Messages, and Chat were all off Reddit&rsquo;s design system, so each new type required custom engineering work. That made the system harder to scale, test, and maintain.</p>
+
+      <p>I designed a reusable messaging row in collaboration with our Design System team that could flex across notifications, private messages, and chat previews &mdash; creating a shared design-system foundation for all three surfaces.</p>
 
       <div class="case-img-full diagram-embed" data-diagram="not-02" data-mobile-pending="true">
         <iframe
@@ -137,11 +139,13 @@
         ></iframe>
       </div>
 
-      <h3>Leverage gestures for secondary actions</h3>
+      <h3>Gestures for secondary actions</h3>
 
-      <p>Platform-native gestures replaced the overflow menu &mdash; actions without an extra tap, and the trailing slot freed for a flex element.</p>
+      <p>Actions without extra taps &mdash; and more room for flexible content.</p>
 
-      <p>I removed the <strong>overflow menu, icon-based message type indicators</strong>, and segmented inbox sections that pushed content below the fold. Icons had low comprehension&mdash;I replaced them with clear, embedded copy. Swipe actions and long press handled secondary options. I tested both for the primary gesture; swipe won on intuitiveness. Engagement held steady.</p>
+      <p>The row was carrying too much UI: type icons, overflow menus, and segmented sections that pushed content down the page. Icons had low comprehension, while overflow menus made secondary actions harder to reach.</p>
+
+      <p>I moved secondary actions into swipe and long-press gestures, replaced icons with clear embedded copy, and freed the trailing slot for flexible content. Swipe tested as the more intuitive gesture, with engagement holding steady.</p>
 
       <div class="case-img-full diagram-embed" data-diagram="not-02b-swipe" data-mobile-pending="true">
         <iframe
@@ -153,9 +157,11 @@
         ></iframe>
       </div>
 
-      <h3>Simplify badging with progressive disclosure</h3>
+      <h3>Make unread states obvious, not noisy</h3>
 
-      <p>I rebuilt the unread system around <strong>progressive disclosure</strong>: a single numeric badge at the inbox level, a dot indicator at the tab level, typography plus subtle color at the row level. Every badge mapped 1:1 to a visible item&mdash;users never had to do math.</p>
+      <p>Before, numbered badges appeared everywhere. Users had to compare counts across entry points, tabs, and rows to understand what was new and where to find it.</p>
+
+      <p>I simplified the system: one count at the inbox level, one dot at the tab level, and clear unread styling at the row level. Each signal did one job &mdash; count, locate, or identify &mdash; so users always knew what to do next.</p>
 
       <div class="case-img-full diagram-embed" data-diagram="not-04" data-mobile-pending="true">
         <iframe
@@ -167,20 +173,15 @@
         ></iframe>
       </div>
 
-      <p>The migration introduced a <strong>less prominent unread color</strong> and click-through dropped. I used the data to identify the cause, partnered with the design systems team to adjust, and the fix influenced design system usage beyond the inbox.</p>
+      <h3>v1 &rarr; v2</h3>
 
-      <div class="decision-callout">
-        <p class="decision-eyebrow">Decision</p>
-        <p class="decision-body"><strong>v1 &rarr; v2.</strong> DS migration introduced a less prominent unread color &rarr; click-through dropped &rarr; data identified the cause &rarr; v2 restored contrast &rarr; recovery beyond the inbox.</p>
-      </div>
+      <p>Badge noise created confusion &rarr; progressive disclosure clarified the hierarchy &rarr; migration reduced unread contrast &rarr; CTR dropped &rarr; data revealed the cause &rarr; v2 restored contrast &rarr; updated pattern scaled beyond inbox.</p>
 
-      <h2>Identify needs by user signal and intent</h2>
+      <h2>A framework for deciding what to show next</h2>
 
-      <p>We can target beneficial experiences by understanding a user&rsquo;s goal and what we know about them.</p>
+      <p>We used two axes to guide prioritization: signal &mdash; what Reddit knew about the user &mdash; and intent &mdash; what the user was trying to do. Together, they helped us identify what each cohort needed from the inbox and which notification types were worth prioritizing.</p>
 
-      <p>The strategy sat on <strong>two axes: signal and intent</strong>. By reading the signal Reddit has from a user and what they&rsquo;re trying to do on the platform, we could infer what experiences they were having and prioritize notification types accordingly. The inbox drives <strong>2% of all comments on Reddit</strong>&mdash;that figure shifted leadership investment across the board.</p>
-
-      <p>The first decision was where to start. <strong>Comment replies were the highest-usage surface</strong>&mdash;core users with strong opinions about their flows. Changing that experience could disrupt the one thing the inbox was actually working for. The alternative: open <strong>net-new growth</strong> for subreddit following and new users with completely empty inboxes. Less data, more assumptions, required research&mdash;but the upside was coverage where we had next to none.</p>
+      <p>Internal data showed the inbox was a meaningful contribution driver, but the value was concentrated in flows that already worked for core users. Instead of disrupting those high-risk surfaces first, we focused on new users and subreddit-following moments, where empty inboxes created room for net-new engagement.</p>
 
       <div class="case-img-full diagram-embed" data-diagram="not-e4" data-mobile-pending="true">
         <iframe
@@ -192,9 +193,9 @@
         ></iframe>
       </div>
 
-      <h3>Three pillars to journey optimization</h3>
+      <h3>Three pillars for growing engagement</h3>
 
-      <p>Three pillars implement the strategy across the inbox: <strong>build habits</strong>, <strong>enable curation</strong>, <strong>create focus</strong>. Each pillar maps to a phase of the work that follows&mdash;and each builds on what the previous phase made possible.</p>
+      <p>We translated the strategy into three phases: build habits, enable curation, and create focus. Together, they turned the inbox from a fragmented notification feed into a system for driving higher-quality engagement.</p>
 
       <div class="case-img-full diagram-embed" data-diagram="not-e3" data-mobile-pending="true">
         <iframe
@@ -208,15 +209,15 @@
 
       <h2>1. Build Habits</h2>
 
-      <h3>Every notification tells you why you got it.</h3>
+      <h3>Every notification explains why it&rsquo;s here</h3>
 
-      <p>Contextual framing replaced generic copy &mdash; users engage when the system shows its reasoning.</p>
+      <p>Contextual framing turned generic updates into personally actionable moments.</p>
 
-      <p>Users had a <strong>bias for action</strong> in the inbox. The more content was framed as personally actionable, the more likely they were to engage.</p>
+      <p>Users were more likely to engage when a notification connected to something they had done &mdash; a subreddit they joined, a post they viewed, or a community they cared about.</p>
 
-      <p>I added copy showing <em>why</em> a user received each notification. <strong>Click-through doubled</strong> compared to generic framing, and the surface could support higher volume without overwhelming users.</p>
+      <p>I replaced generic copy with contextual framing that explained why each notification appeared. Click-through doubled compared to generic framing, and the system could support higher volume without feeling random or overwhelming.</p>
 
-      <p>I shipped <strong>decay logic</strong> for breaking news, recommendations, and subreddit updates: if a user doesn&rsquo;t open a notification type after a threshold, the system asks whether to turn it off. The ML team ran parallel experiments on signal thresholds while I defined the user-facing behavior&mdash;a <strong>continuous dialogue</strong> between design and engineering, each side&rsquo;s findings reshaping the other&rsquo;s approach.</p>
+      <p>I also shipped decay logic for lower-signal notification types: if a user repeatedly ignored a type, the system could ask whether to turn it off. I partnered with ML to tune thresholds while I defined the user-facing behavior.</p>
 
       <div class="case-img-full diagram-embed" data-diagram="not-17" data-mobile-pending="true">
         <iframe
@@ -229,22 +230,17 @@
       </div>
 
       <div class="impact-callout">
-        <div class="metric">&times;2</div>
-        <div class="body">click-through on contextualized notifications vs. generic framing.</div>
+        <div class="metric">2&times;</div>
+        <div class="body">click-through. Contextualized notifications vs. generic framing.</div>
       </div>
 
-      <h3>Display history, not just the latest</h3>
+      <h3>Restore continuity across push and inbox</h3>
 
-      <p>Each new push wiped older ones from the inbox; which defied user expectations and interrupted discovery. I restored the history &mdash; discovery flows stay intact mid-stream.</p>
+      <p>Users expected a communication history, not a rotating latest item.</p>
 
-      <p>For low-subscription users, the inbox became an <strong>onboarding engine</strong>. Recommendations surfaced contextually; push landing experiences converted discovery into lasting signal. DAU for that cohort lifted <strong>+1.4%</strong>; push click-through rose <strong>+6.4%</strong> across 7.5M daily inbox users.</p>
+      <p>Before, every new push recommendation replaced the last one in the inbox. That erased useful context and cut off discovery flows mid-stream.</p>
 
-      <p>Only the latest push recommendation appeared in the inbox. Users expected a <strong>history of communications</strong>&mdash;removing older recommendations cut off discovery flows mid-stream. I restored that connection. Push good visits climbed <strong>+1%</strong> across 15 million daily receives.</p>
-
-      <div class="impact-callout">
-        <div class="metric">+1%</div>
-        <div class="body">push good visits &mdash; the continuity fix compounded across the full send volume.</div>
-      </div>
+      <p>I restored recommendation history so users could return to earlier suggestions, compare options, and continue discovery after the push moment passed. The fix lifted push good visits by +1% across the full send volume.</p>
 
       <div class="case-img-full diagram-embed" data-diagram="not-06" data-mobile-pending="true">
         <iframe
@@ -256,13 +252,20 @@
         ></iframe>
       </div>
 
+      <div class="impact-callout">
+        <div class="metric">+1%</div>
+        <div class="body">push good visits &mdash; the continuity fix compounded across the full send volume.</div>
+      </div>
+
       <h2>2. Enable Curation</h2>
 
-      <h3>Separating what you asked for from what we recommend.</h3>
+      <h3>Separate what users asked for from what we recommend</h3>
 
-      <p>Subscriptions used to compete with algorithmic recommendations in the backend. I rebuilt the pipeline with the ML team &mdash; user signal won over engagement metrics.</p>
+      <p>Subscribed updates should not compete with algorithmic recommendations.</p>
 
-      <p>Subreddit subscriptions were <strong>entangled with recommendations</strong> on the back end. The system weighted a recommended notification the same as a subscribed update&mdash;prioritizing engagement metrics (post performance, CTR) over what users had explicitly asked for. A user subscribing to r/all updates would get a viral r/PlayStation recommendation instead. I worked with the <strong>ML team to untangle the pipeline</strong>&mdash;they ran experiments on signal weighting while I redesigned the preference model, each side&rsquo;s findings reshaping the other&rsquo;s direction until <strong>user signal won over algorithmic signal</strong>.</p>
+      <p>Before, subscribed updates and recommendations flowed through the same ranking system. That meant something a user explicitly asked for could be buried beneath a high-performing recommendation.</p>
+
+      <p>I partnered with the ML team to separate the pipeline: subscribed updates became a direct user-signal path, while recommendations stayed ranked by predicted engagement. That let the system respect explicit preferences while still surfacing discovery content.</p>
 
       <div class="case-img-full diagram-embed" data-diagram="not-19" data-mobile-pending="true">
         <iframe
@@ -274,11 +277,13 @@
         ></iframe>
       </div>
 
-      <h3>Clarifying notification preferences</h3>
+      <h3>Make notification settings predictable</h3>
 
-      <p>Subscription settings used vague and hidden under an overflow; I collaborated with eng to establish concrete options. Then, I surfaced them on the subreddit page itself.</p>
+      <p>Users should know what a setting will actually do.</p>
 
-      <p>The back end couldn&rsquo;t define what updates a user could receive from a subreddit. Options were <strong>off, low, and frequent</strong>&mdash;even internally, the team couldn&rsquo;t explain what those meant because they were wrapped in algorithmic metrics. I worked with the engineering lead through <strong>weekly syncs on capacity and feasibility</strong> to rearchitect preferences: <strong>no updates, popular posts, all posts</strong>. Eng held deep knowledge of system behavior and limitations&mdash;every conversation surfaced another constraint, but each one guided us toward a more precise model.</p>
+      <p>Before, subreddit alerts used vague labels like Off, Low, and Frequent. The words described system behavior, not user outcomes &mdash; so people couldn&rsquo;t predict what would show up in their inbox.</p>
+
+      <p>I worked with engineering to replace frequency labels with concrete choices: no updates, popular posts, and all new posts. The new model made preferences easier to understand, easier to implement, and easier to surface directly on the subreddit page.</p>
 
       <div class="case-img-full diagram-embed" data-diagram="not-07" data-mobile-pending="true">
         <iframe
@@ -290,9 +295,13 @@
         ></iframe>
       </div>
 
-      <h3>Preferences at the point of decision</h3>
+      <h3>Put preferences at the point of decision</h3>
 
-      <p>I then surfaced these preferences <strong>on the subreddit page itself</strong>&mdash;point of decision, not buried three screens deep.</p>
+      <p>Notification controls belonged where users chose to join.</p>
+
+      <p>Before, users joined a subreddit without a clear way to control what they would receive from it. Alert settings were buried several screens deep, so the subscription decision and notification decision were disconnected.</p>
+
+      <p>I moved the control onto the subreddit page itself, making preferences visible at the moment users chose to follow a community.</p>
 
       <div class="case-img-full diagram-embed" data-diagram="not-08" data-mobile-pending="true">
         <iframe
@@ -304,11 +313,13 @@
         ></iframe>
       </div>
 
-      <h3>The flywheel: signal compounds over time.</h3>
+      <h3>Signal compounds over time</h3>
 
-      <p>Intelligent defaults and feedback loops that auto-enroll and auto-exit users based on signal and engagement.</p>
+      <p>Relevant notifications create engagement; engagement improves relevance.</p>
 
-      <p>With taxonomy and targeting in place, the system becomes a growth flywheel. Reading signal lets us deliver value; delivering value generates more signal; the loop tightens with each cycle. The inbox shifts from a passive feed to an active driver of engagement and platform understanding.</p>
+      <p>With the taxonomy in place, the inbox could become a feedback loop. We used what Reddit already knew about a user to deliver more relevant updates, then used engagement behavior to refine what the system showed next.</p>
+
+      <p>The result was a shift from static notification feed to adaptive engagement system.</p>
 
       <div class="case-img-full diagram-embed" data-diagram="not-e2" data-mobile-pending="true">
         <iframe
@@ -324,11 +335,11 @@
 
       <h3>Three surfaces, three mental models</h3>
 
-      <p>Inbox, private messages, and chat each demand different sort logic, engagement pattern, and navigation.</p>
+      <p>Inbox, Messages, and Chat looked related, but each had different rules for sorting, engagement, navigation, and actions.</p>
 
-      <p>Why this was hard: three surfaces with different sort logic, engagement patterns, and information architecture had to merge without breaking any of them.</p>
+      <p>To consolidate them into one system, I had to preserve the behavior users expected from each surface. Inbox was a chronological destination for async updates. Private Messages were async threads sorted by recency. Chat was a live conversation surface with filters, creation, and thread utilities.</p>
 
-      <p>I consolidated <strong>four messaging systems into a single inbox</strong>. This required deprecating one internal system, migrating another, and navigating multiple intermediate states&mdash;each shipped as a fully functional experience, not a waypoint. Eng on this team were <strong>precise and construction-oriented</strong>&mdash;they caught edge cases I hadn&rsquo;t, which made the late-stage design reviews a critical part of my process for making designs airtight before handoff.</p>
+      <p>The work required more than visual consistency: it meant defining a shared structure that could flex across different mental models without breaking any of them.</p>
 
       <div class="case-img-full diagram-embed" data-diagram="not-24" data-mobile-pending="true">
         <iframe
@@ -340,11 +351,13 @@
         ></iframe>
       </div>
 
-      <h3>Three layouts tested, one clear fit</h3>
+      <h3>Tabs made the inbox scannable</h3>
 
-      <p>Migrating surfaces with muscle memory meant testing layouts that balanced scan speed against mental-model load &mdash; the inbox had to behave like a switchboard, not a feed.</p>
+      <p>The inbox had to work like a switchboard: help users scan quickly, choose the right surface, act, and leave.</p>
 
-      <p>I tested <strong>three layouts</strong> &mdash; moving chat to the header, group-by-activity-type, and tabs. Users wanted to navigate the inbox as little as possible&mdash;scan, act, leave. The inbox wasn&rsquo;t a destination&mdash;it was a switchboard that guided users through their session.</p>
+      <p>I tested three layouts: chronological, nested, and tabbed. Chronological was simplest, but buried priority items under noise. Nested grouped related activity, but added cognitive load. Tabs gave each surface a clear place, so users could ignore what they didn&rsquo;t need and go straight to what mattered.</p>
+
+      <p>Tabbed layout won on scan speed and mental model clarity.</p>
 
       <div class="case-img-full diagram-embed" data-diagram="not-12" data-mobile-pending="true">
         <iframe
@@ -358,9 +371,11 @@
 
       <h3>Five tabs to three</h3>
 
-      <p>Consolidating notifications and chat into a single inbox freed a slot in the bottom nav &mdash; one surface removed from the hierarchy, one slot returned to product surface experiments.</p>
+      <p>One unified inbox reduced navigation clutter and opened space for product experimentation.</p>
 
-      <p>The unified inbox <strong>freed a slot in the bottom tab bar</strong>. Reddit used that space to experiment with new product surfaces and validate navigation models&mdash;a simplified 3&ndash;4 tab structure. Impact that extended well beyond the inbox.</p>
+      <p>Before, communication was split across separate bottom-nav destinations. Consolidating Notifications, Messages, and Chat into one inbox preserved access while freeing a high-value nav slot.</p>
+
+      <p>That space was strategic: it let Reddit simplify the app structure, test new surface models, and give other teams room to experiment without adding more navigation complexity.</p>
 
       <div class="case-img-full diagram-embed" data-diagram="not-14" data-mobile-pending="true">
         <iframe
@@ -376,49 +391,38 @@
 
       <h2>Outcome: four surfaces &rarr; one scalable system</h2>
 
-      <p>The segmentation framework became the foundation for notification design across Reddit. The unified inbox reshaped app navigation and enabled product experimentation in spaces that didn&rsquo;t exist before.</p>
+      <p>The unified inbox became a shared foundation for messaging, notification design, and navigation experimentation across Reddit.</p>
+
+      <p>The work consolidated fragmented communication surfaces, established reusable design-system patterns, and clarified how different message types should behave. Beyond the inbox itself, it simplified app navigation and unblocked experiments in product surfaces that previously had nowhere to live.</p>
 
       <div class="results-row">
         <div class="results-phone-slot has-asset">
           <img src="img/diagrams/assets/not14-inbox-results.gif" alt="Unified inbox screen recording &mdash; Notifications, Messages, and Chat consolidated into one surface" class="results-phone-gif" loading="lazy">
-          <p class="phone-caption">Unified inbox &middot; Notifications + Messages + Chat in one surface</p>
+          <p class="phone-caption">Unified and scalable messaging surface</p>
         </div>
 
         <div class="results-metrics-panel">
           <p class="metrics-eyebrow">Outcomes</p>
-          <div class="hero-metric">
-            <p class="metric-value">+1.3M</p>
-            <p class="metric-sublabel">Incremental DAU</p>
-            <p class="metric-caption">Sustained lift across the notification and inbox ecosystem.</p>
-          </div>
-          <div class="metrics-stack">
-            <div class="metric-row">
-              <p class="metric-value">+2.7M</p>
-              <div class="metric-text">
-                <p class="metric-sublabel">Daily good visits</p>
-                <p class="metric-caption">Quality visits attributable to push and inbox channels.</p>
-              </div>
+          <div class="outcomes-stack">
+            <div class="outcome-card">
+              <p class="outcome-title">Material DAU lift</p>
+              <p class="outcome-body">Sustained engagement gains across the notification and inbox ecosystem.</p>
             </div>
-            <div class="metric-row">
-              <p class="metric-value">+6.4%</p>
-              <div class="metric-text">
-                <p class="metric-sublabel">Push notification CTR</p>
-                <p class="metric-caption">Click-through on contextualized push across cohorts.</p>
-              </div>
+            <div class="outcome-card">
+              <p class="outcome-title">Quality visits increased</p>
+              <p class="outcome-body">More high-intent visits attributable to push and inbox channels.</p>
             </div>
-            <div class="metric-row">
-              <p class="metric-value">75%</p>
-              <div class="metric-text">
-                <p class="metric-sublabel">Above target</p>
-                <p class="metric-caption">Notifications team exceeded annual targets.</p>
-              </div>
+            <div class="outcome-card">
+              <p class="outcome-title">CTR improved</p>
+              <p class="outcome-body">Contextualized push increased click-through across cohorts.</p>
             </div>
-            <div class="metric-row">
-              <p class="metric-value">1</p>
-              <div class="metric-text">
-                <p class="metric-sublabel">Nav slot freed</p>
-                <p class="metric-caption">Unified inbox returned one tab to experimentation.</p>
-              </div>
+            <div class="outcome-card">
+              <p class="outcome-title">Exceeded annual goals</p>
+              <p class="outcome-body">Notifications work outperformed team engagement targets.</p>
+            </div>
+            <div class="outcome-card">
+              <p class="outcome-title">1 nav slot freed</p>
+              <p class="outcome-body">Unblocked navigation experiments across teams.</p>
             </div>
           </div>
         </div>

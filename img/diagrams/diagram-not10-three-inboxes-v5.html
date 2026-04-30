@@ -138,11 +138,15 @@
     object-fit: cover;
   }
 
-  /* Stacked-phones variant for column 2 (Casual user — layered three views) */
+  /* Stacked-phones variant for column 2 (Casual user — layered three views).
+     Fluid sizing: width: 100% + aspect-ratio matches .mock so all 3 columns
+     size identically and scale together on responsive resize.
+     Inner phone offsets in percentages of the stack height.
+     Della call 2026-04-30. */
   .mock-stack {
     position: relative;
-    width: 194px;
-    height: 420px;
+    width: 100%;
+    aspect-ratio: 1040 / 2250;
     flex-shrink: 0;
   }
   .mock-stack .phone {
@@ -166,8 +170,8 @@
     border-radius: 18px;
   }
   .mock-stack .phone-2 {
-    top: 128px;
-    height: 249px;
+    top: 30.48%;
+    height: 59.29%;
   }
   .mock-stack .phone-2 img {
     position: absolute;
@@ -178,8 +182,8 @@
     max-width: none;
   }
   .mock-stack .phone-3 {
-    top: 312px;
-    height: 60px;
+    top: 74.29%;
+    height: 14.29%;
   }
   .mock-stack .phone-3 img {
     position: absolute;
@@ -212,7 +216,6 @@
   /* iframe-width rule: collapse only at ≤480px */
   @media (max-width: 480px) {
     .comparison { grid-template-columns: 1fr; gap: 24px; padding: 0 16px; }
-    .mock-stack { width: 100%; max-width: 240px; margin: 0 auto; }
   }
 </style>
 </head>
@@ -224,8 +227,6 @@
       <!-- Column 1: NEW USER -->
       <div class="col">
         <div class="col-header">
-          <span class="col-num">01</span>
-          <span class="col-bullet"></span>
           <div class="col-label-stack">
             <span class="col-label">New user</span>
             <span class="col-sublabel">Just getting started</span>
@@ -246,8 +247,6 @@
       <!-- Column 2: Casual user (stacked layered phones) -->
       <div class="col">
         <div class="col-header">
-          <span class="col-num">02</span>
-          <span class="col-bullet"></span>
           <div class="col-label-stack">
             <span class="col-label">Casual user</span>
             <span class="col-sublabel">Visit 1&ndash;2 times a week</span>
@@ -276,8 +275,6 @@
       <!-- Column 3: Core user -->
       <div class="col">
         <div class="col-header">
-          <span class="col-num">03</span>
-          <span class="col-bullet"></span>
           <div class="col-label-stack">
             <span class="col-label">Core user</span>
             <span class="col-sublabel">Visit daily / Create</span>

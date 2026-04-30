@@ -22,8 +22,7 @@
     font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased;
   }
   .diagram {
-    width: 760px; background: var(--canvas); border-radius: 16px; overflow: hidden; position: relative;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    width: 760px; background: transparent; border-radius: 16px; overflow: hidden; position: relative;
   }
 
   .title-area {
@@ -36,7 +35,7 @@
 
   /* ── Matrix ── */
   .matrix-area {
-    padding: 32px 48px 48px; position: relative;
+    padding: 32px 48px 48px 24px; position: relative;
     opacity: 0; animation: mount 0.5s var(--spring) 0.1s forwards;
   }
   .matrix-area::before {
@@ -47,7 +46,7 @@
 
   /* Column headers */
   .col-headers {
-    display: flex; padding-left: 100px; margin-bottom: 12px; gap: 12px;
+    display: flex; padding-left: 156px; margin-bottom: 12px; gap: 12px;
   }
   .col-header {
     flex: 1; text-align: center;
@@ -68,7 +67,7 @@
 
   /* Y axis */
   .y-axis {
-    width: 88px; flex-shrink: 0;
+    width: 144px; flex-shrink: 0;
     display: flex; flex-direction: column; gap: 12px;
   }
   .y-label-cell {

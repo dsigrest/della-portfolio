@@ -265,6 +265,11 @@
       transform: translateY(0);
     }
 
+    .case-body h3 {
+      margin-top: var(--spacing-2xl);
+      margin-bottom: var(--spacing-md);
+    }
+
     .case-body p {
       font-size: 16px;
       line-height: 1.7;
@@ -426,7 +431,7 @@
        an h2 reads Large, by an h3 reads Medium, by a p reads Small — the gap
        always matches the relationship type. */
     .case-img-full {
-      margin: var(--spacing-md) 0;
+      margin: var(--spacing-xl) 0;
       opacity: 0;
       transform: translateY(20px);
       transition: opacity 0.6s ease, transform 0.6s ease;
@@ -1298,14 +1303,14 @@ main {
 /* ---------- Impact callout (P11 ×2 / P12 +1%) — quiet pullout, not hero ---------- */
 .impact-callout {
   display: flex;
-  gap: 16px;
+  gap: var(--spacing-md);
   align-items: baseline;
-  padding: 14px 18px;
+  padding: var(--spacing-md) var(--spacing-lg);
   background: transparent;
   border: 1px solid var(--border-normal);
   border-left: 2px solid var(--color-accent);
   border-radius: 6px;
-  margin: var(--spacing-sm) 0 var(--spacing-md);
+  margin: var(--spacing-md) 0 var(--spacing-xl);
 }
 .impact-callout .metric {
   font-size: 24px;
@@ -1328,50 +1333,11 @@ main {
   .impact-callout {
     flex-direction: column;
     align-items: flex-start;
-    gap: 6px;
-    padding: 12px 14px;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-md);
   }
   .impact-callout .metric { font-size: 22px; }
   .impact-callout .body   { font-size: 13px; }
-}
-
-/* Three stacked elements (.decision-eyebrow + .decision-heading + .decision-body).
-   Normal rounded rectangle — pill border-radius doesn't work on stacked content. */
-.decision-callout {
-  margin: var(--spacing-sm) 0;
-  padding: 14px 18px;
-  background: transparent;
-  border: 1px solid var(--border-normal);
-  border-radius: 12px;
-  display: block;
-  max-width: 100%;
-}
-.decision-eyebrow {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-tertiary);
-  margin: 0 0 var(--spacing-sm) 0;
-}
-.decision-heading {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0;
-  color: var(--text-primary);
-  margin: 0 0 2px 0;
-}
-.decision-body {
-  font-size: 14px;
-  color: var(--text-secondary);
-  line-height: 1.5;
-  margin: 0;
-}
-@media (max-width: 768px) {
-  .decision-callout {
-    border-radius: 12px;
-    display: block;
-  }
 }
 
 /* ---------- Results metrics panel (Position 19 — 5 metrics with sublabels and captions) ---------- */
@@ -1391,21 +1357,35 @@ main {
   align-items: center;
   justify-content: center;
   min-height: 480px;
-  gap: var(--spacing-md);
+  gap: var(--spacing-sm);
 }
-/* When the slot has the actual GIF (not the placeholder) — solid border,
-   GIF sized as a phone-mockup-ish element. Della call 2026-04-29. */
+/* When the slot has the actual GIF (not the placeholder) — strip the chrome
+   and let the phone fill the slot with caption sitting close beneath.
+   Della call 2026-04-30. */
 .results-phone-slot.has-asset {
-  border: 1px solid var(--border-normal);
-  border-style: solid;
+  background: transparent;
+  border: none;
+  padding: 0;
+  justify-content: flex-end;
+  position: relative;
+}
+/* Caption pulled out of the flex stack so the phone-screen bottom (not the
+   caption bottom) is what aligns with the metrics panel's bottom edge.
+   Caption hangs beneath the slot. Della call 2026-04-30. */
+.results-phone-slot.has-asset .phone-caption {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: var(--spacing-sm);
 }
 .results-phone-slot .results-phone-gif {
   width: 100%;
-  max-width: 280px;
+  max-width: 360px;
   height: auto;
   border-radius: 24px;
   display: block;
-  margin-bottom: var(--spacing-md);
+  margin-bottom: 0;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
 }
 .results-phone-slot .placeholder-text {
@@ -1421,10 +1401,8 @@ main {
   max-width: 280px;
 }
 .phone-caption {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.88px;
-  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 500;
   color: var(--text-secondary);
   text-align: center;
   margin: 0;
@@ -1433,10 +1411,10 @@ main {
   background: var(--surface-1);
   border: 1px solid var(--accent);
   border-radius: 12px;
-  padding: var(--spacing-xl);
+  padding: var(--spacing-lg);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: var(--spacing-md);
 }
 .metrics-eyebrow {
   font-size: 11px;
@@ -1560,5 +1538,35 @@ main {
   font-size: 14px;
   color: var(--text-secondary);
   line-height: 1.55;
+  margin: 0;
+}
+
+/* ---------- Outcome cards (single-column stacked) ----------
+   Replaces the old hero-metric + metric-row layout for the §18 outcome row.
+   All 5 outcomes are equal weight: title + body, stacked vertically with
+   subtle dividers. No big-number column. Della call 2026-04-30.
+   Selectors scoped under .outcomes-stack to beat .case-body p specificity. */
+.outcomes-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+.outcomes-stack .outcome-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+.outcomes-stack .outcome-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  margin: 0;
+}
+.outcomes-stack .outcome-body {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.5;
   margin: 0;
 }
