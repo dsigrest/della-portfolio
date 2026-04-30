@@ -15,90 +15,109 @@
     --text-ter: rgba(224,223,228,0.4);
     --text-dim: rgba(224,223,228,0.2);
     --accent: #7FB5B0;
-    --gold: #C4B078;
-    --red: #C47878;
-    --row-bg:     rgba(127,181,176,0.06);
-    --row-border: rgba(127,181,176,0.12);
+    --row-bg:        rgba(127,181,176,0.06);
+    --row-border:    rgba(127,181,176,0.12);
+    --accent-fill:   rgba(127,181,176,0.15);
+    --accent-border: rgba(127,181,176,0.4);
     --glass-border:    rgba(224,223,228,0.08);
     --glass-overlay:   rgba(224,223,228,0.04);
     --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
-    --ranker:         #6EDCC8;
-    --ranker-fill:    rgba(110,220,200,0.15);
-    --ranker-border:  rgba(110,220,200,0.4);
+    --divider: rgba(224,223,228,0.08);
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   body {
     background: var(--card);
     display: flex;
     justify-content: center;
-    padding: 40px;
+    padding: 40px 32px;
     font-family: 'Inter', -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
   .diagram {
     width: 100%;
-    max-width: 580px;
+    max-width: 920px;
     background: var(--card);
     border-radius: 16px;
     overflow: hidden;
     position: relative;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    padding: 28px 24px;
+    /* Container query context — child layout responds to diagram's own width,
+       not viewport. Robust to iframe/embed contexts where viewport ≠ render width. */
+    container-type: inline-size;
+    container-name: diag;
   }
 
-  .diagram-title {
-    font-size: 13px;
+  /* ========== Two-column shared grid ==========
+     Both columns share the same row template so labels, captions,
+     stream-cards, mid-flow, and inboxes line up across the divider.
+     pipeline-col uses display:contents to expose its children directly
+     to the parent grid. */
+  .two-col-pipeline {
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr;
+    grid-template-rows: auto auto auto 1fr auto;
+    column-gap: 24px;
+    row-gap: 14px;
+  }
+  .col-divider {
+    background: var(--divider);
+    width: 1px;
+    grid-column: 2;
+    grid-row: 1 / -1;
+  }
+  .pipeline-col {
+    display: contents;
+  }
+  .pipeline-col.before > * { grid-column: 1; }
+  .pipeline-col.after  > * { grid-column: 3; }
+
+  .col-label    { grid-row: 1; }
+  .col-caption  { grid-row: 2; }
+  .stream-cards { grid-row: 3; }
+  .mid-flow     { grid-row: 4; align-self: stretch; }
+  .user-inbox   { grid-row: 5; }
+
+  /* ========== Column header ========== */
+  .col-label {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px;
     font-weight: 600;
-    color: var(--text-pri);
-    text-align: center;
-    margin-bottom: 8px;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    text-transform: uppercase;
     opacity: 0;
     animation: fadeUp 0.5s ease-out forwards;
   }
-
-  .two-column {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    width: 100%;
-  }
-
-  .column {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .column-header {
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 9px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    color: var(--text-ter);
-    text-transform: uppercase;
+  .col-caption {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text-sec);
     opacity: 0;
     animation: fadeUp 0.5s ease-out 0.05s forwards;
   }
 
-  .column.left .column-header { color: var(--gold); }
-  .column.right .column-header { color: var(--red); }
-
-  .comp-card {
+  /* ========== Stream cards (2-up within each column at desktop) ========== */
+  .stream-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .stream-card {
     position: relative;
     border: 1px solid var(--glass-border);
     border-radius: 10px;
-    padding: 14px;
+    padding: 12px;
     display: flex;
     flex-direction: column;
     gap: 8px;
     box-shadow: var(--glass-highlight);
     overflow: hidden;
+    min-width: 0; /* allow grid item to shrink below content min-width */
     opacity: 0;
-    animation: fadeUp 0.6s ease-out forwards;
+    animation: fadeUp 0.5s ease-out 0.10s forwards;
   }
-  .comp-card::before {
+  .stream-card:nth-child(2) { animation-delay: 0.15s; }
+  .stream-card::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -106,28 +125,23 @@
     border-radius: inherit;
     pointer-events: none;
   }
-
-  .column.left .comp-card:nth-child(2) { animation-delay: 0.10s; }
-  .column.left .comp-card:nth-child(3) { animation-delay: 0.15s; }
-  .column.right .comp-card:nth-child(2) { animation-delay: 0.20s; }
-  .column.right .comp-card:nth-child(3) { animation-delay: 0.25s; }
-
-  .card-label {
+  .card-title {
     font-family: 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 8px;
-    font-weight: 400;
-    letter-spacing: 0.04em;
-    color: var(--text-dim);
-    text-align: center;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--text-ter);
+    text-transform: uppercase;
+    overflow-wrap: anywhere; /* defensive: allow break if title still doesn't fit */
   }
-
-  .mini-rows {
+  .card-items {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    width: 100%;
+    gap: 5px;
   }
-  .mini-row {
+
+  /* ========== Item rows ========== */
+  .item {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -138,171 +152,306 @@
     font-size: 11px;
     color: var(--text-sec);
     line-height: 1.3;
+    min-width: 0;
   }
-  .mini-row .dot {
+  .item > span:not(.dot) {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-wrap: anywhere; /* allow mid-word break when card is too narrow */
+    word-break: break-word;
+  }
+  .item .dot {
     width: 6px;
     height: 6px;
     border-radius: 50%;
     flex-shrink: 0;
+    background: var(--text-ter);
   }
-  .mini-row.gold .dot { background: var(--gold); }
-  .mini-row.red  .dot { background: var(--red); }
+  .item.signal .dot { background: var(--accent); }
 
-  .hub-section {
+  /* ========== Mid-flow shared base ==========
+     Row 4 of the shared grid stretches via 1fr; both cols' mid sections
+     fill that row regardless of which side has more content. */
+  .mid-flow.before-mid {
     display: flex;
-    justify-content: center;
-    width: 100%;
-    margin: 8px 0;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 14px;
   }
-  .hub-badge {
-    background: var(--ranker-fill);
-    border: 1px solid var(--ranker-border);
-    border-radius: 14px;
-    padding: 0 12px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--ranker);
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 8px;
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    opacity: 0;
-    animation: fadeUp 0.5s ease-out 0.32s forwards;
-  }
+  .mid-flow.before-mid .arrow-down { align-self: center; }
 
-  .connector-svg {
-    width: 100%;
-    height: 20px;
-    overflow: visible;
+  /* ========== Arrows — fixed-aspect, centered in container ========== */
+  .arrow-down {
     display: block;
-    opacity: 0;
-    animation: fadeUp 0.5s ease-out forwards;
+    margin: 0 auto;
+    overflow: visible;
   }
-  .connector-svg.gold { animation-delay: 0.30s; }
-  .connector-svg.red { animation-delay: 0.35s; }
-  .connector-svg .line {
+  .arrow-down.short { width: 12px; height: 28px; }
+  .arrow-down.tall  { width: 12px; height: 100%; min-height: 60px; }
+  .arrow-line {
     fill: none;
+    stroke: var(--text-ter);
     stroke-width: 1.25;
-    stroke-dasharray: 3 4;
     stroke-linecap: round;
-    opacity: 0.7;
   }
-  .connector-svg.gold .line { stroke: var(--gold); }
-  .connector-svg.red .line { stroke: var(--red); }
+  .arrow-head { fill: var(--text-ter); }
+  .arrow-line.accent { stroke: var(--accent); }
+  .arrow-head.accent { fill: var(--accent); }
 
-  .inbox-section {
-    margin-top: 8px;
+  /* ========== RANKER pill ========== */
+  .ranker-pill {
+    background: var(--accent-fill);
+    border: 1px solid var(--accent-border);
+    border-radius: 999px;
+    padding: 8px 14px;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.20em;
+    text-transform: uppercase;
+    text-align: center;
     opacity: 0;
-    animation: fadeUp 0.6s ease-out 0.40s forwards;
+    animation: fadeUp 0.5s ease-out 0.25s forwards;
   }
-  .inbox-card {
+  .ranker-pill.full { width: 100%; }
+
+  /* ========== AFTER split-flow — left tall, right ↓-pill-↓ ========== */
+  .mid-flow.after-mid.split-flow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 10px;
+    align-items: stretch;
+  }
+  .split-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    min-width: 0;
+  }
+  .split-cell.left {
+    justify-content: stretch;
+  }
+  .split-cell.right {
+    justify-content: space-between;
+    gap: 4px;
+  }
+  .split-cell.right .arrow-down {
+    flex: 0 0 auto;
+    height: 22px;
+  }
+  .split-cell.right .ranker-pill {
+    width: 100%;
+    flex: 0 0 auto;
+  }
+
+  /* ========== User inbox ========== */
+  .user-inbox {
     position: relative;
-    border: 1px solid var(--glass-border);
+    border: 1px solid var(--accent-border);
     border-radius: 10px;
-    padding: 14px;
+    padding: 12px;
     display: flex;
     flex-direction: column;
     gap: 8px;
     box-shadow: var(--glass-highlight);
     overflow: hidden;
+    background: var(--card);
+    min-width: 0;
+    opacity: 0;
+    animation: fadeUp 0.6s ease-out 0.40s forwards;
   }
-  .inbox-card::before {
+  .user-inbox::before {
     content: "";
     position: absolute;
     inset: 0;
-    background: var(--glass-overlay);
+    background: var(--accent-fill);
+    opacity: 0.25;
     border-radius: inherit;
     pointer-events: none;
   }
-  .inbox-label {
+  .inbox-title {
     font-family: 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 8px;
-    font-weight: 400;
-    letter-spacing: 0.04em;
-    color: var(--text-dim);
-    text-align: center;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.10em;
+    color: var(--accent);
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
+  }
+  .inbox-items {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    position: relative;
+    z-index: 1;
   }
 
+  /* ========== Animation ========== */
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(6px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* Responsive: stack columns below 480px */
-  @media (max-width: 479px) {
-    .two-column {
+  /* ========== Intermediate widths (≤700px diagram width): collapse stream-cards
+     to 1-up within each pipeline-col. Container-query-based so it responds to
+     the diagram's actual rendered width, not viewport — survives iframe/embed
+     contexts where viewport ≠ render width. ========== */
+  @container diag (max-width: 700px) {
+    .stream-cards {
       grid-template-columns: 1fr;
-      gap: 12px;
-    }
-    .column-header {
-      font-size: 8px;
     }
   }
 
-  /* Iframe embed normalizer — added by QA pass */
+  /* ========== Mobile (≤540px diagram width): stack BEFORE on top of AFTER,
+     stream-cards 2-up inside each block (per Figma 1363:3520). Drop
+     display:contents and revert to flex column so the block order is
+     before-pipeline → divider → after-pipeline. ========== */
+  @container diag (max-width: 540px) {
+    .two-col-pipeline {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    .pipeline-col {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .col-divider {
+      width: 100%;
+      height: 1px;
+      align-self: auto;
+    }
+    .stream-cards {
+      grid-template-columns: 1fr 1fr;
+    }
+    .col-label { font-size: 10px; }
+    .col-caption { font-size: 11.5px; }
+    .mid-flow.before-mid {
+      gap: 14px;
+    }
+    .mid-flow.after-mid.split-flow {
+      height: 116px;
+    }
+  }
+
+  /* ========== Tighten body padding at narrow viewports (cosmetic only) ========== */
+  @media (max-width: 540px) {
+    body { padding: 20px 16px; }
+    .diagram { padding: 20px 16px; }
+  }
+
+  /* ========== Iframe embed normalizer ========== */
   body.embedded { padding: 0; min-height: auto; display: block; background: transparent; overflow: hidden; }
   body.embedded .diagram { width: 100%; max-width: none; border-radius: 0; }
 </style>
 </head>
 <body>
   <div class="diagram">
-    <div class="diagram-title">P13 — Separating asks from recommendations</div>
+    <div class="two-col-pipeline">
 
-    <div class="two-column">
-      <div class="column left">
-        <div class="column-header">Updates you asked for</div>
-        <div class="comp-card">
-          <div class="card-label">Subscriptions 1</div>
-          <div class="mini-rows">
-            <div class="mini-row gold"><span class="dot"></span><span>Popular post in r/design</span></div>
+      <!-- ============ BEFORE ============ -->
+      <div class="pipeline-col before">
+        <div class="col-label">Before</div>
+        <p class="col-caption">Subscriptions and recommendations flowed through the same ranker — user-asked content got buried beneath high-performing recommendations.</p>
+
+        <div class="stream-cards">
+          <div class="stream-card">
+            <div class="card-title">Explicit user signal</div>
+            <div class="card-items">
+              <div class="item signal"><span class="dot"></span><span>Subscription 1</span></div>
+              <div class="item signal"><span class="dot"></span><span>Subscription 2</span></div>
+            </div>
+          </div>
+          <div class="stream-card">
+            <div class="card-title">Recommendations</div>
+            <div class="card-items">
+              <div class="item"><span class="dot"></span><span>Suggestion 1</span></div>
+              <div class="item"><span class="dot"></span><span>Suggestion 2</span></div>
+            </div>
           </div>
         </div>
-        <div class="comp-card">
-          <div class="card-label">Subscriptions 2</div>
-          <div class="mini-rows">
-            <div class="mini-row gold"><span class="dot"></span><span>New post in r/Claude</span></div>
+
+        <div class="mid-flow before-mid">
+          <svg class="arrow-down short" viewBox="0 0 12 28" aria-hidden="true">
+            <path class="arrow-line" d="M 6 0 L 6 22"/>
+            <polygon class="arrow-head" points="2,22 10,22 6,28"/>
+          </svg>
+          <div class="ranker-pill full">Ranker</div>
+          <svg class="arrow-down short" viewBox="0 0 12 28" aria-hidden="true">
+            <path class="arrow-line" d="M 6 0 L 6 22"/>
+            <polygon class="arrow-head" points="2,22 10,22 6,28"/>
+          </svg>
+        </div>
+
+        <div class="user-inbox">
+          <div class="inbox-title">User inbox</div>
+          <div class="inbox-items">
+            <div class="item"><span class="dot"></span><span>Suggestion 1</span></div>
+            <div class="item"><span class="dot"></span><span>Suggestion 2</span></div>
+            <div class="item signal"><span class="dot"></span><span>Subscription 1</span></div>
           </div>
         </div>
       </div>
 
-      <div class="column right">
-        <div class="column-header">What the algorithm surfaces</div>
-        <div class="comp-card">
-          <div class="card-label">Suggestions 1</div>
-          <div class="mini-rows">
-            <div class="mini-row red"><span class="dot"></span><span>Trending in r/technology</span></div>
+      <div class="col-divider" aria-hidden="true"></div>
+
+      <!-- ============ AFTER ============ -->
+      <div class="pipeline-col after">
+        <div class="col-label">After</div>
+        <p class="col-caption">Subscriptions and recommendations ranked separately — user preferences stayed intact while discovery still scaled.</p>
+
+        <div class="stream-cards">
+          <div class="stream-card">
+            <div class="card-title">Explicit user signal</div>
+            <div class="card-items">
+              <div class="item signal"><span class="dot"></span><span>Subscription 1</span></div>
+              <div class="item signal"><span class="dot"></span><span>Subscription 2</span></div>
+            </div>
+          </div>
+          <div class="stream-card">
+            <div class="card-title">Recommendations</div>
+            <div class="card-items">
+              <div class="item"><span class="dot"></span><span>Suggestion 1</span></div>
+              <div class="item"><span class="dot"></span><span>Suggestion 2</span></div>
+            </div>
           </div>
         </div>
-        <div class="comp-card">
-          <div class="card-label">Suggestions 2</div>
-          <div class="mini-rows">
-            <div class="mini-row red"><span class="dot"></span><span>Because you visited r/ux</span></div>
+
+        <div class="mid-flow after-mid split-flow">
+          <!-- Left: subscription path bypasses the ranker — accent highlight -->
+          <div class="split-cell left">
+            <svg class="arrow-down tall" viewBox="0 0 12 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+              <path class="arrow-line accent" d="M 6 0 L 6 92"/>
+              <polygon class="arrow-head accent" points="2,92 10,92 6,100"/>
+            </svg>
+          </div>
+          <!-- Right: recommendation path goes through the ranker -->
+          <div class="split-cell right">
+            <svg class="arrow-down short" viewBox="0 0 12 22" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+              <path class="arrow-line" d="M 6 0 L 6 22"/>
+            </svg>
+            <div class="ranker-pill">Ranker</div>
+            <svg class="arrow-down short" viewBox="0 0 12 22" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+              <path class="arrow-line" d="M 6 0 L 6 16"/>
+              <polygon class="arrow-head" points="2,16 10,16 6,22"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="user-inbox">
+          <div class="inbox-title">User inbox</div>
+          <div class="inbox-items">
+            <div class="item signal"><span class="dot"></span><span>Subscription 1</span></div>
+            <div class="item signal"><span class="dot"></span><span>Subscription 2</span></div>
+            <div class="item"><span class="dot"></span><span>Suggestion 1</span></div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="hub-section">
-      <div class="hub-badge">RANKER</div>
-    </div>
-
-    <svg class="connector-svg gold" viewBox="0 0 580 20" preserveAspectRatio="none" aria-hidden="true">
-      <path class="line" d="M 150 18 Q 290 10 290 2" />
-    </svg>
-    <svg class="connector-svg red" viewBox="0 0 580 20" preserveAspectRatio="none" aria-hidden="true">
-      <path class="line" d="M 430 2 Q 290 10 290 18" />
-    </svg>
-
-    <div class="inbox-section">
-      <div class="inbox-card">
-        <div class="inbox-label">User inbox</div>
-        <div class="mini-rows">
-          <div class="mini-row red"><span class="dot"></span><span>Recommended content</span></div>
-          <div class="mini-row red"><span class="dot"></span><span>Curated by algorithm</span></div>
-        </div>
-      </div>
     </div>
   </div>
 <!-- diagram-height-poster v1 -->
