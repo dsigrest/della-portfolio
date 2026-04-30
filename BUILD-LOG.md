@@ -1,7 +1,7 @@
 # Build Log — Della Sigrest Portfolio
 
 **Started:** March 12, 2026
-**Last updated:** April 21, 2026
+**Last updated:** April 30, 2026
 **Status:** Active
 
 ## Project context
@@ -10,9 +10,9 @@ A portfolio website for Della Sigrest, Senior Product Designer (previously Reddi
 
 ## Current status
 
-Site is live at `https://della-portfolio.vercel.app`. Now 5 case studies (added case-building-portfolio) with 48 live diagrams embedded as iframes plus 8 orphan diagrams pending placement. Thread 1 of the mobile-breakpoint audit workstream (case-notifications POC) is partially complete: 2/13 diagrams verified fixed, 9 need L2 rework, 2 reclassified to L3 (flywheel, sankey — hover and radial layouts can't reflow). Thread 1b picks up in a fresh session with main-thread-only fixes after 5 separate agent drifts on this session's delegated work revealed that judgment-heavy multi-file work can't be safely delegated yet. Resume prompt saved at `portfolio-site/working/mobile-audit/resume-prompt.md`.
+Site is live at `https://della-portfolio.vercel.app`. **Case-notifications scope ✅ COMPLETE** — the multi-week deferred-finish arc closed today (Apr 30, Session 44b). All 4 grandparent items shipped or de-scoped: A — NOT-12 layout-testing 3-in-a-row (Session 42); B — NOT-22 Contextual suggestions closed as superseded by NOT-08 (Session 44b); C — NOT-19 ranker pipeline rebuild (Session 43, commit `66a5044`); D — NOT-E4 signal/intent matrix axis fix + L2 responsive + persona class rename (Session 44, commit `b56a8fc`, plus `05a9800` close-out). Grandparent + predecessor + Session 39 REDO prompts archived to `sessions/archive/`.
 
-Next up: Thread 1b — fix the 9 remaining L2 reworks + build L3 mobile variants for not-e2 and not-e7 + Figma pairing. Then Threads 2-5 for the other 4 case studies. Per-diagram state lives in the tracker xlsx; start any session by reading it.
+Next up: case-sharing thread resumes from `sessions/case-sharing-thread-pause-handoff.md`. Other pending workstreams: mobile-breakpoint audit Thread 1b (9 L2 reworks + L3 mobile variants for NOT-E2 / NOT-E7), and Threads 2–5 for case-ai / case-subreddit / case-sharing / case-building-portfolio. BUILD-LOG.md is well over the 50KB / 1500-line soft threshold; quarterly archive split is overdue. Per-diagram state for the mobile-audit workstream lives in `portfolio-site/working/mobile-audit/audit-tracker.xlsx`.
 
 ## Open questions & blockers
 
