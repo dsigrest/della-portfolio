@@ -74,6 +74,36 @@ Next up: case-sharing thread resumes from `sessions/case-sharing-thread-pause-ha
 
 ## Log entries
 
+### Apr 30, 2026 (Session 45b — Post-merge polish round + orphan CSS sweep + gitignore)
+
+**Context:** Della reviewed the homepage-refresh deploy live and surfaced several follow-on tweaks. Iterated direct on `main` rather than branching (small, scoped polish; she watched each change in real time). Two commits: `93faba1` (homepage-polish, the main batch) and `d2866fd` (gitignore noise sweep).
+
+**What shipped in `93faba1` (homepage-polish):**
+- **Hero fills viewport**: `.hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }`. Cards no longer peek up after the role line was removed. Content centers within the viewport regardless of length.
+- **H1 phrase-per-line**: `<br>` after each comma in the title so each phrase always starts on its own line at desktop. Falls to 4 lines on mobile (acceptable per Della).
+- **H1 rename**: `AI-forward` → `AI-native`.
+- **Subtitle**: `text-wrap: balance` + dropped `product` (was: "ambiguous product spaces"). Eliminates the orphan "build." stranded on its own line.
+- **Footer tech-proof**: dropped the `<span class="tech-proof-label">Built with</span>` eyebrow, merged into a single mono line.
+- **Cards 01–04**: simplified all four descriptions for scannability (Della-provided copy, slight bold-phrase preserved per voice rule). Cards 03/04 still in disabled state.
+- **case-ai opener**: flattened `<div class="case-card-pair">` Challenge/Strategy structure to plain paragraphs. Added new `<h2>Reddit had the answers &mdash; but not the answer experience</h2>`. Merged the two paragraphs into one (dropped "I designed an"). Phone diagram (`diagram-ai-overview-v1.html`) `.phone { max-width: 296 → 220px }` so it fits one viewport.
+- **case-notifications opener**: flattened `<section class="case-summary">` Challenge/Strategy structure to plain paragraphs under the existing H2. Removed the `<div class="learnings-strip">` block at the bottom (was squishing against the bottom diagram). Results-row gif (`.results-phone-gif { max-width: 360 → 260px }`) for compact results section.
+- **Iframe resize fix**: window resize listener added to all 4 case study pages (`case-ai`, `case-notifications`, `case-subreddit`, `case-building-portfolio`). Re-measures `.diagram-embed iframe` heights with 100ms debounce. Fixes the blank-gap bug where iframe heights stuck at original-load values when the user resized.
+- **Breathing room under meta-grid**: `.case-body` desktop `padding-top: var(--spacing-xl)` (was 0); mobile `padding-top: var(--spacing-lg)` (was 0). Applied across all case studies for consistency.
+- **Orphan CSS sweep**: removed all classes whose markup got deleted in this session — `.tech-proof-label`, `.hero-role`, `.summary-pair`, `.summary-tile`, `.case-summary`, `.case-summary > h2`, `.case-card-pair`, `.case-card`, `.card-eyebrow`, `.learnings-strip`, `.learnings-eyebrow`, `.learnings-body`. styles.css net `-130` lines.
+
+**What shipped in `d2866fd` (gitignore):**
+- Added patterns for `.claude/`, `outputs/`, `working/discarded/`, `working/visual-regression/`, `working/png-review-*.html`. These had been showing up in `git status` for sessions and finally got their pattern.
+
+**Verification:**
+- `voice-check.py` + `quality-check.py` passed on `index.html`, `case-ai.html`, `case-notifications.html` after each iteration. Pre-existing warnings on case-* body content remained (long sentences) but unrelated to this session's edits.
+- Visual at 1440px desktop and 480px mobile via Chrome MCP throughout the polish round.
+
+**Files changed (Session 45b):** `index.html`, `styles.css`, `case-ai.html`, `case-notifications.html`, `case-subreddit.html`, `case-building-portfolio.html`, `img/diagrams/diagram-ai-overview-v1.html`, `.gitignore`, `BUILD-LOG.md`.
+
+**Handoff:** A separate thread had started case-answers (case-ai) work earlier today before Session 45/45b shipped. Created `~/CoworkWorkspace/Get-a-job/sessions/case-ai-polish-protect-handoff-2026-04-30.md` so the resuming thread pulls main first and doesn't revert any of today's polish edits to case-ai.html.
+
+**Final tree state:** clean except paused share work (`case-sharing.html` modified + `img/diagrams/diagram-shr01-before-share-sheet-v5.html` + `SHAR-screenshotToshare.gif` untracked). Three commits today: `a661ee3` homepage-refresh + `93faba1` homepage-polish + `d2866fd` gitignore.
+
 ### Apr 30, 2026 (Session 45 — Homepage refresh + Reddit Answers MVP rename)
 
 **Context:** Pre-publish polish before Della ships portfolio today. Hero copy didn't reflect current positioning, two case studies (Sharing & Embeds, Subreddit Success) needed to come off as polished public links until further work lands, and the existing tagline locked her into "Senior" rather than broader "Product Designer." Also caught a `g` descender getting clipped in the hero h1 — root cause was `-webkit-background-clip: text` with `line-height: 1.05` too tight to contain descenders inside the gradient's line-box.
