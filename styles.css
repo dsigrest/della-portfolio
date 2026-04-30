@@ -1335,25 +1335,24 @@ main {
   .impact-callout .body   { font-size: 13px; }
 }
 
-/* ---------- Decision callout (P8 v1→v2) — caption-style pill ----------
-   Preserves existing 3-element HTML (.decision-eyebrow + .decision-heading +
-   .decision-body). All inner text shrinks; container becomes a pill. */
+/* Three stacked elements (.decision-eyebrow + .decision-heading + .decision-body).
+   Normal rounded rectangle — pill border-radius doesn't work on stacked content. */
 .decision-callout {
   margin: var(--spacing-sm) 0;
-  padding: 8px 14px;
+  padding: 14px 18px;
   background: transparent;
   border: 1px solid var(--border-normal);
-  border-radius: 999px;
-  display: inline-block;
+  border-radius: 12px;
+  display: block;
   max-width: 100%;
 }
 .decision-eyebrow {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.88px;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-tertiary);
-  margin: 0 0 2px 0;
+  margin: 0 0 var(--spacing-sm) 0;
 }
 .decision-heading {
   font-size: 12px;
@@ -1363,9 +1362,9 @@ main {
   margin: 0 0 2px 0;
 }
 .decision-body {
-  font-size: 11px;
-  color: var(--text-tertiary);
-  line-height: 1.4;
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.5;
   margin: 0;
 }
 @media (max-width: 768px) {
