@@ -60,7 +60,7 @@
         </div>
         <div class="meta-item">
           <label>Platform</label>
-          <span>Web (SEO surfaces)</span>
+          <span>Web search surfaces</span>
         </div>
       </div>
     </section>
@@ -75,7 +75,7 @@
 
       <h2>Reddit had the answers &mdash; but not the answer experience</h2>
 
-      <p><strong>Reddit content was scattered</strong> across posts and communities. Users arriving from Google had no way to piece answers together — most bounced. SEO was the primary entry point and the primary exit. An <strong>LLM-powered synthesis</strong> consolidated content across posts and communities into a single entry point matched to the user's search intent — with source posts threaded below.</p>
+      <p>Reddit content was scattered across posts, comments, and communities. Users arriving from Google had to piece answers together themselves — and often bounced before discovering Reddit as the destination. An LLM-powered synthesis surface consolidated relevant discussions into one source-backed answer, with the original posts threaded below for verification and deeper exploration.</p>
 
       <!-- ============================================
            1. OVERVIEW (was: Challenge)
@@ -111,7 +111,7 @@
 
       <h2>Competing user needs</h2>
 
-      <p>Two users with competing needs: <strong>Googlebot and humans.</strong> Underlinking and underusing keywords hurt SEO. Overusing keywords hurt humans. I didn't know what Googlebot needed; engineers weren't familiar with Reddit's users or the SEO cohort. A healthy back-and-forth led to capturing both full sets of needs.</p>
+      <p>The page had two audiences: humans and Googlebot. Humans needed readable, trustworthy answers. Googlebot needed structure, keywords, and links. Optimizing for one at the expense of the other would break the experience.</p>
 
       <div class="case-img-full diagram-embed" data-diagram="ai-09">
         <iframe
@@ -123,11 +123,9 @@
         ></iframe>
       </div>
 
-      <p><strong>Framing Googlebot as a user was the breakthrough.</strong> When I told designers we needed something for SEO, they pushed back — that's not a user need. But anthropomorphizing it as a competing set of needs instead of a technical constraint opened doors across the team.</p>
+      <p>The breakthrough was framing Googlebot as a user with its own needs — not as an abstract SEO constraint. That made the tradeoffs legible to designers, engineers, and content partners, and helped the team balance discoverability with trust.</p>
 
-      <p>I pushed back on <strong>resurfacing the query multiple times on the page.</strong> SEO loved keyword repetition; it did nothing for users. The compromise: pre-populate the search bar with the user's query, as if they'd already searched Reddit. SEO got the keyword on the page; the design <strong>reinforced the mental model</strong> that users should be searching on Reddit directly.</p>
-
-      <p>Keywords were embedded in <strong>structured page elements outside the summary</strong> — synthesis stayed natural while the page still ranked.</p>
+      <p>I pushed back on repeating the query throughout the page. Instead, we moved keyword signals into structured elements around the generated answer — including a pre-populated search bar that made it feel as if the user had already searched Reddit. SEO got the signal it needed, while the synthesis stayed natural and the design reinforced Reddit as the place to continue searching.</p>
 
       <!-- ============================================
            3a. PROOF OF CONCEPT / RESEARCH (was: Proving the Concept h3)
@@ -136,11 +134,11 @@
            ai02b retired.
            ============================================ -->
 
-      <h2>Proof of concept / research</h2>
+      <h2>Proof before infrastructure</h2>
 
-      <p>To get the resources for dynamic generation, we had to <strong>prove the idea first.</strong> Chicken-and-egg: the team needed proof of concept before investing in infrastructure, but building proof of concept required building the product.</p>
+      <p>Dynamic generation required infrastructure investment, but the team needed evidence before committing those resources. The path forward was a lightweight proof of concept: build enough of the product to test whether the experience worked.</p>
 
-      <p>We started with <strong>static pages refreshed periodically</strong>, targeting the verticals with the strongest source coverage and the largest audiences — maximum impact with the resources we had.</p>
+      <p>We started with static keyword landing pages refreshed periodically, targeting verticals with strong source coverage and high search demand. This let us test the experience, learn what quality required, and maximize impact with the resources we had.</p>
 
       <div class="case-img-full diagram-embed" data-diagram="ai-02a">
         <iframe
@@ -160,11 +158,11 @@
            from Figma 230:2 + 983:8 via figma-to-html.
            ============================================ -->
 
-      <h2>Page information architecture</h2>
+      <h2>Dual-layer page architecture</h2>
 
-      <p>The <strong>dual-layer layout</strong> was the core design decision. Synthesis on top gave users instant answers; source posts below let them verify and go deeper. Links across both layers created endless on-ramps into the platform — and Googlebot loved the link density. One page, both users served.</p>
+      <p>The dual-layer layout was the core design decision: synthesis on top for an immediate answer, source posts below for verification and deeper exploration. Links across both layers created clear on-ramps into Reddit while preserving the structure Googlebot needed.</p>
 
-      <p>The long bet: shift the mental model from appending <em>reddit</em> to a Google search toward searching Reddit directly.</p>
+      <p>The longer-term bet was to shift users from appending <em>reddit</em> to a Google search toward searching Reddit directly.</p>
 
       <!-- Phase 2: figma-to-html on 230:2 + 983:8 will create this file -->
       <div class="case-img-full diagram-embed" data-diagram="ai-page-ia">
@@ -184,9 +182,9 @@
            ai05 + line 134 retired.
            ============================================ -->
 
-      <h2>Establishing principles for generated content (summary)</h2>
+      <h2>Principles for AI-generated search results</h2>
 
-      <p>The page was also <strong>training users</strong> — showing them what a search result on Reddit could look like. Ideal behavior: click into a post for more detail, or search again from the bar at the top. Both paths pull deeper into the platform.</p>
+      <p>The page had to set expectations for a new kind of Reddit result: an answer users could scan quickly, verify through sources, and use as a starting point for deeper exploration.</p>
 
       <div class="case-img-full diagram-embed" data-diagram="ai-13">
         <iframe
@@ -209,11 +207,11 @@
 
       <h2>Identification</h2>
 
-      <p>We needed to define the <strong>first precedent for AI-generated content at Reddit</strong> — across the entire platform. I partnered with brand, legal, and design systems to establish what AI content would be, how it would identify itself, and how it would attribute its sources.</p>
+      <p>We needed to define one of Reddit’s first scalable patterns for AI-generated content: what it was called, how it identified itself, and how it attributed its sources. I partnered with Brand, Legal, and Design Systems to make that pattern work across surfaces.</p>
 
-      <h3>UI to distinguish AI gen content</h3>
+      <h3>UI to distinguish AI-generated content</h3>
 
-      <p>The question was bigger than visual design: <strong>what's a scalable, instantly recognizable, but unobtrusive signal</strong> that content was AI-generated? User research confirmed people valued knowing — but this was peak AI backlash. The signal had to build trust without feeling like a trend.</p>
+      <p>The question was bigger than visual design: what signal could make AI-generated content recognizable without making it feel gimmicky, intrusive, or opaque? User research confirmed people wanted transparency, but skepticism around AI-generated content was high. The pattern had to build trust without overexplaining itself.</p>
 
       <div class="case-img-full diagram-embed" data-diagram="ai-14">
         <iframe
@@ -225,9 +223,9 @@
         ></iframe>
       </div>
 
-      <p>We explored icons, tags, containers, disclaimers, a talking Snoo, and text treatments. The <strong>sparkle icon got negative reactions</strong> — users saw it as a cliché. Like Sharing &amp; Embeds, this crossed beyond design systems into identity.</p>
+      <p>We explored icons, tags, containers, disclaimers, a talking Snoo, color, and text treatments. Tags felt too heavy, Snoo felt too playful, and text-only treatments were too subtle. This crossed beyond component design into product identity: users needed to understand not just how the element looked, but what kind of Reddit content it represented.</p>
 
-      <p>We landed on <strong>a system, not a single solution.</strong> It scaled across surfaces depending on context, with persistent elements: same color, same name, always visually separated from other content. Flexible by surface, consistent in identity.</p>
+      <p>We landed on a system, not a single solution. The final pattern combined icon, color, container, attribution, and feedback — flexible enough to adapt by surface, but consistent enough to make generated content recognizable across Reddit.</p>
 
       <div class="case-img-full diagram-embed diagram-pair" data-diagram="ai-identification-precedent">
         <iframe
@@ -255,13 +253,13 @@
            ai21 retired.
            ============================================ -->
 
-      <h2>UI to display source posts</h2>
+      <h2>Designing the source layer</h2>
 
-      <p>User research kept surfacing the same question: <strong>where is this coming from?</strong> The source posts below the synthesis were the answer — and displaying them required a new UI pattern. Posts appeared in a threaded structure with comments for the first time at Reddit.</p>
+      <p>Attribution answered part of the trust problem, but users still needed to inspect the evidence behind the synthesis. User research kept surfacing the same question: where is this coming from? The source layer below the synthesis answered that directly, letting users explore the original posts and comments behind the generated answer.</p>
 
-      <p>I worked with data science on <strong>comment truncation</strong>: the vast majority of comments fit 1–2 lines, with severe diminishing returns after that. We landed on <strong>two comments per post</strong> — enough to show a conversation without overwhelming the unit.</p>
+      <p>I worked with data science on comment truncation and display rules. Most useful comments were short, with diminishing returns after the first few lines, so we landed on two comments per post — enough to show conversation context without overwhelming the unit.</p>
 
-      <p>The text truncation system <strong>reused a pattern I'd built for Sharing &amp; Embeds</strong> — already defined and validated, which made this work go faster.</p>
+      <p>The text truncation system reused a pattern I had already defined and validated for another surface, which helped the team move faster.</p>
 
       <div class="case-img-full diagram-embed diagram-pair" data-diagram="ai-20">
         <iframe
@@ -292,11 +290,11 @@
 
       <h2>Content</h2>
 
-      <p>Defining what the LLM produced was as much a design problem as defining how it looked. I led the decisions around <strong>tone, clarity, and the model's relationship to Reddit.</strong></p>
+      <p>Once users could recognize and verify generated content, the next question was what that content should actually say — and who it should sound like. Defining the LLM’s output was as much a design problem as defining how it looked. I led decisions around tone, clarity, and the model’s relationship to Reddit’s voice.</p>
 
       <h3>Voice</h3>
 
-      <p>The team debated: is the LLM <strong>Reddit, the Snoo, a character, a tool, or omnipresent?</strong> We explored each. Giving the synthesis a product identity conflicted with how people expected results in search — is it "Answers" or is it search?</p>
+      <p>The team debated the role of the generated answer: was it a character, a utility, an anonymous system, or part of Reddit itself? Giving it too much personality made it feel gimmicky. Making it invisible made it hard to trust.</p>
 
       <div class="case-img-full diagram-embed" data-diagram="ai-25">
         <iframe
@@ -308,11 +306,11 @@
         ></iframe>
       </div>
 
-      <p>We landed on <strong>omnipresent narrator without a character.</strong> It preserves scalability, smooths integration, and resolves the core tension: the synthesis isn't a separate product. It's part of the product. It is the product.</p>
+      <p>We landed on an omnipresent narrator without a character. The synthesis would feel like part of Reddit’s product experience — not a bot, mascot, or separate assistant.</p>
 
-      <h3>Content</h3>
+      <h3>Designing for trust</h3>
 
-      <p><strong>Closeness to source posts drove trust.</strong> Broad generalizations — a consistent failure mode in early outputs — killed it immediately. Synthesizing across communities without losing the source voice was the harder question.</p>
+      <p>Trust depended on closeness to the source material. Broad generalizations — a consistent failure mode in early outputs — broke trust immediately. The harder challenge was synthesizing across communities without losing Reddit’s specificity or voice.</p>
 
       <div class="case-img-full diagram-embed diagram-pair" data-diagram="ai-23">
         <iframe
@@ -344,11 +342,11 @@
 
       <h2>Ensuring quality</h2>
 
-      <h3>Generating summaries: XFN workflow</h3>
+      <h3>Turning quality into a repeatable process</h3>
 
-      <p><strong>No evaluation criteria, no feedback loop, no shared language</strong> for how synthesis should work. Prompt iteration was one engineer, vibes-based. This team had started as a top-of-funnel SEO team and later specialized into ML — they'd <strong>never worked with a designer before.</strong> Kickoffs, iteration walkthroughs, design systems — all new.</p>
+      <p>The team had no shared criteria for what made a synthesis good: no evaluation rubric, no feedback loop, and no common language for quality. Prompt iteration was mostly vibes-based, which made it hard to tell whether outputs were actually improving.</p>
 
-      <p>I bridged engineering and content design to build a <strong>structured evaluation matrix.</strong> There was initial resistance — engineers wanted to move fast, but output wasn't improving. I made it concrete: pulled them into creating the rubric and evaluating outputs against it. <strong>Involvement drove buy-in.</strong></p>
+      <p>I partnered with engineering and content design to turn subjective reactions into a structured evaluation matrix. We defined the criteria together, scored outputs against the rubric, and used the results to guide prompt and UI iteration. Involvement created buy-in.</p>
 
       <div class="case-img-full diagram-embed diagram-pair" data-diagram="ai-06">
         <iframe
@@ -369,15 +367,15 @@
         ></iframe>
       </div>
 
-      <p>Parameters: <strong>sentence structure</strong> variation, <strong>accuracy to source</strong> (sliding scale — reference where useful, don't replicate the post), <strong>novel synthesized info</strong> across posts, <strong>length adherence</strong>, <strong>tone</strong> (not mechanical, not cold — like a friend), content design guidelines (remember the human, be direct, consider i18n), and <strong>SEO signals</strong> (keywords, connected links).</p>
+      <p>The rubric evaluated sentence structure, source accuracy, novel synthesis across posts, length adherence, tone, content design guidelines, and SEO signals. It made quality specific enough for non-designers to evaluate consistently.</p>
 
-      <p>I partnered with content design to define <strong>evaluation dimensions</strong>, then facilitated <strong>scoring sessions</strong> where our cross-functional team rated outputs against the rubric. It had to be precise enough for non-designers to apply consistently.</p>
+      <p>I partnered with content design to define the evaluation dimensions, then facilitated scoring sessions where the cross-functional team rated outputs against the rubric. That gave engineers, content design, and product a shared way to discuss quality and decide what to improve next.</p>
 
       <h3>Feedback loops</h3>
 
-      <p>Flagged outputs surfaced where the model was weakest. The rubric <strong>evolved based on what users actually valued</strong> versus what we'd assumed. We shipped roughly <strong>twice a quarter</strong> — test with UXR, build, ship, collect data, then back to UXR with new questions. Iterations overlapped; multiple elements were in different stages of the cycle at any time.</p>
+      <p>Once the rubric gave us a shared definition of quality, flagged outputs became the engine for iteration. They showed us where the model was weakest and helped the team focus each prompt, content, or UI change. The rubric evolved as we learned what users actually valued, not just what we assumed mattered.</p>
 
-      <p>The <strong>feedback UI was a cross-org effort</strong>: three teams (KLPs, search, i18n) were independently building feedback patterns. I worked across pillars to define one recognizable component — users see it and know where to give their opinion. Another pattern built for this project, adopted org-wide.</p>
+      <p>The feedback UI became a cross-org effort: keyword landing pages, Search, and i18n were each exploring related feedback patterns. I worked across pillars to define one recognizable component users could understand across contexts. Another pattern built for this project, later adopted more broadly.</p>
 
       <div class="case-img-full diagram-embed diagram-pair" data-diagram="ai-12">
         <iframe
@@ -385,7 +383,7 @@
           src="img/diagrams/diagram-ai12-unified-feedback-v4.html"
           loading="lazy"
           scrolling="no"
-          title="Unified feedback component — one pattern adopted across KLPs, search, and i18n"
+          title="Unified feedback component — one pattern adopted across keyword landing pages, Search, and i18n"
           style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
         ></iframe>
         <iframe
@@ -398,11 +396,11 @@
         ></iframe>
       </div>
 
-      <h3>Failure states</h3>
+      <h3>Designing graceful degradation</h3>
 
-      <p><strong>Below-threshold summaries didn't appear.</strong> Instead, the page surfaced the aggregated source posts — still valuable, still pulling users deeper into the platform.</p>
+      <p>The same quality signals that guided iteration also determined when not to show synthesis at all. When summaries fell below the threshold, source posts became the fallback experience — giving users a useful page without showing a low-confidence answer.</p>
 
-      <p>The design principle: <strong>degradation is not failure.</strong> The fallback — threaded sources — is the reliable baseline; synthesis is the enhancement on top.</p>
+      <p>The principle: degradation is not failure. Source content was the reliable baseline; synthesis was the enhancement when quality cleared the bar.</p>
 
       <div class="case-img-full diagram-embed diagram-pair" data-diagram="ai-10">
         <iframe
@@ -429,14 +427,14 @@
 
       <h2>Results</h2>
 
-      <p>The dual-layer layout kept users on pages they used to bounce from. The evaluation rubric turned vibes-based prompting into a repeatable quality system. The identification framework gave Reddit a scalable precedent for AI content. But the biggest impact was strategic: <strong>the MVP's performance proved synthesis belonged inside search</strong>, not as a standalone SEO product. Sending users from one search-like surface to another was the dead end that clarified the real opportunity.</p>
+      <p>The MVP proved that AI-generated answers could work on Reddit when they were source-backed, clearly identified, and held to a consistent quality bar. The system helped keep users on pages they used to bounce from, turned vibes-based prompting into a repeatable quality process, and gave Reddit a scalable precedent for AI-generated content. But the biggest impact was strategic: it clarified that synthesis belonged inside search, not on a separate search-like surface. That insight helped point the next phase toward Reddit Answers.</p>
 
-      <p>I handed off the framework and foundation to the next designer, and the systems I built — identification library, synthesis patterns, feedback UI, evaluation rubric, governance framework — were <strong>inherited directly</strong> by a new team that shipped them as Reddit Answers.</p>
+      <p>I handed off the foundation for the next phase: the identification library, synthesis patterns, feedback UI, evaluation rubric, and governance model. Those systems became part of the product foundation for the team that later shipped Reddit Answers.</p>
 
       <div class="metrics-callout metrics-callout--single">
         <div class="metric">
           <span class="metric-value">15M</span>
-          <span class="metric-label">Weekly active users (Reddit Answers, year one)</span>
+          <span class="metric-label">Weekly active users<br>Reddit Answers, year one</span>
         </div>
       </div>
 
