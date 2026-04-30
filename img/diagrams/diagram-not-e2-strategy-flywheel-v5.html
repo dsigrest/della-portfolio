@@ -188,8 +188,34 @@
       font-weight: 400;
     }
 
-    /* iframe-width rule: collapse only at ≤480px */
+    /* As viewport narrows, shrink the arrows (and drop the transition labels)
+       so the stage cards keep enough room for their content. */
+    @media (max-width: 720px) {
+      .flywheel-stages { gap: 8px; padding: 24px 12px 20px; }
+      .transition-arrow { min-width: 48px; gap: 4px; }
+      .transition-arrow-symbol { font-size: 32px; }
+      .transition-label { font-size: 11px; }
+    }
+    @media (max-width: 560px) {
+      .flywheel-stages { gap: 4px; padding: 20px 8px; }
+      .transition-arrow { min-width: 28px; }
+      .transition-arrow-symbol { font-size: 24px; }
+      /* Drop the "Signal feeds value" / "Value refines tuning" labels — they
+         disappear gracefully and free up vertical room for the stage content. */
+      .transition-label { display: none; }
+      .stage { padding: 12px 10px; }
+      .stage-title { font-size: 14px; }
+      .stage-num { width: 26px; height: 26px; font-size: 13px; }
+      .stage-item { font-size: 10px; line-height: 14px; }
+    }
     @media (max-width: 480px) {
+      .flywheel-stages { gap: 4px; padding: 16px 4px; }
+      .return-loop { padding: 12px 12px 0; }
+      .loop-label { font-size: 10px; }
+      .transition-arrow { min-width: 18px; }
+      .transition-arrow-symbol { font-size: 18px; }
+    }
+    @media (max-width: 400px) {
       .flywheel-stages {
         flex-direction: column;
         gap: 12px;
@@ -199,8 +225,6 @@
       .stage { width: 100%; }
       .transition-arrow { transform: rotate(90deg); min-width: 0; padding: 4px 0; }
       .transition-label { transform: rotate(-90deg); white-space: nowrap; }
-      .return-loop { padding: 12px 12px 0; }
-      .loop-label { font-size: 10px; }
     }
   </style>
 </head>
@@ -270,15 +294,19 @@
   </div>
 
 <script>if(window!==window.parent)document.body.classList.add('embedded');</script>
-<!-- diagram-height-poster v1 -->
+<!-- diagram-height-poster v2 -->
 <script>
 (function () {
   function compute() {
     var d = document.querySelector('.diagram');
-    if (!d) return 0;
-    return Math.max(d.scrollHeight, d.offsetHeight,
+    if (d) {
+      var rect = d.getBoundingClientRect();
+      if (rect.height > 0) return Math.ceil(rect.height);
+    }
+    return Math.max(
       document.documentElement ? document.documentElement.scrollHeight : 0,
-      document.body ? document.body.scrollHeight : 0);
+      document.body ? document.body.scrollHeight : 0
+    );
   }
   function send() {
     if (!window.parent || window.parent === window) return;
@@ -295,7 +323,16 @@
     if (d) ro.observe(d);
     if (document.body) ro.observe(document.body);
   }
-  window.addEventListener('resize', send);
+  window.addEventListener('resize', function () {
+    requestAnimationFrame(send);
+    setTimeout(send, 50);
+  });
+  // Respond to parent re-measure requests (fires on any iframe-width change)
+  window.addEventListener('message', function (e) {
+    if (e && e.data && e.data.type === 'request-diagram-height') {
+      requestAnimationFrame(send);
+    }
+  });
 })();
 </script>
 </body>

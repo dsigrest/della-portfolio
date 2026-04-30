@@ -348,6 +348,22 @@
       border: 0;
     }
 
+    /* ---------- Small attribution line below a diagram ----------
+       Centered, dim, semibold-label + plain-list pattern. Used when a
+       diagram needs a "partnered with: X · Y · Z" credit beneath it
+       without taking visual weight away from the diagram itself. */
+    .diagram-attribution {
+      font-size: 13px;
+      color: var(--text-tertiary);
+      text-align: center;
+      margin: 12px 0 0;
+      line-height: 1.5;
+    }
+    .diagram-attribution strong {
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
     /* ---------- Vertical spacing system (Small / Medium / Large) ----------
        Three-tier rhythm for case-page layout. Tokens already in :root.
          Small  = 16px (--spacing-md) — within-section paragraph rhythm
@@ -400,10 +416,14 @@
     }
 
     /* Diagram-pair: desktop/mobile iframe swap for L3 responsive fixes
-       (responsive-audit v0.2.1). One rule covers every paired diagram. */
+       (responsive-audit v0.2.1). One rule covers every paired diagram.
+       Lowered breakpoint to 480px in 2026-04-30 polish round — desktop
+       variants now have responsive max-widths internally, so they work
+       fine on narrower viewports. Mobile-variant only kicks in for
+       genuinely small phones. */
     .diagram-pair .mobile-variant  { display: none; }
     .diagram-pair .desktop-variant { display: block; }
-    @media (max-width: 768px) {
+    @media (max-width: 480px) {
       .diagram-pair .desktop-variant { display: none; }
       .diagram-pair .mobile-variant  { display: block; }
     }
@@ -517,6 +537,28 @@
         border-color: var(--accent);
         background: var(--surface-2);
     }
+    /* Disabled state — case study not yet published. Non-clickable, dim. */
+    .case-nav-item.disabled {
+        opacity: 0.4;
+        cursor: default;
+    }
+    .case-nav-item.disabled .case-nav-name {
+        color: var(--text-tertiary);
+    }
+    /* Disabled "Next case study" link variant */
+    .case-next-link.disabled {
+        opacity: 0.4;
+        cursor: default;
+        pointer-events: none;
+    }
+    .case-next-coming {
+        font-size: 11px;
+        font-weight: 500;
+        font-style: italic;
+        letter-spacing: 0.04em;
+        color: var(--text-tertiary);
+        margin-left: 8px;
+    }
     .case-nav-number {
         font-size: 12px;
         font-weight: 600;
@@ -605,13 +647,23 @@
         grid-template-columns: repeat(2, 1fr);
       }
 
+      /* Tighten nav-link spacing on narrow desktop, but keep them visible. */
       .nav-links {
-        display: none;
+        gap: var(--spacing-md);
+      }
+      .nav-links a {
+        font-size: 12px;
       }
 
       .footer-content {
         flex-direction: column;
         gap: var(--spacing-lg);
+      }
+    }
+    /* Only hide nav links on actual mobile viewports */
+    @media (max-width: 480px) {
+      .nav-links {
+        display: none;
       }
     }
 
@@ -1433,10 +1485,16 @@ main {
 }
 @media (max-width: 900px) {
   .results-row {
-    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
   }
   .results-phone-slot {
     min-height: 320px;
+  }
+}
+/* Only stack the GIF + metrics panel on the narrowest phones */
+@media (max-width: 480px) {
+  .results-row {
+    grid-template-columns: 1fr;
   }
 }
 @media (max-width: 480px) {

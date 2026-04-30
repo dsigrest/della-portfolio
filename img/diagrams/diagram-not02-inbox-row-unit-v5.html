@@ -262,19 +262,17 @@
     .comparison-wrap { padding: 8px 16px 20px; }
     .comparison { gap: 12px; }
   }
-  /* 480 and below: collapse to single column — PNG mocks need real width.
-     Stacked Before → After preserves the reading order. iframe-width rule:
-     1-col collapse only at ≤480px (was 600px — violated audit gate). */
+  /* 480 and below: tighten comparison-wrap padding, keep 2-col */
   @media (max-width: 480px) {
-    .comparison { grid-template-columns: 1fr; gap: 24px; }
     .comparison-wrap { padding: 12px 16px 24px; }
+    .comparison { gap: 10px; }
   }
-  /* Narrow phone (≤400px): further tighten padding around the stacked mocks */
+  /* Narrow phone (≤400px): collapse to single column and tighten padding */
   @media (max-width: 400px) {
     body { padding: 10px; }
     .hover-hint-wrap { padding: 12px 10px 0; }
     .comparison-wrap { padding: 10px 10px 18px; }
-    .comparison { gap: 20px; }
+    .comparison { grid-template-columns: 1fr; gap: 24px; }
     .screenshot { padding: 10px 4px; }
   }
 
@@ -446,14 +444,16 @@
 </div>
 
 <script>if(window!==window.parent)document.body.classList.add('embedded');</script>
-<!-- diagram-height-poster v1 -->
+<!-- diagram-height-poster v2 -->
 <script>
 (function () {
   function compute() {
     var d = document.querySelector('.diagram');
-    if (!d) return 0;
+    if (d) {
+      var rect = d.getBoundingClientRect();
+      if (rect.height > 0) return Math.ceil(rect.height);
+    }
     return Math.max(
-      d.scrollHeight, d.offsetHeight,
       document.documentElement ? document.documentElement.scrollHeight : 0,
       document.body ? document.body.scrollHeight : 0
     );
@@ -461,27 +461,28 @@
   function send() {
     if (!window.parent || window.parent === window) return;
     var h = compute();
-    if (h > 0) {
-      window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
-    }
+    if (h > 0) window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
   }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', send);
-  } else {
-    send();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', send);
+  else send();
   window.addEventListener('load', send);
-  // Re-send to catch font swaps, image loads, animations.
-  setTimeout(send, 50);
-  setTimeout(send, 250);
-  setTimeout(send, 1000);
+  setTimeout(send, 50); setTimeout(send, 250); setTimeout(send, 1000);
   if (window.ResizeObserver) {
     var ro = new ResizeObserver(send);
     var d = document.querySelector('.diagram');
     if (d) ro.observe(d);
     if (document.body) ro.observe(document.body);
   }
-  window.addEventListener('resize', send);
+  window.addEventListener('resize', function () {
+    requestAnimationFrame(send);
+    setTimeout(send, 50);
+  });
+  // Respond to parent re-measure requests (fires on any iframe-width change)
+  window.addEventListener('message', function (e) {
+    if (e && e.data && e.data.type === 'request-diagram-height') {
+      requestAnimationFrame(send);
+    }
+  });
 })();
 </script>
 </body>

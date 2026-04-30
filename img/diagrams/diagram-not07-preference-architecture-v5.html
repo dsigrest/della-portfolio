@@ -105,7 +105,7 @@
     .pref-columns { grid-template-columns: 1fr 40px 1fr; }
     .transform-arrow { padding-top: 24px; }
   }
-  @media (max-width: 480px) {
+  @media (max-width: 400px) {
     .pref-columns { grid-template-columns: 1fr; gap: 16px; }
     .transform-arrow { padding-top: 4px; flex-direction: row; }
     .transform-arrow .arrow-line { display: none; }
@@ -151,14 +151,16 @@
 
 </div>
 <script>if(window!==window.parent)document.body.classList.add('embedded');</script>
-<!-- diagram-height-poster v1 -->
+<!-- diagram-height-poster v2 -->
 <script>
 (function () {
   function compute() {
     var d = document.querySelector('.diagram');
-    if (!d) return 0;
+    if (d) {
+      var rect = d.getBoundingClientRect();
+      if (rect.height > 0) return Math.ceil(rect.height);
+    }
     return Math.max(
-      d.scrollHeight, d.offsetHeight,
       document.documentElement ? document.documentElement.scrollHeight : 0,
       document.body ? document.body.scrollHeight : 0
     );
@@ -166,27 +168,28 @@
   function send() {
     if (!window.parent || window.parent === window) return;
     var h = compute();
-    if (h > 0) {
-      window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
-    }
+    if (h > 0) window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
   }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', send);
-  } else {
-    send();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', send);
+  else send();
   window.addEventListener('load', send);
-  // Re-send to catch font swaps, image loads, animations.
-  setTimeout(send, 50);
-  setTimeout(send, 250);
-  setTimeout(send, 1000);
+  setTimeout(send, 50); setTimeout(send, 250); setTimeout(send, 1000);
   if (window.ResizeObserver) {
     var ro = new ResizeObserver(send);
     var d = document.querySelector('.diagram');
     if (d) ro.observe(d);
     if (document.body) ro.observe(document.body);
   }
-  window.addEventListener('resize', send);
+  window.addEventListener('resize', function () {
+    requestAnimationFrame(send);
+    setTimeout(send, 50);
+  });
+  // Respond to parent re-measure requests (fires on any iframe-width change)
+  window.addEventListener('message', function (e) {
+    if (e && e.data && e.data.type === 'request-diagram-height') {
+      requestAnimationFrame(send);
+    }
+  });
 })();
 </script>
 </body>

@@ -35,7 +35,7 @@
     width: 760px;
     background: var(--canvas);
     border-radius: 16px;
-    padding: 40px 40px 32px;
+    padding: 24px 40px 28px;
     position: relative;
   }
 
@@ -78,7 +78,7 @@
   /* Phone bezel — wraps the embedded UI screenshot PNG */
   .phone {
     width: 100%;
-    max-width: 220px;
+    max-width: 180px;
     background: var(--phone-bg);
     border-radius: 28px;
     overflow: hidden;
@@ -488,10 +488,21 @@
     border-radius: 0;
   }
 
-  /* Narrow viewport: stack columns */
+  /* Tighten margins + gap as viewport narrows so two phones stay side-by-side */
   @media (max-width: 720px) {
-    .diagram { padding: 24px 20px 24px; }
-    .columns { grid-template-columns: 1fr; gap: 32px; }
+    .diagram { padding: 24px 16px; }
+    .columns { gap: 16px; }
+    .phone { max-width: 160px; }
+  }
+  @media (max-width: 480px) {
+    .diagram { padding: 20px 8px; }
+    .columns { gap: 8px; }
+    .phone { max-width: 140px; }
+  }
+  /* Only stack on the narrowest phones */
+  @media (max-width: 400px) {
+    .columns { grid-template-columns: 1fr; gap: 24px; }
+    .phone { max-width: 220px; }
   }
 </style>
 </head>
@@ -504,7 +515,7 @@
         <span class="pill below">Search Results Before</span>
 
         <div class="phone">
-          <img class="ui-screenshot" src="../ui-overview-below.png" alt="Google search results page for 'best sunscreen 2024' showing three reddit.com result cards — multiple links compete to rank, user bounces in search of answer" />
+          <img class="ui-screenshot" src="../ui-overview-below.png" alt="Google search results page for 'best sunscreen 2024' showing three reddit.com result cards — multiple links competed for attention, users bounced before finding an answer" />
         </div>
 
         <div class="annotations">
@@ -515,7 +526,7 @@
                 <line x1="12" y1="4" x2="4" y2="12"/>
               </svg>
             </span>
-            Multiple links compete to rank
+            Multiple links competed for attention
           </div>
           <div class="annotation below">
             <span class="ann-icon" aria-hidden="true">
@@ -524,7 +535,7 @@
                 <line x1="12" y1="4" x2="4" y2="12"/>
               </svg>
             </span>
-            User bounces in search of answer
+            Users bounced before finding an answer
           </div>
         </div>
       </div>
@@ -534,7 +545,7 @@
         <span class="pill above">Search Results After</span>
 
         <div class="phone">
-          <img class="ui-screenshot" src="../ui-overview-above.png" alt="Google search results page for 'best sunscreen 2024' showing Reddit Answers AI-synthesis card above fold with cited source posts and a Consumer Reports linked reference — single link consolidates information" />
+          <img class="ui-screenshot" src="../ui-overview-above.png" alt="Google search results page for 'best sunscreen 2024' showing Reddit Answers AI-synthesis card above fold with cited source posts and a Consumer Reports linked reference — one entry point consolidated relevant discussion" />
         </div>
 
         <div class="annotations">
@@ -544,7 +555,7 @@
                 <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
               </svg>
             </span>
-            Single link consolidates information
+            One entry point consolidated relevant discussion
           </div>
           <div class="annotation above">
             <span class="ann-icon" aria-hidden="true">
@@ -552,7 +563,7 @@
                 <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
               </svg>
             </span>
-            User discovers answer on platform
+            Users could verify the answer on Reddit
           </div>
         </div>
       </div>
@@ -561,13 +572,16 @@
   </div>
 
 <script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+<!-- diagram-height-poster v2 -->
 <script>
 (function () {
   function compute() {
     var d = document.querySelector('.diagram');
-    if (!d) return 0;
+    if (d) {
+      var rect = d.getBoundingClientRect();
+      if (rect.height > 0) return Math.ceil(rect.height);
+    }
     return Math.max(
-      d.scrollHeight, d.offsetHeight,
       document.documentElement ? document.documentElement.scrollHeight : 0,
       document.body ? document.body.scrollHeight : 0
     );
@@ -575,26 +589,28 @@
   function send() {
     if (!window.parent || window.parent === window) return;
     var h = compute();
-    if (h > 0) {
-      window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
-    }
+    if (h > 0) window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
   }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', send);
-  } else {
-    send();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', send);
+  else send();
   window.addEventListener('load', send);
-  setTimeout(send, 50);
-  setTimeout(send, 250);
-  setTimeout(send, 1000);
+  setTimeout(send, 50); setTimeout(send, 250); setTimeout(send, 1000);
   if (window.ResizeObserver) {
     var ro = new ResizeObserver(send);
     var d = document.querySelector('.diagram');
     if (d) ro.observe(d);
     if (document.body) ro.observe(document.body);
   }
-  window.addEventListener('resize', send);
+  window.addEventListener('resize', function () {
+    requestAnimationFrame(send);
+    setTimeout(send, 50);
+  });
+  // Respond to parent re-measure requests (fires on any iframe-width change)
+  window.addEventListener('message', function (e) {
+    if (e && e.data && e.data.type === 'request-diagram-height') {
+      requestAnimationFrame(send);
+    }
+  });
 })();
 </script>
 </body>

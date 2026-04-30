@@ -58,10 +58,10 @@
   .hub-card {
     width: 295px;
     max-width: 100%;
-    background: rgba(224,223,228,0.03);
-    border: 1px solid rgba(127,181,176,0.18);
-    border-radius: 12px;
-    padding: 20px 24px;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -78,7 +78,7 @@
   .hub-title {
     font-size: 16px;
     font-weight: 700;
-    color: var(--text-primary);
+    color: var(--cool-teal);
     letter-spacing: -0.16px;
     line-height: normal;
     text-align: center;
@@ -191,8 +191,7 @@
     <div class="hub-area">
       <div class="hub-card-wrap">
         <div class="hub-card">
-          <div class="hub-eyebrow">Shared Component</div>
-          <div class="hub-title">Unified Feedback Pattern</div>
+          <div class="hub-title">Unified feedback pattern</div>
           <div class="feedback-shot">
             <img class="ui-screenshot" src="../ui-reddit-answers-mobile.png" alt="Feedback widget — 'Is this summary helpful?' with thumbs up / thumbs down options" />
           </div>
@@ -232,7 +231,7 @@
             <line x1="14" y1="22" x2="22" y2="22" stroke="rgba(127,181,176,0.3)" stroke-width="1.2" stroke-linecap="round"/>
           </svg>
         </div>
-        <div class="spoke-name">KLPs Team</div>
+        <div class="spoke-name">Keyword Landing Pages</div>
         <div class="spoke-desc">AI-generated content pages</div>
       </div>
 
@@ -243,7 +242,7 @@
             <line x1="22.5" y1="22.5" x2="28" y2="28" stroke="rgba(138,158,196,0.55)" stroke-width="1.4" stroke-linecap="round"/>
           </svg>
         </div>
-        <div class="spoke-name">Search Team</div>
+        <div class="spoke-name">Search</div>
         <div class="spoke-desc">Search result quality signals</div>
       </div>
 
@@ -255,7 +254,7 @@
             <line x1="12" y1="20" x2="28" y2="20" stroke="rgba(212,165,116,0.3)" stroke-width="1"/>
           </svg>
         </div>
-        <div class="spoke-name">i18n Team</div>
+        <div class="spoke-name">i18n</div>
         <div class="spoke-desc">Localized content quality</div>
       </div>
     </div>
@@ -263,13 +262,16 @@
   </div>
 
 <script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+<!-- diagram-height-poster v2 -->
 <script>
 (function () {
   function compute() {
     var d = document.querySelector('.diagram');
-    if (!d) return 0;
+    if (d) {
+      var rect = d.getBoundingClientRect();
+      if (rect.height > 0) return Math.ceil(rect.height);
+    }
     return Math.max(
-      d.scrollHeight, d.offsetHeight,
       document.documentElement ? document.documentElement.scrollHeight : 0,
       document.body ? document.body.scrollHeight : 0
     );
@@ -277,26 +279,28 @@
   function send() {
     if (!window.parent || window.parent === window) return;
     var h = compute();
-    if (h > 0) {
-      window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
-    }
+    if (h > 0) window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
   }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', send);
-  } else {
-    send();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', send);
+  else send();
   window.addEventListener('load', send);
-  setTimeout(send, 50);
-  setTimeout(send, 250);
-  setTimeout(send, 1000);
+  setTimeout(send, 50); setTimeout(send, 250); setTimeout(send, 1000);
   if (window.ResizeObserver) {
     var ro = new ResizeObserver(send);
     var d = document.querySelector('.diagram');
     if (d) ro.observe(d);
     if (document.body) ro.observe(document.body);
   }
-  window.addEventListener('resize', send);
+  window.addEventListener('resize', function () {
+    requestAnimationFrame(send);
+    setTimeout(send, 50);
+  });
+  // Respond to parent re-measure requests (fires on any iframe-width change)
+  window.addEventListener('message', function (e) {
+    if (e && e.data && e.data.type === 'request-diagram-height') {
+      requestAnimationFrame(send);
+    }
+  });
 })();
 </script>
 </body>

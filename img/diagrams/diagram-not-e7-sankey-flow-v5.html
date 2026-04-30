@@ -46,8 +46,8 @@
     padding: 0 48px;
     position: relative;
     height: 420px;
-    opacity: 0;
-    animation: mount 0.5s var(--spring) forwards;
+    opacity: 1;
+    animation: mount 0.5s var(--spring);
   }
   .sankey-area::before {
     content: ''; position: absolute; inset: 0;
@@ -86,8 +86,8 @@
     display: flex;
     gap: 20px;
     align-items: center;
-    opacity: 0;
-    animation: mount 0.5s var(--spring) 0.15s forwards;
+    opacity: 1;
+    animation: mount 0.5s var(--spring) 0.15s;
   }
   .legend-item {
     display: flex;
@@ -104,6 +104,19 @@
   .legend-dot.new { background: var(--red); }
 
   @keyframes mount { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* Subtle disclaimer below the diagram — small, secondary, non-defensive. */
+  .diagram-caption {
+    padding: 12px 48px 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--text-ter);
+    font-style: italic;
+  }
+  @media (max-width: 480px) {
+    .diagram-caption { padding: 10px 16px 0; font-size: 10px; }
+  }
 
   /* iframe-width rule: collapse only at ≤480px */
   @media (max-width: 480px) {
@@ -141,13 +154,13 @@
         </linearGradient>
       </defs>
 
-      <!-- Column headers — labels per Figma 1214:16053 -->
-      <text class="col-metric" font-size="16" x="27" y="24">~7.5m</text>
-      <text class="col-sub" x="27" y="38">inbox visitors</text>
-      <text class="col-metric" font-size="16" x="332" y="24">~47%</text>
-      <text class="col-sub" x="332" y="38">of visitors click</text>
-      <text class="col-metric" font-size="16" x="637" y="24">~75%</text>
-      <text class="col-sub" x="637" y="38">of clickers contributed</text>
+      <!-- Column headers — generalized for public-portfolio NDA safety. -->
+      <text class="col-metric" font-size="14" x="27" y="24" text-anchor="start">Millions</text>
+      <text class="col-sub" x="27" y="38" text-anchor="start">inbox visitors</text>
+      <text class="col-metric" font-size="14" x="332" y="24">Nearly half</text>
+      <text class="col-sub" x="332" y="38">clicked into inbox content</text>
+      <text class="col-metric" font-size="14" x="637" y="24" text-anchor="end">Most clickers</text>
+      <text class="col-sub" x="637" y="38" text-anchor="end">contributed afterward</text>
 
       <!-- Stage 1 → Stage 2 main flows — each col1 bar splits cleanly into a top "active"
            slice (here) and a bottom "dropout" slice (below). No source overlap. -->
@@ -189,19 +202,19 @@
       <rect class="node-bar" fill="#7FB5B0" height="145" width="14" x="325" y="50"/>
       <rect class="node-bar" fill="#C4B078" height="10" width="14" x="325" y="197"/>
       <rect class="node-bar" fill="#C47878" height="11" width="14" x="325" y="209"/>
-      <!-- Col 2 dropout bar (53% visitors don't click) -->
+      <!-- Col 2 dropout bar (over half didn't click) -->
       <rect class="node-bar" fill="rgba(224,223,228,0.08)" height="158" rx="3" width="14" x="325" y="256"/>
-      <text class="dropout-label" x="347" y="340">53%</text>
-      <text class="dropout-label" font-size="8" x="346.5" y="353">visitors don&rsquo;t click</text>
+      <text class="dropout-label" x="347" y="340">Over half</text>
+      <text class="dropout-label" font-size="8" x="346.5" y="353">did not click</text>
 
       <!-- Column 3 (Contributors) node bars -->
       <rect class="node-bar" fill="#7FB5B0" height="108" width="14" x="632" y="51"/>
       <rect class="node-bar" fill="#C4B078" height="8" width="14" x="632" y="162"/>
       <rect class="node-bar" fill="#C47878" height="10" width="14" x="632" y="172"/>
-      <!-- Col 3 dropout bar (25% didn't contribute) -->
+      <!-- Col 3 dropout bar (some clickers did not contribute) -->
       <rect class="node-bar" fill="rgba(224,223,228,0.08)" height="56" rx="3" width="14" x="580" y="287"/>
-      <text class="dropout-label" x="602" y="309">25%</text>
-      <text class="dropout-label" font-size="8" x="602" y="322">didn&rsquo;t</text>
+      <text class="dropout-label" font-size="9" x="602" y="309">Some clickers</text>
+      <text class="dropout-label" font-size="8" x="602" y="322">did not</text>
       <text class="dropout-label" font-size="8" x="602" y="333">contribute</text>
     </svg>
   </div>
@@ -212,17 +225,23 @@
     <div class="legend-item"><div class="legend-dot new"></div>New users</div>
   </div>
 
+  <p class="diagram-caption">Representative model based on anonymized behavioral patterns. Exact values, audience definitions, and internal methodology have been generalized.</p>
+
 </div>
 
-<!-- diagram-height-poster v1 -->
+<!-- diagram-height-poster v2 -->
 <script>
 (function () {
   function compute() {
     var d = document.querySelector('.diagram');
-    if (!d) return 0;
-    return Math.max(d.scrollHeight, d.offsetHeight,
+    if (d) {
+      var rect = d.getBoundingClientRect();
+      if (rect.height > 0) return Math.ceil(rect.height);
+    }
+    return Math.max(
       document.documentElement ? document.documentElement.scrollHeight : 0,
-      document.body ? document.body.scrollHeight : 0);
+      document.body ? document.body.scrollHeight : 0
+    );
   }
   function send() {
     if (!window.parent || window.parent === window) return;
@@ -239,7 +258,16 @@
     if (d) ro.observe(d);
     if (document.body) ro.observe(document.body);
   }
-  window.addEventListener('resize', send);
+  window.addEventListener('resize', function () {
+    requestAnimationFrame(send);
+    setTimeout(send, 50);
+  });
+  // Respond to parent re-measure requests (fires on any iframe-width change)
+  window.addEventListener('message', function (e) {
+    if (e && e.data && e.data.type === 'request-diagram-height') {
+      requestAnimationFrame(send);
+    }
+  });
 })();
 </script>
 </body>

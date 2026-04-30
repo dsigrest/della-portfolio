@@ -130,6 +130,7 @@
     display: flex;
     align-items: flex-start;
     gap: 10px;
+    flex: 1;
   }
 
   /* Center column gets elevated treatment */
@@ -241,6 +242,10 @@
   @media (max-width: 680px) {
     .title-area, .framework-area, .insight, .outcome { padding-left: 24px; padding-right: 24px; }
     body { padding: 16px; }
+    .columns { gap: 12px; }
+  }
+  /* Only stack on the narrowest phones */
+  @media (max-width: 400px) {
     .columns { grid-template-columns: 1fr; }
   }
   .impact-anchor { font-size: 11px; font-weight: 600; color: var(--accent); letter-spacing: 0.04em; margin-top: 12px; opacity: 0.85; }
@@ -434,13 +439,16 @@
   </div>
 </body>
 <script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+<!-- diagram-height-poster v2 -->
 <script>
 (function () {
   function compute() {
     var d = document.querySelector('.diagram');
-    if (!d) return 0;
+    if (d) {
+      var rect = d.getBoundingClientRect();
+      if (rect.height > 0) return Math.ceil(rect.height);
+    }
     return Math.max(
-      d.scrollHeight, d.offsetHeight,
       document.documentElement ? document.documentElement.scrollHeight : 0,
       document.body ? document.body.scrollHeight : 0
     );
@@ -448,26 +456,28 @@
   function send() {
     if (!window.parent || window.parent === window) return;
     var h = compute();
-    if (h > 0) {
-      window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
-    }
+    if (h > 0) window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
   }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', send);
-  } else {
-    send();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', send);
+  else send();
   window.addEventListener('load', send);
-  setTimeout(send, 50);
-  setTimeout(send, 250);
-  setTimeout(send, 1000);
+  setTimeout(send, 50); setTimeout(send, 250); setTimeout(send, 1000);
   if (window.ResizeObserver) {
     var ro = new ResizeObserver(send);
     var d = document.querySelector('.diagram');
     if (d) ro.observe(d);
     if (document.body) ro.observe(document.body);
   }
-  window.addEventListener('resize', send);
+  window.addEventListener('resize', function () {
+    requestAnimationFrame(send);
+    setTimeout(send, 50);
+  });
+  // Respond to parent re-measure requests (fires on any iframe-width change)
+  window.addEventListener('message', function (e) {
+    if (e && e.data && e.data.type === 'request-diagram-height') {
+      requestAnimationFrame(send);
+    }
+  });
 })();
 </script>
 </html>

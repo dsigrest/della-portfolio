@@ -166,11 +166,24 @@
     .comparison { gap: 16px; }
     .col-body { gap: 12px; }
   }
-  /* iframe-width rule: columns stack only at ≤480px */
+  @media (max-width: 600px) {
+    .comparison-wrap { padding: 0 8px; }
+    .comparison { gap: 8px; }
+    .col-body { gap: 6px; }
+    /* Hide bullet sub-text so phones get more room. Keep titles + icons. */
+    .ann-desc { display: none; }
+    .annotation { padding: 6px 8px; }
+    .ann-title { font-size: 11px; }
+  }
   @media (max-width: 480px) {
+    .comparison-wrap { padding: 0 4px; }
+    .comparison { gap: 4px; }
+    .annotations { display: none; }
+    .mock { max-width: 100%; }
+  }
+  /* Columns stack only on the narrowest phones */
+  @media (max-width: 400px) {
     .comparison { grid-template-columns: 1fr; gap: 28px; }
-    .comparison-wrap { padding: 0 16px; }
-    /* Inside each column at mobile: phone above annotations */
     .col-body {
       flex-direction: column;
       align-items: stretch;
@@ -310,14 +323,16 @@
 
 </div>
 
-<!-- diagram-height-poster v1 -->
+<!-- diagram-height-poster v2 -->
 <script>
 (function () {
   function compute() {
     var d = document.querySelector('.diagram');
-    if (!d) return 0;
+    if (d) {
+      var rect = d.getBoundingClientRect();
+      if (rect.height > 0) return Math.ceil(rect.height);
+    }
     return Math.max(
-      d.scrollHeight, d.offsetHeight,
       document.documentElement ? document.documentElement.scrollHeight : 0,
       document.body ? document.body.scrollHeight : 0
     );
@@ -325,27 +340,28 @@
   function send() {
     if (!window.parent || window.parent === window) return;
     var h = compute();
-    if (h > 0) {
-      window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
-    }
+    if (h > 0) window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
   }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', send);
-  } else {
-    send();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', send);
+  else send();
   window.addEventListener('load', send);
-  // Re-send to catch font swaps, image loads, animations.
-  setTimeout(send, 50);
-  setTimeout(send, 250);
-  setTimeout(send, 1000);
+  setTimeout(send, 50); setTimeout(send, 250); setTimeout(send, 1000);
   if (window.ResizeObserver) {
     var ro = new ResizeObserver(send);
     var d = document.querySelector('.diagram');
     if (d) ro.observe(d);
     if (document.body) ro.observe(document.body);
   }
-  window.addEventListener('resize', send);
+  window.addEventListener('resize', function () {
+    requestAnimationFrame(send);
+    setTimeout(send, 50);
+  });
+  // Respond to parent re-measure requests (fires on any iframe-width change)
+  window.addEventListener('message', function (e) {
+    if (e && e.data && e.data.type === 'request-diagram-height') {
+      requestAnimationFrame(send);
+    }
+  });
 })();
 </script>
 </body>

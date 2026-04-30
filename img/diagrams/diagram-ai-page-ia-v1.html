@@ -294,7 +294,7 @@
           <div class="ann-marker teal"></div>
           <div class="ann-content">
             <div class="ann-title">Search bar with query</div>
-            <div class="ann-desc">Helps contextualize the page and reinforce searching on platform as a behavior</div>
+            <div class="ann-desc">Contextualizes the page and reinforces Reddit as the place to continue searching</div>
           </div>
         </div>
 
@@ -302,23 +302,23 @@
           <div class="ann-marker warm"></div>
           <div class="ann-content">
             <div class="ann-title">Synthesized summary</div>
-            <div class="ann-desc">The user&rsquo;s answer in one place, generated from posts most relevant to the query</div>
+            <div class="ann-desc">Gives users one answer generated from the discussions most relevant to their query</div>
           </div>
         </div>
 
         <div class="annotation">
           <div class="ann-marker warm"></div>
           <div class="ann-content">
-            <div class="ann-title">Source Posts</div>
-            <div class="ann-desc">Original post with title, body preview, and vote count &mdash; the primary source for the synthesis above</div>
+            <div class="ann-title">Source posts</div>
+            <div class="ann-desc">Original posts with title, preview text, and vote count &mdash; the evidence behind the synthesis</div>
           </div>
         </div>
 
         <div class="annotation">
           <div class="ann-marker blue"></div>
           <div class="ann-content">
-            <div class="ann-title">Threaded Comments</div>
-            <div class="ann-desc">Two comments per post &mdash; enough to show conversation context without overwhelming the card</div>
+            <div class="ann-title">Threaded comments</div>
+            <div class="ann-desc">Two comments per post &mdash; enough to show conversation context without overwhelming the unit</div>
           </div>
         </div>
       </div>
@@ -326,13 +326,16 @@
   </div>
 </body>
 <script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+<!-- diagram-height-poster v2 -->
 <script>
 (function () {
   function compute() {
     var d = document.querySelector('.diagram');
-    if (!d) return 0;
+    if (d) {
+      var rect = d.getBoundingClientRect();
+      if (rect.height > 0) return Math.ceil(rect.height);
+    }
     return Math.max(
-      d.scrollHeight, d.offsetHeight,
       document.documentElement ? document.documentElement.scrollHeight : 0,
       document.body ? document.body.scrollHeight : 0
     );
@@ -340,26 +343,28 @@
   function send() {
     if (!window.parent || window.parent === window) return;
     var h = compute();
-    if (h > 0) {
-      window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
-    }
+    if (h > 0) window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
   }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', send);
-  } else {
-    send();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', send);
+  else send();
   window.addEventListener('load', send);
-  setTimeout(send, 50);
-  setTimeout(send, 250);
-  setTimeout(send, 1000);
+  setTimeout(send, 50); setTimeout(send, 250); setTimeout(send, 1000);
   if (window.ResizeObserver) {
     var ro = new ResizeObserver(send);
     var d = document.querySelector('.diagram');
     if (d) ro.observe(d);
     if (document.body) ro.observe(document.body);
   }
-  window.addEventListener('resize', send);
+  window.addEventListener('resize', function () {
+    requestAnimationFrame(send);
+    setTimeout(send, 50);
+  });
+  // Respond to parent re-measure requests (fires on any iframe-width change)
+  window.addEventListener('message', function (e) {
+    if (e && e.data && e.data.type === 'request-diagram-height') {
+      requestAnimationFrame(send);
+    }
+  });
 })();
 </script>
 </html>

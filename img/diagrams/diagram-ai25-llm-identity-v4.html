@@ -135,7 +135,10 @@
 
   .id-text {
     flex: 1;
+    min-width: 0;
   }
+  .identity-card { min-width: 0; }
+  .identities-grid > * { min-width: 0; }
 
   .identity-name {
     font-size: 14px;
@@ -225,6 +228,10 @@
   @media (max-width: 680px) {
     .title-area, .grid-area, .callout, .outcome { padding-left: 24px; padding-right: 24px; }
     body { padding: 16px; }
+    .identities-grid { gap: 12px; }
+  }
+  /* Only stack on the narrowest phones */
+  @media (max-width: 400px) {
     .identities-grid { grid-template-columns: 1fr; }
   }
   /* Embed mode: strip body chrome when loaded in iframe */
@@ -260,7 +267,7 @@
           <div class="id-text">
             <p class="identity-name">Character</p>
             <p class="identity-desc">Snoo/Clippy-style personality</p>
-            <p class="identity-detail">Risk of novelty wearing off, scaling issues across surfaces</p>
+            <p class="identity-detail">Risk of novelty wearing off and not scaling across surfaces</p>
           </div>
         </div>
 
@@ -277,7 +284,7 @@
           <div class="id-text">
             <p class="identity-name">Tool</p>
             <p class="identity-desc">Utility without identity</p>
-            <p class="identity-detail">Too cold — stripped the product of warmth and community feel</p>
+            <p class="identity-detail">Too cold — stripped the experience of warmth and community feel</p>
           </div>
         </div>
 
@@ -292,9 +299,9 @@
             </svg>
           </div>
           <div class="id-text">
-            <p class="identity-name">Omnipresent Narrator <span class="winner-badge">Winner</span></p>
+            <p class="identity-name">Omnipresent narrator <span class="winner-badge">Winner</span></p>
             <p class="identity-desc">Part of the product itself</p>
-            <p class="identity-detail">Preserves scalability — the synthesis isn't a separate product, it's Reddit</p>
+            <p class="identity-detail">Preserved scalability — the synthesis felt like Reddit, not a separate assistant</p>
           </div>
         </div>
 
@@ -307,9 +314,9 @@
             </svg>
           </div>
           <div class="id-text">
-            <p class="identity-name">No Identity</p>
+            <p class="identity-name">No identity</p>
             <p class="identity-desc">Anonymous, invisible</p>
-            <p class="identity-detail">Users couldn't distinguish AI content from user content — trust failure</p>
+            <p class="identity-detail">Users couldn&rsquo;t distinguish generated content from user content — trust failure</p>
           </div>
         </div>
       </div>
@@ -318,13 +325,16 @@
   </div>
 </body>
 <script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+<!-- diagram-height-poster v2 -->
 <script>
 (function () {
   function compute() {
     var d = document.querySelector('.diagram');
-    if (!d) return 0;
+    if (d) {
+      var rect = d.getBoundingClientRect();
+      if (rect.height > 0) return Math.ceil(rect.height);
+    }
     return Math.max(
-      d.scrollHeight, d.offsetHeight,
       document.documentElement ? document.documentElement.scrollHeight : 0,
       document.body ? document.body.scrollHeight : 0
     );
@@ -332,26 +342,28 @@
   function send() {
     if (!window.parent || window.parent === window) return;
     var h = compute();
-    if (h > 0) {
-      window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
-    }
+    if (h > 0) window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
   }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', send);
-  } else {
-    send();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', send);
+  else send();
   window.addEventListener('load', send);
-  setTimeout(send, 50);
-  setTimeout(send, 250);
-  setTimeout(send, 1000);
+  setTimeout(send, 50); setTimeout(send, 250); setTimeout(send, 1000);
   if (window.ResizeObserver) {
     var ro = new ResizeObserver(send);
     var d = document.querySelector('.diagram');
     if (d) ro.observe(d);
     if (document.body) ro.observe(document.body);
   }
-  window.addEventListener('resize', send);
+  window.addEventListener('resize', function () {
+    requestAnimationFrame(send);
+    setTimeout(send, 50);
+  });
+  // Respond to parent re-measure requests (fires on any iframe-width change)
+  window.addEventListener('message', function (e) {
+    if (e && e.data && e.data.type === 'request-diagram-height') {
+      requestAnimationFrame(send);
+    }
+  });
 })();
 </script>
 </html>

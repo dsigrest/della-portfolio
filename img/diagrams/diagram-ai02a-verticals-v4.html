@@ -195,13 +195,17 @@
   @media (max-width: 680px) {
     .verticals-area { padding-left: 24px; padding-right: 24px; }
     body { padding: 16px; }
-    .verticals-grid { grid-template-columns: 1fr; gap: 32px; }
+    .verticals-grid { gap: 24px; }
     .verticals-area::before {
       background:
         radial-gradient(ellipse 200px 200px at 50% 12%, rgba(212,165,116,0.05) 0%, transparent 70%),
         radial-gradient(ellipse 200px 200px at 50% 50%, rgba(127,181,176,0.06) 0%, transparent 70%),
         radial-gradient(ellipse 200px 200px at 50% 88%, rgba(138,158,196,0.06) 0%, transparent 70%);
     }
+  }
+  /* Only stack on the narrowest phones */
+  @media (max-width: 400px) {
+    .verticals-grid { grid-template-columns: 1fr; gap: 24px; }
   }
   /* Embed mode: strip body chrome when loaded in iframe */
   body.embedded {
@@ -232,7 +236,7 @@
             </div>
           </div>
           <div class="vertical-name">Data audit</div>
-          <div class="vertical-reason">Understanding usage patterns guided experiment plan and requirements</div>
+          <div class="vertical-reason">Understand usage patterns, coverage, and experiment requirements</div>
         </div>
 
         <!-- Step 2: Vertical selection -->
@@ -244,7 +248,7 @@
             </div>
           </div>
           <div class="vertical-name">Vertical selection</div>
-          <div class="vertical-reason">Targeting high traffic verticals efficiently maximized coverage</div>
+          <div class="vertical-reason">Target high-traffic verticals with strong Reddit coverage</div>
         </div>
 
         <!-- Step 3: Page generation -->
@@ -258,20 +262,23 @@
             </svg>
           </div>
           <div class="vertical-name">Page generation</div>
-          <div class="vertical-reason">Periodic regeneration keeps content current without real-time overhead</div>
+          <div class="vertical-reason">Refresh pages periodically without real-time generation overhead</div>
         </div>
       </div>
     </div>
   </div>
 </body>
 <script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+<!-- diagram-height-poster v2 -->
 <script>
 (function () {
   function compute() {
     var d = document.querySelector('.diagram');
-    if (!d) return 0;
+    if (d) {
+      var rect = d.getBoundingClientRect();
+      if (rect.height > 0) return Math.ceil(rect.height);
+    }
     return Math.max(
-      d.scrollHeight, d.offsetHeight,
       document.documentElement ? document.documentElement.scrollHeight : 0,
       document.body ? document.body.scrollHeight : 0
     );
@@ -279,26 +286,28 @@
   function send() {
     if (!window.parent || window.parent === window) return;
     var h = compute();
-    if (h > 0) {
-      window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
-    }
+    if (h > 0) window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
   }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', send);
-  } else {
-    send();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', send);
+  else send();
   window.addEventListener('load', send);
-  setTimeout(send, 50);
-  setTimeout(send, 250);
-  setTimeout(send, 1000);
+  setTimeout(send, 50); setTimeout(send, 250); setTimeout(send, 1000);
   if (window.ResizeObserver) {
     var ro = new ResizeObserver(send);
     var d = document.querySelector('.diagram');
     if (d) ro.observe(d);
     if (document.body) ro.observe(document.body);
   }
-  window.addEventListener('resize', send);
+  window.addEventListener('resize', function () {
+    requestAnimationFrame(send);
+    setTimeout(send, 50);
+  });
+  // Respond to parent re-measure requests (fires on any iframe-width change)
+  window.addEventListener('message', function (e) {
+    if (e && e.data && e.data.type === 'request-diagram-height') {
+      requestAnimationFrame(send);
+    }
+  });
 })();
 </script>
 </html>

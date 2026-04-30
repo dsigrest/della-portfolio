@@ -124,10 +124,11 @@
 
     /* iframe-width rule: collapse only at ≤480px */
     @media (max-width: 480px) {
-      .comparison { grid-template-columns: 1fr; gap: 24px; }
+      .comparison { gap: 10px; }
       .diagram { padding: 12px 16px; }
     }
     @media (max-width: 400px) {
+      .comparison { grid-template-columns: 1fr; gap: 24px; }
       .diagram { padding: 8px 12px; }
       .col-label { font-size: 9px; }
       .spacer { height: 10px; }
@@ -167,15 +168,19 @@
   </div>
 
 <script>if(window!==window.parent)document.body.classList.add('embedded');</script>
-<!-- diagram-height-poster v1 -->
+<!-- diagram-height-poster v2 -->
 <script>
 (function () {
   function compute() {
     var d = document.querySelector('.diagram');
-    if (!d) return 0;
-    return Math.max(d.scrollHeight, d.offsetHeight,
+    if (d) {
+      var rect = d.getBoundingClientRect();
+      if (rect.height > 0) return Math.ceil(rect.height);
+    }
+    return Math.max(
       document.documentElement ? document.documentElement.scrollHeight : 0,
-      document.body ? document.body.scrollHeight : 0);
+      document.body ? document.body.scrollHeight : 0
+    );
   }
   function send() {
     if (!window.parent || window.parent === window) return;
@@ -192,7 +197,16 @@
     if (d) ro.observe(d);
     if (document.body) ro.observe(document.body);
   }
-  window.addEventListener('resize', send);
+  window.addEventListener('resize', function () {
+    requestAnimationFrame(send);
+    setTimeout(send, 50);
+  });
+  // Respond to parent re-measure requests (fires on any iframe-width change)
+  window.addEventListener('message', function (e) {
+    if (e && e.data && e.data.type === 'request-diagram-height') {
+      requestAnimationFrame(send);
+    }
+  });
 })();
 </script>
 </body>

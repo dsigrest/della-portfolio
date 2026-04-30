@@ -84,10 +84,10 @@
     z-index: 1;
   }
 
-  /* Viable explorations — 2×2 or flexible grid */
+  /* Viable explorations — flexible grid */
   .viable-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 12px;
     margin-bottom: 24px;
     position: relative;
@@ -133,7 +133,7 @@
 
   .rejected-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 12px;
   }
 
@@ -295,12 +295,19 @@
     color: var(--text-sec); line-height: 1.5;
   }
 
+  /* Tighten internal padding earlier so the 3-col grid keeps breathing room */
   @media (max-width: 680px) {
     .title-area, .explorations-area, .rejected-area, .phone-area, .outcome { padding-left: 24px; padding-right: 24px; }
     body { padding: 16px; }
-    .viable-grid { grid-template-columns: repeat(2, 1fr); }
-    .rejected-grid { grid-template-columns: 1fr; }
     .phone-annotation { display: none; }
+    .exp-card { padding: 14px 8px; }
+    .exp-name { font-size: 11px; }
+    .exp-desc { font-size: 9.5px; }
+  }
+  /* Only collapse to a single column on the narrowest phones */
+  @media (max-width: 400px) {
+    .viable-grid { grid-template-columns: 1fr; }
+    .rejected-grid { grid-template-columns: 1fr; }
   }
   /* Embed mode: strip body chrome when loaded in iframe */
   body.embedded {
@@ -337,17 +344,6 @@
         <div class="exp-card">
           <div class="exp-icon">
             <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-              <rect x="8" y="15" width="24" height="10" rx="5" stroke="rgba(127,181,176,0.35)" stroke-width="1" fill="rgba(127,181,176,0.04)"/>
-              <text x="20" y="23" text-anchor="middle" font-size="8" font-weight="600" font-family="Inter" fill="rgba(127,181,176,0.4)">AI</text>
-            </svg>
-          </div>
-          <div class="exp-name">Tags</div>
-          <div class="exp-desc">"AI" label at end of block</div>
-        </div>
-
-        <div class="exp-card">
-          <div class="exp-icon">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
               <rect x="8" y="8" width="24" height="24" rx="4" stroke="rgba(127,181,176,0.35)" stroke-width="1.2" fill="rgba(127,181,176,0.03)"/>
               <line class="id-shimmer" x1="12" y1="14" x2="28" y2="14" stroke="rgba(127,181,176,0.25)" stroke-width="1" stroke-linecap="round"/>
               <line class="id-shimmer" x1="12" y1="20" x2="26" y2="20" stroke="rgba(127,181,176,0.2)" stroke-width="1" stroke-linecap="round" style="animation-delay: 0.3s;"/>
@@ -355,19 +351,22 @@
             </svg>
           </div>
           <div class="exp-name">Containers</div>
-          <div class="exp-desc">Stroke border around content</div>
+          <div class="exp-desc">Stroke or surface treatment around generated content</div>
         </div>
 
         <div class="exp-card">
           <div class="exp-icon">
             <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-              <line x1="8" y1="14" x2="32" y2="14" stroke="rgba(127,181,176,0.2)" stroke-width="1"/>
-              <line x1="8" y1="20" x2="28" y2="20" stroke="rgba(127,181,176,0.15)" stroke-width="1"/>
-              <text x="20" y="30" text-anchor="middle" font-size="7" font-family="Inter" fill="rgba(127,181,176,0.35)" font-style="italic">AI Summary</text>
+              <rect x="6" y="12" width="13" height="16" rx="3" fill="rgba(224,223,228,0.06)" stroke="rgba(224,223,228,0.18)" stroke-width="0.8"/>
+              <rect x="21" y="12" width="13" height="16" rx="3" fill="rgba(127,181,176,0.18)" stroke="rgba(127,181,176,0.4)" stroke-width="0.8"/>
+              <line x1="9" y1="18" x2="16" y2="18" stroke="rgba(224,223,228,0.18)" stroke-width="0.8" stroke-linecap="round"/>
+              <line x1="9" y1="22" x2="14" y2="22" stroke="rgba(224,223,228,0.14)" stroke-width="0.8" stroke-linecap="round"/>
+              <line x1="24" y1="18" x2="31" y2="18" stroke="rgba(127,181,176,0.5)" stroke-width="0.8" stroke-linecap="round"/>
+              <line x1="24" y1="22" x2="29" y2="22" stroke="rgba(127,181,176,0.4)" stroke-width="0.8" stroke-linecap="round"/>
             </svg>
           </div>
-          <div class="exp-name">Text Treatments</div>
-          <div class="exp-desc">Font, color, size variation</div>
+          <div class="exp-name">Color</div>
+          <div class="exp-desc">Subtle color signal to distinguish generated content from user content</div>
         </div>
       </div>
     </div>
@@ -384,7 +383,7 @@
               <circle cx="25" cy="10" r="1.5" fill="rgba(196,120,120,0.2)"/>
             </svg>
           </div>
-          <div class="exp-name">Snoo Character</div>
+          <div class="exp-name">Snoo character</div>
           <div class="exp-desc">Talking Snoo head — too playful for the context</div>
           <div class="rejected-tag">Rejected</div>
         </div>
@@ -392,11 +391,25 @@
         <div class="exp-card rejected">
           <div class="exp-icon">
             <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-              <path d="M20 6l3.5 7.1 7.8 1.1-5.65 5.5 1.33 7.8L20 24.1l-6.98 3.4 1.33-7.8L8.7 14.2l7.8-1.1L20 6z" fill="rgba(196,120,120,0.15)" stroke="rgba(196,120,120,0.3)" stroke-width="1"/>
+              <rect x="8" y="15" width="24" height="10" rx="5" stroke="rgba(196,120,120,0.3)" stroke-width="1" fill="rgba(196,120,120,0.04)"/>
+              <text x="20" y="23" text-anchor="middle" font-size="8" font-weight="600" font-family="Inter" fill="rgba(196,120,120,0.4)">AI</text>
             </svg>
           </div>
-          <div class="exp-name">Sparkle Icon</div>
-          <div class="exp-desc">AI cliché — felt trendy, not trustworthy</div>
+          <div class="exp-name">Tag</div>
+          <div class="exp-desc">&ldquo;AI&rdquo; label near generated content &mdash; clear, but too visually heavy for repeated use</div>
+          <div class="rejected-tag">Rejected</div>
+        </div>
+
+        <div class="exp-card rejected">
+          <div class="exp-icon">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+              <line x1="8" y1="14" x2="32" y2="14" stroke="rgba(196,120,120,0.2)" stroke-width="1"/>
+              <line x1="8" y1="20" x2="28" y2="20" stroke="rgba(196,120,120,0.15)" stroke-width="1"/>
+              <text x="20" y="30" text-anchor="middle" font-size="7" font-family="Inter" fill="rgba(196,120,120,0.35)" font-style="italic">AI Summary</text>
+            </svg>
+          </div>
+          <div class="exp-name">Text treatment</div>
+          <div class="exp-desc">Font, color, or size variation alone &mdash; too subtle to establish a reusable pattern</div>
           <div class="rejected-tag">Rejected</div>
         </div>
       </div>
@@ -405,13 +418,16 @@
   </div>
 </body>
 <script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+<!-- diagram-height-poster v2 -->
 <script>
 (function () {
   function compute() {
     var d = document.querySelector('.diagram');
-    if (!d) return 0;
+    if (d) {
+      var rect = d.getBoundingClientRect();
+      if (rect.height > 0) return Math.ceil(rect.height);
+    }
     return Math.max(
-      d.scrollHeight, d.offsetHeight,
       document.documentElement ? document.documentElement.scrollHeight : 0,
       document.body ? document.body.scrollHeight : 0
     );
@@ -419,26 +435,28 @@
   function send() {
     if (!window.parent || window.parent === window) return;
     var h = compute();
-    if (h > 0) {
-      window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
-    }
+    if (h > 0) window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
   }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', send);
-  } else {
-    send();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', send);
+  else send();
   window.addEventListener('load', send);
-  setTimeout(send, 50);
-  setTimeout(send, 250);
-  setTimeout(send, 1000);
+  setTimeout(send, 50); setTimeout(send, 250); setTimeout(send, 1000);
   if (window.ResizeObserver) {
     var ro = new ResizeObserver(send);
     var d = document.querySelector('.diagram');
     if (d) ro.observe(d);
     if (document.body) ro.observe(document.body);
   }
-  window.addEventListener('resize', send);
+  window.addEventListener('resize', function () {
+    requestAnimationFrame(send);
+    setTimeout(send, 50);
+  });
+  // Respond to parent re-measure requests (fires on any iframe-width change)
+  window.addEventListener('message', function (e) {
+    if (e && e.data && e.data.type === 'request-diagram-height') {
+      requestAnimationFrame(send);
+    }
+  });
 })();
 </script>
 </html>

@@ -74,6 +74,98 @@ Next up: case-sharing thread resumes from `sessions/case-sharing-thread-pause-ha
 
 ## Log entries
 
+### Apr 30, 2026 (Session 47 — Reddit Answers MVP copy polish, Track B: diagram labels)
+
+**Context:** Track A (case-ai.html copy + bold-strip) shipped to main as commit `3ee861d` in Session 46. Track B was deferred to a fresh thread to keep blast radius small. This session executed Track B: ~40 string-literal label edits across 19 diagram files inside `portfolio-site/img/diagrams/`, including the highest-risk edit of the case study — a structural restructure of the VIABLE/REJECTED grid in `diagram-ai14-identification-explorations-v4.html`.
+
+**Approach:** Pre-flight reads in playbook order, `git --no-optional-locks status` to confirm only the paused share-thread files were dirty (they were), then walked screenshots 02 → 14 in order, applying mobile-pair edits identically to desktop edits. Each capitalization change (`Source Posts` → `Source posts`, etc.) was preceded by a `text-transform` grep to ensure the change wouldn't be neutralized by diagram-internal CSS. None of the affected classes had `text-transform: uppercase` rules — case changes landed as written.
+
+**What shipped (20 files modified — 19 diagrams + BUILD-LOG):**
+- **Screenshot 02** (`diagram-ai-overview-v1.html` + mobile): 4 before/after labels rewritten past tense (`Multiple links compete to rank` → `Multiple links competed for attention`, etc.) plus matching alt-text descriptions on the screenshot images for accessibility consistency.
+- **Screenshot 04** (`diagram-ai02a-verticals-v4.html`): 3 reason-line rewrites under Data audit / Vertical selection / Page generation.
+- **Screenshot 05** (`diagram-ai-page-ia-v1.html` + mobile): 4 description rewrites + 2 case changes (`Source Posts` → `Source posts`, `Threaded Comments` → `Threaded comments`). Mobile variant had `Source Post` (singular); aligned to plural to match desktop and Della's verbatim.
+- **Screenshot 06** (`diagram-ai13-transparency-framework-v4.html`): 5 pillar-question + pillar-explored rewrites. The `Shipped to: KLPs, Search, i18n, future surfaces` line had a `<strong>Shipped to:</strong>` label whose parallel structure (matching `Explored:` and `Tested:` on the other two pillars) doesn't survive the rewrite — Della's verbatim has no colon. Resolved by bolding `Designed for reuse` (the leadership verb phrase) instead of forcing a colon onto her copy.
+- **Screenshot 07** (`diagram-ai14-identification-explorations-v4.html`) — HIGH-RISK GRID RESTRUCTURE: VIABLE went from 4 cards to 3 (Icons + Containers retained, Color added with new SVG icon), REJECTED went from 2 cards to 3 (Snoo character retained-and-lowercased, Tags moved from viable and renamed Tag, Text Treatments moved from viable and renamed Text treatment). Sparkle removed entirely. Updated grid-template-columns from `repeat(4,1fr)` → `repeat(3,1fr)` for viable, `repeat(2,1fr)` → `repeat(3,1fr)` for rejected. Mobile breakpoint: viable also collapsed to 1fr. Smart quotes around `"AI"` preserved per Della's intent (`&ldquo;AI&rdquo;`). New Color SVG = two-swatch icon (one neutral, one teal-tinted) showing the color signal idea.
+- **Screenshot 08** (`diagram-ai-identification-precedent-v1.html` + mobile): 4 ann-desc rewrites for Visual separation / Linked attribution / Truncated container / Feedback unit.
+- **Screenshot 09** (`diagram-ai20-threaded-posts-v4.html` + mobile): 3 ann-desc rewrites for Metadata row / Core post / Threaded comments.
+- **Screenshot 10** (`diagram-ai25-llm-identity-v4.html`): 6 edits — 2 detail rewrites under Character/Tool, 2 case changes (`Omnipresent Narrator` → `Omnipresent narrator`, `No Identity` → `No identity`), 1 detail rewrite under each, smart apostrophe in `couldn't` (`&rsquo;`).
+- **Screenshot 12** (`diagram-ai06-evaluation-matrix-v4.html` + mobile): smart apostrophe in `Reference, don't replicate` (desktop only — mobile already smart) + `Like a friend — not cold` → `Human, not mechanical` on both.
+- **Screenshot 13** (`diagram-ai12-unified-feedback-v4.html` + mobile): case change (`Unified Feedback Pattern` → `Unified feedback pattern`) + 3 spoke renames (`KLPs Team` → `Keyword Landing Pages`, `Search Team` → `Search`, `i18n Team` → `i18n`).
+- **Screenshot 14** (`diagram-ai10-failure-state-v4.html` + mobile): 2 annotation rewrites for synthesis-suppressed and source-posts-fallback labels.
+- KLPs sweep across all 19 diagrams: 0 remaining `KLPs` or `KLPs Team` strings in the deployed-diagram set.
+
+**Quality gates (both passed):**
+- `python3 voice-check.py case-ai.html` → 0 errors, 3 pre-existing warnings (page-level concatenation false positives).
+- `python3 quality-check.py case-ai.html` → 0 errors, 0 warnings.
+
+**Decisions / tradeoffs:**
+- **Highest-risk diagram (ai14 grid):** spec called for moving 2 viable cards to rejected, removing Sparkle, and adding Color. Rather than a wholesale rewrite, did targeted CSS grid-template-columns updates + reused the existing Tags and Text Treatments SVGs (recolored to the rejected red palette) to minimize visual churn. New Color card got a custom 2-swatch SVG since no comparable icon existed in the file.
+- **Bold strategy on Screenshot 06:** the `Shipped to:` parallelism with `Explored:` and `Tested:` broke under the new copy. Per the playbook's "bold = separate review pass" rule, dropped the trailing colon and bolded `Designed for reuse` as the verb phrase. Surfaced this decision in the work narrative for review.
+- **Mobile-vs-desktop drift caught:** `diagram-ai-page-ia-v1-mobile.html` had `Source Post` (singular) where desktop had `Source Posts` (plural). Aligned mobile to `Source posts` (plural lowercase) to match Della's verbatim and the desktop pair. Surfaced.
+- **Out-of-scope file noted:** `diagram-ai16-final-identification-v4.html` (and mobile pair) contains `KLP Page` surface labels — file is NOT referenced from `case-ai.html`, so not part of Track B's deployed scope. The KLPs sweep targeted `KLPs` and `KLPs Team` per the playbook spec; `KLP Page` (singular) wasn't in the explicit target list. Surfaced for Della to decide whether to fix in a follow-up.
+- **Smart-quote preservation:** every replacement that called for smart quotes (`'`, `"`, `"`) in Della's verbatim was applied as written. HTML entities (`&rsquo;`, `&ldquo;`, `&rdquo;`) used where the surrounding code already used entities; raw smart quotes used where surrounding code used raw smart quotes.
+- **BUILD-LOG carry-forward:** the previous thread's Track A entry was written into BUILD-LOG.md but never committed (working tree was dirty when this thread started). This thread's BUILD-LOG entry includes both the carry-forward Track A note and this Track B entry, so a single commit can land the full session-46-and-47 history.
+
+**Files changed (20):** BUILD-LOG.md + 19 diagram files. No protected files from `resume-prompt-case-ai-polish-protect.md` reverted; paused share-thread files (`case-sharing.html`, `diagram-shr01-...-v5.html`, `SHAR-screenshotToshare.gif`) untouched.
+
+**Next up:** Della reviews the rendered diagrams in browser via `python3 -m http.server 8001` then `http://localhost:8001/case-ai.html`, commits with the paste-ready commands provided in the close-out, and either archives the resume prompt or schedules the dormant `diagram-ai16-final-identification-v4.html` `KLP Page` cleanup as a follow-on scope.
+
+---
+
+### Apr 30, 2026 (Session 46 — Reddit Answers MVP copy polish, Track A)
+
+**Context:** Della delivered finalized copy feedback for the Reddit Answers MVP case study as 15 numbered screenshots covering every section of `case-ai.html` and the diagrams it embeds. Goal: ship polished copy this afternoon ahead of the portfolio publish window. Constraint: Session 45b had just shipped the homepage-refresh + post-merge polish round (`a661ee3`, `93faba1`, `d2866fd`), including a `case-card-pair` flatten on case-ai's opener and a new H2 (`Reddit had the answers — but not the answer experience`). Session 45b passed forward a polish-protect handoff (pasted into this thread, not saved as a file) listing every protected change.
+
+**Approach:** Split the feedback into two tracks. **Track A** (this session): paragraph and heading edits inside `case-ai.html`. **Track B** (next thread): label / sublabel / option-card edits inside the diagrams. Track A scoped to ~40 string-literal replacements + 1 paragraph collapse + 1 metric-label restructure + 1 opener conflict resolution + a follow-on full bold-strip. Track B (~40 edits across 19 diagram files) deferred to a fresh thread to keep blast radius small and avoid collision with the in-progress share-thread work.
+
+**What shipped (commit `3ee861d` on main → pushed `7a2320f..3ee861d`):**
+- Hero metadata: `Web (SEO surfaces)` → `Web search surfaces`.
+- Opener (line 78): feedback specified `I designed an LLM-powered synthesis surface` but Session 45b's protected polish chose `An LLM-powered synthesis` (no first-person). Resolved by applying Della's substantive copy update to both halves of the merged paragraph while keeping the polish's third-person `An` framing — protected polish wins over feedback's first-person opener.
+- 8 H2/H3 heading rewrites: `Proof of concept / research` → `Proof before infrastructure`, `Page information architecture` → `Dual-layer page architecture`, `Establishing principles for generated content (summary)` → `Principles for AI-generated search results`, `UI to display source posts` → `Designing the source layer`, `Generating summaries: XFN workflow` → `Turning quality into a repeatable process`, `Failure states` → `Designing graceful degradation`, `UI to distinguish AI gen content` → `UI to distinguish AI-generated content`, second `<h3>Content</h3>` → `Designing for trust` (disambiguated against the H2 above via surrounding-paragraph context in `old_string`).
+- 29 paragraph rewrites across all 15 sections; smart-quote preservation per Della's intent (`Reddit's` → `Reddit's`, `model's`, `couldn't`).
+- 1 paragraph collapse: Competing user needs ¶3 + ¶4 → single tightened paragraph.
+- 1 metric-label split: `<span class="metric-label">Weekly active users (Reddit Answers, year one)</span>` → `Weekly active users<br>Reddit Answers, year one`. `<br>` chosen for smallest diff; rendered clean.
+- 1 iframe `title` attribute fix on line 386: `KLPs` → `keyword landing pages` (screen-reader / hover accessible).
+- **Bold-strip pass:** Della reviewed the rendered diff post-Track-A and called bolds distracting. Stripped all 28 `<strong>...</strong>` tags from body `<p>` paragraphs in one sed op (`sed -i 's|<strong>||g; s|</strong>||g' case-ai.html`) — verified safe because `<strong>` only appeared in body copy (no headings, comments, or JS). Linters re-ran clean.
+
+**Decisions / tradeoffs:**
+- **Adapt vs. ask** on the opener conflict: feedback was written before Session 45b shipped. Resolved by adapting Della's substantive copy update to the polish's framing rather than reverting the polish or asking another round — Della had said "continue with the plan that we put together" and the protection rule was explicit. Surfaced the resolution before firing edits.
+- **Bold strategy** evolved across the session: initial pass kept bolds where rewritten phrases still landed naturally and dropped them where paragraphs collapsed. Della reviewed the rendered output, decided bolds read distracting, requested full-strip. The strip was a single bash op rather than 28 individual Edit calls.
+- **Metric label `<br>` vs span split:** `<br>` chosen for smallest diff and zero CSS coordination. Visually verified.
+- **Track A only this session:** scoped to Track A because (a) afternoon ship deadline prioritized minimizing blast radius, (b) Group B hits 19 diagram files including paired desktop+mobile variants and SVG-positioned text where edits are more brittle, (c) Track B can run as a fresh thread with its own playbook and gate without holding up Track A's commit.
+
+**Verification:**
+- `voice-check.py case-ai.html`: 0 errors, 3 advisory warnings (all pre-existing structural false positives — linter flattens nav+title block; carry-forward documented these as acceptable).
+- `quality-check.py case-ai.html`: 0 errors, 0 warnings, fully clean.
+- Banned-vocabulary sweep (`neglected`, `leverage`, `synergy`, `stakeholder`, `circle back`, `passionate about`): 0 hits.
+- KLPs sweep: 0 hits in body copy after Track A; iframe `title` attribute fixed.
+- Carry-forward protected items spot-checked intact: title (line 6), h1 (line 47), Session 45b H2 (line 76), `An LLM-powered synthesis` framing (line 78), window resize handler (lines 600–627). `styles.css` and `diagram-ai-overview-v1.html` not touched in Track A.
+
+**Files changed (Session 46):** `case-ai.html` (commit `3ee861d`). `BUILD-LOG.md` updated separately at close-out.
+
+**Handoff (Track B → next thread):**
+- Playbook: `~/CoworkWorkspace/Get-a-job/sessions/resume-prompt-case-answers-group-b-diagrams.md` (full scope, file inventory, mobile-sync rule, smart-quote rule, diagram-internal CSS check, VIABLE/REJECTED grid restructure plan, ship criteria).
+- Kickoff (paste-ready): `~/CoworkWorkspace/Get-a-job/sessions/kickoff-track-b-diagrams.md`.
+- Scope: ~40 label edits across 19 diagram files (12 logical diagrams; 7 paired desktop+mobile).
+- Highest risk: `diagram-ai14-identification-explorations-v4.html` VIABLE/REJECTED grid restructure (Tags + Text Treatments demote to rejected; Color promoted to viable; Sparkle removed entirely; SVG-positioned text may need coordinate adjustments).
+
+**Final tree state:** at session-close, working tree showed modifications NOT made by this thread:
+- `case-sharing.html` modified + `img/diagrams/diagram-shr01-before-share-sheet-v5.html` + `img/diagrams/assets/SHAR-screenshotToshare.gif` untracked — paused share work, out-of-scope.
+- `img/diagrams/diagram-ai-overview-v1.html` (+ `-mobile`), `img/diagrams/diagram-ai-page-ia-v1.html` (+ `-mobile`), and `img/diagrams/diagram-ai02a-verticals-v4.html` modified — diffs contain Track B label edits matching Della's screenshot 02 / 04 / 05 feedback verbatim, with desktop/mobile pair sync. Apparent source: parallel Claude Code or Cowork thread executing Track B in background. NOT touched by Session 46 (Track A) and NOT included in commit `3ee861d`. Surfaced to Della at close-out for triage; Track B's next thread should verify these against feedback before re-editing.
+
+**Process scratchpads (deletion deferred to Track B close):**
+- `sessions/case-answers-feedback-batch-2026-04-30.md` — verbatim per-screenshot replacements; still needed by Track B.
+- `sessions/case-answers-execution-package-2026-04-30.md` — Track A + B execution plan; reference for Track B.
+- `sessions/resume-prompt-case-answers-group-b-diagrams.md` — Track B playbook (active).
+- `sessions/kickoff-track-b-diagrams.md` — Track B kickoff (active).
+- All four retire to `sessions/archive/` when Track B ships.
+
+**Open follow-ups:**
+- [ ] Track B execution (next thread) — see kickoff doc above.
+- [ ] BUILD-LOG.md still over 1500-line / 50KB threshold — quarterly archive split is overdue (carried forward from prior sessions).
+
+---
+
 ### Apr 30, 2026 (Session 45b — Post-merge polish round + orphan CSS sweep + gitignore)
 
 **Context:** Della reviewed the homepage-refresh deploy live and surfaced several follow-on tweaks. Iterated direct on `main` rather than branching (small, scoped polish; she watched each change in real time). Two commits: `93faba1` (homepage-polish, the main batch) and `d2866fd` (gitignore noise sweep).

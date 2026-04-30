@@ -60,22 +60,6 @@
     line-height: 1.55; max-width: 560px;
   }
 
-  /* Partners banner */
-  .partners-bar {
-    margin: 32px 48px 0;
-    padding: 10px 16px;
-    background: rgba(224,223,228,0.02);
-    border: 1px solid var(--border-normal);
-    border-radius: 8px;
-    font-size: 11px;
-    color: var(--text-ter);
-    text-align: center;
-  }
-  .partners-bar strong {
-    color: var(--text-sec);
-    font-weight: 500;
-  }
-
   /* Pillars area */
   .pillars-area {
     padding: 32px 48px 40px;
@@ -202,6 +186,10 @@
   @media (max-width: 680px) {
     .title-area, .pillars-area, .outcome { padding-left: 24px; padding-right: 24px; }
     body { padding: 16px; }
+    .pillars { gap: 12px; }
+  }
+  /* Only stack on the narrowest phones */
+  @media (max-width: 400px) {
     .pillars { grid-template-columns: 1fr; }
   }
   /* Embed mode: strip body chrome when loaded in iframe */
@@ -221,10 +209,6 @@
 </head>
 <body>
   <div class="diagram">
-    <div class="partners-bar">
-      <strong>Partnered with:</strong> Brand · Legal · Design Systems
-    </div>
-
     <div class="pillars-area">
       <div class="pillars">
         <!-- Identification -->
@@ -241,7 +225,7 @@
             </svg>
           </div>
           <div class="pillar-name">Identification</div>
-          <div class="pillar-question">Scalable, instantly recognizable signal that content was AI-generated</div>
+          <div class="pillar-question">Scalable, recognizable signal for AI-generated content</div>
           <div class="pillar-divider"></div>
           <div class="pillar-explored"><strong>Explored:</strong> icons, tags, containers, disclaimers, Snoo, text treatments</div>
         </div>
@@ -264,9 +248,9 @@
             </svg>
           </div>
           <div class="pillar-name">Content</div>
-          <div class="pillar-question">Component library, identification, and feedback UI as reusable system components</div>
+          <div class="pillar-question">Reusable synthesis patterns, attribution rules, and feedback UI</div>
           <div class="pillar-divider"></div>
-          <div class="pillar-explored"><strong>Shipped to:</strong> KLPs, Search, i18n, future surfaces</div>
+          <div class="pillar-explored"><strong>Designed for reuse</strong> across keyword landing pages, Search, i18n, and future surfaces</div>
         </div>
 
         <!-- Attribution -->
@@ -283,9 +267,9 @@
             </svg>
           </div>
           <div class="pillar-name">Quality</div>
-          <div class="pillar-question">Ensuring users understand posts below are sources for the summary above</div>
+          <div class="pillar-question">Evaluation criteria for source accuracy, tone, structure, and usefulness</div>
           <div class="pillar-divider"></div>
-          <div class="pillar-explored"><strong>Tested:</strong> hyperlinks, pills, collapsible lists</div>
+          <div class="pillar-explored"><strong>Tested:</strong> hyperlinks, pills, collapsible lists, feedback patterns</div>
         </div>
       </div>
     </div>
@@ -293,13 +277,16 @@
   </div>
 </body>
 <script>if(window!==window.parent)document.body.classList.add("embedded");</script>
+<!-- diagram-height-poster v2 -->
 <script>
 (function () {
   function compute() {
     var d = document.querySelector('.diagram');
-    if (!d) return 0;
+    if (d) {
+      var rect = d.getBoundingClientRect();
+      if (rect.height > 0) return Math.ceil(rect.height);
+    }
     return Math.max(
-      d.scrollHeight, d.offsetHeight,
       document.documentElement ? document.documentElement.scrollHeight : 0,
       document.body ? document.body.scrollHeight : 0
     );
@@ -307,26 +294,28 @@
   function send() {
     if (!window.parent || window.parent === window) return;
     var h = compute();
-    if (h > 0) {
-      window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
-    }
+    if (h > 0) window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
   }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', send);
-  } else {
-    send();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', send);
+  else send();
   window.addEventListener('load', send);
-  setTimeout(send, 50);
-  setTimeout(send, 250);
-  setTimeout(send, 1000);
+  setTimeout(send, 50); setTimeout(send, 250); setTimeout(send, 1000);
   if (window.ResizeObserver) {
     var ro = new ResizeObserver(send);
     var d = document.querySelector('.diagram');
     if (d) ro.observe(d);
     if (document.body) ro.observe(document.body);
   }
-  window.addEventListener('resize', send);
+  window.addEventListener('resize', function () {
+    requestAnimationFrame(send);
+    setTimeout(send, 50);
+  });
+  // Respond to parent re-measure requests (fires on any iframe-width change)
+  window.addEventListener('message', function (e) {
+    if (e && e.data && e.data.type === 'request-diagram-height') {
+      requestAnimationFrame(send);
+    }
+  });
 })();
 </script>
 </html>

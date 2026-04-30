@@ -268,6 +268,11 @@
 
   /* iframe-width rule: collapse only at ≤480px */
   @media (max-width: 480px) {
+    .levels-flow { padding: 0 12px; }
+    .levels-grid { gap: 8px; }
+  }
+  /* Only stack on the narrowest phones */
+  @media (max-width: 400px) {
     .levels-flow { padding: 0 16px; }
     .level-labels { flex-direction: column; gap: 4px; }
     .levels-grid { flex-direction: column; gap: 12px; }
@@ -375,15 +380,19 @@
     </div>
 
   </div>
-<!-- diagram-height-poster v1 -->
+<!-- diagram-height-poster v2 -->
 <script>
 (function () {
   function compute() {
     var d = document.querySelector('.diagram');
-    if (!d) return 0;
-    return Math.max(d.scrollHeight, d.offsetHeight,
+    if (d) {
+      var rect = d.getBoundingClientRect();
+      if (rect.height > 0) return Math.ceil(rect.height);
+    }
+    return Math.max(
       document.documentElement ? document.documentElement.scrollHeight : 0,
-      document.body ? document.body.scrollHeight : 0);
+      document.body ? document.body.scrollHeight : 0
+    );
   }
   function send() {
     if (!window.parent || window.parent === window) return;
@@ -400,7 +409,16 @@
     if (d) ro.observe(d);
     if (document.body) ro.observe(document.body);
   }
-  window.addEventListener('resize', send);
+  window.addEventListener('resize', function () {
+    requestAnimationFrame(send);
+    setTimeout(send, 50);
+  });
+  // Respond to parent re-measure requests (fires on any iframe-width change)
+  window.addEventListener('message', function (e) {
+    if (e && e.data && e.data.type === 'request-diagram-height') {
+      requestAnimationFrame(send);
+    }
+  });
 })();
 </script>
 </body>
