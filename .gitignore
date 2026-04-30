@@ -34,3 +34,16 @@ working/mobile-audit/screenshots/*-gate.png
 
 # Backup files from manual restore-points
 *.bak
+
+# Local-only Claude config
+.claude/
+
+# Cowork output dump
+outputs/
+
+# Discarded working files
+working/discarded/
+
+# Visual regression scratch
+working/visual-regression/
+working/png-review-*.html
