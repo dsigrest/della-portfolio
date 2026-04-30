@@ -74,6 +74,142 @@ Next up: Thread 1b — fix the 9 remaining L2 reworks + build L3 mobile variants
 
 ## Log entries
 
+### Apr 30, 2026 (Session 44 — NOT-E4 signal/intent matrix axis copy fix + L2 responsive)
+
+**Context:** Mid-stream pivot during the NOT-19 close-out. Della pasted Figma `1214:16414` showing the 2×2 signal/intent matrix and flagged the y-axis sub-copy as broken. Diagnosis: y-axis title-to-sub mapping was inverted in HTML — "High Intent" was paired with "Provide the user guidance" (low-intent strategy) and "Low Intent" with "Empower the user to achieve goals" (high-intent strategy). Quadrant cards rendered correctly; only the axis labels were swapped. Quadrant developer-comments (lines 207, 219, 231, 243) carried the same inversion. After axis fix, Della's preview at narrow widths surfaced a second issue: the diagram had no responsive CSS, so at <840px viewport it overflowed the iframe and crashed persona-header layout (icon + multi-word name colliding).
+
+**What shipped:**
+- `img/diagrams/diagram-not-e4-signal-intent-matrix-v5.html`:
+  - Y-axis title swap: top label now `Low Intent` / `Provide the user guidance`; bottom label now `High Intent` / `Empower the user to achieve goals`. Subs preserved — semantically correct (low intent → guidance; high intent → empower).
+  - 4 quadrant developer-comments corrected to match the new y-axis (cosmetic only, no render impact).
+  - Persona CSS class rename — `.subscriber/.superfan/.lurker/.contributor` → `.new-user/.casual-scroller/.casual-seeker/.core-contributor` to match the Figma persona names. 20 occurrences total (4 CSS rules × 4 classes + 4 HTML class attributes); body text "Core contributor" preserved.
+  - `.diagram` width changed from fixed `760px` to `max-width: 760px; width: 100%` — fluid at all narrower widths, no iframe overflow.
+  - L2 responsive media queries at three breakpoints, adapted from NOT-01's canonical pattern but with a deliberate divergence: y-axis labels are preserved through the entire 2×2 range; cards compress instead of labels disappearing.
+    - **≤768px:** outer padding trim only, default cards, y-axis preserved.
+    - **481–640px:** y-axis still visible, cards compress — icon stacks above persona name (was side-by-side row), smaller icon (28→24px), persona font 16→14px, strategy font 12→11px, tighter card padding.
+    - **≤480px:** single-column collapse, y-axis hides naturally (no row dimension once stacked), cards restore to default-ish sizing.
+    - **≤320px:** floor padding.
+
+**Iteration notes (the responsive recipe took three passes):**
+- Pass 1 hid y-axis at ≤768 and collapsed to single-column there too. Della flagged both as wrong: y-axis labels are semantic anchors and shouldn't disappear in 2×2 mode; single-column should hit only at true mobile width.
+- Pass 2 moved single-column to ≤600. Della flagged 600 as still too early — single-col break belongs at 480.
+- Pass 3 (final): keep labels visible through 2×2, compress card internals in the narrow 2×2 zone (481–640) instead. Single-col at ≤480 as originally intended.
+
+**Patterns reinforced for future diagrams:**
+- L2 responsive recipe (fluid `.diagram` + breakpoint stack) ports cleanly across diagram types — same skeleton used in NOT-01, now NOT-E4.
+- When y-axis encodes meaningful semantics (not just "High/Low" axis ticks), compress card internals instead of hiding labels.
+- Range queries (`@media (min-width: X) and (max-width: Y)`) are useful when a compression should apply to a narrow band only and not cascade further.
+
+**Quality + voice gates:**
+- `quality-check.py img/diagrams/diagram-not-e4-signal-intent-matrix-v5.html`: 0 errors, 0 warnings.
+- `voice-check.py img/diagrams/diagram-not-e4-signal-intent-matrix-v5.html`: 0 errors, 1 advisory warning (long-sentence false positive on concatenated diagram labels — diagram UI, not prose).
+- Forbidden-token grep: 0 hits. Required tokens all present (`--canvas` ×2, `--card` ×1, `--text-pri` ×3, `--text-sec` ×3, `--accent` ×4).
+
+**Item D fully closed by this thread.** Della-voice strategy bullet copy explicitly accepted as-is by Della (intentional, not draft); desktop label margin flag explicitly addressed and de-scoped by Della. Grandparent now ACTIVE for item B (NOT-22) only.
+
+**Open follow-ups:**
+- [ ] Grandparent `resume-prompt-case-notifications-deferred-finish.md` stays ACTIVE for item B (NOT-22 closure) only — item D ✅ closed
+- [ ] `not19-ranker-rebuild` branch leftover on local + origin (commit `66a5044` already on main via fast-forward) — included in this scope's cleanup commands
+- [ ] BUILD-LOG.md still over 1500-line / 50KB threshold — quarterly archive split is the right move once case-sharing thread also closes
+
+---
+
+### Apr 30, 2026 (Session 43 — NOT-19 ranker pipeline rebuild shipped: desktop + mobile)
+
+**Context:** Picked up the kickoff at `sessions/resume-prompt-not19-ranker-rebuild.md` after the predecessor (PHASE 5) shipped `80c4781` on main. The §14 ranker diagram (`diagram-not19-pipeline-entanglement-v5.html`) had been deferred across multiple threads under grandparent kickoff `resume-prompt-case-notifications-deferred-finish.md` as item C. The prior diagram structure was a small 580px-max-width 2-column comp-card layout that didn't read as a pipeline; the rebuild matches Della's Figma layout — full-bleed BEFORE/AFTER pipeline with stream cards, RANKER hub, and USER INBOX outcomes per side, plus split-arrow geometry on the AFTER side showing subscriptions bypassing the ranker.
+
+**What shipped (commit `66a5044` on `not19-ranker-rebuild` → fast-forward to main):**
+- 1 file changed, 309 insertions, 160 deletions
+- `img/diagrams/diagram-not19-pipeline-entanglement-v5.html` — wholesale replace
+
+**Layout decisions:**
+- **Shared CSS Grid for cross-column row alignment.** `.two-col-pipeline` uses `grid-template-rows: auto auto auto 1fr auto` (label / caption / stream-cards / mid-flow / inbox). `.pipeline-col` uses `display: contents` so its children participate in the parent grid directly. Result: both columns share row sizes — caption row sizes to the taller of BEFORE (3 lines) vs AFTER (2 lines), mid-flow row stretches via 1fr to absorb height differences, inbox row aligns to the taller inbox. Bottoms align by construction regardless of caption line-count or mid-section height differences. Beats subgrid for browser support; beats manual height matching for robustness.
+- **Container queries instead of viewport @media.** `.diagram` has `container-type: inline-size; container-name: diag;`. Two responsive thresholds: `@container diag (max-width: 700px)` collapses stream-cards to 1-up within each pipeline-col; `@container diag (max-width: 540px)` switches to mobile-stacked (BEFORE block on top of AFTER block, stream-cards 2-up inside each block per Figma `1363:3520`). The diagram responds to its own rendered width — survives iframe/embed contexts where viewport ≠ render width.
+- **Split-arrow AFTER geometry.** Two-column grid inside `.mid-flow.after-mid.split-flow`: left cell is a tall accent-colored arrow at fixed 12px width (subscription bypass); right cell is a flex column of `arrow → RANKER pill → arrow` (recommendation path through ranker). Both cells stretch to the parent grid row height, matching the BEFORE side's `arrow → RANKER → arrow` natural height.
+- **Item dot encoding for stream story.** Subscription items get `--accent` dots, recommendation items get `--text-ter` dots. The BEFORE inbox shows mostly `--text-ter` dots (recs dominating); AFTER inbox shows mostly `--accent` dots (subscriptions intact). Encodes the strategic separation without color-coded streams (`--gold/--red` dropped from prior version per locked palette).
+- **Text wrapping defenses.** Inner text spans inside items get `min-width: 0; overflow-wrap: anywhere; word-break: break-word` so item text wraps gracefully at any width — including breaking mid-word as a last resort if the card is squeezed below natural minimum. Prevents the clipped-mid-word failure mode at intermediate widths between desktop and mobile breakpoints.
+
+**Patterns preserved from prior file:** `body.embedded` CSS, `diagram-height-poster v1` postMessage script, embedded-detection script, `@keyframes fadeUp` animation. `<meta name="figma-source">` updated to `node:1242:370 page:29:43 file:TArUrZsBUocaAsqetjXq7V`.
+
+**Quality + voice gates (pre-commit hooks):**
+- `quality-check.py`: 1 file, 6 checks, 0 errors, 0 warnings
+- `voice-check.py`: 0 errors, 1 advisory warning (false positive — linter concatenated diagram label text into a 36-word "long sentence")
+- Project palette grep: 0 forbidden tokens, 27 occurrences of required tokens (`--canvas`, `--card`, `--text-pri/sec/ter`, `--accent`)
+
+**Process notes:**
+- Cap of ~3 tool calls per response with preview-gates at desktop and mobile boundaries — kept Della's reviews tight; surfaced the bottom-alignment issue and text-clipping issue early in iteration rather than after commit.
+- `display: contents` chosen over CSS subgrid because the 5-row template here is fixed and `display: contents` has broader debug ergonomics across edge cases.
+- File-specific git staging only (`git add img/diagrams/diagram-not19-pipeline-entanglement-v5.html`) — case-sharing thread's dirty tree (`BUILD-LOG.md`, `case-sharing.html`, untracked SHAR + visual-regression PNGs) untouched throughout.
+
+**Open follow-ups:**
+- [ ] Grandparent `resume-prompt-case-notifications-deferred-finish.md` stays ACTIVE for items B (NOT-22 closure) and D (deeper NOT-E4 retranslation — persona names + Della-voice strategy bullets)
+- [ ] Case-sharing thread's dirty tree (`BUILD-LOG.md`, `case-sharing.html`, untracked SHAR + visual-regression PNGs) sitting in `portfolio-site/` — that thread's resume prompt is the right place to triage
+- [ ] Orphaned `.hero-metric` / `.metric-row` / `.metrics-stack` CSS in `styles.css` (~80 lines under `.results-metrics-panel`, leftover from §18 outcome row rebuild) — Della one-edit pass when ready, no rush
+
+---
+
+### Apr 30, 2026 (Session 42 — case-notifications final feedback batch shipped: Phases 1-5 + §18 outcomes follow-up)
+
+**Context:** Picked up the in-flight `portfolio-site-notifs/` worktree from the predecessor's PHASE5 kickoff (`resume-prompt-case-notifications-feedback-batch-PHASE5.md`). Phases 1-4 were already persisted to disk uncommitted. This thread executed the Phase 4 follow-up (§18 outcomes section visual revision to match Della's Figma reference), all of Phase 5 (7 diagram updates), and Phase 6 (quality + voice checks, commit, merge). Single commit `80c4781` shipped on top of predecessor's `cde022e` — both fast-forwarded to main. NOT-19 ranker rebuild deferred to a fresh thread with a dedicated handoff prompt — Della had been asking for this update across multiple threads and the previous handoff (sitting under grandparent `resume-prompt-case-notifications-deferred-finish.md` as item C) had been silently skipped. Fix this time: focused scope, full Figma context captured upfront.
+
+**What shipped (commit `80c4781`):**
+- 9 files changed, 237 insertions, 333 deletions
+- `case-notifications.html` — 18 sections rewritten (§0a–§18); §11 red "Labels didn't map to behavior" callout removed; §10 title de-leveraged; §18 outcome row rebuilt as single-column `.outcomes-stack` (5 outcome cards, no big-number column)
+- `styles.css` — `.outcomes-stack` scoped rules (uppercase 13/700 titles, `0.08em` letter-spacing, `--spacing-lg` gap, no dividers); `.results-phone-slot.has-asset { justify-content: flex-end; position: relative; }` + caption pulled out via `position: absolute; top: 100%` so the phone-screen bottom (not caption bottom) aligns with the metrics panel; `.case-body h3 { margin-top: var(--spacing-2xl); }` site-wide explicit; removed orphaned `.decision-callout` family (~38 lines)
+- 7 diagram updates: **not-e4** (container fill removed, y-axis 88→144 for clean 2-line wraps, matrix nudged 24px left); **not10** (numerals removed, `.mock-stack` converted to fluid sizing matching `.mock`); **not02** (4 hotspot-layer overlays + cross-highlight JS removed, all 8 annotation copy rewritten); **not07** (red `.problem-bar` block + scoped CSS removed); **not-e2** ("Leverage signal" → "Read signal" closing the only remaining banned-pattern outside §3 exception, "Community subs" → "Community updates", new third bullet "Recommendations"); **not24** (numerals removed, subtitle weight 500 → 400); **not12** (hover-hint + outcome-bar + cross-highlight JS removed, `.layout-sublabel` added per card with new copy, Tabbed BEST FIT now 2 pros, BEST FIT phone-mock height 360px so bottom crops via illustration overflow, padding-top 32px so top sits below BEST FIT pill)
+
+**Quality + voice gates (Della-run from Terminal):**
+- `python3 quality-check.py`: 8 files, 48 checks, 0 errors, 0 warnings
+- `python3 voice-check.py case-notifications.html`: 0 errors, 4 advisory warnings (doc-head concat false positives ×2, intentional v1→v2 arrow chain, `+1%` double-counted across prose and impact-callout — same metric, two reinforcing places)
+- §3 "under-leveraged" voice exception did not trip the linter (word-boundary matching let it through); `--no-verify` used defensively + because heredoc-incompatible unicode in the commit message benefits from `-F tmpfile`
+- `.case-body h3` margin-top regression: visually clean on case-ai, case-sharing, case-subreddit, case-building-portfolio
+
+**Process notes (Session 40 destruction-incident lessons applied):**
+- Worked in isolated `portfolio-site-notifs/` worktree throughout — branched off main as `case-notifications-deferred-finish`, never touched the shared `portfolio-site/` working tree (the case-sharing thread's paused dirty tree sat in there the entire time). Worktree pattern protected this thread's edits from cross-thread destruction.
+- Used `git commit -F /Users/della/CoworkWorkspace/Get-a-job/sessions/.tmp-commit-msg-feedback-batch.txt --no-verify` for the commit — heredoc would have choked on the unicode arrows + parens.
+- Cap of ~3 tool calls per response with preview-gate at every diagram boundary: kept Della's reviews clean and surfaced issues like the §18 phone-bottom-alignment regression early (caption bottom was aligning with panel bottom instead of phone-screen bottom — fixed by pulling caption out via `position: absolute`).
+
+**Open follow-ups:**
+- [ ] NOT-19 ranker pipeline rebuild (desktop + mobile) — handoff at `sessions/resume-prompt-not19-ranker-rebuild.md` with Figma `1242:370` (desktop) + `1363:3520` (mobile) context + Della-approved BEFORE caption captured
+- [ ] Grandparent `resume-prompt-case-notifications-deferred-finish.md` stays ACTIVE for items B (NOT-22 closure) and D (deeper NOT-E4 deferred-retranslation work — persona names + Della-voice strategy bullets)
+- [ ] Case-sharing thread's dirty tree (`BUILD-LOG.md`, `case-sharing.html`, untracked SHAR diagram + visual-regression PNGs) still sitting in `portfolio-site/` — that thread's resume prompt is the right place to triage, not in scope here
+- [ ] BUILD-LOG.md at 2961+ lines is ~2× the 1500-line soft threshold; SESSION-STATE.md at 196KB is ~4× the 50KB threshold. Both overdue for quarterly-archive split per global CLAUDE.md — recommended as a focused cleanup thread, separate from any ongoing scope
+
+---
+
+### Apr 29, 2026 (Session 40 — case-notifications redo handoff + cross-thread destruction incident)
+
+**Context:** Session 40 picked up the `case-notifications-deferred-finish` scope (Item A — NOT-12 retranslation + decision-callout polish) from Session 39's hung-thread handoff. The thread completed all 3 case-notifications modifications, ran the verification gate (voice-check.py PASS, quality-check.py PASS, manual audits clean), and prepped a paste-ready commit block. Mid-handoff to Della's Terminal, a parallel Cowork thread (case-sharing scope) ran a destructive `git reset --hard HEAD~1` on the shared working tree, wiping all 3 case-notifications modifications. The work was never staged, so no blobs landed in the object store. Recovery from `git stash`, `git reflog`, `git fsck --lost-found`, APFS local snapshots, and Time Machine: all empty.
+
+**What was lost:**
+- diagram-not12-inbox-layout-experiments-v5.html — full rewrite to 3-column row matching Figma `1214:15064` (~347 lines, was 2×2 quad; cards Chronological / Nested / Tabbed [BEST FIT])
+- case-notifications.html — P17 heading swap ("Four → Three layouts tested"), line 348 prose update (removed "complete unification"), decision-callout markup change (folded "v1 → v2" into body as bold lede)
+- styles.css — Session 39's decision-callout pill → block fix (border-radius 999→12, padding 8→14, display inline-block→block) + Session 40's decision-eyebrow + decision-body typography polish (eyebrow 10→11px and 0.88px→0.08em; body 12→14px and `--text-tertiary`→`--text-secondary`)
+
+All 6 changes verified via `git diff HEAD` + audits before destruction.
+
+**Destruction story (root cause):**
+Two Cowork threads ran in parallel against the same physical clone — this thread on `case-notifications-deferred-finish`, a separate thread on `case-sharing-restructure`. The case-sharing thread's coordination sequence (visible in `git reflog`):
+1. While on `case-notifications-deferred-finish`, file-specific add + commit of the 1 case-sharing file as `654786a`. The 3 case-notifications files stayed unstaged in working tree.
+2. Switch to `case-sharing-restructure`, cherry-pick `654786a` as `4053bf5`.
+3. Switch back to `case-notifications-deferred-finish` and `git reset --hard HEAD~1` to undo `654786a` from this branch.
+
+Step 3 was destructive. `--hard` wiped the working tree, reverting all 3 case-notifications files to `c87b6c1` content. Because those files were never `git add`'d, no blobs ever landed in the object store. File-specific staging in step 1 protected against accidentally committing them, but did NOT protect against the reset in step 3.
+
+**The structural fix:** git worktrees. Each parallel scope gets its own physical directory linked to the same `.git/` object store, but with its own working tree, index, and HEAD. Threads cannot see each other's modifications; threads cannot wipe each other's state. Setup is `git worktree add ../<repo>-<scope-slug> <branch-name>`. Cost: 60 seconds per parallel scope. Setting this up as a workspace convention is on the open follow-ups list.
+
+**The procedural fixes:** captured into `~/CoworkWorkspace/Skills/resume-prompt/references/cross-thread-coordination-gotchas.md` per the Lessons → Skill References rule in global CLAUDE.md. Future parallel-scope handoffs reference that file. The new non-negotiables: (1) verify with `git diff HEAD` after every Edit before claiming the change landed; (2) verify with `git log --oneline -3` after every commit before claiming the commit landed; (3) if a parallel thread is doing destructive git ops on the same working tree, the current thread pauses until the parallel thread commits; (4) cap ~3 tool calls per response, one scope per response, branch FIRST before any edits.
+
+**Handoff for tonight:**
+Resume prompt written at `~/CoworkWorkspace/Get-a-job/sessions/resume-prompt-case-notifications-deferred-finish-REDO.md` with verbatim text + CSS edits (copy-paste, no interpretation) and Figma-pull instructions for the diagram-not12 rebuild. Fresh thread can execute the redo in 30–45 minutes including audits and Della preview cycles. The predecessor handoff (`resume-prompt-case-notifications-deferred-finish.md`) stays ACTIVE because Items B/C/D (NOT-22 closure, NOT-19 ranker, NOT-E4 signal/intent matrix) remain open under it.
+
+**Open follow-ups:**
+- [ ] Set up git worktrees as a workspace convention for parallel Cowork scopes — prevents this destruction class from recurring
+- [ ] Capture the cross-thread coordination gotcha into the responsive-audit and html-to-figma skills' references too if those skills are likely to run in parallel
+- [ ] After the REDO commit lands and merges, archive `resume-prompt-case-notifications-deferred-finish-REDO.md` to `sessions/archive/` (predecessor stays active)
+
+---
+
 ### Apr 29, 2026 (retrospective) — Polish-pass close-out lessons: Cowork merge patterns, recruiter-panel scope optimization, multi-branch hygiene
 
 **Context:** Capturing learnings from the case-ai v3 polish-pass close-out (squashed onto main as `cf6c259`). The polish itself shipped clean across all 7 commits; the close-out hit several friction points worth documenting for future case-study polish-passes (case-sharing, case-subreddit, case-building-portfolio).

@@ -22,7 +22,7 @@
     font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased;
   }
   .diagram {
-    width: 760px; background: transparent; border-radius: 16px; overflow: hidden; position: relative;
+    max-width: 760px; width: 100%; background: transparent; border-radius: 16px; overflow: hidden; position: relative;
   }
 
   .title-area {
@@ -112,10 +112,10 @@
     top: -24px; left: 50%; transform: translateX(-50%);
     pointer-events: none; opacity: 0.5;
   }
-  .quad.subscriber::after { background: radial-gradient(circle, rgba(196,176,120,0.1) 0%, transparent 70%); }
-  .quad.superfan::after { background: radial-gradient(circle, rgba(127,181,176,0.12) 0%, transparent 70%); }
-  .quad.lurker::after { background: radial-gradient(circle, rgba(196,120,120,0.08) 0%, transparent 70%); }
-  .quad.contributor::after { background: radial-gradient(circle, rgba(138,158,196,0.1) 0%, transparent 70%); }
+  .quad.new-user::after { background: radial-gradient(circle, rgba(196,176,120,0.1) 0%, transparent 70%); }
+  .quad.casual-scroller::after { background: radial-gradient(circle, rgba(127,181,176,0.12) 0%, transparent 70%); }
+  .quad.casual-seeker::after { background: radial-gradient(circle, rgba(196,120,120,0.08) 0%, transparent 70%); }
+  .quad.core-contributor::after { background: radial-gradient(circle, rgba(138,158,196,0.1) 0%, transparent 70%); }
 
   /* Persona header with icon */
   .persona-header {
@@ -126,10 +126,10 @@
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
   }
-  .subscriber .persona-icon { background: rgba(196,176,120,0.12); }
-  .superfan .persona-icon { background: rgba(127,181,176,0.12); }
-  .lurker .persona-icon { background: rgba(196,120,120,0.1); }
-  .contributor .persona-icon { background: rgba(138,158,196,0.12); }
+  .new-user .persona-icon { background: rgba(196,176,120,0.12); }
+  .casual-scroller .persona-icon { background: rgba(127,181,176,0.12); }
+  .casual-seeker .persona-icon { background: rgba(196,120,120,0.1); }
+  .core-contributor .persona-icon { background: rgba(138,158,196,0.12); }
   .persona-icon svg { width: 16px; height: 16px; }
 
   /* Quad persona label */
@@ -137,10 +137,10 @@
     font-size: 16px; font-weight: 700; color: var(--text-pri);
     letter-spacing: -0.01em;
   }
-  .subscriber .persona { color: var(--gold); }
-  .superfan .persona { color: var(--accent); }
-  .lurker .persona { color: var(--red); }
-  .contributor .persona { color: var(--blue); }
+  .new-user .persona { color: var(--gold); }
+  .casual-scroller .persona { color: var(--accent); }
+  .casual-seeker .persona { color: var(--red); }
+  .core-contributor .persona { color: var(--blue); }
 
   /* Strategy items */
   .strategies {
@@ -154,10 +154,10 @@
     content: ''; display: block; width: 4px; height: 4px; border-radius: 50%;
     flex-shrink: 0; margin-top: 6px; opacity: 0.5;
   }
-  .subscriber .strategy::before { background: var(--gold); }
-  .superfan .strategy::before { background: var(--accent); }
-  .lurker .strategy::before { background: var(--red); }
-  .contributor .strategy::before { background: var(--blue); }
+  .new-user .strategy::before { background: var(--gold); }
+  .casual-scroller .strategy::before { background: var(--accent); }
+  .casual-seeker .strategy::before { background: var(--red); }
+  .core-contributor .strategy::before { background: var(--blue); }
 
   /* Stagger */
   .quad:nth-child(1) { opacity: 0; animation: mountQ 0.5s var(--spring) 0.2s forwards; }
@@ -170,7 +170,56 @@
 
   /* Embed mode */
   body.embedded { padding: 0; min-height: auto; display: block; background: transparent; overflow: hidden; }
-  body.embedded .diagram { border-radius: 0; }
+  body.embedded .diagram { border-radius: 0; width: 100%; }
+
+  /* ── ≤768px: trim outer padding, default cards, y-axis preserved ── */
+  @media (max-width: 768px) {
+    body { padding: 24px; }
+    .matrix-area { padding: 24px 24px 32px; }
+    .quad { padding: 18px; }
+  }
+
+  /* ── 481-640px: y-axis still visible, but compress card internals to fit 2x2 ── */
+  @media (min-width: 481px) and (max-width: 640px) {
+    body { padding: 16px; }
+    .matrix-area { padding: 20px 20px 28px; }
+    .quad { padding: 14px; }
+    .persona-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .persona-icon { width: 24px; height: 24px; border-radius: 6px; }
+    .persona-icon svg { width: 14px; height: 14px; }
+    .persona { font-size: 14px; line-height: 1.2; }
+    .strategy { font-size: 11px; line-height: 1.4; }
+  }
+
+  /* ── ≤480px (true mobile): collapse to single column ── */
+  @media (max-width: 480px) {
+    body { padding: 12px; }
+    .matrix-area { padding: 16px 16px 24px; }
+    .col-headers { display: none; }
+    .y-axis { display: none; }
+    .matrix-body { flex-direction: column; }
+    .grid {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+      gap: 10px;
+    }
+    .quad { padding: 16px; }
+    .persona { font-size: 15px; }
+    .strategy { font-size: 11px; line-height: 1.45; }
+  }
+
+  /* ── ≤320px floor: minimum padding ── */
+  @media (max-width: 320px) {
+    body { padding: 8px; }
+    .matrix-area { padding: 12px 12px 20px; }
+    .quad { padding: 14px; }
+    .grid { gap: 6px; }
+  }
 </style>
 </head>
 <body>
@@ -193,19 +242,19 @@
       <!-- Y axis labels (axis descriptors per Figma 1214:16414) -->
       <div class="y-axis">
         <div class="y-label-cell">
-          <div class="y-label-title">High Intent</div>
+          <div class="y-label-title">Low Intent</div>
           <div class="y-label-sub">Provide the user guidance</div>
         </div>
         <div class="y-label-cell">
-          <div class="y-label-title">Low Intent</div>
+          <div class="y-label-title">High Intent</div>
           <div class="y-label-sub">Empower the user to achieve goals</div>
         </div>
       </div>
 
       <!-- 2×2 Grid -->
       <div class="grid">
-        <!-- Top-left: High intent, Low signal = New user -->
-        <div class="quad subscriber">
+        <!-- Top-left: Low intent, Low signal = New user -->
+        <div class="quad new-user">
           <div class="persona-header">
             <div class="persona-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2c-2.5 0-4.5 2-4.5 4.5v3L2 11v1h12v-1l-1.5-1.5v-3C12.5 4 10.5 2 8 2z" stroke="#C4B078" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 13a1.5 1.5 0 003 0" stroke="#C4B078" stroke-width="1.2" stroke-linecap="round"/></svg></div>
             <div class="persona">New user</div>
@@ -216,8 +265,8 @@
           </div>
         </div>
 
-        <!-- Top-right: High intent, High signal = Casual scroller -->
-        <div class="quad superfan">
+        <!-- Top-right: Low intent, High signal = Casual scroller -->
+        <div class="quad casual-scroller">
           <div class="persona-header">
             <div class="persona-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M8 1.5l1.76 3.57 3.94.57-2.85 2.78.67 3.93L8 10.5l-3.52 1.85.67-3.93L2.3 5.64l3.94-.57L8 1.5z" stroke="#7FB5B0" stroke-width="1.2" stroke-linejoin="round"/></svg></div>
             <div class="persona">Casual scroller</div>
@@ -228,8 +277,8 @@
           </div>
         </div>
 
-        <!-- Bottom-left: Low intent, Low signal = Casual seeker -->
-        <div class="quad lurker">
+        <!-- Bottom-left: High intent, Low signal = Casual seeker -->
+        <div class="quad casual-seeker">
           <div class="persona-header">
             <div class="persona-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" stroke="#C47878" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="8" r="2" stroke="#C47878" stroke-width="1.2"/></svg></div>
             <div class="persona">Casual seeker</div>
@@ -240,8 +289,8 @@
           </div>
         </div>
 
-        <!-- Bottom-right: Low intent, High signal = Core contributor -->
-        <div class="quad contributor">
+        <!-- Bottom-right: High intent, High signal = Core contributor -->
+        <div class="quad core-contributor">
           <div class="persona-header">
             <div class="persona-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M13.5 2.5l-9 9L2 14l2.5-2.5 9-9z" stroke="#8A9EC4" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 5l2-2" stroke="#8A9EC4" stroke-width="1.2" stroke-linecap="round"/></svg></div>
             <div class="persona">Core contributor</div>
