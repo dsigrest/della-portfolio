@@ -266,8 +266,12 @@
     }
 
     .case-body h3 {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
       margin-top: var(--spacing-2xl);
       margin-bottom: var(--spacing-md);
+      color: var(--text-secondary);
     }
 
     .case-body h4 {

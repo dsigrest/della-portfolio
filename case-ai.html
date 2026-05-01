@@ -8,23 +8,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="styles.css">
-  <style>
-    .case-body h3 {
-      font-size: 18px;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-      margin-top: var(--spacing-xl);
-      margin-bottom: var(--spacing-md);
-      color: var(--text-secondary);
-      opacity: 0;
-      transform: translateY(12px);
-      transition: opacity 0.5s ease, transform 0.5s ease;
-    }
-    .case-body h3.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  </style>
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to main content</a>
@@ -73,9 +56,11 @@
            flattened and merged in Session 45.)
            ============================================ -->
 
-      <h2>Reddit had the answers &mdash; but not the answer experience</h2>
+      <h2>Consolidating answers with generative AI</h2>
 
-      <p>Reddit content was scattered across posts, comments, and communities. Users arriving from Google had to piece answers together themselves — and often bounced before discovering Reddit as the destination. An LLM-powered synthesis surface consolidated relevant discussions into one source-backed answer, with the original posts threaded below for verification and deeper exploration.</p>
+      <p>Reddit had the answers &mdash; but not the answer experience. Content was scattered across posts, comments, and communities. Users arriving from Google had to piece answers together themselves &mdash; and often bounced before discovering Reddit as the destination.</p>
+
+      <p>I led the design of Reddit&rsquo;s first AI-generated search experience: the dual-layer page architecture, the identification pattern, the source layer, and the evaluation rubric that turned subjective quality calls into a repeatable process.</p>
 
       <!-- ============================================
            1. OVERVIEW (was: Challenge)
@@ -104,12 +89,34 @@
       </div>
 
       <!-- ============================================
-           2. COMPETING USER NEEDS (was: Quality Control h3 → h2)
-           Pos 2, v2 §2.2 — lines 189, 201, 213, 215 verbatim.
-           Order: 189 → ai09 → 201 → 213 → 215. ai08 retired.
+           Section 2: GATHER PROOF BEFORE INFRASTRUCTURE
+           Static MVP approach — validate the experience
+           before committing engineering to dynamic generation.
            ============================================ -->
 
-      <h2>Competing user needs</h2>
+      <h2>Gather proof before infrastructure</h2>
+
+      <p>Dynamic generation required infrastructure investment, but the team needed evidence before committing. The path forward was a lightweight proof of concept: build enough of the product to test whether the experience worked.</p>
+
+      <p>We started with static keyword landing pages refreshed periodically, targeting verticals with strong source coverage and high search demand. This let us test the experience, learn what quality required, and maximize impact with the resources we had.</p>
+
+      <div class="case-img-full diagram-embed" data-diagram="ai-02a">
+        <iframe
+          src="img/diagrams/diagram-ai02a-verticals-v4.html?v=2026-04-30-7"
+          loading="lazy"
+          scrolling="no"
+          title="Vertical selection — strongest verticals chosen for source coverage and search demand"
+          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+        ></iframe>
+      </div>
+
+      <!-- ============================================
+           Section 3: BALANCING USER + SEO NEEDS
+           The dual-user framework that emerged once we
+           started building inside the static MVP.
+           ============================================ -->
+
+      <h2>Balancing user and SEO needs</h2>
 
       <p>The page had two audiences: humans and Googlebot. Humans needed readable, trustworthy answers. Googlebot needed structure, keywords, and links. Optimizing for one at the expense of the other would break the experience.</p>
 
@@ -123,66 +130,43 @@
         ></iframe>
       </div>
 
-      <p>The breakthrough was framing Googlebot as a user with its own needs — not as an abstract SEO constraint. That made the tradeoffs legible to designers, engineers, and content partners, and helped the team balance discoverability with trust.</p>
+      <h3>Reframe: Googlebot as a user</h3>
 
-      <p>I pushed back on repeating the query throughout the page. Instead, we moved keyword signals into structured elements around the generated answer — including a pre-populated search bar that made it feel as if the user had already searched Reddit. SEO got the signal it needed, while the synthesis stayed natural and the design reinforced Reddit as the place to continue searching.</p>
+      <p>The breakthrough was framing Googlebot as a user with its own needs &mdash; not as an abstract SEO constraint. That made the tradeoffs legible to designers, engineers, and content partners, and helped the team balance discoverability with trust.</p>
 
-      <!-- ============================================
-           3a. PROOF OF CONCEPT / RESEARCH (was: Proving the Concept h3)
-           Pos 3a, v2 §2.3a — lines 84 + 106 verbatim, then ai02a iframe.
-           Card-pair shell removed: now a regular full-width section in normal flow.
-           ai02b retired.
-           ============================================ -->
-
-      <h2>Proof before infrastructure</h2>
-
-      <p>Dynamic generation required infrastructure investment, but the team needed evidence before committing those resources. The path forward was a lightweight proof of concept: build enough of the product to test whether the experience worked.</p>
-
-      <p>We started with static keyword landing pages refreshed periodically, targeting verticals with strong source coverage and high search demand. This let us test the experience, learn what quality required, and maximize impact with the resources we had.</p>
-
-      <div class="case-img-full diagram-embed" data-diagram="ai-02a">
-        <iframe
-          src="img/diagrams/diagram-ai02a-verticals-v4.html?v=2026-04-30-7"
-          loading="lazy"
-          scrolling="no"
-          title="Vertical selection — strongest verticals chosen for coverage and traffic"
-          style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-        ></iframe>
-      </div>
+      <p>I pushed back on repeating the query throughout the page. Instead, we moved keyword signals into structured elements around the generated answer &mdash; including a pre-populated search bar that made it feel as if the user had already searched Reddit. SEO got the signal it needed, while the synthesis stayed natural and the design reinforced Reddit as the place to continue searching.</p>
 
       <!-- ============================================
-           3b. PAGE INFORMATION ARCHITECTURE (was: Solution h2)
-           Pos 3b, v2 §2.3b — lines 120 + 126 verbatim, then Phase-2 placeholder iframe.
-           Line 114 moved into Strategy tile of opening card-pair.
-           ai-ia-before-after iframe retired; Phase 2 will create diagram-ai-page-ia-v1.html
-           from Figma 230:2 + 983:8 via figma-to-html.
+           Section 4: LAYERING SYNTHESIS WITH SOURCES
+           The dual-layer page architecture decision —
+           synthesis on top, source posts below.
            ============================================ -->
 
-      <h2>Dual-layer page architecture</h2>
+      <h2>Layering synthesis with sources</h2>
 
-      <p>The dual-layer layout was the core design decision: synthesis on top for an immediate answer, source posts below for verification and deeper exploration. Links across both layers created clear on-ramps into Reddit while preserving the structure Googlebot needed.</p>
+      <p>The page had to deliver an immediate answer without burying the source material that made it trustworthy. Synthesis went on top for the answer; source posts went below for verification and deeper exploration. Links across both layers created clear on-ramps into Reddit while preserving the structure Googlebot needed.</p>
 
       <p>The longer-term bet was to shift users from appending <em>reddit</em> to a Google search toward searching Reddit directly.</p>
 
-      <!-- Phase 2: figma-to-html on 230:2 + 983:8 will create this file -->
       <div class="case-img-full diagram-embed" data-diagram="ai-page-ia">
         <iframe
           src="img/diagrams/diagram-ai-page-ia-v1.html?v=2026-04-30-7"
           loading="lazy"
           scrolling="no"
-          title="Page IA — before vs after, scattered threads vs single AI-summary page with cited sources"
+          title="Page IA — scattered Reddit threads vs dual-layer answer page"
           style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
         ></iframe>
       </div>
 
       <!-- ============================================
-           4. ESTABLISHING PRINCIPLES (was: Value)
-           Pos 4, v2 §2.4 — line 146 verbatim per resolved §6.2 (no bridge).
-           ai13 moves here from old Transparency opener.
-           ai05 + line 134 retired.
+           Section 5: ESTABLISH PRINCIPLES
+           Defines the rules for AI-generated content
+           on Reddit — identification, attribution, scaling.
            ============================================ -->
 
-      <h2>Principles for AI-generated search results</h2>
+      <h2>Establish principles for AI-generated content</h2>
+
+      <p>With the layout settled, the synthesis itself needed rules &mdash; how it would identify itself, how it would attribute sources, and how the patterns would scale. As Reddit&rsquo;s first AI-generated content surface, the principles had to hold beyond this MVP.</p>
 
       <p>The page had to set expectations for a new kind of Reddit result: an answer users could scan quickly, verify through sources, and use as a starting point for deeper exploration.</p>
 
@@ -198,19 +182,16 @@
       <p class="diagram-attribution"><strong>Partnered with:</strong> Brand · Legal · Design Systems</p>
 
       <!-- ============================================
-           5. IDENTIFICATION + UI to distinguish AI gen content
-           Pos 5, v2 §2.5 — lines 274, 288, 300, 312 verbatim.
-           Order: H2 + 274 → H3 + 288 → ai14 → 300 → 312 → identification
-           precedent (no bridge per resolved §6.3).
-           ai15, ai16 paired, ai19 paired, Scalability + Content Attribution
-           subsections all retired.
+           Section 6: IDENTIFYING GENERATED CONTENT
+           The visual signal pattern for distinguishing
+           AI-generated content from regular Reddit content.
            ============================================ -->
 
-      <h2>Identification</h2>
+      <h2>Identifying generated content</h2>
 
-      <p>We needed to define one of Reddit’s first scalable patterns for AI-generated content: what it was called, how it identified itself, and how it attributed its sources. I partnered with Brand, Legal, and Design Systems to make that pattern work across surfaces.</p>
+      <p>We needed to define one of Reddit&rsquo;s first scalable patterns for AI-generated content: what it was called, how it identified itself, and how it attributed its sources. I partnered with Brand, Legal, and Design Systems to make that pattern work across surfaces.</p>
 
-      <h3>UI to distinguish AI-generated content</h3>
+      <h3>Choosing the visual signal</h3>
 
       <p>The question was bigger than visual design: what signal could make AI-generated content recognizable without making it feel gimmicky, intrusive, or opaque? User research confirmed people wanted transparency, but skepticism around AI-generated content was high. The pattern had to build trust without overexplaining itself.</p>
 
@@ -248,15 +229,14 @@
       </div>
 
       <!-- ============================================
-           6. UI TO DISPLAY SOURCE POSTS (was: Threaded Source Posts h3 → h2)
-           Pos 6, v2 §2.6 — lines 374, 386, 398 verbatim.
-           Order (per §6.5-fix): 374 → 386 → 398 → ai20. All prose first, then diagram.
-           ai21 retired.
+           Section 7: SURFACING THE SOURCE LAYER
+           The verification layer below the synthesis —
+           threaded posts and comments users can inspect.
            ============================================ -->
 
-      <h2>Designing the source layer</h2>
+      <h2>Surfacing the source layer</h2>
 
-      <p>Attribution answered part of the trust problem, but users still needed to inspect the evidence behind the synthesis. User research kept surfacing the same question: where is this coming from? The source layer below the synthesis answered that directly, letting users explore the original posts and comments behind the generated answer.</p>
+      <p>Identification told users they were reading AI-generated content. Verification came next. User research kept surfacing the same question: where is this coming from? The source layer below the synthesis answered that directly, letting users explore the original posts and comments behind the generated answer &mdash; and dive deeper into the material that interested them most.</p>
 
       <p>I worked with data science on comment truncation and display rules. Most useful comments were short, with diminishing returns after the first few lines, so we landed on two comments per post — enough to show conversation context without overwhelming the unit.</p>
 
@@ -282,18 +262,16 @@
       </div>
 
       <!-- ============================================
-           7. CONTENT (was: Voice)
-           Pos 7a + 7b + 7c, v2 §2.7 — line 406 verbatim opener per resolved §6.6.
-           Pos 7b "voice" pulls from LLM-as-Narrator (lines 459, 471 + ai25).
-           Pos 7c "content" pulls from Tone (line 420 + ai23 paired).
-           ai22, ai24 + Clarity subsection retired.
+           Section 8: SHAPING SYNTHESIZED CONTENT
+           Voice and trust — what the synthesis says
+           and how trustworthy it stays through source-closeness.
            ============================================ -->
 
-      <h2>Content</h2>
+      <h2>Shaping synthesized content</h2>
 
-      <p>Once users could recognize and verify generated content, the next question was what that content should actually say — and who it should sound like. Defining the LLM’s output was as much a design problem as defining how it looked. I led decisions around tone, clarity, and the model’s relationship to Reddit’s voice.</p>
+      <p>Once users could recognize and verify generated content, the next question was what that content should actually say &mdash; and who it should sound like. Shaping the LLM&rsquo;s output was as much a design problem as defining how it looked. I led decisions around tone, clarity, and the model&rsquo;s relationship to Reddit&rsquo;s voice.</p>
 
-      <h3>Voice</h3>
+      <h3>Define the voice</h3>
 
       <p>The team debated the role of the generated answer: was it a character, a utility, an anonymous system, or part of Reddit itself? Giving it too much personality made it feel gimmicky. Making it invisible made it hard to trust.</p>
 
@@ -309,7 +287,7 @@
 
       <p>We landed on an omnipresent narrator without a character. The synthesis would feel like part of Reddit’s product experience — not a bot, mascot, or separate assistant.</p>
 
-      <h3>Designing for trust</h3>
+      <h3>Anchor trust in sources</h3>
 
       <p>Trust depended on closeness to the source material. Broad generalizations — a consistent failure mode in early outputs — broke trust immediately. The harder challenge was synthesizing across communities without losing Reddit’s specificity or voice.</p>
 
@@ -333,17 +311,16 @@
       </div>
 
       <!-- ============================================
-           8. ENSURING QUALITY (new umbrella)
-           Pos 8a (no opener per resolved §6.4) + 8b/8c/8d.
-           v2 §2.8 — all verbatim lines preserved across the 3 H3 subsections.
-           Pos 8b "Generating summaries: XFN workflow": 150 → 152 → ai06 → 173 → 185. ai07 retired.
-           Pos 8c "feedback loops": 244 → 256 → ai12 (per resolved §6.7). ai11 retired.
-           Pos 8d "failure states": 219 → 221 → ai10 paired.
+           Section 9: ENSURING QUALITY
+           The quality system that held the synthesis
+           to a consistent bar — rubric, feedback, fallback.
            ============================================ -->
 
       <h2>Ensuring quality</h2>
 
-      <h3>Turning quality into a repeatable process</h3>
+      <p>Trust depended on getting outputs right one at a time; quality depended on building systems that held the bar across thousands.</p>
+
+      <h3>Codify success</h3>
 
       <p>The team had no shared criteria for what made a synthesis good: no evaluation rubric, no feedback loop, and no common language for quality. Prompt iteration was mostly vibes-based, which made it hard to tell whether outputs were actually improving.</p>
 
@@ -372,7 +349,7 @@
 
       <p>I partnered with content design to define the evaluation dimensions, then facilitated scoring sessions where the cross-functional team rated outputs against the rubric. That gave engineers, content design, and product a shared way to discuss quality and decide what to improve next.</p>
 
-      <h3>Feedback loops</h3>
+      <h3>Tuning with feedback</h3>
 
       <p>Once the rubric gave us a shared definition of quality, flagged outputs became the engine for iteration. They showed us where the model was weakest and helped the team focus each prompt, content, or UI change. The rubric evolved as we learned what users actually valued, not just what we assumed mattered.</p>
 
@@ -397,7 +374,7 @@
         ></iframe>
       </div>
 
-      <h3>Designing graceful degradation</h3>
+      <h3>Falling back gracefully</h3>
 
       <p>The same quality signals that guided iteration also determined when not to show synthesis at all. When summaries fell below the threshold, source posts became the fallback experience — giving users a useful page without showing a low-confidence answer.</p>
 
@@ -423,10 +400,12 @@
       </div>
 
       <!-- ============================================
-           RESULTS
+           Section 10: OUTCOME
+           A foundation for Reddit Answers, which now
+           reaches 15M weekly users.
            ============================================ -->
 
-      <h2>Results</h2>
+      <h2>Outcome: a foundation for Reddit Answers</h2>
 
       <p>The MVP proved that AI-generated answers could work on Reddit when they were source-backed, clearly identified, and held to a consistent quality bar. The system helped keep users on pages they used to bounce from, turned vibes-based prompting into a repeatable quality process, and gave Reddit a scalable precedent for AI-generated content. But the biggest impact was strategic: it clarified that synthesis belonged inside search, not on a separate search-like surface. That insight helped point the next phase toward Reddit Answers.</p>
 
@@ -523,7 +502,7 @@
       imageObserver.observe(img);
     });
 
-    document.querySelectorAll('.case-body h2, .case-body h3').forEach(heading => {
+    document.querySelectorAll('.case-body h2').forEach(heading => {
       imageObserver.observe(heading);
     });
 
