@@ -275,12 +275,13 @@
     }
 
     .case-body h4 {
-      font-size: 17px;
+      font-size: 13px;
       font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
       margin-top: var(--spacing-xl);
       margin-bottom: var(--spacing-sm);
-      color: var(--text-secondary);
-      letter-spacing: -0.005em;
+      color: var(--text-primary);
     }
 
     .case-body ol.strategy-steps {
