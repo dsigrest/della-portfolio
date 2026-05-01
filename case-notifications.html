@@ -25,7 +25,7 @@
 
   <main id="main">
     <section class="case-hero">
-      <div class="case-hero-eyebrow">Case Study 01 of 05 &mdash; Built notification framework serving 185M daily sends</div>
+      <div class="case-hero-eyebrow">Case Study 01 of 05</div>
       <h1>Notifications &amp; Inbox</h1>
       <div class="case-meta-grid">
         <div class="meta-item">
@@ -48,9 +48,9 @@
     </section>
 
     <section class="case-body">
-      <h2>From fragmented surfaces to a unified system</h2>
+      <h2>Transforming fragmented surfaces into a unified system</h2>
 
-      <p>Reddit&rsquo;s communication systems &mdash; Chat, Messages, and Notifications &mdash; reached hundreds of millions of users every day, but were fragmented across platforms with no shared architecture. The result was an inbox experience that didn&rsquo;t behave the way users expected.</p>
+      <p>Reddit&rsquo;s communication systems &mdash; Chat, Messages, and Notifications &mdash; reached hundreds of millions of users every day, but were fragmented across surfaces with no shared architecture. The result was an inbox experience that didn&rsquo;t behave the way users expected.</p>
 
       <p>I built a user segmentation framework, defined the inbox vision, and led the move toward a unified engagement system. Through working prototypes and user testing, our team turned abstract debates into evidence-backed product decisions.</p>
 
@@ -64,7 +64,7 @@
         ></iframe>
       </div>
 
-      <h2>A messaging system that hadn&rsquo;t evolved with the product</h2>
+      <h3>User messaging hadn&rsquo;t evolved with the product</h3>
 
       <p>Reddit&rsquo;s messaging surfaces had drifted across four disconnected systems and three platforms. The experience was off the design system, hard to scale, and difficult to experiment with &mdash; and it hadn&rsquo;t had a dedicated design pass in six years.</p>
 
@@ -80,7 +80,7 @@
         ></iframe>
       </div>
 
-      <h3>One inbox had to serve three very different users</h3>
+      <h3>The inbox had to serve three very different users</h3>
 
       <p>Each user cohort experienced the inbox differently. New users saw an empty state, casual users lacked control over what they saw, and core users struggled to find what mattered.</p>
 
@@ -96,7 +96,7 @@
         ></iframe>
       </div>
 
-      <h3>The inbox was powerful, but under-leveraged</h3>
+      <h3>The inbox drove engagement, but was underleveraged</h3>
 
       <p>Users engaged when inbox content felt personally actionable &mdash; tied to something they posted, joined, or cared about. That made the inbox a high-intent contribution surface, not a passive discovery surface.</p>
 
@@ -112,11 +112,18 @@
         ></iframe>
       </div>
 
-      <h2>Scalable foundation</h2>
+      <h2>Strategy</h2>
+
+      <p>The path forward had two phases &mdash; build a foundation that could scale, then use it to learn what users actually needed.</p>
+
+      <ol class="strategy-steps">
+        <li><strong>Establish a scalable foundation</strong></li>
+        <li><strong>Optimize for key user journeys</strong></li>
+      </ol>
+
+      <h2>First: establish a scalable foundation</h2>
 
       <h3>Standardize the messaging row</h3>
-
-      <p>Reusable design-system component for Inbox, Messages, and Chat &mdash; new types in days, not weeks.</p>
 
       <p>Inbox, Messages, and Chat were all off Reddit&rsquo;s design system, so each new type required custom engineering work. That made the system harder to scale, test, and maintain.</p>
 
@@ -132,9 +139,7 @@
         ></iframe>
       </div>
 
-      <h3>Gestures for secondary actions</h3>
-
-      <p>Actions without extra taps &mdash; and more room for flexible content.</p>
+      <h3>Enable gestures for secondary actions</h3>
 
       <p>The row was carrying too much UI: type icons, overflow menus, and segmented sections that pushed content down the page. Icons had low comprehension, while overflow menus made secondary actions harder to reach.</p>
 
@@ -170,7 +175,9 @@
 
       <p>Badge noise created confusion &rarr; progressive disclosure clarified the hierarchy &rarr; migration reduced unread contrast &rarr; CTR dropped &rarr; data revealed the cause &rarr; v2 restored contrast &rarr; updated pattern scaled beyond inbox.</p>
 
-      <h2>A framework for deciding what to show next</h2>
+      <h2>Next: optimize for key user journeys</h2>
+
+      <h3>Establish a framework for deciding what to show</h3>
 
       <p>We used two axes to guide prioritization: signal &mdash; what Reddit knew about the user &mdash; and intent &mdash; what the user was trying to do. Together, they helped us identify what each cohort needed from the inbox and which notification types were worth prioritizing.</p>
 
@@ -200,9 +207,9 @@
         ></iframe>
       </div>
 
-      <h2>1. Build Habits</h2>
+      <h3>1. Build Habits</h3>
 
-      <h3>Every notification explains why it&rsquo;s here</h3>
+      <h4>Every notification explains why it&rsquo;s here</h4>
 
       <p>Contextual framing turned generic updates into personally actionable moments.</p>
 
@@ -227,7 +234,7 @@
         <div class="body">click-through. Contextualized notifications vs. generic framing.</div>
       </div>
 
-      <h3>Restore continuity across push and inbox</h3>
+      <h4>Restore continuity across push and inbox</h4>
 
       <p>Users expected a communication history, not a rotating latest item.</p>
 
@@ -250,9 +257,9 @@
         <div class="body">push good visits &mdash; the continuity fix compounded across the full send volume.</div>
       </div>
 
-      <h2>2. Enable Curation</h2>
+      <h3>2. Enable Curation</h3>
 
-      <h3>Separate what users asked for from what we recommend</h3>
+      <h4>Separate what users asked for from what we recommend</h4>
 
       <p>Subscribed updates should not compete with algorithmic recommendations.</p>
 
@@ -270,7 +277,7 @@
         ></iframe>
       </div>
 
-      <h3>Make notification settings predictable</h3>
+      <h4>Make notification settings predictable</h4>
 
       <p>Users should know what a setting will actually do.</p>
 
@@ -288,7 +295,7 @@
         ></iframe>
       </div>
 
-      <h3>Put preferences at the point of decision</h3>
+      <h4>Put preferences at the point of decision</h4>
 
       <p>Notification controls belonged where users chose to join.</p>
 
@@ -301,12 +308,12 @@
           src="img/diagrams/diagram-not08-subreddit-onramps-v5.html?v=2026-04-30-7"
           loading="lazy"
           scrolling="no"
-          title="Subreddit row preferences — silent toggle compared to inline picker, surfacing the on-ramp at the point of decision"
+          title="Subreddit row preferences — hidden preference compared to visible toggle, surfacing the on-ramp at the point of decision"
           style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
         ></iframe>
       </div>
 
-      <h3>Signal compounds over time</h3>
+      <h4>Signal compounds over time</h4>
 
       <p>Relevant notifications create engagement; engagement improves relevance.</p>
 
@@ -324,9 +331,9 @@
         ></iframe>
       </div>
 
-      <h2>3. Create Focus</h2>
+      <h3>3. Create Focus</h3>
 
-      <h3>Three surfaces, three mental models</h3>
+      <h4>Three surfaces, three mental models</h4>
 
       <p>Inbox, Messages, and Chat looked related, but each had different rules for sorting, engagement, navigation, and actions.</p>
 
@@ -344,11 +351,13 @@
         ></iframe>
       </div>
 
-      <h3>Tabs made the inbox scannable</h3>
+      <h4>Tabs made the inbox scannable</h4>
 
-      <p>The inbox had to work like a switchboard: help users scan quickly, choose the right surface, act, and leave.</p>
+      <p>To support each mental model, the inbox had to work like a switchboard: help users scan quickly, choose the right surface, act, and leave.</p>
 
-      <p>I tested three layouts: chronological, nested, and tabbed. Chronological was simplest, but buried priority items under noise. Nested grouped related activity, but added cognitive load. Tabs gave each surface a clear place, so users could ignore what they didn&rsquo;t need and go straight to what mattered.</p>
+      <p>I started by simplifying the model itself. Private messages overlapped with both notifications and chat &mdash; system updates and community alerts belonged in notifications, while user-to-user threads belonged in chat. Migrating private messages out collapsed three mental models into two.</p>
+
+      <p>From there, I tested three layouts: chronological, nested, and tabbed. Chronological was simplest, but buried priority items under noise. Nested grouped related activity, but added cognitive load. Tabs gave each surface a clear place, so users could ignore what they didn&rsquo;t need and go straight to what mattered.</p>
 
       <p>Tabbed layout won on scan speed and mental model clarity.</p>
 
@@ -362,7 +371,7 @@
         ></iframe>
       </div>
 
-      <h3>Five tabs to three</h3>
+      <h4>Five tabs to three</h4>
 
       <p>One unified inbox reduced navigation clutter and opened space for product experimentation.</p>
 

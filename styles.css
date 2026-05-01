@@ -270,6 +270,47 @@
       margin-bottom: var(--spacing-md);
     }
 
+    .case-body h4 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: var(--spacing-xl);
+      margin-bottom: var(--spacing-sm);
+      color: var(--text-primary);
+      letter-spacing: -0.005em;
+    }
+
+    .case-body ol.strategy-steps {
+      list-style: none;
+      padding: 0;
+      margin: var(--spacing-md) 0 var(--spacing-lg);
+      counter-reset: strategy-step;
+    }
+
+    .case-body ol.strategy-steps li {
+      position: relative;
+      padding-left: 36px;
+      margin-bottom: var(--spacing-sm);
+      counter-increment: strategy-step;
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+    }
+
+    .case-body ol.strategy-steps li::before {
+      content: counter(strategy-step) ".";
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .case-body ol.strategy-steps li strong {
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
     .case-body p {
       font-size: 16px;
       line-height: 1.7;
@@ -1365,7 +1406,7 @@ main {
   top: 100%;
   left: 0;
   right: 0;
-  margin-top: var(--spacing-sm);
+  margin-top: var(--spacing-lg);
 }
 .results-phone-slot .results-phone-gif {
   width: 100%;
