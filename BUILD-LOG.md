@@ -74,6 +74,47 @@ Next up: case-sharing thread resumes from `sessions/case-sharing-thread-pause-ha
 
 ## Log entries
 
+### May 1, 2026 (Session 49 — case-ai parallel-pass against case-notifications + h3/h4 hierarchy fix)
+
+**Context:** Parallel-pass on `case-ai.html` against the `case-notifications.html` source-of-truth pattern established in Session 48. Resume prompt (`sessions/resume-prompt-case-ai-parallel-pass-2026-05-01.md`) scoped this as a structure / voice / recruiter-scan audit, not a body-copy rework. Plan-then-execute pattern: 4 macro decisions first, then section-by-section heading audit, then a master body batch for sign-off, then execute. Della verified Variant G for the resulting h3/h4 hierarchy fix in browser before the second commit landed.
+
+**What shipped (commits `a82c50b` + `c5da6cc`):**
+- **Section reorder:** swapped Section 2 ("Competing user needs") and Section 3 ("Proof before infrastructure") so the constraint (validate before scaling) precedes the framework that emerged within it (humans vs Googlebot), keeping framework adjacent to its solution (dual-layer architecture, now Section 4).
+- **Heading scan rebuilt for narrative.** Final scan: *Consolidating answers with generative AI → Gather proof before infrastructure → Balancing user and SEO needs → Reframe: Googlebot as a user → Layering synthesis with sources → Establish principles for AI-generated content → Identifying generated content → Choosing the visual signal → Surfacing the source layer → Shaping synthesized content → Define the voice → Anchor trust in sources → Ensuring quality → Codify success → Tuning with feedback → Falling back gracefully → Outcome: a foundation for Reddit Answers.* Voice rules applied: 0 "Designing" repeats (was 6 in original), 0 parent/child word repetition between h2 and h3, 6 imperatives / 10 gerunds for register balance, 0 banned vocabulary.
+- **Section 1 opening rewrite:** new thesis h2 ("Consolidating answers with generative AI") + 2-paragraph opening (problem context + first-person authorship beat naming the dual-layer page architecture, identification pattern, source layer, evaluation rubric).
+- **New h3 in Section 3:** "Reframe: Googlebot as a user" inserted under the dual-user diagram, splitting the section into problem framing + solution announcement.
+- **Bridge paragraphs added:** Section 5 (layout → principles per Della's flag); Section 7 (Identification → Verification → user research, plus "dive deeper into the material that interested them most" addition); Section 9 (content/trust → quality systems).
+- **Section 4 lead-sentence rewrite:** Option B problem-tension lead replacing "The dual-layer layout was the core design decision:" meta-frame that restated the heading.
+- **Smaller copy edits:** Section 2 lead-sentence tighten (drop "those resources"); Section 8 intro tweak ("Defining" → "Shaping" to match new h2 verb); 2 diagram iframe-title drift fixes (`diagram-ai02a-verticals-v4.html`: "coverage and traffic" → "source coverage and search demand"; `diagram-ai-page-ia-v1.html`: → "scattered Reddit threads vs dual-layer answer page").
+- **Style cleanup:** removed inline `<style>` block from `case-ai.html <head>`; promoted h3 typography to global `styles.css` per Macro 4 = Path C; dropped `, .case-body h3` from case-ai IntersectionObserver (h3s no longer animate, matches case-notifications behavior). Internal "Pos N, v2 §X.Y &mdash; lines NNN verbatim" section comments replaced with human-readable section markers that survive future reorders.
+- **h3/h4 hierarchy fix (commit `c5da6cc`):** Della spotted that the new h3 styling (18px / weight 600 / secondary text) made existing h4s in `case-notifications.html` (16px / weight 600 / primary text) read as MORE prominent than their parent h3s &mdash; inverted hierarchy. Built a 4-variant side-by-side preview (`h3-h4-preview.html`, deletion-trigger noted, deleted post-pick). Della picked Variant G: h3 18px / weight 500 / primary; h4 17px / weight 600 / secondary.
+
+**Quality gates (both passed each round):**
+- `python3 voice-check.py case-ai.html` &rarr; 0 errors; 3 pre-existing structural warnings (page-level concatenation false positives, same as Sessions 46&ndash;48).
+- `python3 quality-check.py case-ai.html` &rarr; 0 errors, 0 warnings.
+- `case-notifications.html` regression check after h3/h4 styling change: 0 errors on both linters.
+- Diagram polish 4-pattern scan across all 35 diagram-ai files: 0 hits (no feTurbulence noise SVGs, no `.transform-area::before` gradient halos, no `.mock-frame` 6px tight gaps, no `.phone-caption --spacing-sm` suffocation). No-op sub-batch.
+
+**Decisions / tradeoffs:**
+- **No forced "First:/Next:" phase headers:** notifications-style phase scaffolding rejected. case-ai is one MVP project with parallel design workstreams (page IA, identification, source layer, content, quality), not the sequential foundation-then-optimize arc notifications had. Stayed flat.
+- **Heading parallel structure deliberately broken:** considered making Sections 6/7/8/9 strict parallel pillars but rejected because the four sections are different *kinds* of work (UI pattern vs IA decision vs voice/tone domain vs process). Used consistent register (gerund-leaning at h2-level) without forcing exact parallelism.
+- **Section 7 bridge sentence &mdash; three iterations:** v1 stacked three near-identical "where it came from" / "coming from" / "answered that directly" beats; v2 dropped the second clause ("Identification told users they were reading AI-generated content. Verification came next."); v3 added Della's "dive deeper into the material that interested them most" via em-dash to preserve parallel structure without redundancy.
+- **Section 9 h3-1 wording &mdash; multiple rounds:** "Turning vibes into a rubric" rejected as too casual; "Codify quality" rejected for "quality" repeat with h2; landed on **"Codify success"** &mdash; formal, no parent/child overlap, recruiter-coded.
+- **h3 styling &mdash; Macro 4 = Path C:** considered Path A (match notifications exactly with default-bold primary h3) and Path B (promote with fade-in animation). Picked Path C because secondary-color, lighter-weight h3 read as cleaner hierarchy than notifications' default-bold h3s. Then Variant G adjustment after the h4 inversion surfaced.
+- **Section 1 h2 &mdash; three iterations:** "Designing Reddit's first scalable AI-content pattern" &rarr; "Consolidating answers with Reddit's first scalable AI-content pattern" &rarr; final "Consolidating answers with generative AI" (drops the precedent claim for recruiter-keyword resonance &mdash; "generative AI" is the term hiring managers scan for).
+- **Preview file as shared review surface:** built `h3-h4-preview.html` with all 4 variants (A/E/F/G) in a 2x2 grid, deletion-trigger noted in comment + filename. Della viewed once in browser, picked G, file deleted post-pick. Avoided multiple back-and-forth roundtrips of "apply, view, revert, try other variant".
+- **Voice-rule catch:** "Leverage feedback loops" surfaced as one of Della's working drafts for Section 9 h3-2 &mdash; "leverage" is in `banned-patterns.yaml` at error level (would auto-fail voice-check.py). Flagged before commit; replaced with "Tuning with feedback".
+
+**Files changed (3):** `case-ai.html`, `styles.css`, `BUILD-LOG.md`. Pre-commit hooks (quality + voice) ran on case-ai.html before each of the two code commits landed.
+
+**Pre-existing dirty state surfaced (untouched, deferred):** `M case-sharing.html`; `?? img/diagrams/diagram-shr01-before-share-sheet-v5.html`; `?? img/diagrams/assets/SHAR-screenshotToshare.gif`. Same in-flight share-thread state as Session 48.
+
+**Housekeeping flag:** `BUILD-LOG.md` is now past the 50 KB / 1500-line soft threshold; quarterly archive split per global CLAUDE.md "Living doc split" rule is overdue and a prime next-housekeeping scope. `Get-a-job/SESSION-STATE.md` skip from Session 48 still stands &mdash; file at ~198 KB needs split before next state update lands cleanly.
+
+**Next up:** Della reviews shipped commits in browser. case-sharing case study, BUILD-LOG split, and SESSION-STATE.md split are all available follow-on scopes. Resume prompt `sessions/resume-prompt-case-ai-parallel-pass-2026-05-01.md` archives to `sessions/archive/`. Notifications cross-check (apply Session 49's heading lens to `case-notifications.html` &mdash; parent/child word check, verb-repetition tally, imperative/gerund balance) captured as a future scope.
+
+---
+
 ### May 1, 2026 (Session 48 — case-notifications copy revisions, Strategy section, role rename, diagram polish)
 
 **Context:** Della reviewed `case-notifications.html` in browser and supplied a 25-item feedback batch covering eyebrow trim, h2/h3/h4 retitles, a new mid-page Strategy section with First/Next sub-sections, hierarchy demotions across Build Habits / Enable Curation / Create Focus, dropped repetitive lead sentences, paragraph relocations, and visual polish on five diagram files. Then a Role-field rename across both visible case studies. Plan-then-execute pattern: full plan with proposed structure presented for sign-off before any edits landed; execution batched in one pass per file group; voice + quality gates run between rounds.
