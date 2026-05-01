@@ -83,6 +83,61 @@ Older BUILD-LOG entries have been split into dated sibling files to keep this fi
 
 ## Log entries
 
+### May 1, 2026 (Session 50 — BUILD-LOG / SESSION-STATE quarterly archive split + case-notifications heading cross-check)
+
+**Context:** Two-phase scope per resume prompt `sessions/resume-prompt-notifications-cross-check-2026-05-01.md`. Phase 1 was overdue housekeeping &mdash; the Living doc split rule had been triggering since Session 48. Phase 2 closed the loop on the case-ai / case-notifications source-of-truth pair by applying Session 49's heading lens (parent/child word check, verb-repetition tally, imperative/gerund balance, h4 styling cross-check) to `case-notifications.html`. Plan-then-execute pattern across both phases: split plan with concrete cutoffs &rarr; Della sign-off &rarr; execute &rarr; verify &rarr; commit; then audit &rarr; numbered batch &rarr; sign-off &rarr; execute &rarr; voice + quality checks &rarr; commit.
+
+**What shipped &mdash; Phase 1 (commit `d3a5002`):**
+- **Split `BUILD-LOG.md`** (1288 lines / 162 KB &rarr; 979 lines / 137 KB) into live + 2 dated archive siblings: `BUILD-LOG-2026-Q1.md` (3 March entries, 113 lines / 7 KB &mdash; Mar 12 kickoff, Mar 13 case studies, Mar 16 Vercel deployment) and `BUILD-LOG-2026-Q2-early.md` (5 April 17&ndash;22 entries, 231 lines / 21 KB &mdash; Figma design system, mobile-breakpoint audit, responsive-audit POC, Case-AI mobile completion, Portfolio ship-complete).
+- **Split `SESSION-STATE.md`** (763 lines / 194 KB &rarr; 595 lines / 163 KB) into live + 1 archive sibling: `SESSION-STATE-archive-2026-pre-Apr23.md` (Sessions 3, 4, 6, 7, 9 historical "What happened" entries + key files changed lists, 191 lines / 32 KB).
+- **`## Archives` pointer table** added near the top of both live files so future-Claude can locate older entries by date range.
+- **Live `BUILD-LOG.md` retains:** header through Artifacts, Sessions 34&ndash;49 (all Apr 28+ entries), and the cross-cutting `## Patterns observed` section.
+- **Live `SESSION-STATE.md` retains:** header, "What's ready to send", mobile audit completion sections per case study, responsive-audit skill versions, SHR/AI Diagram Status, Active interviews, Open items, Session 36 entry (Apr 23 &mdash; within 30 days), Decisions + tradeoffs.
+- `SESSION-STATE.md` is workspace state, not git-tracked &mdash; its split happened in parallel but is not part of the Phase 1 commit.
+
+**What shipped &mdash; Phase 2 (commit `3400ac6`):**
+- **Audit:** case-notifications already structurally clean from Sessions 47/48 polish &mdash; 0 hard violations, 5 soft flags surfaced.
+- **6 specific edits across 5 line ranges:**
+  - L117 Strategy intro: stray comma fix (`...the disparate surfaces, then, use it...` &rarr; `...the disparate surfaces &mdash; then use it...`).
+  - L198 body: "three phases" &rarr; "three pillars" (aligns with h3 "Three pillars for growing engagement", the strategic-pillars diagram, and the numbered pillar h3 names below).
+  - L280 h4: "Make notification settings predictable" &rarr; "Replace vague controls with concrete choices".
+  - L282 thesis: "Users should know what a setting will actually do." &rarr; "Vague labels like Off, Low, and Frequent described system behavior, not user outcomes." (concrete-detail thesis matches peer h4 pattern).
+  - L284 consequence: rewritten from `So people couldn't predict...` (single-sentence "So" opener was paragraph-flow fallout from the L282 change) &rarr; "That left users unable to predict what would show up in their inbox." Della's pick from 3 options offered &mdash; keeps 3-paragraph h4 structure consistent with peers.
+  - L356 h4: "Use tabs to make the inbox scannable" &rarr; "Use tabs for fast scanning".
+- **Heading scan deltas:**
+  - "Make" lead-verb in headings: 2 &rarr; 1 (only L158 "Make unread states obvious, not noisy" remains as the foundation-section anchor).
+  - Word "make" in headings (lead + embedded): 3 &rarr; 1.
+  - Parent/child word repetition across all h2/h3/h4 pairs: still 0 (verified pre-edit; no edits introduced any).
+  - "Designing" repeats: still 0 (case-ai's trigger word &mdash; notifications already at 0).
+  - Imperative/gerund balance: 18 imperative / 1 gerund / 7 labels &mdash; heavy imperative monoculture fits the action register (case-ai = 6 imperative / 10 gerund, different content shape; both intentional).
+
+**Quality gates (all passed):**
+- `python3 voice-check.py case-notifications.html` &rarr; 0 errors, 6 pre-existing structural warnings (parser false-positives on page-level concatenation + 1% stat dual-occurrence between body + impact-callout &mdash; same as Session 48, no new warnings introduced).
+- `python3 quality-check.py case-notifications.html` &rarr; 0 errors, 0 warnings.
+- Pre-commit hooks ran on `case-notifications.html` before Phase 2 commit landed; both gates clean.
+
+**Decisions / tradeoffs:**
+- **Conservative SESSION-STATE cut over deeper cut:** the deeper-cut option (also archive 5 mobile-audit completion sections at lines 96&ndash;309 of pre-split file, ~50 KB) would have hit the 50 KB byte threshold but Della picked conservative &mdash; those sections describe "done forever" state but get referenced when Claude needs to recall what shipped where. Live SESSION-STATE.md still over 50 KB byte threshold; deeper trim is a future-session call.
+- **L284 paragraph structure (Option B):** L282 thesis change made the original L284 a near-duplicate. Three options offered (merge thesis+consequence with em-dash; rephrase L284 to drop "So" opener; drop L284 entirely). Della picked Option B &mdash; keeps 3-paragraph h4 structure consistent with peer h4s ("Replace vague controls..." now matches the thesis + consequence + solution shape used across all 11 action h4s).
+- **Pillar h3 capitalization left as Title Case:** "1. Build Habits" / "2. Enable Curation" / "3. Create Focus" &mdash; Della kept Title Case to mark pillars as named program beats vs. imperative h4 actions below. Cross-case-study divergence (case-ai uses sentence case throughout) is intentional per Della's call.
+- **Going beyond the kickoff lens:** original Session 49 lens specified bridge transitions at section-to-section level (Section 1 &rarr; Strategy &rarr; First &rarr; Next &rarr; Outcome). Della asked mid-edit whether paragraph-to-paragraph flow within sections was also checked &mdash; it wasn't on the original lens. Did a follow-up pass on all 17 multi-paragraph blocks; found 1 hard issue (L284 "So" opener as fallout from L282 change, fixed) and 1 soft flag (L180 framework&rarr;data transition pre-existing, Della left as-is). Worth adding paragraph-to-paragraph as an explicit lens in future heading-audit work.
+- **"Make" verb rebalance ambition:** Della went stronger than the proposed options &mdash; picked "rebalance both L280 and L356" rather than swap one. Net effect: "Make" disappears from the action h4 group entirely; only the foundation-section h3 retains it (L158, intentional anchor for the unread-states beat).
+
+**Files changed across both commits (5):** `BUILD-LOG.md`, `BUILD-LOG-2026-Q1.md` (new), `BUILD-LOG-2026-Q2-early.md` (new), `case-notifications.html`. `SESSION-STATE.md` + `SESSION-STATE-archive-2026-pre-Apr23.md` modified in parallel but not git-tracked (workspace state outside the portfolio-site repo).
+
+**Pre-existing dirty state surfaced (untouched, deferred):**
+- `M case-sharing.html`
+- `?? img/diagrams/diagram-shr01-before-share-sheet-v5.html`
+- `?? img/diagrams/assets/SHAR-screenshotToshare.gif`
+
+These have been in the working tree across Sessions 47, 48, 49, 50. Excluded from both Phase 1 and Phase 2 commits via file-specific `git add`.
+
+**Housekeeping status:** `BUILD-LOG.md` now 979 lines (under 1500-line threshold) but 137 KB (still over 50 KB byte threshold). `SESSION-STATE.md` now 595 lines / 163 KB (under line threshold, over byte threshold). Both files past the immediate trip-wire &mdash; next housekeeping pass can do a deeper cut when it's the explicit scope.
+
+**Next up:** Della reviews shipped commits in browser. Resume prompt `sessions/resume-prompt-notifications-cross-check-2026-05-01.md` archives to `sessions/archive/`. Available follow-on scopes: case-sharing case study, deeper SESSION-STATE cut (mobile-audit completion sections), or applying the heading lens broadly to case-subreddit / case-building-portfolio if Della wants the cross-check pattern propagated.
+
+---
+
 ### May 1, 2026 (Session 49 — case-ai parallel-pass against case-notifications + h3/h4 hierarchy fix)
 
 **Context:** Parallel-pass on `case-ai.html` against the `case-notifications.html` source-of-truth pattern established in Session 48. Resume prompt (`sessions/resume-prompt-case-ai-parallel-pass-2026-05-01.md`) scoped this as a structure / voice / recruiter-scan audit, not a body-copy rework. Plan-then-execute pattern: 4 macro decisions first, then section-by-section heading audit, then a master body batch for sign-off, then execute. Della verified Variant G for the resulting h3/h4 hierarchy fix in browser before the second commit landed.
