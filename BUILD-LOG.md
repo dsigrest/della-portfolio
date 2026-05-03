@@ -83,6 +83,77 @@ Older BUILD-LOG entries have been split into dated sibling files to keep this fi
 
 ## Log entries
 
+### May 1, 2026 (Session 51 — co-editor skill build via skill-forge full Define→Build→Evaluate loop)
+
+**Context:** Resume prompt `sessions/resume-prompt-co-editor-skill-2026-05-01.md` scoped this thread to codify the 7-lens heading-and-flow audit framework from Sessions 47&ndash;50 into a permanent partner skill at `~/CoworkWorkspace/Skills/co-editor/`. Della summons by name (8 partner-invocation phrases, no proactive firing) for case studies, cover letters, blog posts, LinkedIn About. Pairs with `voice-check.py` &mdash; voice-check covers the lexical layer (banned patterns); co-editor covers the structural-and-narrative layer voice-check cannot.
+
+**What shipped (no commits to portfolio-site repo &mdash; skill lives outside the git repo per Session Scaffolding Rule):**
+
+- **`/Users/della/CoworkWorkspace/Skills/co-editor/`** &mdash; 11 files at v0.1.0:
+  - `SKILL.md` (165 lines, 966-char description &mdash; under 1024 Cowork limit)
+  - `README.md` (103 lines)
+  - `LICENSE` (MIT)
+  - `references/seven-lenses.md` (186 lines &mdash; full lens framework with worked examples)
+  - `references/canonical-wisdom.md` (184 lines &mdash; Sessions 47&ndash;50 mined patterns)
+  - `references/source-of-truth-pairs.md` (67 lines &mdash; parallel canon decision tree)
+  - `references/audit-batch-template.md` (122 lines &mdash; Old/New/stays-as-is format)
+  - `references/workflow.md` (131 lines &mdash; plan-then-execute steps, verification gates)
+  - `references/examples-from-session-50.md` (106 lines &mdash; full Session 50 audit batch with cascade chain 3a&rarr;3b&rarr;3c)
+  - `references/voice-translation.md` (86 lines &mdash; verbal Register 1-2 &rarr; Register 3 strategy)
+  - `learnings.md` (initialized with v0.1.0 build entry + smoke-test entry)
+  - `evals/evals.json` (3 test cases: case-sharing happy path, case-subreddit thesis-shaped, case-notifications target-IS-pair edge case)
+- **`SKILLS-REGISTRY.md`** updated &mdash; co-editor entry added (v0.1.0, SHIP, Git-Ready: Yes); full Skill Dependency Map block; Last-updated banner updated.
+
+**The 7-lens framework (canonical, mined from Sessions 47&ndash;50 verbatim):**
+1. Verb-repetition tally (lead-verb counts across heading scan)
+2. Parent/child word repetition (h2&rarr;h3, h3&rarr;h4 collisions)
+3. Imperative/gerund register balance (match register to content shape)
+4. Lead-sentence-restates-heading (first body sentence shouldn't paraphrase)
+5. Bridge transitions section-to-section (h2&rarr;h2 boundaries)
+6. Paragraph-to-paragraph flow within sections *(added Session 50)*
+7. h4 styling cross-check (Variant M visual hierarchy verification)
+
+**Quality gates (all passed):**
+- YAML round-trip: `python3 -c "import yaml; yaml.safe_load(open(SKILL.md).split(---)[1])"` &rarr; OK; description length 966 chars (under 1024-char Cowork limit per `figma-to-html/references/skill-propagation.md`).
+- Voice-check.py against all 10 skill markdown files &rarr; 0 errors across all files; warnings are parser false-positives on long sentences inside markdown lists/code blocks (same pattern as case-ai/case-notifications).
+- All 8 partner-invocation phrases verified verbatim in description.
+- Citation density: Session 47 (1 file, 5 mentions); Session 48 (3 files); Session 49 (4 files); Session 50 (6 files); 54 line-number citations across reference files; case-ai mentioned in 6 files; case-notifications mentioned in 6 files; Variant M mentioned in 5 files.
+- Skill Forge eval: weighted 3.00/3.0 across 7 dimensions (Content Effectiveness 3, Integration Reliability 3, Scalability 3, Ability to Learn 3, Efficiency 3, Portability 3, Trigger Accuracy 3). Ceiling score &mdash; live smoke test on case-sharing.html is the real eval.
+
+**Smoke test on case-sharing.html (headings-only, no edits applied):**
+- Heading scan extracted (h1 &rarr; h3 in document order; case-sharing has no h4 elements).
+- Lens 1 (verb-repetition): &check; no violations. Streamline, Simplify, Establish (1 each at h2 pillar level); Testing, Aligning, Balancing, Embedding (gerund h3s); Surface, Standardize (imperative h3s).
+- Lens 2 (parent/child): **Finding** &mdash; h2 "01 Streamline Sharing" &rarr; h3 "Surface Sharing Contextually" share "Sharing"; sibling "Screenshot to Share" shares the stem. Section 02 + 03 clean. Worth Della's attention when she next iterates case-sharing.
+- Lens 3 (register): **Soft flag** &mdash; 5 imperative / 4 gerund / mixed labels. Action-shaped content (per spec) should lean imperative-heavier (case-notifications baseline = 18/1/7). Could be intentional (case-sharing might be more thesis-shaped than initially assumed) &mdash; flag for Della.
+- Lens 4&ndash;6 deferred (require body content reads; would run in a full audit, not this smoke test).
+- Lens 7 (h4 styling): **Skipped gracefully** &mdash; "Lens 7 skipped: target has no h4 styling system." Graceful-degradation pattern verified on real target.
+
+**Decisions / tradeoffs:**
+- **Define-agent drift caught and corrected.** First Define-agent run produced a 7-lens framework that was actually a generic voice-compliance/proof-points/jargon-scan rubric &mdash; overlapping with voice-check.py rather than complementing it. Caught at spec-review time, rewrote spec to match the canonical framework verbatim from the resume prompt. Build agent then worked off the corrected spec. Documented in learnings.md.
+- **Build-agent reliability fallback.** First Build-agent run stopped mid-way and returned a status update instead of writing files (got confused on bash filesystem path semantics). Fell back to building the skill directly with Write tool. Captured in learnings.md as a build-time gotcha for future skill-forge invocations &mdash; agent prompts should explicitly direct file writes through Write tool, not bash.
+- **Description-length validation needed mid-build.** First SKILL.md frontmatter description was 1045 chars &mdash; over the 1024-char Cowork limit per `figma-to-html/references/skill-propagation.md`. Caught on first YAML round-trip; trimmed to 966. Skill-forge Build Agent quality gates should add a description-length check.
+- **Smoke test scope deliberately headings-only.** case-sharing.html is in working tree dirty state from prior thread (Della may pick up case-sharing as a follow-on scope). Ran heading-level lenses (1, 2, 3, 7) only; deferred body-read lenses (4, 5, 6) to Della's actual audit. Real finding (Lens 2 collision in Section 01) flagged for her consideration when she resumes.
+
+**Files changed (outside portfolio-site git repo):**
+- `~/CoworkWorkspace/Skills/co-editor/` &mdash; 11 new files (skill canonical)
+- `~/CoworkWorkspace/Skills/SKILLS-REGISTRY.md` &mdash; banner + Active Skills row + Skill Dependency Map block
+- `~/CoworkWorkspace/Get-a-job/sessions/co-editor-spec-2026-05-01.md` &mdash; spec (rewritten after Define drift)
+
+**Files NOT changed in this session:** the portfolio-site git repo. The dirty share-thread state (`M case-sharing.html`, `?? diagram-shr01-before-share-sheet-v5.html`, `?? SHAR-screenshotToshare.gif`) carries forward untouched per Sessions 47&ndash;50 pattern.
+
+**Pre-existing dirty state surfaced (untouched, deferred):**
+- `M case-sharing.html`
+- `?? img/diagrams/diagram-shr01-before-share-sheet-v5.html`
+- `?? img/diagrams/assets/SHAR-screenshotToshare.gif`
+
+**Next up:**
+- **Della packages and installs the .skill bundle.** Paste-ready commands provided in close-out (run from Mac Terminal, then drag into Cowork &mdash; sandbox can't run package-skill.sh because `$HOME` doesn't resolve to her actual home).
+- **Real eval on first live invocation.** First time Della says "co-editor on case-sharing" or similar in a fresh thread, the audit runs end-to-end. Gotchas append to learnings.md; version bumps per semver.
+- **Resume prompt archived** to `~/CoworkWorkspace/Get-a-job/sessions/archive/`.
+- **Available follow-on scopes:** case-sharing case study (Lens 2 finding above is the leading audit-batch entry); deeper SESSION-STATE cut; applying co-editor broadly to case-subreddit / case-building-portfolio.
+
+---
+
 ### May 1, 2026 (Session 50 — BUILD-LOG / SESSION-STATE quarterly archive split + case-notifications heading cross-check)
 
 **Context:** Two-phase scope per resume prompt `sessions/resume-prompt-notifications-cross-check-2026-05-01.md`. Phase 1 was overdue housekeeping &mdash; the Living doc split rule had been triggering since Session 48. Phase 2 closed the loop on the case-ai / case-notifications source-of-truth pair by applying Session 49's heading lens (parent/child word check, verb-repetition tally, imperative/gerund balance, h4 styling cross-check) to `case-notifications.html`. Plan-then-execute pattern across both phases: split plan with concrete cutoffs &rarr; Della sign-off &rarr; execute &rarr; verify &rarr; commit; then audit &rarr; numbered batch &rarr; sign-off &rarr; execute &rarr; voice + quality checks &rarr; commit.
