@@ -83,6 +83,55 @@ Older BUILD-LOG entries have been split into dated sibling files to keep this fi
 
 ## Log entries
 
+### May 10, 2026 (Session 52 — Phase 2: notif/inbox case study rework — Figma-precision pass + live review fixes)
+
+**Context:** Resume prompt `sessions/archive/resume-prompt-notifications-phase2-rework.md` (now archived) scoped Phase 2 of the notifications case study rework. Phase 1 had shipped 18 polished diagrams in a prior thread but missed Figma's specific values on 14 of them — the recurring failure: agents skipped `mcp__Figma__get_design_context` and inferred from screenshots, losing 10px+ deltas. Phase 2's directive: pull Figma context on every diagram, present the delta to Della, apply values verbatim.
+
+**Commit:** `5344832` (pushed to main, GitHub: dsigrest/della-portfolio). 23 files changed, 1768 insertions, 3169 deletions.
+
+**Diagrams reworked (14):**
+
+- **NOT-02b Disconnected Surfaces** — 480 breakpoint, proportional corner-radius via cqw, fluid scaling, label height reserved for 2-line wrap so phone-tops align across columns
+- **NOT-E7 Sankey Flow** — chrome stripped (canvas bg, noise, border-radius, radial gradient), headers lifted from SVG to HTML divs above the chart with constant labels (Millions / Nearly half / Most clickers), fluid `vw` clamps on font-size + legend gap, legend reordered + renamed (New user / Casual visitor / Regular), legend `flex-wrap: wrap` safety
+- **NOT-02 Inbox Row Component** — equal-width cols via `minmax(0, 1fr)` (both BEFORE and AFTER same width as diagram scales), natural PNG aspect-ratios restored (no clipping), corner-radius proportional via cqw, col gap 16 → 32, arrow vertically aligned with row-stack center via padding-top
+- **NOT-02b Swipe Actions** — aspect-ratio updated to Figma `800/141`
+- **NOT-04 Unread Hierarchy** — `text-wrap: balance` on `.desc` for 2-line uniformity
+- **NOT-E3 Strategic Pillars** — explicit `<br class="br-narrow">` toggle for deterministic 2-line (wider) / 3-line (≤480) wraps; L3 specifically becomes "Streamline how / users / take action" at narrow
+- **NOT-17 Context Defaults** — `.col-caption` line-height parity (`1` → `normal`); "2× click-through" callout removed from case-notifications.html
+- **NOT-06 Push-to-Inbox** — 768px intermediate `@media` removed (clean snap at 480 per Figma); "+1% push good visits" callout removed
+- **NOT-19 Pipeline Entanglement** — per-col card backgrounds (Figma update); CSS `vline-arrow` replaces SVG arrows so stems flex-fill the vertical space above/below the Ranker pill on both left (bypass) and right (through-ranker) lanes; col-divider stroke removed
+- **NOT-07 Preference Architecture** — arrow vertically centered via `padding-top` removal
+- **NOT-08 Subreddit Onramps** — aspect-ratios to Figma `644/186` (before) and `520/150` (after, mobile node 1409:2638)
+- **NOT-E2 Strategy Flywheel** — return-loop `padding-top` 8 → 16 (breathing room between stage cards and stroke); mobile loop-back panel chrome stripped (dashed border + tinted bg gone)
+- **NOT-24 Surface Tradeoffs** — Mobile A (horizontal-rows variant) hidden at ≤480 via `display: none`; Mobile B (vertical-columns) remains
+- **NOT-12 Inbox Layout Experiments** — chrome flat (noise + bg removed), mobile keeps 3-up horizontal (was column-stacked), fluid scaling on gap/padding/best-fit-width via `vw` clamps, phone illustrations use top-only `border-radius` (phone sinks into card divider at bottom)
+- **NOT-10 Three Inboxes** — `.annotation` chrome (border, bg, shadow) stripped; col-label centered via `text-align: center`
+- **NOT-14 v2 Outcomes (inline)** — `.results-row` now `flex` with equal-width cols (both `flex: 1 1 0`), fluid padding 48 → 16 and gap 48 → 16 via `vw` clamps anchored at Figma desktop/mobile values, image carries `aspect-ratio: 322/697` (no cropping ever), panel padding 40/36 → 13/12, panel gap 28 → 12, text sizes scale 11 → 10 (eyebrow/outcome-title) and 14 → 9 (outcome-body) so panel content fits in phone-aspect height at narrow widths
+
+**Cascade rename across case-notifications.html prose:**
+
+- "core users" → "regulars" (4 occurrences)
+- "casual users" → "casual visitors" (3 occurrences)
+- Sankey legend reordered to match NOT-10's cohort order (New user / Casual visitor / Regular)
+
+**Other case-notifications.html edits:**
+
+- "2× click-through" `impact-callout` block removed (above NOT-06)
+- "+1% push good visits" `impact-callout` block removed (above section 2)
+- "Unified and scalable messaging surface" phone caption removed (inside #19 results-row)
+
+**Sibling -mobile retires (6 files `git rm`'d):** `diagram-not-e7-sankey-flow-v4-mobile.html`, `diagram-not07-preference-architecture-v5-mobile.html`, `diagram-not-e2-strategy-flywheel-v5-mobile.html`, `diagram-not24-surface-tradeoffs-v5-mobile.html`, `diagram-not12-inbox-layout-experiments-v5-mobile.html`, `diagram-not14-navigation-simplification-v5-mobile.html`. Per Phase 1 close-out, these were merged into their v5 files in Phase 1.
+
+**Lesson learned (mid-session failure mode, captured for figma-to-html learnings):** even with `mcp__Figma__get_design_context` pulled, the operator can still skim the returned JSX and reach for invented scaling logic instead of extracting Figma values verbatim. The corrective protocol Della formalized: extract Figma properties into a Figma → CSS value table BEFORE writing any clamp/aspect-ratio/padding rule. Apply values verbatim. Only invent scaling when Figma's two frames disagree, and derive clamp endpoints from the desktop and mobile values, not from feel.
+
+**Queue handoff doc:** `sessions/phase2-queue.md` — per-diagram details, before/after deltas, deploy command bundle (now executed). Will be archived alongside the next-thread handoff.
+
+**Files changed in repo:** 14 diagram v5 files in `portfolio-site/img/diagrams/`, `portfolio-site/styles.css`, `portfolio-site/case-notifications.html`, 6 sibling `-mobile.html` files deleted.
+
+**Post-deploy follow-up:** initial deploy of `5344832` did not visually update the live site because all 18 iframe `src` URLs in `case-notifications.html` carried a stale `?v=2026-04-30-7` cache-buster from Phase 1's last edit. Browsers and Vercel's edge cache served the pre-Phase-2 versions of every diagram. Fix: bump the query string on every iframe src in one pass (Edit with `replace_all: true` on the literal `?v=2026-04-30-7` → `?v=2026-05-10-1`). Commit + push: rebuilds Vercel and forces re-fetch. **Pattern for future threads: any time diagram CSS/HTML changes ship, bump the cache-buster on the parent case-study HTML's iframe URLs.**
+
+---
+
 ### May 1, 2026 (Session 51 — co-editor skill build via skill-forge full Define→Build→Evaluate loop)
 
 **Context:** Resume prompt `sessions/resume-prompt-co-editor-skill-2026-05-01.md` scoped this thread to codify the 7-lens heading-and-flow audit framework from Sessions 47&ndash;50 into a permanent partner skill at `~/CoworkWorkspace/Skills/co-editor/`. Della summons by name (8 partner-invocation phrases, no proactive firing) for case studies, cover letters, blog posts, LinkedIn About. Pairs with `voice-check.py` &mdash; voice-check covers the lexical layer (banned patterns); co-editor covers the structural-and-narrative layer voice-check cannot.
