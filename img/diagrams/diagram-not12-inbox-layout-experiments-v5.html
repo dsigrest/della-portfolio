@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NOT-12 — Layout Experimentation (3 layouts)</title>
+<meta name="figma-source" content="node:1409:1833 page:1214:13477 file:TArUrZsBUocaAsqetjXq7V">
+<title>NOT-12 — Inbox Layout Experiments (3 layouts)</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -12,8 +13,6 @@
     --border-normal: rgba(224,223,228,0.07);
     --accent: #7FB5B0; --accent-hover: #8AC4BE; --accent-dim: rgba(127,181,176,0.12);
     --red: #C47878;
-    --unread-tint: rgba(196,176,120,0.2);
-    --chat-tint: rgba(196,120,120,0.3);
     --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
     --glass-border: rgba(224,223,228,0.08);
     --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
@@ -24,205 +23,106 @@
     background: var(--canvas); display: flex; justify-content: center; padding: 40px;
     font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased;
   }
+  /* Flat on page per Della 2026-05-10 — no own canvas bg, no noise overlay,
+     no border-radius creating a card boundary against the parent page. */
   .diagram {
-    width: 760px; background: var(--canvas); border-radius: 16px; overflow: hidden;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    width: 100%; max-width: 760px; overflow: hidden;
+    padding: 24px 0;
   }
 
-  /* ── Hover hint strip ── */
-  .hover-hint {
-    display: flex; align-items: center; justify-content: center; gap: 6px;
-    padding: 14px 16px 0; font-size: 10px; letter-spacing: 0.6px;
-    color: var(--text-dim);
-  }
-  .hover-hint svg { opacity: 0.5; }
-
-  /* ── 3-column row of layout cards ── */
+  /* ── 3-column row of layout cards — fluid scaling between desktop (760) and
+     mobile (480). Gap and padding shrink with viewport so cards don't squish. ── */
   .layouts-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
-    padding: 28px 32px 8px; position: relative;
+    display: flex;
+    gap: clamp(4px, calc(3.57vw - 23px), 14px);
+    align-items: flex-start;
+    padding: 0 clamp(16px, calc(11.43vw - 38.86px), 48px);
+    position: relative;
   }
-  .layouts-grid::before {
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(ellipse 500px 350px at 50% 50%, rgba(127,181,176,0.025) 0%, transparent 70%);
-    pointer-events: none;
+
+  .layout-card-wrap {
+    flex: 1 0 0; min-width: 0;
+    display: flex; align-items: flex-start;
+    padding-top: 16px;
   }
 
   .layout-card {
+    flex: 1 0 0; min-width: 0;
     position: relative;
-    border: 1px solid var(--glass-border);
     border-radius: 12px;
     overflow: visible;
     display: flex; flex-direction: column;
-    background: var(--glass-bg);
-    box-shadow: var(--glass-highlight);
     opacity: 0; animation: mount 0.5s var(--spring) forwards;
     animation-delay: calc(var(--ai, 0) * 80ms);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
   }
-  .layout-card:hover {
-    border-color: rgba(224,223,228,0.16);
-  }
   .layout-card.best-fit {
-    border-color: var(--accent-hover);
-    box-shadow: var(--glass-highlight), 0 0 0 1px rgba(127,181,176,0.15);
+    /* Width scales fluidly from 212 at vw=760 down to 110 at vw=481 so the other
+       two cards don't get crushed below 70px each. Mobile @media flips it to flex:1.
+       padding-top: 16 matches the layout-card-wrap pt-16 on the other two cards so
+       all three card tops align in the same row. */
+    flex: 0 0 clamp(110px, calc(36.4vw - 64.6px), 212px);
+    align-self: stretch;
+    padding-top: 16px;
   }
 
-  /* Best-fit pill — Figma renders top-left, half-overlapping the card top */
+  /* Best-fit pill — Figma renders top-left, half-overlapping the screenshot top */
   .best-fit-crown {
-    position: absolute; top: -13px; left: 14px;
     background: var(--accent); color: var(--canvas);
-    padding: 6px 14px; border-radius: 999px;
-    font-size: 11px; font-weight: 600; letter-spacing: 0.88px; text-transform: uppercase;
+    padding: 8px 14px; border-radius: 999px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.88px; text-transform: uppercase; line-height: 1.4;
     border: 1px solid var(--accent-hover);
+    align-self: flex-start;
     z-index: 2; white-space: nowrap;
+    position: relative;
   }
 
-  /* ── Mock-UI illustration area (top of each card) ── */
+  /* ── Mock-UI illustration area (top of each card) ──
+     Container holds the layout slot. Border-radius now lives on the IMG itself
+     (with proportional clamp), so the phone's own corners are rounded and we
+     don't get the partial-mask artifact from the container clipping the image. */
   .illustration {
-    background: var(--elevated);
-    height: 280px;
-    padding: 24px 16px 12px;
-    overflow: hidden;
-    border-radius: 12px 12px 0 0;
-    display: flex; flex-direction: column;
-    position: relative;
+    aspect-ratio: 212 / 219;
+    padding: 24px 16px 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+    opacity: 0.5;
   }
-  .layout-card.best-fit .illustration {
+  .illustration img {
+    width: 100%;
+    aspect-ratio: 180 / 190;
+    object-fit: cover;
+    display: block;
+    flex-shrink: 0;
+    /* Proportional radius — TOP corners only (phone sinks into the card divider
+       at the bottom, so bottom-left/right stay square). Scales 6 → 18 with viewport. */
+    border-radius: clamp(6px, calc(2vw + 2px), 18px) clamp(6px, calc(2vw + 2px), 18px) 0 0;
+  }
+  /* Tabbed (BEST FIT) — phone screenshot slot scales with best-fit card width.
+     Aspect ratio 212/222 preserves Figma's slot shape; img inside has its own
+     rounded mask (proportional clamp) so the phone's corners are clipped cleanly
+     by the IMG itself, not the slot's border-radius. */
+  .screenshot-slot {
     background: var(--surface-3);
-    padding: 32px 14px 0;
-    align-items: center;
-    justify-content: flex-start;
-  }
-  /* Phone-mock taller than illustration content area — bottom crops via
-     illustration's overflow:hidden, creating a "top of phone visible" effect.
-     Margin between illustration top and BEST FIT pill comes from padding-top above.
-     Della call 2026-04-30. */
-  .layout-card.best-fit .phone-mock {
-    height: 360px;
-    flex-shrink: 0;
-  }
-
-  /* Section divider (used in "Nested" — Notifications/Chats labels) */
-  .ill-section {
-    display: flex; align-items: center; gap: 4px;
-    padding: 4px 5px 2px;
-  }
-  .ill-section-label {
-    flex: 1; font-size: 9px; color: var(--text-pri); font-weight: 400;
-  }
-  .ill-section-chevron {
-    width: 10px; height: 6px;
-  }
-
-  /* Notification rows in mock UI */
-  .ill-rows {
-    display: flex; flex-direction: column; gap: 4px;
-    flex: 1; overflow: hidden;
-  }
-  .row-ill {
-    display: flex; gap: 5px; align-items: center;
-    padding: 5px 6px; border-radius: 5px;
-    flex: 1; min-height: 0;
-  }
-  .row-ill.unread { background: var(--unread-tint); }
-  .row-ill.chat-unread { background: var(--chat-tint); }
-  .row-avatar {
-    width: 16px; height: 16px; border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .row-avatar.a1 { background: linear-gradient(135deg, #c4a878, #8a6d3a); }
-  .row-avatar.a2 { background: linear-gradient(135deg, #7fb5b0, #4d6f6c); }
-  .row-avatar.a3 { background: linear-gradient(135deg, #c47878, #6e3b3b); }
-  .row-avatar.a4 { background: linear-gradient(135deg, #8898c4, #455478); }
-  .row-avatar.muted { background: rgba(224,223,228,0.15); }
-  .row-text {
-    flex: 1; min-width: 0;
-    font-size: 9px; line-height: 1; color: var(--text-pri);
-    font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .row-text.read { color: var(--text-ter); font-weight: 400; }
-  .row-time {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 7px; color: var(--text-dim); flex-shrink: 0;
-  }
-
-  /* ── Phone mockup (BEST FIT card illustration — Tabbed) ── */
-  .phone-mock {
-    width: 100%; max-width: 168px; height: 100%;
-    border: 1.5px dashed rgba(127,181,176,0.25);
-    border-radius: 22px;
-    background: linear-gradient(140deg, rgba(127,181,176,0.06) 0%, rgba(224,222,227,0.02) 100%);
-    padding: 12px 12px 14px;
-    display: flex; flex-direction: column; gap: 7px;
+    border: 1px solid var(--accent-hover);
+    border-radius: 12px;
+    width: 100%;
+    aspect-ratio: 212 / 222;
+    margin-top: -19px;
+    padding: 16px 16px 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
     position: relative;
-    overflow: hidden;
   }
-  .phone-status {
-    height: 18px;
-    display: flex; align-items: flex-start;
-  }
-  .phone-status-notch {
-    width: 18px; height: 18px;
-    background: rgba(224,223,228,0.15);
-    border-radius: 7px;
-  }
-  .phone-tabs {
-    display: flex; gap: 6px; height: 22px;
-    margin-bottom: 2px;
-  }
-  .phone-tab {
-    flex: 1;
-    border: 1px solid rgba(127,181,176,0.12);
-    border-radius: 8px 8px 0 0;
-    height: 26px;
-  }
-  .phone-tab.active {
-    background: rgba(127,181,176,0.06);
-  }
-  .phone-post {
-    background: rgba(224,223,228,0.02);
-    border: 1px solid rgba(127,181,176,0.08);
-    border-radius: 6px;
-    padding: 7px 8px;
-    display: flex; flex-direction: column; gap: 4px;
-  }
-  .phone-post.muted-border {
-    border-color: rgba(224,223,228,0.04);
-  }
-  .phone-post-header {
-    display: flex; align-items: center; gap: 4px;
-  }
-  .phone-post-avatar {
-    width: 11px; height: 11px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, rgba(127,181,176,0.4), rgba(127,181,176,0.15));
+  .screenshot-slot img {
+    width: 85%;
+    aspect-ratio: 180 / 190;
+    object-fit: cover;
+    display: block;
     flex-shrink: 0;
+    /* Top corners only — bottom is cut by the slot's bottom edge. */
+    border-radius: clamp(6px, calc(2vw + 2px), 18px) clamp(6px, calc(2vw + 2px), 18px) 0 0;
   }
-  .phone-post-avatar.muted {
-    background: rgba(224,223,228,0.12);
-  }
-  .phone-post-name {
-    height: 3.5px; width: 38px;
-    background: rgba(224,223,228,0.1);
-    border-radius: 2px;
-  }
-  .phone-post-meta {
-    width: 4.5px; height: 4.5px;
-    background: rgba(224,223,228,0.15);
-    border-radius: 50%;
-    margin-left: auto;
-  }
-  .phone-post-line {
-    height: 2.5px;
-    background: rgba(224,223,228,0.06);
-    border-radius: 2px;
-  }
-  .phone-post-line.long { width: 100%; }
-  .phone-post-line.med { width: 70%; }
-  .phone-post-line.short { width: 56%; }
 
-  /* ── Card content: name + traits + callout ── */
+  /* ── Card content: name + traits ── */
   .layout-divider {
     height: 1px; background: var(--border-normal);
   }
@@ -232,70 +132,48 @@
   }
   .layout-name {
     font-size: 12px; font-weight: 600; color: var(--text-pri);
-  }
-  .layout-sublabel {
-    font-size: 11px; font-weight: 400; color: var(--text-sec);
-    line-height: 1.4;
-    margin-bottom: 2px;
+    line-height: normal;
   }
   .trait {
     display: flex; gap: 6px; align-items: center;
     font-size: 9px; line-height: 1.3;
-  }
-  .trait.pro { color: var(--accent); }
-  .trait.con { color: var(--red); }
-  .trait-icon { width: 12px; height: 12px; flex-shrink: 0; }
-
-  .layout-callout {
-    margin: 0 14px 14px;
-    background: var(--surface-3);
-    border: 1px solid rgba(224,223,228,0.12);
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-size: 10px; line-height: 1.5;
     color: var(--text-sec);
   }
-
-  /* ── Outcome bar at bottom ── */
-  .outcome-bar {
-    margin: 16px 32px 32px;
-    padding: 18px 22px;
-    background: rgba(127,181,176,0.06);
-    border-left: 3px solid rgba(127,181,176,0.4);
-    border-radius: 10px;
-    display: flex; gap: 14px; align-items: flex-start;
-    opacity: 0; animation: mount 0.5s var(--spring) forwards;
-    animation-delay: calc(var(--ai, 0) * 80ms);
-  }
-  .outcome-icon { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; }
-  .outcome-content {
-    flex: 1; display: flex; flex-direction: column; gap: 8px;
-  }
-  .outcome-body {
-    font-size: 13px; line-height: 1.6; color: var(--accent);
-  }
-  .outcome-body strong { font-weight: 600; }
-  .outcome-detail {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px; letter-spacing: 0.2px; color: var(--text-ter);
-    line-height: 1.4;
-  }
+  .trait-icon { width: 12px; height: 12px; flex-shrink: 0; }
+  .trait.pro .trait-icon { color: var(--accent); }
+  .trait.con .trait-icon { color: var(--red); }
 
   @keyframes mount {
     from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* ─ Iframe-fit narrow widths — collapse to single column at narrow widths ─
-     The mobile companion file (-mobile.html) handles true narrow viewports. ─ */
-  @media (max-width: 600px) {
+  /* Mobile breakpoint — KEEP horizontal 3-up per Figma mobile (1409:2213).
+     Cards stay in row, just smaller. Best-fit becomes flex (was fixed 212px). */
+  @media (max-width: 480px) {
     body { padding: 16px; }
-    .layouts-grid { padding: 24px 16px 8px; gap: 10px; }
-    .outcome-bar { margin: 12px 16px 20px; padding: 14px 16px; }
-    .illustration { height: auto; min-height: 220px; }
-  }
-  @media (max-width: 400px) {
-    .layouts-grid { grid-template-columns: 1fr; }
+    .diagram { width: 100%; padding: 24px 0; }
+    .layouts-grid {
+      flex-direction: row;
+      gap: 4px;
+      padding: 0 16px;
+      align-items: flex-start;
+    }
+    .layout-card-wrap { padding-top: 16px; align-items: stretch; }
+    .layout-card { flex: 1 1 0; }
+    .layout-card.best-fit {
+      flex: 1 1 0;
+      align-self: stretch;
+    }
+    /* Illustration uses aspect-ratio at narrow so card heights scale together */
+    .illustration { height: auto; aspect-ratio: 360/380; padding: 24px 16px 0; }
+    .illustration img { width: 100%; height: 100%; }
+    /* Best-fit screenshot slot fills card width and uses aspect ratio */
+    .screenshot-slot { width: 100%; height: auto; aspect-ratio: 1/1; margin-top: -16px; padding: 16px 16px 0; }
+    .screenshot-slot img { width: 100%; height: 100%; }
+    .trait { gap: 4px; font-size: 8px; }
+    .layout-content { padding: 10px; gap: 4px; }
+    .best-fit-crown { padding: 6px 10px; font-size: 9px; letter-spacing: 0.72px; }
   }
 
   /* Embed mode */
@@ -309,166 +187,64 @@
   <div class="layouts-grid">
 
     <!-- ── Card 1 — Chronological ── -->
-    <div class="layout-card" style="--ai:1">
-      <div class="illustration">
-        <div class="ill-rows">
-          <div class="row-ill unread">
-            <div class="row-avatar a3"></div>
-            <span class="row-text">u/NorWren</span>
-            <span class="row-time">1m</span>
+    <div class="layout-card-wrap" style="--ai:1">
+      <div class="layout-card">
+        <div class="illustration">
+          <img src="assets/not12-chronological.png" alt="Chronological inbox layout phone mockup">
+        </div>
+        <div class="layout-divider"></div>
+        <div class="layout-content">
+          <p class="layout-name">Chronological</p>
+          <div class="trait pro">
+            <svg class="trait-icon" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5L4.75 8.75L9.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Flat IA is quick to scan and act</span>
           </div>
-          <div class="row-ill unread">
-            <div class="row-avatar a1"></div>
-            <span class="row-text">u/user replied to you</span>
-            <span class="row-time">14m</span>
-          </div>
-          <div class="row-ill unread">
-            <div class="row-avatar a2"></div>
-            <span class="row-text">Trending in r/design</span>
-            <span class="row-time">23m</span>
-          </div>
-          <div class="row-ill">
-            <div class="row-avatar muted"></div>
-            <span class="row-text read">Post approved</span>
-            <span class="row-time">1h</span>
-          </div>
-          <div class="row-ill">
-            <div class="row-avatar muted"></div>
-            <span class="row-text read">u/CoolCat</span>
-            <span class="row-time">1h</span>
+          <div class="trait con">
+            <svg class="trait-icon" viewBox="0 0 12 12" fill="none"><path d="M3 3L9 9M9 3L3 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Mixing activity confuses users</span>
           </div>
         </div>
-      </div>
-      <div class="layout-divider"></div>
-      <div class="layout-content">
-        <p class="layout-name">Chronological</p>
-        <p class="layout-sublabel">Simplest mental model</p>
-        <div class="trait pro">
-          <svg class="trait-icon" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5L4.75 8.75L9.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>Easy to understand</span>
-        </div>
-        <div class="trait con">
-          <svg class="trait-icon" viewBox="0 0 12 12" fill="none"><path d="M3 3L9 9M9 3L3 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>Priority items buried under noise</span>
-        </div>
-      </div>
-      <div class="layout-callout">
-        Everything appeared in one time-based feed, but important updates were easy to miss.
       </div>
     </div>
 
     <!-- ── Card 2 — Nested ── -->
-    <div class="layout-card" style="--ai:2">
-      <div class="illustration">
-        <div class="ill-rows">
-          <div class="ill-section">
-            <span class="ill-section-label">Notifications</span>
-            <svg class="ill-section-chevron" viewBox="0 0 10 6" fill="none"><path d="M2 1.5l3 3 3-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/></svg>
+    <div class="layout-card-wrap" style="--ai:2">
+      <div class="layout-card">
+        <div class="illustration">
+          <img src="assets/not12-nested.png" alt="Nested inbox layout phone mockup">
+        </div>
+        <div class="layout-divider"></div>
+        <div class="layout-content">
+          <p class="layout-name">Nested</p>
+          <div class="trait pro">
+            <svg class="trait-icon" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5L4.75 8.75L9.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Inline groups organize activity</span>
           </div>
-          <div class="row-ill unread">
-            <div class="row-avatar a1"></div>
-            <span class="row-text">u/user replied to you</span>
-            <span class="row-time">14m</span>
-          </div>
-          <div class="row-ill unread">
-            <div class="row-avatar a2"></div>
-            <span class="row-text">Trending in r/design</span>
-            <span class="row-time">23m</span>
-          </div>
-          <div class="row-ill">
-            <div class="row-avatar muted"></div>
-            <span class="row-text read">Post approved</span>
-            <span class="row-time">1h</span>
-          </div>
-          <div class="ill-section">
-            <span class="ill-section-label">Chats</span>
-            <svg class="ill-section-chevron" viewBox="0 0 10 6" fill="none"><path d="M2 1.5l3 3 3-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/></svg>
-          </div>
-          <div class="row-ill chat-unread">
-            <div class="row-avatar a3"></div>
-            <span class="row-text">u/NorWren</span>
-            <span class="row-time">1m</span>
-          </div>
-          <div class="row-ill">
-            <div class="row-avatar muted"></div>
-            <span class="row-text read">u/CoolCat</span>
-            <span class="row-time">1h</span>
+          <div class="trait con">
+            <svg class="trait-icon" viewBox="0 0 12 12" fill="none"><path d="M3 3L9 9M9 3L3 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Priority items can get buried in lists</span>
           </div>
         </div>
-      </div>
-      <div class="layout-divider"></div>
-      <div class="layout-content">
-        <p class="layout-name">Nested</p>
-        <p class="layout-sublabel">Grouped by activity type</p>
-        <div class="trait pro">
-          <svg class="trait-icon" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5L4.75 8.75L9.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>Related threads stayed together</span>
-        </div>
-        <div class="trait con">
-          <svg class="trait-icon" viewBox="0 0 12 12" fill="none"><path d="M3 3L9 9M9 3L3 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>Grouping logic added cognitive load</span>
-        </div>
-      </div>
-      <div class="layout-callout">
-        Grouping reduced row count, but users had to learn the structure before they could scan.
       </div>
     </div>
 
-    <!-- ── Card 3 — Tabbed (BEST FIT) — phone mockup illustration ── -->
+    <!-- ── Card 3 — Tabbed (BEST FIT) ── -->
     <div class="layout-card best-fit" style="--ai:3">
       <div class="best-fit-crown">&#10003; Best Fit</div>
-      <div class="illustration">
-        <div class="phone-mock">
-          <div class="phone-status">
-            <div class="phone-status-notch"></div>
-          </div>
-          <div class="phone-tabs">
-            <div class="phone-tab"></div>
-            <div class="phone-tab active"></div>
-          </div>
-          <div class="phone-post">
-            <div class="phone-post-header">
-              <div class="phone-post-avatar"></div>
-              <div class="phone-post-name"></div>
-              <div class="phone-post-meta"></div>
-            </div>
-            <div class="phone-post-line long"></div>
-            <div class="phone-post-line med"></div>
-          </div>
-          <div class="phone-post">
-            <div class="phone-post-header">
-              <div class="phone-post-avatar"></div>
-              <div class="phone-post-name"></div>
-              <div class="phone-post-meta"></div>
-            </div>
-            <div class="phone-post-line long"></div>
-            <div class="phone-post-line short"></div>
-          </div>
-          <div class="phone-post muted-border">
-            <div class="phone-post-header">
-              <div class="phone-post-avatar muted"></div>
-              <div class="phone-post-name"></div>
-            </div>
-            <div class="phone-post-line med"></div>
-            <div class="phone-post-line short"></div>
-          </div>
-        </div>
+      <div class="screenshot-slot">
+        <img src="assets/not12-tabbed.png" alt="Tabbed inbox layout phone mockup (best fit)">
       </div>
       <div class="layout-divider"></div>
       <div class="layout-content">
         <p class="layout-name">Tabbed</p>
-        <p class="layout-sublabel">Clear surface separation</p>
         <div class="trait pro">
           <svg class="trait-icon" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5L4.75 8.75L9.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>Fastest scan speed</span>
+          <span>Separating groups organizes activity</span>
         </div>
         <div class="trait pro">
           <svg class="trait-icon" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.5L4.75 8.75L9.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>Clearest mental model</span>
+          <span>Tabs support quick scan &amp; action</span>
         </div>
-      </div>
-      <div class="layout-callout">
-        Tabs separated notification types into predictable places, letting users scan less and act faster.
       </div>
     </div>
 

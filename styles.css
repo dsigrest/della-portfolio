@@ -1376,22 +1376,25 @@ main {
 
 /* ---------- Results metrics panel (Position 19 — 5 metrics with sublabels and captions) ---------- */
 .results-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-xl);
+  /* Figma 1409:2462 (desktop) / 1409:2448 (mobile) — values verbatim.
+     gap: 48 desktop / 16 mobile (clamp endpoints anchored at vw 760 and 480).
+     padding: 48 / 16 (same clamp). align-items: stretch — both columns match height. */
+  display: flex;
+  align-items: stretch;
+  gap: clamp(16px, calc(11.43vw - 38.86px), 48px);
+  padding: 0 clamp(16px, calc(11.43vw - 38.86px), 48px);
   margin: var(--spacing-2xl) 0;
 }
 .results-phone-slot {
-  background: var(--surface-1);
-  border: 1px dashed var(--border-hover);
-  border-radius: 12px;
-  padding: var(--spacing-xl);
+  /* Phone column: Figma flex-[1_0_0] + self-stretch. No background/border/padding —
+     the image fills the column and carries its own aspect-ratio. */
+  flex: 1 1 0;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 480px;
-  gap: var(--spacing-sm);
+  align-items: stretch;
+  gap: 16px;
+  position: relative;
 }
 /* When the slot has the actual GIF (not the placeholder) — strip the chrome
    and let the phone fill the slot with caption sitting close beneath.
@@ -1414,13 +1417,18 @@ main {
   margin-top: var(--spacing-lg);
 }
 .results-phone-slot .results-phone-gif {
+  /* Image keeps its natural phone aspect (322/697) — no horizontal crop ever.
+     When slot is taller than phone aspect (panel content driving row height at
+     narrow widths), phone sits at the slot bottom via justify-content: flex-end
+     on .has-asset. At wider widths where phone aspect ≥ panel height, phone
+     fills the row and panel matches via flex stretch. */
   width: 100%;
-  max-width: 260px;
   height: auto;
-  border-radius: 24px;
+  aspect-ratio: 322 / 697;
+  object-fit: cover;
+  border-radius: 16px;
   display: block;
-  margin-bottom: 0;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 1px 0 rgba(224,223,228,0.06), 0 6px 24px rgba(0, 0, 0, 0.3);
 }
 .results-phone-slot .placeholder-text {
   font-size: 14px;
@@ -1442,17 +1450,24 @@ main {
   margin: 0;
 }
 .results-metrics-panel {
+  /* Panel takes equal share with phone column (flex 1 1 0) at ALL viewport widths
+     so both columns scale together. No max-width cap — Della's intent: phone and
+     panel stay same size + ratio as page scales. Padding/gap clamp from Figma
+     desktop (40/36 px, gap-28) to mobile (13/12 px, gap-12). */
+  flex: 1 1 0;
+  min-width: 0;
   background: var(--surface-1);
   border: 1px solid var(--accent);
-  border-radius: 12px;
-  padding: var(--spacing-lg);
+  border-radius: 14px;
+  padding: clamp(13px, calc(9.64vw - 33.29px), 40px) clamp(12px, calc(8.57vw - 29.14px), 36px);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: clamp(12px, calc(5.71vw - 15.43px), 28px);
 }
 .metrics-eyebrow {
-  font-size: 11px;
-  font-weight: 700;
+  /* Scales 11px (desktop, Figma 1409:2482) → 10px (mobile, Figma 1409:2639). */
+  font-size: clamp(10px, calc(0.36vw + 8.29px), 11px);
+  font-weight: 600;
   letter-spacing: 0.88px;
   text-transform: uppercase;
   color: var(--accent);
@@ -1553,6 +1568,14 @@ main {
   .metric-row .metric-value {
     font-size: 24px;
   }
+  /* Mobile metrics-panel padding/gap per Figma 1409:2638 (px-12 py-13 gap-12).
+     max-width: none so panel takes 50% of row width (flex 1 1 0). */
+  .results-metrics-panel {
+    flex: 1 1 0;
+    max-width: none;
+    padding: 13px 12px;
+    gap: 12px;
+  }
 }
 
 /* ---------- Outcome cards (single-column stacked) ----------
@@ -1563,24 +1586,28 @@ main {
 .outcomes-stack {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  /* Scales from Figma desktop ~24px gap down to ~6px at mobile so stack fits
+     within the phone-aspect-determined slot height at narrow widths. */
+  gap: clamp(6px, calc(2.57vw - 6.34px), 24px);
 }
 .outcomes-stack .outcome-card {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: clamp(2px, calc(0.71vw - 1.43px), 6px);
 }
 .outcomes-stack .outcome-title {
-  font-size: 13px;
-  font-weight: 700;
+  /* Scales 11px desktop → 10px mobile (Figma 1409:2488 / 1409:2645). */
+  font-size: clamp(10px, calc(0.36vw + 8.29px), 11px);
+  font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-primary);
   margin: 0;
 }
 .outcomes-stack .outcome-body {
-  font-size: 14px;
+  /* Scales 14px desktop → 9px mobile (Figma 1409:2489 / 1409:2646). */
+  font-size: clamp(9px, calc(1.79vw + 0.43px), 14px);
   color: var(--text-secondary);
-  line-height: 1.5;
+  line-height: 1.4;
   margin: 0;
 }

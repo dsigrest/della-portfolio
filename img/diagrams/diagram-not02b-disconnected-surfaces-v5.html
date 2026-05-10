@@ -43,13 +43,20 @@
     overflow: hidden;
     position: relative;
     padding: 24px 0;
+    /* Query container — lets .comparison padding/gap scale with .diagram width.
+       cqw on .comparison children resolves against this. */
+    container-type: inline-size;
   }
 
   .comparison {
-    padding: 28px 48px 0;
+    /* Fluid scaling — at .diagram=760 the values resolve to Figma's 48/20;
+       as the diagram shrinks toward 481 they ease down to 16/12 so the four
+       columns get more breathing room and labels stay legible. Removed the
+       28px top padding (not in Figma — outer .diagram py-24 handles top spacing). */
+    padding: 0 clamp(16px, calc(8.9cqw - 19px), 48px);
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    gap: clamp(12px, calc(2.2cqw + 3.2px), 20px);
     align-items: start;
   }
 
@@ -58,6 +65,9 @@
     flex-direction: column;
     align-items: stretch;
     min-width: 0;
+    /* Establish a query container so .mock can size its border-radius
+       proportionally to .col width (10.5cqw — see .mock rule below). */
+    container-type: inline-size;
     opacity: 0;
     animation: fadeUp 0.6s ease-out forwards;
   }
@@ -73,23 +83,39 @@
 
   .col-label {
     display: flex;
+    align-items: flex-end;
     justify-content: center;
+    text-align: center;
     color: var(--accent);
     font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    margin-bottom: 14px;
-    line-height: 1;
+    line-height: 1.2;
+    /* Reserve 2 lines of vertical space so all 4 column labels share the same
+       height — at narrow widths "PUSH NOTIFICATIONS" wraps to 2 lines while
+       INBOX/CHAT stay 1 line. flex-end bottom-aligns each label to the phone
+       above it, so phone tops align across all columns regardless of which
+       labels wrapped. Phone-row vertical alignment is the legibility anchor. */
+    min-height: 2.4em;
+    margin-bottom: 24px;
   }
 
   .mock-frame {
-    padding: 0 8px;
-    margin-bottom: 6px;
+    /* Side-padding scales with .col width (.col is the query container, set
+       below). At desktop col≈151 this resolves to ~8px (Figma px-[8px]). At
+       narrow cols the padding shrinks so the phone takes more of the column,
+       keeping screenshots readable down to the mobile breakpoint. */
+    padding: 0 clamp(4px, calc(5.6cqw - 0.5px), 8px);
+    margin-bottom: 16px;
   }
   .mock {
     width: 100%;
-    border-radius: 16px;
+    /* Proportional corner radius — 10.5cqw of .col width holds a real-iPhone-like
+       ratio (~11% of phone width) at every breakpoint. At Figma desktop col≈151px
+       this resolves to ~16px, matching Figma's rounded-[16px]. As the diagram
+       shrinks the radius shrinks in lockstep so corners never read pill-y. */
+    border-radius: 10.5cqw;
     overflow: hidden;
     background: #000;
     aspect-ratio: 1040 / 2250;
@@ -107,21 +133,13 @@
     transform: translateY(-2px);
   }
 
-  /* Annotation block — title (col-label) carries --accent above; body text
-     pushed back to --text-sec for clear title→body hierarchy. min-height
-     equalizes all four columns regardless of bullet count (Push: 1 line,
-     Chat: 2 bullets, Inbox/PMs: 3 bullets). */
+  /* Annotation block — plain text, no card chrome (matches Figma 1389:772 polish).
+     Padding 7/10 matches Figma's px-[10px] py-[7px]. */
   .annotation {
-    border: 1px solid var(--glass-border);
-    background: var(--glass-bg);
-    border-radius: 8px;
-    padding: 9px 12px;
+    padding: 7px 10px;
     color: var(--text-sec);
     font-size: 11px;
     line-height: 1.4;
-    box-shadow: var(--glass-highlight);
-    margin-top: 20px;
-    min-height: 66px;
     display: flex;
     align-items: center;
     overflow-wrap: break-word;
@@ -156,14 +174,25 @@
   }
 
 
-  @media (max-width: 600px) {
-    .comparison { padding: 24px 16px 0; gap: 12px; }
-    .annotation { font-size: 10px; padding: 8px 10px; min-height: 56px; }
-    .annotation ul { padding-left: 12px; }
-  }
+  /* Mobile breakpoint — at ≤480px the 4-column comparison stacks into a 2x2 grid
+     matching the Figma mobile frame (1381:263 at 375 width). Above 480px the
+     4-column quad layout holds. Della's design intent: quad until 480, 2x2 below.
+     Project-wide 480px default per references/breakpoint-conventions.md. */
   @media (max-width: 480px) {
-    .comparison { grid-template-columns: 1fr 1fr; gap: 16px; padding: 24px 12px 0; }
-    .annotation { min-height: auto; }
+    .comparison {
+      grid-template-columns: 1fr 1fr;
+      gap: 20px 16px;
+      padding: 24px 16px 0;
+    }
+    .annotation {
+      min-height: auto;
+      padding: 9px 10px;
+      word-break: normal;
+      overflow-wrap: normal;
+    }
+    .annotation ul { padding-left: 14px; }
+    .annotation ul li { overflow-wrap: normal; }
+    .annotation p { overflow-wrap: normal; }
   }
 </style>
 </head>

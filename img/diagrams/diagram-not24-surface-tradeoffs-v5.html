@@ -39,53 +39,39 @@
     .diagram {
       width: 100%;
       padding: 24px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
 
+    /* ---------- DESKTOP: phones row + attribute matrix ---------- */
     .comparison {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-      padding: 28px 16px 0;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 0 48px;
       width: 100%;
-      max-width: 1040px;
-      margin: 0 auto;
+    }
+
+    /* Left spacer column — 106px reserved to align with attribute label column below */
+    .comparison-spacer {
+      width: 106px;
+      flex-shrink: 0;
     }
 
     .col {
+      flex: 1 0 0;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
       animation: fadeUp 0.6s var(--spring) forwards;
       opacity: 0;
     }
 
-    .col:nth-child(1) { animation-delay: 0.1s; }
-    .col:nth-child(2) { animation-delay: 0.2s; }
-    .col:nth-child(3) { animation-delay: 0.3s; }
-
-    /* Header: number + label stack */
-    .col-header {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-      width: 100%;
-      margin-bottom: 14px;
-    }
-
-    .col-number {
-      font-family: 'Inter', sans-serif;
-      font-weight: 700;
-      font-size: 32px;
-      line-height: 1.2;
-      letter-spacing: -0.64px;
-      color: var(--accent);
-      flex-shrink: 0;
-    }
-
-    .col-label-stack {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      flex: 1;
-      min-width: 0;
-    }
+    .col:nth-child(2) { animation-delay: 0.1s; }
+    .col:nth-child(3) { animation-delay: 0.2s; }
+    .col:nth-child(4) { animation-delay: 0.3s; }
 
     .col-label {
       font-family: 'Inter', sans-serif;
@@ -94,27 +80,23 @@
       line-height: 1.4;
       letter-spacing: 0.88px;
       text-transform: uppercase;
-      color: var(--text-pri);
-    }
-
-    .col-subtitle {
-      font-family: 'Inter', sans-serif;
-      font-weight: 400;
-      font-size: 14px;
-      line-height: 1.4;
-      letter-spacing: 0.28px;
-      color: var(--text-ter);
+      color: var(--accent);
+      text-align: center;
+      width: 100%;
     }
 
     .mock-frame {
       position: relative;
       width: 100%;
       aspect-ratio: 1206/2622;
-      margin-bottom: 28px;
       border-radius: 16px;
       overflow: hidden;
       background: var(--card);
-      border: 1px solid var(--border-normal);
+      margin: 0 8px;
+    }
+
+    .mock-frame.pms {
+      aspect-ratio: 1040/2250;
     }
 
     .mock {
@@ -123,94 +105,459 @@
       object-fit: cover;
     }
 
-    .annotation {
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      box-shadow: var(--glass-highlight);
+    /* Phone container that adds 8px horizontal padding per Figma */
+    .phone-wrap {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      padding: 0 8px;
+    }
+
+    .phone-wrap .mock-frame { margin: 0; }
+
+    /* ---------- Attribute matrix ---------- */
+    .matrix {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 0 48px;
+      width: 100%;
+      animation: fadeUp 0.6s var(--spring) 0.4s forwards;
+      opacity: 0;
+    }
+
+    .matrix-row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      width: 100%;
       border-radius: 8px;
+    }
+
+    .matrix-row.zebra {
+      background: var(--card);
+    }
+
+    .row-label {
+      width: 106px;
+      flex-shrink: 0;
+      height: 31px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
       padding: 7px 10px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 11px;
+      line-height: 1.3;
+      letter-spacing: 0.88px;
+      text-transform: uppercase;
+      color: var(--text-pri);
+      white-space: nowrap;
+      border-radius: 8px;
     }
 
-    .annotation ul {
-      list-style: disc;
-      padding-left: 16px;
-      margin: 0;
-    }
-
-    .annotation li {
-      color: var(--accent);
+    .matrix-cell {
+      flex: 1 0 0;
+      min-width: 0;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', sans-serif;
       font-size: 11px;
       line-height: 1.4;
-      font-weight: 400;
+      text-align: center;
+      border-radius: 8px;
     }
 
-    /* iframe-width rule: collapse only at ≤480px */
+    .matrix-cell.strong {
+      font-weight: 500;
+      color: var(--text-sec);
+    }
+
+    .matrix-cell.weak {
+      font-weight: 400;
+      color: var(--text-ter);
+    }
+
+    /* Default: show desktop, hide mobile */
+    .desktop-only { display: contents; }
+    .mobile-only { display: none; }
+
+    /* ---------- MOBILE (≤480px): vertical-columns variant only ----------
+       Per Della 2026-05-10: mobile should be vertical columns (Mobile B,
+       Figma 1409:342), NOT horizontal rows (Mobile A, Figma 1409:536).
+       Mobile A is hidden at narrow widths but its CSS + markup are kept
+       in case the rows variant is wanted on a future case-study layout. */
     @media (max-width: 480px) {
-      .comparison { gap: 10px; }
-      .col-number { font-size: 28px; }
+      .diagram { padding: 16px 0; gap: 24px; }
+
+      /* Hide the desktop-only phones row + matrix */
+      .desktop-only { display: none !important; }
+
+      /* Show only Mobile B (vertical columns); hide Mobile A (horizontal rows) */
+      .mobile-only { display: block; }
+      .mobile-variant.a { display: none; }
+
+      .mobile-variant {
+        animation: fadeUp 0.6s var(--spring) forwards;
+        opacity: 0;
+      }
+      .mobile-variant.a { animation-delay: 0.1s; }
+      .mobile-variant.b { animation-delay: 0.25s; }
+
+      /* Mobile A — phones-as-rows: each phone gets a row of attribute cells beside it */
+      .ma-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+      }
+      .ma-headers {
+        display: flex;
+        gap: 14px;
+        padding: 0 10px 0 16px;
+        align-items: center;
+        justify-content: flex-end;
+      }
+      .ma-headers > .ma-h-spacer {
+        width: 61.4px;
+        flex-shrink: 0;
+      }
+      .ma-headers .ma-h {
+        flex: 1 0 0;
+        min-width: 0;
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        font-size: 8px;
+        line-height: 1.4;
+        letter-spacing: 0.64px;
+        text-transform: uppercase;
+        color: var(--text-pri);
+        text-align: center;
+      }
+      .ma-rows {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+      }
+      .ma-row {
+        display: flex;
+        gap: 13px;
+        align-items: flex-end;
+        padding: 8px 16px;
+        border-radius: 8px;
+      }
+      .ma-row.zebra { background: var(--card); }
+      .ma-phone {
+        width: 61.4px;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .ma-phone-label {
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        font-size: 9px;
+        line-height: 1.4;
+        letter-spacing: 0.72px;
+        text-transform: uppercase;
+        color: var(--accent);
+        text-align: center;
+      }
+      .ma-mock {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 1206/2622;
+        border-radius: 8px;
+        overflow: hidden;
+        background: var(--card);
+      }
+      .ma-mock.pms { aspect-ratio: 1040/2250; }
+      .ma-mock img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .ma-cells {
+        flex: 1 0 0;
+        min-width: 0;
+        display: flex;
+        gap: 13px;
+        align-items: center;
+      }
+      .ma-cell {
+        flex: 1 0 0;
+        min-width: 0;
+        height: 152.754px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 0;
+        font-family: 'Inter', sans-serif;
+        font-size: 10px;
+        line-height: 1.4;
+        text-align: center;
+        border-radius: 8px;
+      }
+      .ma-cell.tall { padding: 22px 0 8px; }
+      .ma-cell.strong { font-weight: 500; color: var(--text-sec); }
+      .ma-cell.weak { font-weight: 400; color: var(--text-ter); }
+
+      /* Mobile B — matrix layout: phones column left, 4 attr columns right */
+      .mb-wrap {
+        display: flex;
+        gap: 4px;
+        padding: 0 8px;
+        align-items: stretch;
+        width: 100%;
+      }
+      .mb-phones {
+        width: 65px;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding-top: 24px;
+      }
+      .mb-phone {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        width: 100%;
+      }
+      .mb-phone-label {
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        font-size: 9px;
+        line-height: 1.4;
+        letter-spacing: 0.72px;
+        text-transform: uppercase;
+        color: var(--accent);
+        text-align: center;
+      }
+      .mb-mock {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 1206/2622;
+        border-radius: 8px;
+        overflow: hidden;
+        background: var(--card);
+      }
+      .mb-mock.pms { aspect-ratio: 1040/2250; }
+      .mb-mock img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .mb-cols {
+        flex: 1 0 0;
+        min-width: 0;
+        display: flex;
+        align-items: stretch;
+      }
+      .mb-col {
+        flex: 1 0 0;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 8px;
+        border-radius: 8px;
+        align-items: center;
+      }
+      .mb-col.zebra { background: var(--card); }
+      .mb-col-header {
+        padding-bottom: 24px;
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        font-size: 8px;
+        line-height: 1.4;
+        letter-spacing: 0.64px;
+        text-transform: uppercase;
+        color: var(--text-pri);
+        text-align: center;
+        width: 100%;
+      }
+      .mb-cell {
+        flex: 1 0 0;
+        min-height: 0;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 0;
+        font-family: 'Inter', sans-serif;
+        font-size: 10px;
+        line-height: 1.4;
+        text-align: center;
+        border-radius: 8px;
+      }
+      .mb-cell.tall { padding: 22px 0 8px; }
+      .mb-cell.strong { font-weight: 500; color: var(--text-sec); }
+      .mb-cell.weak { font-weight: 400; color: var(--text-ter); }
     }
-    @media (max-width: 400px) {
-      .comparison { grid-template-columns: 1fr; gap: 24px; }
-    }
+
   </style>
 </head>
 <body>
   <div class="diagram">
-    <div class="comparison">
-      <!-- Column 1: Inbox -->
-      <div class="col">
-        <div class="col-header">
-          <div class="col-label-stack">
-            <div class="col-label">Inbox</div>
-            <div class="col-subtitle">Async &middot; destination</div>
+    <!-- ============ DESKTOP ============ -->
+    <div class="desktop-only">
+      <div class="comparison">
+        <div class="comparison-spacer"></div>
+        <div class="col">
+          <div class="col-label">Inbox</div>
+          <div class="phone-wrap">
+            <div class="mock-frame">
+              <img class="mock" src="assets/not24-inbox.png" alt="Inbox surface">
+            </div>
           </div>
         </div>
-        <div class="mock-frame">
-          <img class="mock" src="assets/not24-inbox.png" alt="Inbox surface">
+        <div class="col">
+          <div class="col-label">Private messages</div>
+          <div class="phone-wrap">
+            <div class="mock-frame pms">
+              <img class="mock" src="assets/not24-pms.png" alt="Private messages surface">
+            </div>
+          </div>
         </div>
-        <div class="annotation">
-          <ul>
-            <li>Static chronological sort</li>
-            <li>Limited utilities</li>
-          </ul>
+        <div class="col">
+          <div class="col-label">Chat</div>
+          <div class="phone-wrap">
+            <div class="mock-frame">
+              <img class="mock" src="assets/not24-chat.png" alt="Chat surface">
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Column 2: Private messages -->
-      <div class="col">
-        <div class="col-header">
-          <div class="col-label-stack">
-            <div class="col-label">Private messages</div>
-            <div class="col-subtitle">Async &middot; thread list</div>
-          </div>
+      <div class="matrix">
+        <div class="matrix-row">
+          <div class="row-label">Engagement</div>
+          <div class="matrix-cell strong">Asynchronous</div>
+          <div class="matrix-cell strong">Asynchronous</div>
+          <div class="matrix-cell weak">Synchronous</div>
         </div>
-        <div class="mock-frame">
-          <img class="mock" src="assets/not24-pms.png" alt="Private messages surface">
+        <div class="matrix-row zebra">
+          <div class="row-label">Sort</div>
+          <div class="matrix-cell weak">Static, Chronological</div>
+          <div class="matrix-cell strong">Dynamic, by recency</div>
+          <div class="matrix-cell strong">Dynamic, by recency</div>
         </div>
-        <div class="annotation">
-          <ul>
-            <li>Dynamic sort by recency</li>
-            <li>Limited utilities</li>
-          </ul>
+        <div class="matrix-row">
+          <div class="row-label">Navigation</div>
+          <div class="matrix-cell weak">Content pages</div>
+          <div class="matrix-cell strong">Thread detail</div>
+          <div class="matrix-cell strong">Thread detail</div>
+        </div>
+        <div class="matrix-row zebra">
+          <div class="row-label">Utilities</div>
+          <div class="matrix-cell strong">Mark read, preferences</div>
+          <div class="matrix-cell strong">Mark read, preferences</div>
+          <div class="matrix-cell weak">Filter, create chat, preferences</div>
         </div>
       </div>
+    </div>
 
-      <!-- Column 3: Chat -->
-      <div class="col">
-        <div class="col-header">
-          <div class="col-label-stack">
-            <div class="col-label">Chat</div>
-            <div class="col-subtitle">Sync &middot; live thread</div>
+    <!-- ============ MOBILE A — phones-as-rows ============ -->
+    <div class="mobile-only mobile-variant a">
+      <div class="ma-wrap">
+        <div class="ma-headers">
+          <div class="ma-h-spacer"></div>
+          <div class="ma-h">Engagement</div>
+          <div class="ma-h">Sort</div>
+          <div class="ma-h">Navigation</div>
+          <div class="ma-h">Utilities</div>
+        </div>
+        <div class="ma-rows">
+          <div class="ma-row">
+            <div class="ma-phone">
+              <div class="ma-phone-label">Inbox</div>
+              <div class="ma-mock"><img src="assets/not24-inbox.png" alt="Inbox surface"></div>
+            </div>
+            <div class="ma-cells">
+              <div class="ma-cell strong">Async</div>
+              <div class="ma-cell weak">Static</div>
+              <div class="ma-cell weak">Content</div>
+              <div class="ma-cell tall weak">Mark read, preferences</div>
+            </div>
+          </div>
+          <div class="ma-row zebra">
+            <div class="ma-phone">
+              <div class="ma-phone-label">Messages</div>
+              <div class="ma-mock pms"><img src="assets/not24-pms.png" alt="Private messages surface"></div>
+            </div>
+            <div class="ma-cells">
+              <div class="ma-cell strong">Async</div>
+              <div class="ma-cell strong">Dynamic</div>
+              <div class="ma-cell strong">Thread</div>
+              <div class="ma-cell tall strong">Mark read, preferences</div>
+            </div>
+          </div>
+          <div class="ma-row">
+            <div class="ma-phone">
+              <div class="ma-phone-label">Chat</div>
+              <div class="ma-mock"><img src="assets/not24-chat.png" alt="Chat surface"></div>
+            </div>
+            <div class="ma-cells">
+              <div class="ma-cell weak">Synch</div>
+              <div class="ma-cell strong">Dynamic</div>
+              <div class="ma-cell strong">Thread</div>
+              <div class="ma-cell tall strong">Filter, new, preferences</div>
+            </div>
           </div>
         </div>
-        <div class="mock-frame">
-          <img class="mock" src="assets/not24-chat.png" alt="Chat surface">
+      </div>
+    </div>
+
+    <!-- ============ MOBILE B — matrix grid ============ -->
+    <div class="mobile-only mobile-variant b">
+      <div class="mb-wrap">
+        <div class="mb-phones">
+          <div class="mb-phone">
+            <div class="mb-phone-label">Inbox</div>
+            <div class="mb-mock"><img src="assets/not24-inbox.png" alt="Inbox surface"></div>
+          </div>
+          <div class="mb-phone">
+            <div class="mb-phone-label">Messages</div>
+            <div class="mb-mock pms"><img src="assets/not24-pms.png" alt="Private messages surface"></div>
+          </div>
+          <div class="mb-phone">
+            <div class="mb-phone-label">Chat</div>
+            <div class="mb-mock"><img src="assets/not24-chat.png" alt="Chat surface"></div>
+          </div>
         </div>
-        <div class="annotation">
-          <ul>
-            <li>Dynamic sort by recency</li>
-            <li>Multiple utilities</li>
-          </ul>
+        <div class="mb-cols">
+          <div class="mb-col">
+            <div class="mb-col-header">Engagement</div>
+            <div class="mb-cell strong">Async</div>
+            <div class="mb-cell strong">Async</div>
+            <div class="mb-cell weak">Synch</div>
+          </div>
+          <div class="mb-col zebra">
+            <div class="mb-col-header">Sort</div>
+            <div class="mb-cell weak">Static</div>
+            <div class="mb-cell strong">Dynamic</div>
+            <div class="mb-cell strong">Dynamic</div>
+          </div>
+          <div class="mb-col">
+            <div class="mb-col-header">Navigation</div>
+            <div class="mb-cell weak">Content</div>
+            <div class="mb-cell strong">Thread</div>
+            <div class="mb-cell strong">Thread</div>
+          </div>
+          <div class="mb-col zebra">
+            <div class="mb-col-header">Utilities</div>
+            <div class="mb-cell tall weak">Mark read, preferences</div>
+            <div class="mb-cell tall strong">Mark read, preferences</div>
+            <div class="mb-cell tall strong">Filter, new, preferences</div>
+          </div>
         </div>
       </div>
     </div>

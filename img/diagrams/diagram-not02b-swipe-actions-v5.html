@@ -39,39 +39,52 @@
     border-radius: 16px;
     overflow: hidden;
     position: relative;
-    padding: 24px 48px 56px;
+    padding: 24px 0;
   }
 
+  /* .comparison-wrap — Figma: pt-[24px] px-[48px] */
+  .comparison-wrap {
+    padding: 24px 48px 0;
+  }
+
+  /* .col.before — Figma: flex-col gap-[14px] */
+  .col-before {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+  }
+
+  /* Column Header — Figma: 11px Inter Semi Bold, tracking 0.88px (0.08em),
+     uppercase, color var(--accent), line-height 1.4, centered, no dot. */
   .col-label {
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
     color: var(--accent);
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
+    line-height: 1.4;
     text-transform: uppercase;
-    line-height: 1;
-    margin-bottom: 18px;
-  }
-  .col-label .dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--accent);
+    width: 100%;
   }
 
-  /* Swipe-action recording — sized to the GIF's native 797x132 ratio so
-     the row doesn't squash or letterbox. The static still card was
-     removed because frame 0 of the GIF already shows the same row. */
+  /* Image wrap — Figma: px-[8px] horizontal padding around the recording. */
+  .swipe-wrap {
+    width: 100%;
+    padding: 0 8px;
+  }
+
+  /* Swipe-action recording — Figma desktop & mobile both use aspect-[800/141].
+     GIF native is 797x132 but the Figma frame intent is 800/141 — match Figma. */
   .swipe-gif {
     position: relative;
     width: 100%;
-    aspect-ratio: 797 / 132;
+    aspect-ratio: 800 / 141;
     border-radius: 16px;
     overflow: hidden;
     background: #F6F6F6;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
     opacity: 0;
     animation: fadeUp 0.6s ease-out 0.25s forwards;
   }
@@ -87,23 +100,27 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  .diagram::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at center 30%, rgba(127,181,176,0.04), transparent 70%);
-    pointer-events: none;
+  @media (max-width: 480px) {
+    .comparison-wrap {
+      padding: 24px 16px 0;
+    }
   }
+
+  body.embedded { padding: 0; min-height: auto; display: block; background: transparent; overflow: hidden; }
 </style>
 </head>
 <body>
+  <script>if(window!==window.parent)document.body.classList.add('embedded');</script>
   <div class="diagram">
-    <div class="col-label">
-      <span class="dot"></span>
-      <span>Easy access swipe actions</span>
-    </div>
-    <div class="swipe-gif">
-      <img src="assets/not07i-swipe-action.gif" alt="Recording: a Reddit inbox notification row being swiped to the right to reveal secondary actions inline" loading="lazy">
+    <div class="comparison-wrap">
+      <div class="col-before">
+        <div class="col-label">Access easy swipe actions</div>
+        <div class="swipe-wrap">
+          <div class="swipe-gif">
+            <img src="assets/not07i-swipe-action.gif" alt="Recording: a Reddit inbox notification row being swiped to the right to reveal secondary actions inline" loading="lazy">
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 <!-- diagram-height-poster v2 -->

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="figma-source" content="node:709:668 page:29:43 file:TArUrZsBUocaAsqetjXq7V">
+<meta name="figma-source" content="node:1214:14656 mobile:1406:2636 page:1214:13477 file:TArUrZsBUocaAsqetjXq7V">
 <title>NOT-08 — Subreddit Header On-Ramps: Before & After</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -47,60 +47,64 @@
   }
 
   /* ── Comparison ── */
-  /* hover-hint header dropped to match Figma 709:668 (Della call 2026-04-29).
-     Comparison-wrap top padding raised to 32px to absorb the visual space. */
+  /* Figma node 1214:14656 (desktop) / 1406:2636 (mobile) — calibrated 2026-05-09.
+     Outer wrapper: py:24 px:48 (desktop) / py:24 px:16 (mobile).
+     Card-to-card gap: 48 desktop / 16 mobile. Card-inner gap: 16 desktop / 14 mobile.
+     Labels are uppercase BEFORE/AFTER only, centered. Captions sit below mocks. */
   .comparison-wrap {
-    padding: 32px 48px 48px;
+    padding: 24px 48px;
   }
   .comparison {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    gap: 48px;
     align-items: start;
   }
   .col {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 16px;
   }
 
   .col-label {
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
     font-size: 10px;
     font-weight: 600;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
+    width: 100%;
   }
   .col-label.before { color: var(--red); }
   .col-label.after { color: var(--accent); }
-  .col-label .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-  .col-label.before .dot { background: var(--red); }
-  .col-label.after .dot { background: var(--accent); }
 
-  /* ── Screenshot frame ── */
-  .screenshot {
-    position: relative;
-    padding: 16px 8px;
+  /* JetBrains Mono caption sits below each mock. */
+  .col-caption {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 9px;
+    font-weight: 400;
+    color: var(--text-ter);
+    letter-spacing: 0.04em;
+    text-align: center;
+    width: 100%;
   }
 
   /* Subreddit-card image clips — Figma-exported PNGs cropped to just the header strip.
-     Canonical Figma node 709:668 · page 29:43 · file TArUrZsBUocaAsqetjXq7V */
+     Canonical Figma node 1214:14656 · page 1214:13477 · file TArUrZsBUocaAsqetjXq7V */
   .mock.before-mock,
   .mock.after-mock {
     position: relative;
     width: 100%;
     overflow: hidden;
     border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    box-shadow: inset 0 1px 0 rgba(224,223,228,0.06);
     background: #F6F6F6;
   }
-  /* PNG aspect ratios match the pre-cropped Figma exports — no crop math in HTML.
-     before = silent-toggle (r/Seattle, no bell)  : 572 / 166
-     after  = inline-picker (r/williamsburg, bell): 572 / 165 */
-  .mock.before-mock { aspect-ratio: 572 / 166; }
-  .mock.after-mock  { aspect-ratio: 572 / 165; }
+  /* Aspect ratios match Figma frame nodes 1242:633 (before, 644/186) and
+     1242:635 (after, 520/150) verbatim. */
+  .mock.before-mock { aspect-ratio: 644 / 186; }
+  .mock.after-mock  { aspect-ratio: 520 / 150; }
 
   .mock.before-mock img,
   .mock.after-mock img {
@@ -136,21 +140,12 @@
     opacity: 0;
   }
 
-  /* ─ Mobile fit — progressively restructure as viewport narrows ─ */
-  @media (max-width: 768px) {
-    body { padding: 16px; }
-    .comparison-wrap { padding: 24px 16px 20px; }
-    .comparison { gap: 12px; }
-  }
+  /* ─ Mobile fit — Figma node 1406:2636. Outer px:16, gap:16, card-inner gap:14. ─ */
   @media (max-width: 480px) {
-    .comparison { gap: 10px; }
-    .comparison-wrap { padding: 12px 12px 24px; }
-  }
-  /* 1-col collapse only at the narrowest phones */
-  @media (max-width: 400px) {
-    body { padding: 10px; }
-    .comparison { grid-template-columns: 1fr; gap: 24px; }
-    .comparison-wrap { padding: 18px 10px 18px; }
+    body { padding: 16px; }
+    .comparison-wrap { padding: 24px 16px; }
+    .comparison { gap: 16px; }
+    .col { gap: 14px; }
   }
 
   /* Embed mode — strip body chrome when iframed on a case study page */
@@ -167,24 +162,20 @@
 
       <!-- ── BEFORE ── -->
       <div class="col before">
-        <div class="col-label before"><span class="dot"></span>Before — Hidden preference</div>
-
-        <div class="screenshot">
-          <div class="mock before-mock" aria-label="r/Seattle subreddit row — silent join, no notification on-ramp prompt">
-            <img src="assets/not08-silent-toggle-card.png" alt="r/Seattle subreddit row showing a silent Joined state with no bell prompt" width="572" height="166">
-          </div>
+        <div class="col-label before">Before</div>
+        <div class="mock before-mock" aria-label="r/Seattle subreddit row — silent join, no notification on-ramp prompt">
+          <img src="assets/not08-silent-toggle-card.png" alt="r/Seattle subreddit row showing a silent Joined state with no bell prompt" width="572" height="166">
         </div>
+        <div class="col-caption">Hidden preference</div>
       </div>
 
       <!-- ── AFTER ── -->
       <div class="col after">
-        <div class="col-label after"><span class="dot"></span>After — Visible toggle</div>
-
-        <div class="screenshot">
-          <div class="mock after-mock" aria-label="r/williamsburg subreddit row with inline-picker on-ramp — bell prompt visible">
-            <img src="assets/not08-inline-picker-card.png" alt="r/williamsburg subreddit row with a bell icon offering a notification on-ramp" width="572" height="165">
-          </div>
+        <div class="col-label after">After</div>
+        <div class="mock after-mock" aria-label="r/williamsburg subreddit row with inline-picker on-ramp — bell prompt visible">
+          <img src="assets/not08-inline-picker-card.png" alt="r/williamsburg subreddit row with a bell icon offering a notification on-ramp" width="572" height="165">
         </div>
+        <div class="col-caption">Contextual toggle</div>
       </div>
 
     </div>

@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="figma-source" content="node:1406:1662 page:1214:13477 file:TArUrZsBUocaAsqetjXq7V">
 <title>NOT-06 — Push-to-Inbox Continuity (Before/After)</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
@@ -24,84 +25,58 @@
   }
   .diagram {
     width: 760px; background: var(--canvas); border-radius: 16px; overflow: hidden;
+    padding: 24px 0;
   }
 
   /* ── Before/After comparison ── */
+  .comparison-strip-wrap { padding: 0 48px; }
   .comparison-strip {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
-    padding: 32px 48px; position: relative;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
   }
   .comp-card {
-    background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 10px;
-    padding: 18px; position: relative; overflow: visible;
-    backdrop-filter: blur(8px);
+    display: flex; flex-direction: column; gap: 16px;
+    position: relative;
     opacity: 0; animation: mount 0.5s var(--spring) forwards;
     animation-delay: calc(var(--li, 0) * 60ms);
-  }
-  .comp-card::before {
-    content: ''; position: absolute; inset: 0;
-    box-shadow: var(--glass-highlight); border-radius: 10px; pointer-events: none;
   }
 
   .comp-label {
     font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
-    margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+    text-align: center;
   }
   .comp-label.before { color: var(--red); }
   .comp-label.after { color: var(--accent); }
-  .comp-label .dot { width: 6px; height: 6px; border-radius: 50%; }
-  .comp-label.before .dot { background: var(--red); }
-  .comp-label.after .dot { background: var(--accent); }
+
+  /* Inbox-row PNG stack */
+  .row-stack { display: flex; flex-direction: column; gap: 16px; pointer-events: none; }
+  .row-img {
+    display: block; width: 100%; height: auto;
+    border-radius: 8px;
+    box-shadow: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  .row-img.dim { opacity: 0.15; }
 
   .comp-detail {
     font-family: 'JetBrains Mono', monospace; font-size: 9px;
-    color: var(--text-dim); letter-spacing: 0.04em; margin-left: auto;
+    color: var(--text-ter); letter-spacing: 0.04em;
+    text-align: center;
   }
-
-  /* Mini inbox rows */
-  .mini-rows { display: flex; flex-direction: column; gap: 6px; }
-  .mini-row {
-    display: flex; align-items: center; gap: 10px;
-    padding: 7px 10px; border-radius: 7px;
-    font-size: 12px;
-    border: 1px solid transparent;
-  }
-  .mini-row.active-row { background: rgba(127,181,176,0.06); border-color: rgba(127,181,176,0.12); }
-  .mini-row.gone { opacity: 0.15; text-decoration: line-through; }
-  .mini-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-  .mini-dot.rec { background: var(--resur); }
-  .mini-dot.notif { background: var(--accent); }
-  .mini-dot.ghost { background: var(--text-dim); border: 1px dashed var(--text-dim); }
-  .mini-text { color: var(--text-sec); flex: 1; font-size: 12px; }
-  .mini-text.dim { color: var(--text-dim); }
-  .mini-ts {
-    font-family: 'JetBrains Mono', monospace; font-size: 8px;
-    color: var(--text-dim); flex-shrink: 0;
-  }
-  .mini-tag {
-    font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
-    padding: 2px 7px; border-radius: 4px; flex-shrink: 0;
-  }
-  .mini-tag.latest { background: rgba(196,176,120,0.12); color: var(--resur); }
-  .mini-tag.kept { background: rgba(127,181,176,0.12); color: var(--accent); }
-  .mini-tag.lost { background: rgba(196,120,120,0.12); color: var(--red); }
 
   @keyframes mount {
     from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* iframe-width rule: collapse only at ≤480px */
-  @media (max-width: 768px) {
-    body { padding: 16px; }
-    .comparison-strip { gap: 12px; padding: 20px 24px; }
-  }
+  /* Single breakpoint at 480 per Figma (only desktop and mobile frames exist).
+     Removed the 768 intermediate that was easing spacing between desktop and mobile —
+     Figma intends a clean snap. */
   @media (max-width: 480px) {
-    .comparison-strip { gap: 10px; padding: 14px 12px; }
-  }
-  @media (max-width: 400px) {
     body { padding: 10px; }
-    .comparison-strip { grid-template-columns: 1fr; gap: 24px; padding: 16px 20px; }
+    .diagram { padding: 24px 0; }
+    .comparison-strip-wrap { padding: 0 16px; }
+    .comparison-strip { gap: 16px; }
+    .comp-card { gap: 14px; }
+    .row-stack { gap: 8px; }
   }
 
   /* Embed mode */
@@ -111,57 +86,25 @@
 </head>
 <body>
 <div class="diagram">
-  <div class="comparison-strip">
-    <div class="comp-card" style="--li:1">
-      <div class="comp-label before">
-        <span class="dot"></span>Before &mdash; Latest only
-        <span class="comp-detail">1 of 3 visible</span>
+  <div class="comparison-strip-wrap">
+    <div class="comparison-strip">
+      <div class="comp-card" style="--li:1">
+        <div class="comp-label before">Before</div>
+        <div class="row-stack">
+          <img class="row-img" src="assets/not06-row-ama.png" alt="">
+          <img class="row-img dim" src="assets/not06-row-rdesign.png" alt="">
+          <img class="row-img dim" src="assets/not06-row-reddit.png" alt="">
+        </div>
+        <div class="comp-detail">1 of 3 visible</div>
       </div>
-      <div class="mini-rows">
-        <div class="mini-row active-row">
-          <span class="mini-dot rec"></span>
-          <span class="mini-text">Trending in r/technology</span>
-          <span class="mini-ts">2m</span>
-          <span class="mini-tag latest">Latest</span>
+      <div class="comp-card" style="--li:2">
+        <div class="comp-label after">After</div>
+        <div class="row-stack">
+          <img class="row-img" src="assets/not06-row-ama.png" alt="">
+          <img class="row-img" src="assets/not06-row-rdesign.png" alt="">
+          <img class="row-img" src="assets/not06-row-reddit.png" alt="">
         </div>
-        <div class="mini-row gone">
-          <span class="mini-dot ghost"></span>
-          <span class="mini-text dim">Popular in r/design</span>
-          <span class="mini-ts">1d</span>
-          <span class="mini-tag lost">Gone</span>
-        </div>
-        <div class="mini-row gone">
-          <span class="mini-dot ghost"></span>
-          <span class="mini-text dim">Because you follow r/ux</span>
-          <span class="mini-ts">3d</span>
-          <span class="mini-tag lost">Gone</span>
-        </div>
-      </div>
-    </div>
-    <div class="comp-card" style="--li:2">
-      <div class="comp-label after">
-        <span class="dot"></span>After &mdash; History preserved
-        <span class="comp-detail">3 of 3 visible</span>
-      </div>
-      <div class="mini-rows">
-        <div class="mini-row active-row">
-          <span class="mini-dot rec"></span>
-          <span class="mini-text">Trending in r/technology</span>
-          <span class="mini-ts">2m</span>
-          <span class="mini-tag kept">New</span>
-        </div>
-        <div class="mini-row active-row">
-          <span class="mini-dot rec"></span>
-          <span class="mini-text">Popular in r/design</span>
-          <span class="mini-ts">1d</span>
-          <span class="mini-tag kept">Kept</span>
-        </div>
-        <div class="mini-row active-row">
-          <span class="mini-dot rec"></span>
-          <span class="mini-text">Because you follow r/ux</span>
-          <span class="mini-ts">3d</span>
-          <span class="mini-tag kept">Kept</span>
-        </div>
+        <div class="comp-detail">3 of 3 visible</div>
       </div>
     </div>
   </div>

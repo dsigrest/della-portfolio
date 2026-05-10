@@ -10,23 +10,23 @@
   :root {
     --canvas: #0A0C16;
     --card: #10121C;
+    --elevated: #151722;
     --text-pri: #E0DFE4;
     --text-sec: rgba(224,223,228,0.6);
     --text-ter: rgba(224,223,228,0.4);
     --text-dim: rgba(224,223,228,0.2);
     --accent: #7FB5B0;
-    --row-bg:        rgba(127,181,176,0.06);
-    --row-border:    rgba(127,181,176,0.12);
-    --accent-fill:   rgba(127,181,176,0.15);
-    --accent-border: rgba(127,181,176,0.4);
+    --red: #C47878;
+    --border-normal: rgba(224,223,228,0.07);
     --glass-border:    rgba(224,223,228,0.08);
-    --glass-overlay:   rgba(224,223,228,0.04);
     --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
     --divider: rgba(224,223,228,0.08);
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   body {
-    background: var(--card);
+    /* Was --card; canvas now so the per-col card backgrounds read against a
+       neutral surface in standalone preview. */
+    background: var(--canvas);
     display: flex;
     justify-content: center;
     padding: 40px 32px;
@@ -35,123 +35,112 @@
   }
   .diagram {
     width: 100%;
-    max-width: 920px;
-    background: var(--card);
+    max-width: 760px;
+    /* Per Della's Figma update (2026-05-10): each col gets its own card bg,
+       not a shared one. Diagram bg removed. */
     border-radius: 16px;
     overflow: hidden;
     position: relative;
-    padding: 28px 24px;
-    /* Container query context — child layout responds to diagram's own width,
-       not viewport. Robust to iframe/embed contexts where viewport ≠ render width. */
+    padding: 24px 0;
     container-type: inline-size;
     container-name: diag;
   }
 
-  /* ========== Two-column shared grid ==========
-     Both columns share the same row template so labels, captions,
-     stream-cards, mid-flow, and inboxes line up across the divider.
-     pipeline-col uses display:contents to expose its children directly
-     to the parent grid. */
+  /* ========== Two-column layout — flex with separate card-wrapped cols ==========
+     Per Figma update (1406:2180): BEFORE and AFTER each have their own
+     bg-card / padding-16 / rounded-16 wrapper, with a vertical divider line
+     between. Outer wrap uses px-24 per Figma. */
   .two-col-pipeline {
-    display: grid;
-    grid-template-columns: 1fr 1px 1fr;
-    grid-template-rows: auto auto auto 1fr auto;
-    column-gap: 24px;
-    row-gap: 14px;
+    display: flex;
+    column-gap: 12px;
+    align-items: stretch;
+    padding: 0 24px;
   }
   .col-divider {
-    background: var(--divider);
-    width: 1px;
-    grid-column: 2;
-    grid-row: 1 / -1;
+    /* Divider stroke removed per Della — per-col card backgrounds + the gap
+       between them provide enough visual separation. */
+    display: none;
   }
   .pipeline-col {
-    display: contents;
+    flex: 1 0 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 16px;
   }
-  .pipeline-col.before > * { grid-column: 1; }
-  .pipeline-col.after  > * { grid-column: 3; }
 
-  .col-label    { grid-row: 1; }
-  .col-caption  { grid-row: 2; }
-  .stream-cards { grid-row: 3; }
-  .mid-flow     { grid-row: 4; align-self: stretch; }
-  .user-inbox   { grid-row: 5; }
-
-  /* ========== Column header ========== */
+  /* ========== Column header (BEFORE / AFTER) ========== */
   .col-label {
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.18em;
-    color: var(--accent);
-    text-transform: uppercase;
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+    color: var(--text-pri);
+    text-align: center;
     opacity: 0;
     animation: fadeUp 0.5s ease-out forwards;
-  }
-  .col-caption {
-    font-size: 12px;
-    line-height: 1.5;
-    color: var(--text-sec);
-    opacity: 0;
-    animation: fadeUp 0.5s ease-out 0.05s forwards;
   }
 
   /* ========== Stream cards (2-up within each column at desktop) ========== */
   .stream-cards {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    gap: 12px;
   }
   .stream-card {
     position: relative;
-    border: 1px solid var(--glass-border);
-    border-radius: 10px;
-    padding: 12px;
+    background: var(--elevated);
+    border-radius: 12px;
+    padding: 12px 8px;
     display: flex;
     flex-direction: column;
     gap: 8px;
-    box-shadow: var(--glass-highlight);
     overflow: hidden;
     min-width: 0; /* allow grid item to shrink below content min-width */
     opacity: 0;
     animation: fadeUp 0.5s ease-out 0.10s forwards;
   }
   .stream-card:nth-child(2) { animation-delay: 0.15s; }
-  .stream-card::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: var(--glass-overlay);
-    border-radius: inherit;
-    pointer-events: none;
-  }
   .card-title {
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 9px;
-    font-weight: 500;
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
     letter-spacing: 0.08em;
-    color: var(--text-ter);
+    line-height: 1.4;
     text-transform: uppercase;
     overflow-wrap: anywhere; /* defensive: allow break if title still doesn't fit */
+  }
+  .pipeline-col.before .card-title,
+  .pipeline-col.before .inbox-title { color: var(--red); }
+  .pipeline-col.after  .card-title,
+  .pipeline-col.after  .inbox-title { color: var(--accent); }
+  .card-hair {
+    height: 1px;
+    width: 40px;
+    background: var(--border-normal);
+    flex-shrink: 0;
   }
   .card-items {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 4px;
   }
 
-  /* ========== Item rows ========== */
+  /* ========== Item rows (no chrome — just dot + label) ========== */
   .item {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 6px 8px;
-    background: var(--row-bg);
-    border: 1px solid var(--row-border);
-    border-radius: 6px;
-    font-size: 11px;
+    gap: 10px;
+    padding-left: 4px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.6;
     color: var(--text-sec);
-    line-height: 1.3;
     min-width: 0;
   }
   .item > span:not(.dot) {
@@ -161,25 +150,26 @@
     word-break: break-word;
   }
   .item .dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
+    width: 4px;
+    height: 4px;
+    border-radius: 1px;
     flex-shrink: 0;
-    background: var(--text-ter);
+    background: var(--text-sec);
   }
-  .item.signal .dot { background: var(--accent); }
 
-  /* ========== Mid-flow shared base ==========
-     Row 4 of the shared grid stretches via 1fr; both cols' mid sections
-     fill that row regardless of which side has more content. */
+  /* ========== Mid-flow ==========
+     In the new flex-col layout, mid-flow takes available vertical space
+     between stream-cards and user-inbox via flex: 1 0 auto. */
+  .mid-flow {
+    flex: 1 0 auto;
+  }
   .mid-flow.before-mid {
     display: flex;
     flex-direction: column;
-    align-items: stretch;
-    justify-content: space-between;
+    align-items: center;
+    justify-content: center;
     gap: 14px;
   }
-  .mid-flow.before-mid .arrow-down { align-self: center; }
 
   /* ========== Arrows — fixed-aspect, centered in container ========== */
   .arrow-down {
@@ -187,7 +177,7 @@
     margin: 0 auto;
     overflow: visible;
   }
-  .arrow-down.short { width: 12px; height: 28px; }
+  .arrow-down.short { width: 12px; height: 24px; }
   .arrow-down.tall  { width: 12px; height: 100%; min-height: 60px; }
   .arrow-line {
     fill: none;
@@ -196,32 +186,59 @@
     stroke-linecap: round;
   }
   .arrow-head { fill: var(--text-ter); }
-  .arrow-line.accent { stroke: var(--accent); }
-  .arrow-head.accent { fill: var(--accent); }
 
-  /* ========== RANKER pill ========== */
+  /* ========== Vertical line + arrowhead — CSS-only, so the stem fills the
+     available height while the arrowhead stays a fixed size.
+     Used in the AFTER split-flow's left lane (subscription path bypassing
+     the ranker — stretches from cards to user-inbox). ========== */
+  .vline-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    width: 12px;
+    margin: 0 auto;
+  }
+  .vline-stem {
+    flex: 1 1 0;
+    width: 1.25px;
+    background: var(--text-ter);
+    border-radius: 1px;
+    min-height: 24px;
+  }
+  .vline-head {
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 8px solid var(--text-ter);
+    flex-shrink: 0;
+  }
+
+  /* ========== RANKER pill (solid color, story-coded) ========== */
   .ranker-pill {
-    background: var(--accent-fill);
-    border: 1px solid var(--accent-border);
     border-radius: 999px;
-    padding: 8px 14px;
-    color: var(--accent);
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 10px;
+    padding: 8px 16px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.20em;
+    letter-spacing: 0.08em;
+    line-height: 1.3;
+    color: var(--canvas);
     text-transform: uppercase;
     text-align: center;
+    align-self: center;
     opacity: 0;
     animation: fadeUp 0.5s ease-out 0.25s forwards;
   }
-  .ranker-pill.full { width: 100%; }
+  .pipeline-col.before .ranker-pill { background: var(--red); }
+  .pipeline-col.after  .ranker-pill { background: var(--accent); }
 
   /* ========== AFTER split-flow — left tall, right ↓-pill-↓ ========== */
   .mid-flow.after-mid.split-flow {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    column-gap: 10px;
+    column-gap: 12px;
     align-items: stretch;
   }
   .split-cell {
@@ -232,61 +249,47 @@
   }
   .split-cell.left {
     justify-content: stretch;
+    align-items: center;
   }
   .split-cell.right {
     justify-content: space-between;
     gap: 4px;
+    align-items: center;
   }
   .split-cell.right .arrow-down {
     flex: 0 0 auto;
     height: 22px;
   }
   .split-cell.right .ranker-pill {
-    width: 100%;
     flex: 0 0 auto;
   }
 
   /* ========== User inbox ========== */
   .user-inbox {
     position: relative;
-    border: 1px solid var(--accent-border);
-    border-radius: 10px;
-    padding: 12px;
+    background: var(--elevated);
+    border-radius: 16px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
     gap: 8px;
-    box-shadow: var(--glass-highlight);
     overflow: hidden;
-    background: var(--card);
     min-width: 0;
     opacity: 0;
     animation: fadeUp 0.6s ease-out 0.40s forwards;
   }
-  .user-inbox::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: var(--accent-fill);
-    opacity: 0.25;
-    border-radius: inherit;
-    pointer-events: none;
-  }
   .inbox-title {
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 9px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.10em;
-    color: var(--accent);
+    letter-spacing: 0.08em;
+    line-height: 1.4;
     text-transform: uppercase;
-    position: relative;
-    z-index: 1;
   }
   .inbox-items {
     display: flex;
     flex-direction: column;
-    gap: 5px;
-    position: relative;
-    z-index: 1;
+    gap: 4px;
   }
 
   /* ========== Animation ========== */
@@ -295,53 +298,27 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* ========== Intermediate widths (≤700px diagram width): collapse stream-cards
-     to 1-up within each pipeline-col. Container-query-based so it responds to
-     the diagram's actual rendered width, not viewport — survives iframe/embed
-     contexts where viewport ≠ render width. ========== */
-  @container diag (max-width: 700px) {
-    .stream-cards {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  /* ========== Mobile (≤540px diagram width): stack BEFORE on top of AFTER,
-     stream-cards 2-up inside each block (per Figma 1363:3520). Drop
-     display:contents and revert to flex column so the block order is
-     before-pipeline → divider → after-pipeline. ========== */
-  @container diag (max-width: 540px) {
+  /* ========== Mobile (≤480px diagram width): stack BEFORE on top of AFTER ========== */
+  @container diag (max-width: 480px) {
     .two-col-pipeline {
-      display: flex;
       flex-direction: column;
-      gap: 28px;
-    }
-    .pipeline-col {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
+      column-gap: 0;
+      row-gap: 24px;
+      padding: 0 16px;
     }
     .col-divider {
       width: 100%;
       height: 1px;
       align-self: auto;
     }
-    .stream-cards {
-      grid-template-columns: 1fr 1fr;
-    }
-    .col-label { font-size: 10px; }
-    .col-caption { font-size: 11.5px; }
-    .mid-flow.before-mid {
-      gap: 14px;
-    }
     .mid-flow.after-mid.split-flow {
-      height: 116px;
+      height: 204px;
     }
   }
 
   /* ========== Tighten body padding at narrow viewports (cosmetic only) ========== */
-  @media (max-width: 540px) {
+  @media (max-width: 480px) {
     body { padding: 20px 16px; }
-    .diagram { padding: 20px 16px; }
   }
 
   /* ========== Iframe embed normalizer ========== */
@@ -355,19 +332,20 @@
 
       <!-- ============ BEFORE ============ -->
       <div class="pipeline-col before">
-        <div class="col-label">Before</div>
-        <p class="col-caption">Subscriptions and recommendations flowed through the same ranker — user-asked content got buried beneath high-performing recommendations.</p>
+        <div class="col-label">BEFORE</div>
 
         <div class="stream-cards">
           <div class="stream-card">
-            <div class="card-title">Explicit user signal</div>
+            <div class="card-title">Explicit signal</div>
+            <div class="card-hair" aria-hidden="true"></div>
             <div class="card-items">
-              <div class="item signal"><span class="dot"></span><span>Subscription 1</span></div>
-              <div class="item signal"><span class="dot"></span><span>Subscription 2</span></div>
+              <div class="item"><span class="dot"></span><span>Subscription 1</span></div>
+              <div class="item"><span class="dot"></span><span>Subscription 2</span></div>
             </div>
           </div>
           <div class="stream-card">
             <div class="card-title">Recommendations</div>
+            <div class="card-hair" aria-hidden="true"></div>
             <div class="card-items">
               <div class="item"><span class="dot"></span><span>Suggestion 1</span></div>
               <div class="item"><span class="dot"></span><span>Suggestion 2</span></div>
@@ -376,23 +354,24 @@
         </div>
 
         <div class="mid-flow before-mid">
-          <svg class="arrow-down short" viewBox="0 0 12 28" aria-hidden="true">
-            <path class="arrow-line" d="M 6 0 L 6 22"/>
-            <polygon class="arrow-head" points="2,22 10,22 6,28"/>
+          <svg class="arrow-down short" viewBox="0 0 12 24" aria-hidden="true">
+            <path class="arrow-line" d="M 6 0 L 6 18"/>
+            <polygon class="arrow-head" points="2,18 10,18 6,24"/>
           </svg>
-          <div class="ranker-pill full">Ranker</div>
-          <svg class="arrow-down short" viewBox="0 0 12 28" aria-hidden="true">
-            <path class="arrow-line" d="M 6 0 L 6 22"/>
-            <polygon class="arrow-head" points="2,22 10,22 6,28"/>
+          <div class="ranker-pill">Ranker</div>
+          <svg class="arrow-down short" viewBox="0 0 12 24" aria-hidden="true">
+            <path class="arrow-line" d="M 6 0 L 6 18"/>
+            <polygon class="arrow-head" points="2,18 10,18 6,24"/>
           </svg>
         </div>
 
         <div class="user-inbox">
           <div class="inbox-title">User inbox</div>
+          <div class="card-hair" aria-hidden="true"></div>
           <div class="inbox-items">
             <div class="item"><span class="dot"></span><span>Suggestion 1</span></div>
             <div class="item"><span class="dot"></span><span>Suggestion 2</span></div>
-            <div class="item signal"><span class="dot"></span><span>Subscription 1</span></div>
+            <div class="item"><span class="dot"></span><span>Subscription 2</span></div>
           </div>
         </div>
       </div>
@@ -401,19 +380,20 @@
 
       <!-- ============ AFTER ============ -->
       <div class="pipeline-col after">
-        <div class="col-label">After</div>
-        <p class="col-caption">Subscriptions and recommendations ranked separately — user preferences stayed intact while discovery still scaled.</p>
+        <div class="col-label">AFTER</div>
 
         <div class="stream-cards">
           <div class="stream-card">
-            <div class="card-title">Explicit user signal</div>
+            <div class="card-title">Explicit signal</div>
+            <div class="card-hair" aria-hidden="true"></div>
             <div class="card-items">
-              <div class="item signal"><span class="dot"></span><span>Subscription 1</span></div>
-              <div class="item signal"><span class="dot"></span><span>Subscription 2</span></div>
+              <div class="item"><span class="dot"></span><span>Subscription 1</span></div>
+              <div class="item"><span class="dot"></span><span>Subscription 2</span></div>
             </div>
           </div>
           <div class="stream-card">
             <div class="card-title">Recommendations</div>
+            <div class="card-hair" aria-hidden="true"></div>
             <div class="card-items">
               <div class="item"><span class="dot"></span><span>Suggestion 1</span></div>
               <div class="item"><span class="dot"></span><span>Suggestion 2</span></div>
@@ -422,31 +402,34 @@
         </div>
 
         <div class="mid-flow after-mid split-flow">
-          <!-- Left: subscription path bypasses the ranker — accent highlight -->
+          <!-- Left: subscription path bypasses the ranker — vertical line fills the
+               full height of the split-cell, arrowhead pins to the bottom. -->
           <div class="split-cell left">
-            <svg class="arrow-down tall" viewBox="0 0 12 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-              <path class="arrow-line accent" d="M 6 0 L 6 92"/>
-              <polygon class="arrow-head accent" points="2,92 10,92 6,100"/>
-            </svg>
+            <div class="vline-arrow" aria-hidden="true">
+              <div class="vline-stem"></div>
+              <div class="vline-head"></div>
+            </div>
           </div>
-          <!-- Right: recommendation path goes through the ranker -->
+          <!-- Right: recommendation path goes through the ranker. Top and bottom
+               vlines flex-fill the available vertical space above/below the ranker. -->
           <div class="split-cell right">
-            <svg class="arrow-down short" viewBox="0 0 12 22" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-              <path class="arrow-line" d="M 6 0 L 6 22"/>
-            </svg>
+            <div class="vline-arrow" aria-hidden="true">
+              <div class="vline-stem"></div>
+            </div>
             <div class="ranker-pill">Ranker</div>
-            <svg class="arrow-down short" viewBox="0 0 12 22" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-              <path class="arrow-line" d="M 6 0 L 6 16"/>
-              <polygon class="arrow-head" points="2,16 10,16 6,22"/>
-            </svg>
+            <div class="vline-arrow" aria-hidden="true">
+              <div class="vline-stem"></div>
+              <div class="vline-head"></div>
+            </div>
           </div>
         </div>
 
         <div class="user-inbox">
           <div class="inbox-title">User inbox</div>
+          <div class="card-hair" aria-hidden="true"></div>
           <div class="inbox-items">
-            <div class="item signal"><span class="dot"></span><span>Subscription 1</span></div>
-            <div class="item signal"><span class="dot"></span><span>Subscription 2</span></div>
+            <div class="item"><span class="dot"></span><span>Subscription 1</span></div>
+            <div class="item"><span class="dot"></span><span>Subscription 2</span></div>
             <div class="item"><span class="dot"></span><span>Suggestion 1</span></div>
           </div>
         </div>

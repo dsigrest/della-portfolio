@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NOT-07 — Preference Architecture</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
   :root {
     --canvas: #0A0C16; --card: #10121C; --elevated: #151722;
@@ -24,39 +24,38 @@
   }
   .diagram {
     width: 760px; background: var(--canvas); border-radius: 16px; overflow: hidden;
+    padding: 24px 0;
   }
 
   /* ── Transform area: side-by-side BEFORE / AFTER ── */
   .transform-area {
-    padding: 16px 48px;
-    display: flex; flex-direction: column; gap: 24px;
+    padding: 16px 48px 0;
+    display: flex; flex-direction: column;
     position: relative;
   }
 
   .pref-columns {
-    display: grid; grid-template-columns: 1fr 60px 1fr; gap: 0; align-items: start;
+    display: grid; grid-template-columns: 1fr 48px 1fr; gap: 0; align-items: start;
     position: relative; z-index: 1;
   }
 
   .pref-side {
-    display: flex; flex-direction: column; gap: 10px;
+    display: flex; flex-direction: column; gap: 16px;
     min-width: 0;
   }
   .pref-side-label {
     font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
-    display: flex; align-items: center; gap: 6px;
+    display: flex; align-items: center; justify-content: center;
   }
-  .pref-side-label .dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
   .pref-side-label.before { color: var(--red); }
-  .pref-side-label.before .dot { background: var(--red); }
   .pref-side-label.after { color: var(--accent); }
-  .pref-side-label.after .dot { background: var(--accent); }
 
   /* Image-screenshot wrapper — aspect-ratio matches Figma frame */
   .pref-shot {
     aspect-ratio: 520 / 345; width: 100%;
     border-radius: 16px; overflow: hidden; position: relative;
     background: var(--card);
+    box-shadow: inset 0 1px 0 rgba(224,223,228,0.06);
     opacity: 0; animation: mount 0.5s var(--spring) forwards;
     animation-delay: calc(var(--ai, 0) * 60ms);
   }
@@ -71,10 +70,21 @@
     left: 0; top: -227.62%; width: 100%; height: 327.69%;
   }
 
-  /* Center column: vertical gradient lines + breathing arrow */
+  /* Caption under each screenshot */
+  .pref-caption {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 9px; font-weight: 400;
+    color: var(--text-ter);
+    letter-spacing: 0.36px;
+    text-align: center; width: 100%;
+  }
+
+  /* Center column: vertical gradient lines + breathing arrow.
+     padding-top removed — arrow now centers truly vertically within the
+     column (was offset 32px down). */
   .transform-arrow {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding-top: 32px; gap: 12px;
+    gap: 12px;
   }
   .arrow-line {
     width: 1px; height: 40px;
@@ -90,19 +100,17 @@
     50% { opacity: 0.7; }
   }
 
-  /* ─ Iframe-fit narrow widths (case study column ≈ 580px) keep horizontal 3-col ─
-     The mobile companion file (-mobile.html) handles true narrow viewports.
-     This desktop file only collapses at standalone-viewing extremes (<480px). ─ */
-  @media (max-width: 600px) {
-    body { padding: 16px; }
-    .transform-area { padding: 16px; gap: 16px; }
-    .pref-columns { grid-template-columns: 1fr 40px 1fr; }
-    .transform-arrow { padding-top: 24px; }
-  }
-  @media (max-width: 400px) {
-    .pref-columns { grid-template-columns: 1fr; gap: 16px; }
-    .transform-arrow { padding-top: 4px; flex-direction: row; }
-    .transform-arrow .arrow-line { display: none; }
+  /* ─ Mobile breakpoint: drop center arrow, tighten gap ─
+     Figma mobile frame 1406:2567 keeps the 2-column compare (no center arrow).
+     Captions stay; shot border-radius drops to 8px to match Figma mobile. ─ */
+  @media (max-width: 480px) {
+    body { padding: 0; }
+    .diagram { width: 100%; padding: 24px 0; }
+    .transform-area { padding: 0 16px; }
+    .pref-columns { grid-template-columns: 1fr 1fr; gap: 16px; }
+    .pref-side { gap: 14px; }
+    .pref-shot { border-radius: 8px; }
+    .transform-arrow { display: none; }
   }
 
   /* Embed mode */
@@ -117,10 +125,11 @@
     <div class="pref-columns">
       <!-- BEFORE column -->
       <div class="pref-side">
-        <div class="pref-side-label before"><span class="dot"></span>Before — Vague labels</div>
+        <div class="pref-side-label before">Before</div>
         <div class="pref-shot before" style="--ai:1">
           <img src="assets/not07-preferences-before.png" alt="Set community alerts — Off / Low / Frequent">
         </div>
+        <div class="pref-caption">Vague labels</div>
       </div>
 
       <!-- Center transform arrow -->
@@ -134,10 +143,11 @@
 
       <!-- AFTER column -->
       <div class="pref-side">
-        <div class="pref-side-label after"><span class="dot"></span>After — Concrete labels</div>
+        <div class="pref-side-label after">After</div>
         <div class="pref-shot after" style="--ai:1">
           <img src="assets/not07-preferences-after.png" alt="Concrete labels — Mute / All new posts / Popular posts / Off">
         </div>
+        <div class="pref-caption">Concrete labels</div>
       </div>
     </div>
 

@@ -47,18 +47,18 @@
   /* hover-hint stripped per task #34 */
 
   .comparison-wrap {
-    padding: 24px 48px 16px;
+    padding: 24px 48px;
   }
   .comparison {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    gap: 48px;
     align-items: start;
   }
   .col {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 16px;
     min-width: 0;
     opacity: 0;
     animation: fadeUp 0.6s ease-out forwards;
@@ -74,30 +74,21 @@
   .col-label {
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
     font-size: 10px;
     font-weight: 600;
-    letter-spacing: 0.1em;
+    letter-spacing: 1px;
     text-transform: uppercase;
     line-height: 1;
+    width: 100%;
   }
   .col-label.before { color: var(--red); }
   .col-label.after  { color: var(--accent); }
-  .col-label .dot {
-    width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
-  }
-  .col-label.before .dot { background: var(--red); }
-  .col-label.after  .dot { background: var(--accent); }
-
-  .row-frame {
-    padding: 16px 8px 8px;
-    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
-  }
-  .row-frame.lower { padding: 8px 8px 16px; }
+  .label-text-mobile { display: none; }
+  .caption-mobile { display: none; }
 
   /* Each row image is a vertical crop of a longer screenshot — mirrors
-     Figma's clipping transforms exactly. Top-row crops differ between
-     legacy (1170/247 ratio) and unified (520/112 ratio) sources. */
+     Figma's clipping transforms exactly. */
   .mock {
     position: relative;
     width: 100%;
@@ -115,17 +106,22 @@
     pointer-events: none;
   }
 
-  .mock.legacy-amioverreacting { aspect-ratio: 1170 / 247; }
-  .mock.legacy-amioverreacting img { height: 1025.1%; top: -229.15%; }
-
   .mock.legacy-bushwick { aspect-ratio: 306 / 52; }
   .mock.legacy-bushwick img { height: 99.59%; top: 0; }
 
-  .mock.context-amioverreacting { aspect-ratio: 520 / 112; }
-  .mock.context-amioverreacting img { height: 1009.82%; top: -175.89%; left: -0.02%; width: 100.04%; }
-
   .mock.context-bushwick { aspect-ratio: 306 / 51; }
   .mock.context-bushwick img { height: 1305%; top: -229.64%; left: -0.02%; width: 100.04%; }
+
+  .col-caption {
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: 0.36px;
+    line-height: normal;
+    color: var(--text-ter);
+    text-align: center;
+    width: 100%;
+  }
 
   /* hover dim/lift effects stripped per task #34 */
 
@@ -135,6 +131,19 @@
     inset: 0;
     background: radial-gradient(ellipse at center, rgba(127,181,176,0.04), transparent 70%);
     pointer-events: none;
+  }
+
+  @media (max-width: 480px) {
+    .diagram { gap: 0; }
+    .comparison-wrap { padding: 24px 16px; }
+    .comparison { gap: 16px; }
+    .col { gap: 14px; }
+    .col-label { letter-spacing: 0.8px; }
+    .label-text-desktop { display: none; }
+    .label-text-mobile { display: inline; }
+    .caption-desktop { display: none; }
+    .caption-mobile { display: inline; }
+    .mock { box-shadow: 0 1px 3px rgba(0,0,0,0.18), inset 0 1px 0 rgba(224,223,228,0.06); }
   }
 </style>
 </head>
@@ -146,36 +155,27 @@
 
         <div class="col before">
           <div class="col-label before">
-            <span class="dot"></span>
-            <span>Without context</span>
+            <span class="label-text label-text-desktop">Without context</span>
+            <span class="label-text label-text-mobile">Before</span>
           </div>
-          <div class="row-frame upper">
-            <div class="mock legacy-amioverreacting">
-              <img src="assets/not17-legacy-amioverreacting.png" alt="Legacy notification: 'AmIOverreacting · 1h — Am I overreacting to my bf going to twin peaks multiple times despite me saying it makes me…'" loading="lazy">
-            </div>
+          <div class="mock legacy-bushwick">
+            <img src="assets/not17-legacy-bushwick.png" alt="Legacy notification: 'r/Bushwick — I rebuilt DanceBuddy to be our Dancers Home. — 3h'" loading="lazy">
           </div>
-          <div class="row-frame lower">
-            <div class="mock legacy-bushwick">
-              <img src="assets/not17-legacy-bushwick.png" alt="Legacy notification: 'r/Bushwick — I rebuilt DanceBuddy to be our Dancers Home. — 3h'" loading="lazy">
-            </div>
+          <div class="col-caption">
+            <span class="caption-desktop">3 of 3 visible</span>
+            <span class="caption-mobile">Unclear origin</span>
           </div>
         </div>
 
         <div class="col after">
           <div class="col-label after">
-            <span class="dot"></span>
-            <span>With context</span>
+            <span class="label-text label-text-desktop">With context</span>
+            <span class="label-text label-text-mobile">After</span>
           </div>
-          <div class="row-frame upper">
-            <div class="mock context-amioverreacting">
-              <img src="assets/not17-context-amioverreacting.png" alt="Reframed notification: 'Because you joined r/AmIOverreacting — AIO Random Guy Messaging Me — 12h'" loading="lazy">
-            </div>
+          <div class="mock context-bushwick">
+            <img src="assets/not17-context-bushwick.png" alt="Reframed notification: 'Because you visited r/Bushwick — Gyms in Bushwick — 17m'" loading="lazy">
           </div>
-          <div class="row-frame lower">
-            <div class="mock context-bushwick">
-              <img src="assets/not17-context-bushwick.png" alt="Reframed notification: 'Because you visited r/Bushwick — Gyms in Bushwick — 17m'" loading="lazy">
-            </div>
-          </div>
+          <div class="col-caption">3 of 3 visible</div>
         </div>
 
       </div>

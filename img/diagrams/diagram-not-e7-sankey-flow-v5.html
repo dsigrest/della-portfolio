@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="figma-source" content="node:1214:16053 file:TArUrZsBUocaAsqetjXq7V">
+<meta name="figma-source" content="node:1214:16053 mobile:1389:822 file:TArUrZsBUocaAsqetjXq7V">
 <title>NOT-E7 — Sankey Flow: User Segmentation &amp; Contribution</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
@@ -29,32 +29,72 @@
   body.embedded { padding: 0; min-height: auto; display: block; background: transparent; overflow: hidden; }
   body.embedded .diagram { width: 100%; max-width: none; border-radius: 0; }
 
-  /* Frame standard: 24px top + 24px bottom on .diagram (matches Figma 1214:16053 outer frame padding) */
+  /* Frame standard: 24px top + 24px bottom on .diagram (matches Figma 1214:16053 outer
+     frame padding). Fully flat — no background-color, no noise overlay, no border-radius.
+     Diagram sits as a transparent rectangle so it merges with whatever's behind it. */
   .diagram {
     width: 100%;
     max-width: 760px;
-    background: var(--canvas);
-    border-radius: 16px;
     overflow: hidden;
     position: relative;
     padding: 24px 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
   }
 
-  /* ── Sankey area (top) ── */
+  /* ── Column headers (HTML, sit above the SVG so px sizes don't scale with viewBox) ── */
+  .sankey-headers {
+    padding: 0 48px;
+    position: relative;
+    margin-bottom: 4px;
+    /* Reserve enough height for the 2-line header (metric + sub) at desktop sizes. */
+    min-height: 38px;
+  }
+  .col-header {
+    position: absolute;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    white-space: nowrap;
+  }
+  /* Anchor each header to its SVG bar position. Bars are at user-x 27 / 332 / 637 in
+     a 664-wide viewBox = 4.07% / 50% / 95.93% of the inner content width. */
+  .col-header.col-1 { left: 4.07%; text-align: left; }
+  .col-header.col-2 { left: 50%; transform: translateX(-50%); text-align: center; }
+  .col-header.col-3 { right: 4.07%; text-align: right; }
+
+  /* Fluid font-size — at vw 760 the clamp resolves to Figma desktop sizes (16/10);
+     as the viewport narrows toward 400 it shrinks proportionally to 8/6 so the three
+     constant labels (Millions / Nearly half / Most clickers) never collide in their
+     fixed-percentage column slots. The whole header row scales as a unit with the
+     chart below it. */
+  .col-metric {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: clamp(8px, calc(2.22vw - 0.89px), 16px);
+    color: var(--text-pri);
+    line-height: 1.2;
+  }
+  .col-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(6px, calc(1.11vw + 1.56px), 10px);
+    color: var(--text-ter);
+    line-height: 1.2;
+  }
+  /* ── Sankey area (SVG body) ── */
   .sankey-area {
     padding: 0 48px;
     position: relative;
-    height: 420px;
     opacity: 1;
     animation: mount 0.5s var(--spring);
   }
-  .sankey-area::before {
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(ellipse 500px 300px at 50% 50%, rgba(127,181,176,0.025) 0%, transparent 70%);
-    pointer-events: none;
+  .sankey-svg {
+    width: 100%;
+    /* viewBox crops the 0–50 user-unit zone (former header area, now in HTML above),
+       so the intrinsic aspect ratio is 664/370. .sankey-area auto-heights from this —
+       no fixed height, no empty space at narrow widths. */
+    aspect-ratio: 664 / 370;
+    overflow: visible;
   }
-  .sankey-svg { width: 100%; height: 100%; overflow: visible; }
 
   /* Main flow base opacity — gradient stops carry the within-flow fade nuance.
      Dropouts override inline with fill-opacity:0.30 for the dimmed-past look. */
@@ -66,26 +106,24 @@
     rx: 3; ry: 3;
   }
 
-  .col-metric {
-    font-family: 'Inter', sans-serif; font-weight: 700;
-    fill: var(--text-pri); text-anchor: middle;
-  }
-  .col-sub {
-    font-family: 'JetBrains Mono', monospace; font-size: 10px;
-    fill: var(--text-ter); text-anchor: middle;
-  }
-
+  /* Dropout labels stay in SVG (positioned in user units alongside bars). They scale
+     with the viewBox naturally, shrinking in lockstep with the chart at narrow widths. */
   .dropout-label {
-    font-family: 'JetBrains Mono', monospace; font-size: 9px;
-    fill: var(--text-sec); text-anchor: start;
+    font-family: 'JetBrains Mono', monospace;
+    fill: var(--text-sec);
+    text-anchor: start;
   }
 
   /* ── Legend (bottom) ── */
   .legend-bar {
     padding: 16px 48px 0;
     display: flex;
-    gap: 20px;
+    /* Gap shrinks with viewport — 20px at 760, 8px at 400 — so items fit as the
+       diagram narrows. flex-wrap is a safety net: if items still don't fit, the
+       last one drops to a new line instead of getting clipped by overflow. */
+    gap: clamp(8px, calc(3.33vw - 5.33px), 20px);
     align-items: center;
+    flex-wrap: wrap;
     opacity: 1;
     animation: mount 0.5s var(--spring) 0.15s;
   }
@@ -93,10 +131,13 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 11px;
+    /* Font scales same as headers — 11px at 760, 8px at 400 — keeping the legend
+       in proportion with the rest of the diagram as it shrinks. */
+    font-size: clamp(8px, calc(0.83vw + 4.67px), 11px);
     color: var(--text-sec);
     padding: 4px 8px;
     border-radius: 6px;
+    white-space: nowrap;
   }
   .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
   .legend-dot.core { background: var(--accent); }
@@ -105,23 +146,14 @@
 
   @keyframes mount { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-  /* Subtle disclaimer below the diagram — small, secondary, non-defensive. */
-  .diagram-caption {
-    padding: 12px 48px 0;
-    font-family: 'Inter', sans-serif;
-    font-size: 11px;
-    line-height: 1.5;
-    color: var(--text-ter);
-    font-style: italic;
-  }
+  /* Mobile layout — at ≤480 the inner padding tightens. Font-sizes for headers and
+     legend are handled by the fluid clamp()s above (no step changes), so the whole
+     diagram scales smoothly as one unit. */
   @media (max-width: 480px) {
-    .diagram-caption { padding: 10px 16px 0; font-size: 10px; }
-  }
-
-  /* iframe-width rule: collapse only at ≤480px */
-  @media (max-width: 480px) {
-    .sankey-area { padding: 0 16px; height: 320px; }
-    .legend-bar { flex-wrap: wrap; gap: 8px; padding: 12px 16px 0; }
+    .sankey-headers { padding: 0 16px; min-height: 28px; }
+    .sankey-area { padding: 0 16px; }
+    .legend-bar { padding: 12px 16px 0; }
+    .legend-item { padding: 2px 6px; }
   }
 </style>
 </head>
@@ -129,8 +161,26 @@
 <script>if(window!==window.parent)document.body.classList.add('embedded');</script>
 <div class="diagram">
 
+  <!-- Column headers (HTML) — labels are constant across all widths per Figma desktop
+       (updated 2026-05-10): Millions / Nearly half / Most clickers + inbox visitors /
+       of visitors click / contributed. -->
+  <div class="sankey-headers">
+    <div class="col-header col-1">
+      <div class="col-metric">Millions</div>
+      <div class="col-sub">inbox visitors</div>
+    </div>
+    <div class="col-header col-2">
+      <div class="col-metric">Nearly half</div>
+      <div class="col-sub">of visitors click</div>
+    </div>
+    <div class="col-header col-3">
+      <div class="col-metric">Most clickers</div>
+      <div class="col-sub">contributed</div>
+    </div>
+  </div>
+
   <div class="sankey-area">
-    <svg class="sankey-svg" preserveAspectRatio="xMidYMid meet" viewBox="0 0 664 420">
+    <svg class="sankey-svg" preserveAspectRatio="xMidYMid meet" viewBox="0 50 664 370">
       <defs>
         <!-- Each gradient: gentler fade than before — saturated end stays bright (~0.95),
              dim end at ~0.55. With fill-opacity 0.85, effective range is 85% → 47%. -->
@@ -154,13 +204,8 @@
         </linearGradient>
       </defs>
 
-      <!-- Column headers — generalized for public-portfolio NDA safety. -->
-      <text class="col-metric" font-size="14" x="27" y="24" text-anchor="start">Millions</text>
-      <text class="col-sub" x="27" y="38" text-anchor="start">inbox visitors</text>
-      <text class="col-metric" font-size="14" x="332" y="24">Nearly half</text>
-      <text class="col-sub" x="332" y="38">clicked into inbox content</text>
-      <text class="col-metric" font-size="14" x="637" y="24" text-anchor="end">Most clickers</text>
-      <text class="col-sub" x="637" y="38" text-anchor="end">contributed</text>
+      <!-- Column headers moved out of SVG to .sankey-headers above (HTML, doesn't scale
+           with viewBox). The viewBox above starts at y=50 to crop this empty zone. -->
 
       <!-- Stage 1 → Stage 2 main flows — each col1 bar splits cleanly into a top "active"
            slice (here) and a bottom "dropout" slice (below). No source overlap. -->
@@ -204,8 +249,8 @@
       <rect class="node-bar" fill="#C47878" height="11" width="14" x="325" y="209"/>
       <!-- Col 2 dropout bar (over half didn't click) -->
       <rect class="node-bar" fill="rgba(224,223,228,0.08)" height="158" rx="3" width="14" x="325" y="256"/>
-      <text class="dropout-label" x="347" y="340">Over half</text>
-      <text class="dropout-label" font-size="8" x="346.5" y="353">did not click</text>
+      <text class="dropout-label" font-size="9" x="347" y="340">53%</text>
+      <text class="dropout-label" font-size="8" x="346.5" y="353">visitors don't click</text>
 
       <!-- Column 3 (Contributors) node bars -->
       <rect class="node-bar" fill="#7FB5B0" height="108" width="14" x="632" y="51"/>
@@ -213,19 +258,16 @@
       <rect class="node-bar" fill="#C47878" height="10" width="14" x="632" y="172"/>
       <!-- Col 3 dropout bar (some clickers did not contribute) -->
       <rect class="node-bar" fill="rgba(224,223,228,0.08)" height="56" rx="3" width="14" x="580" y="287"/>
-      <text class="dropout-label" font-size="9" x="602" y="309">Some clickers</text>
-      <text class="dropout-label" font-size="8" x="602" y="322">did not</text>
-      <text class="dropout-label" font-size="8" x="602" y="333">contribute</text>
+      <text class="dropout-label" font-size="9" x="602" y="309">25%</text>
+      <text class="dropout-label" font-size="8" x="602" y="322">didn't contribute</text>
     </svg>
   </div>
 
   <div class="legend-bar">
-    <div class="legend-item"><div class="legend-dot core"></div>Core users</div>
-    <div class="legend-item"><div class="legend-dot casual"></div>Casual users</div>
-    <div class="legend-item"><div class="legend-dot new"></div>New users</div>
+    <div class="legend-item"><div class="legend-dot new"></div>New user</div>
+    <div class="legend-item"><div class="legend-dot casual"></div>Casual visitor</div>
+    <div class="legend-item"><div class="legend-dot core"></div>Regular</div>
   </div>
-
-  <p class="diagram-caption">Representative model based on anonymized behavioral patterns. Exact values, audience definitions, and internal methodology have been generalized.</p>
 
 </div>
 

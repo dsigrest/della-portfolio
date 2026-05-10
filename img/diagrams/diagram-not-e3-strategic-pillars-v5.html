@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="figma-source" content="node:1401:1187 page:1214:13477 file:TArUrZsBUocaAsqetjXq7V">
 <title>NOT-E3 — Strategic Pillars</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
@@ -10,6 +11,8 @@
     --canvas: #0A0C16; --card: #10121C;
     --text-pri: #E0DFE4; --text-sec: rgba(224,223,228,0.6); --text-ter: rgba(224,223,228,0.4); --text-dim: rgba(224,223,228,0.2);
     --accent: #7FB5B0; --accent-dim: rgba(127,181,176,0.12);
+    --icon-bg: rgba(127,181,176,0.08);
+    --icon-border: rgba(127,181,176,0.25);
     --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
     --glass-border: rgba(224,223,228,0.08);
     --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
@@ -21,56 +24,43 @@
     font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased;
   }
   .diagram {
-    width: 760px; background: var(--canvas); border-radius: 16px; overflow: hidden; position: relative;
+    width: 760px; background: var(--card); border-radius: 16px; overflow: hidden; position: relative;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
   }
 
-  /* ── Title ── */
-  .title-area {
-    padding: 48px 48px 0;
-    opacity: 0; animation: mount 0.5s var(--spring) forwards;
-  }
-  .label {
-    font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--accent); opacity: 0.8; margin-bottom: 8px;
-  }
-  h1 {
-    font-size: 28px; font-weight: 700; color: var(--text-pri); letter-spacing: -0.025em;
-    line-height: 1.15;
-  }
-
-  /* ── Pillars row ── */
+  /* ── Pillars row (Figma: padding 24px 16px, gap 8, items-start) ── */
   .pillars {
-    padding: 32px 48px 48px;
-    display: grid; grid-template-columns: 1fr 1fr 1fr;
-    gap: 14px;
-    opacity: 0; animation: mount 0.5s var(--spring) 0.15s forwards;
+    padding: 24px 16px;
+    display: flex; gap: 8px;
+    align-items: flex-start;
+    opacity: 0; animation: mount 0.5s var(--spring) forwards;
   }
 
   .pillar {
-    background: var(--glass-bg); border: 1px solid var(--glass-border);
-    border-radius: 12px; padding: 28px 20px;
+    flex: 1 0 0; min-width: 0;
+    display: flex; flex-direction: column; align-items: center; gap: 20px;
+    padding: 0 4px;
+    border-radius: 12px;
     text-align: center; position: relative;
-    backdrop-filter: blur(8px);
-    transition: transform 0.35s var(--spring), border-color 0.3s ease;
+    transition: transform 0.35s var(--spring);
     cursor: default;
-  }
-  .pillar::before {
-    content: ''; position: absolute; inset: 0;
-    box-shadow: var(--glass-highlight); border-radius: 12px; pointer-events: none;
   }
   .pillar:hover {
     transform: translateY(-4px) scale(1.02);
-    border-color: rgba(127,181,176,0.18);
   }
-  .pillar:nth-child(1) { animation: mountPillar 0.5s var(--spring) 0.25s forwards; opacity: 0; }
-  .pillar:nth-child(2) { animation: mountPillar 0.5s var(--spring) 0.35s forwards; opacity: 0; }
-  .pillar:nth-child(3) { animation: mountPillar 0.5s var(--spring) 0.45s forwards; opacity: 0; }
+  .pillar:nth-child(1) { animation: mountPillar 0.5s var(--spring) 0.15s forwards; opacity: 0; }
+  .pillar:nth-child(2) { animation: mountPillar 0.5s var(--spring) 0.25s forwards; opacity: 0; }
+  .pillar:nth-child(3) { animation: mountPillar 0.5s var(--spring) 0.35s forwards; opacity: 0; }
 
-  /* ── Icon zone — SHR-05 ambient illustration style ── */
+  /* ── Icon zone — Figma: 56×56 teal-tinted circle with thin teal border ── */
   .icon-zone {
-    width: 56px; height: 56px; margin: 0 auto 16px;
+    width: 56px; height: 56px;
+    flex-shrink: 0;
+    background: var(--icon-bg);
+    border: 1px solid var(--icon-border);
+    border-radius: 28px;
     position: relative; display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
   }
   .icon-zone svg {
     position: relative; z-index: 1;
@@ -142,14 +132,25 @@
     100% { bottom: 16px; right: 22px; opacity: 0; }
   }
 
-  /* ── Card text ── */
+  /* ── Card text (Figma: title 14/Bold/-0.17, desc 11/16) ── */
+  .pillar-text {
+    display: flex; flex-direction: column; gap: 8px;
+    width: 100%;
+  }
   .pillar-title {
-    font-size: 17px; font-weight: 700; color: var(--text-pri);
-    margin-bottom: 8px; letter-spacing: -0.01em;
+    font-size: 14px; font-weight: 700; color: var(--text-pri);
+    letter-spacing: -0.17px; line-height: normal;
   }
   .pillar-desc {
-    font-size: 13px; color: var(--text-sec); line-height: 1.55;
+    font-size: 11px; color: var(--text-sec); line-height: 16px;
+    font-weight: 400;
+    margin: 0 auto;
+    text-align: center;
   }
+  /* Explicit line breaks force deterministic 2-line / 3-line wraps regardless of
+     browser wrap algorithm. .br-narrow toggles in only at mobile to insert the
+     third break (e.g. L3 → "Streamline how / users / take action" at ≤480). */
+  .pillar-desc .br-narrow { display: none; }
 
   @keyframes mount {
     from { opacity: 0; transform: translateY(8px); }
@@ -164,21 +165,14 @@
      so the three pillar cards sit on the case study canvas directly. */
   body.embedded { padding: 0; min-height: auto; display: block; background: transparent; overflow: hidden; }
   body.embedded .diagram { width: 100%; max-width: none; border-radius: 0; background: transparent; background-image: none; }
-  /* Tighten padding + gap as viewport narrows so all 3 pillars fit */
-  @media (max-width: 720px) {
-    .pillars { padding: 28px 24px 36px; gap: 10px; }
-    .pillar { padding: 24px 14px; }
-    .pillar-title { font-size: 16px; }
-    .pillar-desc { font-size: 12px; }
-  }
+
+  /* Mobile breakpoint — Figma mobile (1401:1147) keeps 3-col with same 24/16 padding,
+     gap 8. Compress padding/gap a touch on very narrow widths so titles don't crowd.
+     .br-narrow reveals at ≤480 to add the third break in each desc (3-line wrap). */
   @media (max-width: 480px) {
-    .pillars { padding: 24px 12px 28px; gap: 8px; }
-    .pillar { padding: 20px 10px; }
-    .pillar-title { font-size: 14px; }
-    .pillar-desc { font-size: 11px; }
-  }
-  @media (max-width: 400px) {
-    .pillars { grid-template-columns: 1fr; gap: 12px; padding: 20px 16px; }
+    .pillars { padding: 20px 12px; gap: 6px; }
+    .pillar { padding: 0 2px; gap: 16px; }
+    .pillar-desc .br-narrow { display: inline; }
   }
 </style>
 </head>
@@ -187,7 +181,7 @@
 
   <div class="pillars">
 
-    <!-- Pillar 1: Build Habits -->
+    <!-- Pillar 1: Build habits -->
     <div class="pillar">
       <div class="icon-zone">
         <div class="pulse-ring"></div>
@@ -201,11 +195,13 @@
           <path d="M18 19L20.5 21L18 23" stroke="#7FB5B0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
-      <div class="pillar-title">Build habits</div>
-      <div class="pillar-desc">Engagement loops that compound over time</div>
+      <div class="pillar-text">
+        <div class="pillar-title">Build habits</div>
+        <div class="pillar-desc">Guide users&rsquo; <br class="br-narrow">understanding<br>and discovery</div>
+      </div>
     </div>
 
-    <!-- Pillar 2: Enable Curation -->
+    <!-- Pillar 2: Enable curation -->
     <div class="pillar">
       <div class="icon-zone">
         <div class="slider-bar"></div>
@@ -216,16 +212,18 @@
           <line x1="5" y1="9" x2="23" y2="9" stroke="#7FB5B0" stroke-width="1.5" stroke-linecap="round"/>
           <line x1="5" y1="14" x2="23" y2="14" stroke="#7FB5B0" stroke-width="1.5" stroke-linecap="round"/>
           <line x1="5" y1="19" x2="23" y2="19" stroke="#7FB5B0" stroke-width="1.5" stroke-linecap="round"/>
-          <circle cx="10" cy="9" r="2.5" fill="#0A0C16" stroke="#7FB5B0" stroke-width="1.5"/>
-          <circle cx="17" cy="14" r="2.5" fill="#0A0C16" stroke="#7FB5B0" stroke-width="1.5"/>
-          <circle cx="12" cy="19" r="2.5" fill="#0A0C16" stroke="#7FB5B0" stroke-width="1.5"/>
+          <circle cx="10" cy="9" r="2.5" fill="#10121C" stroke="#7FB5B0" stroke-width="1.5"/>
+          <circle cx="17" cy="14" r="2.5" fill="#10121C" stroke="#7FB5B0" stroke-width="1.5"/>
+          <circle cx="12" cy="19" r="2.5" fill="#10121C" stroke="#7FB5B0" stroke-width="1.5"/>
         </svg>
       </div>
-      <div class="pillar-title">Enable curation</div>
-      <div class="pillar-desc">Customized feeds surface the highest-signal content</div>
+      <div class="pillar-text">
+        <div class="pillar-title">Enable curation</div>
+        <div class="pillar-desc">Empower users <br class="br-narrow">to customize<br>their experience</div>
+      </div>
     </div>
 
-    <!-- Pillar 3: Create Focus -->
+    <!-- Pillar 3: Create focus -->
     <div class="pillar">
       <div class="icon-zone">
         <div class="focus-dot"></div>
@@ -243,8 +241,10 @@
           <line x1="22" y1="14" x2="26" y2="14" stroke="#7FB5B0" stroke-width="1.5" stroke-linecap="round"/>
         </svg>
       </div>
-      <div class="pillar-title">Create focus</div>
-      <div class="pillar-desc">Reduced noise means higher quality time on platform</div>
+      <div class="pillar-text">
+        <div class="pillar-title">Create focus</div>
+        <div class="pillar-desc">Streamline how <br class="br-narrow">users<br>take action</div>
+      </div>
     </div>
 
   </div>
