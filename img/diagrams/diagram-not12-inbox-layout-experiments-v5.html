@@ -57,15 +57,16 @@
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
   }
   .layout-card.best-fit {
-    /* Width scales fluidly from 212 at vw=760 down to 110 at vw=481 so the other
-       two cards don't get crushed below 70px each. Mobile @media flips it to flex:1.
-       Position: relative so the absolute-positioned crown anchors here. Flex
-       column with slot's aspect-ratio matched to illustration's aspect-ratio
-       (both 212/219) + slot margin-top: 16 matching wrap's pt-16 guarantees
-       slot bottom = illustration bottom at EVERY viewport width (not just at
-       max diagram width). Previous CSS-Grid 235px row attempt failed because
-       Chronological's phone bottom y varies with viewport. */
-    flex: 0 0 clamp(110px, calc(36.4vw - 64.6px), 212px);
+    /* flex: 1 0 0 (matching .layout-card-wrap) — all 3 cards now equal width
+       at every viewport. Previous clamp made best-fit a different (narrower)
+       width than the wraps at intermediate viewport widths, which combined
+       with aspect-ratio scaling on the slot made Tabbed's phone bottom drift
+       above Chronological's mid-resize. Equal-width cards + slot aspect-ratio
+       matching illustration's aspect-ratio (212/219) + slot margin-top: 16
+       matching wrap pt-16 = slot bottom locked to illustration bottom at
+       every viewport. Position: relative anchors the absolute crown. */
+    flex: 1 0 0;
+    min-width: 0;
     align-self: stretch;
     position: relative;
   }
