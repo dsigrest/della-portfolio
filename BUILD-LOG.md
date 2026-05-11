@@ -131,8 +131,23 @@ After the resume-prompt-driven sweep started, Della surfaced four diagnostic-cyc
 - `c7e82f8` — 13 missing PNG assets
 - `b78c90b` — 3 Figma-precision reworks (NOT-03 zigzag, NOT-E4 matrix, NOT-14 nav spec)
 - `d0ba3f0` — Phase 2 polish: NOT-12 desktop alignment via CSS Grid + mobile bug fixes + phone corner-radius sweep + iframe cache-buster bump
+- `169bbd5` — NOT-12: match slot aspect-ratio to illustration (212/219) — viewport-scalable alignment (CSS Grid 235px row attempt was viewport-fixed; failed at narrow widths)
+- `b43c26a` — NOT-12: equal-width cards (`flex: 1 0 0` on `.layout-card.best-fit`) — at narrow viewports the old `flex: 0 0 clamp(...)` made best-fit width diverge from wraps, causing aspect-ratio'd slot to mis-align. Now all 3 cards split layouts-grid space equally at every viewport. **Standalone diagram verified aligned via Della's dev-tools inspection: chrono_ill.bottom = tabbed_slot.bottom = 232.906 at viewport 589.**
 
-**Additional lesson captured this round (the alignment chase):** the flex+margin-top approach for the Tabbed slot's vertical position depended on the crown's rendered height being a specific value (33.4px) and went through three iterations before landing on CSS Grid with explicit row heights. Lesson: when an element's position relies on a sibling's intrinsic height for visual alignment, prefer CSS Grid with explicit row sizing over flex+margin arithmetic. Grid removes the "what's the actual rendered height of X" dependency entirely.
+**Additional lesson captured this round (the alignment chase, full arc):** five iterations before landing on the correct fix.
+
+1. `margin-top: -19 → -20` (flex+margin arithmetic depending on crown's intrinsic 33.4px height) — didn't fix
+2. Absolute crown + `margin-top: 13` (decoupled slot from crown height) — didn't fix
+3. Replaced `border: 1px` with `box-shadow: inset` (eliminated 1px content-box shrinkage) — didn't fix
+4. CSS Grid with `grid-template-rows: 235px auto 1fr` (hard-coded the row height) — broke at narrow viewports because Chronological's phone bottom y varies with viewport; 235px was only correct at max width
+5. **Match slot aspect-ratio to illustration aspect-ratio (212/219) + slot margin-top: 16 matching wrap pt-16 + equal-width cards (flex: 1 0 0)** — alignment by construction at every viewport ✓
+
+**Two lessons compounded here, both worth carrying forward:**
+
+- **When an element must align to a sibling's bottom edge at multiple viewport widths**: match aspect-ratios (so both elements have the same intrinsic height at every width) and match top offsets (so both start at the same y). Don't hard-code pixel values that only work at one width.
+- **When multiple elements need to be visually equal-width**: use the same flex distribution on all of them. `flex: 0 0 clamp(...)` for one and `flex: 1 0 0` for others creates a divergence at intermediate widths even if they happen to converge at the extremes.
+
+The standalone vs. iframe-cache distraction also surfaced: Della's local-server case-notifications.html was showing a cached older iframe even after parent hard-refresh. Resolution: dev-tools "Empty Cache and Hard Reload" or a cache-buster bump (`?v=2026-05-10-3`) on the iframe src. Standalone view (no cache layer) was the source of truth.
 
 **Local-server pitfall surfaced:** Della had been viewing case-notifications.html via a stale `python3 -m http.server` running on port 8001 from an earlier session, which was serving an older snapshot. Standalone file:// view (which reads directly from disk) confirmed the fixes were actually correct — the misalignment Della was seeing was stale-server content, not a real CSS issue. Going forward: always kill prior local servers before starting a new one (`lsof -ti:PORT | xargs kill -9`).
 
