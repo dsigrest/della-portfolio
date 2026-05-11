@@ -166,32 +166,16 @@
     .comparison { gap: 16px; }
     .col-body { gap: 12px; }
   }
+  /* Stack the two columns into vertical rows so each row keeps annotations + phone side-by-side.
+     Matches Figma mobile frame 1381:201 (375 wide): full annotations visible, phone fills its half. */
   @media (max-width: 600px) {
-    .comparison-wrap { padding: 0 8px; }
-    .comparison { gap: 8px; }
-    .col-body { gap: 6px; }
-    /* Hide bullet sub-text so phones get more room. Keep titles + icons. */
-    .ann-desc { display: none; }
-    .annotation { padding: 6px 8px; }
-    .ann-title { font-size: 11px; }
-  }
-  @media (max-width: 480px) {
-    .comparison-wrap { padding: 0 4px; }
-    .comparison { gap: 4px; }
-    .annotations { display: none; }
-    .mock { max-width: 100%; }
-  }
-  /* Columns stack only on the narrowest phones */
-  @media (max-width: 400px) {
-    .comparison { grid-template-columns: 1fr; gap: 28px; }
-    .col-body {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 14px;
+    .comparison-wrap { padding: 0 16px; }
+    .comparison {
+      grid-template-columns: 1fr;
+      gap: 24px;
     }
-    .col-body .screenshot,
-    .col-body .annotations { flex: none; width: 100%; }
-    .mock { max-width: 240px; margin: 0 auto; }
+    .col-body { gap: 16px; }
+    .annotation { padding: 6px 0; }
   }
 
   /* Embed mode — strip body chrome when iframed on a case study page */

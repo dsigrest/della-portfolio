@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NOT-14 Navigation Simplification</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta name="figma-source" content="node:1214:15389 page:1214:13477 file:TArUrZsBUocaAsqetjXq7V">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
   <style>
     :root {
       --canvas: #0A0C16; --card: #10121C; --elevated: #151722;
@@ -30,32 +31,39 @@
     body.embedded { padding: 0; min-height: auto; display: block; background: transparent; overflow: hidden; }
     body.embedded .diagram { width: 100%; max-width: none; border-radius: 0; }
 
+    /* Container — Figma 1214:15389: py-[24px] outer, no horizontal pad on the
+       background; px-[48px] lives on .comparison instead. */
     .diagram {
       background: var(--canvas);
       border-radius: 16px;
-      padding: 24px 48px;
+      padding: 24px 0;
       max-width: 1200px;
       margin: 0 auto;
     }
 
+    /* Comparison row — Figma desktop: gap 48px, px-[48px]. */
     .comparison {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      gap: 48px;
       align-items: start;
+      padding: 0 48px;
     }
 
+    /* Per-column stack — Figma: flex-col gap-[16px] (label / pill / caption). */
     .col {
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 16px;
       position: relative;
+      min-width: 0;
     }
 
+    /* Label — Figma: centered, no dot, Inter SemiBold 10/600/1px tracking. */
     .col-label {
       display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: center;
       font-size: 10px;
       font-weight: 600;
       letter-spacing: 1px;
@@ -66,33 +74,20 @@
     .col.before .col-label { color: var(--red); }
     .col.after .col-label { color: var(--accent); }
 
-    .dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-    .col.before .dot { background: var(--red); }
-    .col.after .dot { background: var(--accent); }
-
-    .spacer { height: 14px; }
-
     /* .screenshot wraps the pill with breathing-room padding.
-       Previously had height: 44px hardcoded — that was sized for the old
-       306/43 aspect (very short pill). New 644/110 pill is taller; the
-       fixed height was forcing it to overflow into the label above.
-       Letting the screenshot size to its content fixes the visual crash. */
+       Figma desktop: h-[44px] px-[8px] on the wrapper; pill aspect is set on
+       the inner mock so the asset (pre-cropped) never stretches. */
     .screenshot {
       position: relative;
       width: 100%;
       display: flex;
       align-items: center;
-      padding: 8px;
+      padding: 0 8px;
     }
 
     /* Pill slot — sized to match the pre-cropped PNG exports (644×110 / 644×112).
-       Was previously 306/43 + percentage-crop hacks (height: 1540.04%; top: -1387.2%)
-       to clip an uncropped phone screenshot. New PNGs are pre-cropped, so the slot
-       just frames the image directly — no crop math needed. */
+       Figma uses 306/43 on uncropped source images; our PNGs are pre-cropped
+       so the slot frames the asset directly without crop math. */
     .mock {
       flex: 1;
       min-width: 0;
@@ -113,7 +108,18 @@
       object-position: center;
     }
 
-    .spacer-bottom { height: 6px; }
+    /* Caption — Figma: JetBrains Mono Regular 9/400, tracking 0.36px,
+       color text-tertiary rgba(224,223,228,0.4), centered. */
+    .col-caption {
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 9px;
+      font-weight: 400;
+      letter-spacing: 0.36px;
+      line-height: 1;
+      color: var(--text-ter);
+      text-align: center;
+      width: 100%;
+    }
 
     @keyframes fadeSlideIn {
       from { opacity: 0; transform: translateY(8px); }
@@ -122,16 +128,10 @@
     .col { animation: fadeSlideIn 0.6s ease-out forwards; }
     .col:nth-child(2) { animation-delay: 0.1s; }
 
-    /* iframe-width rule: collapse only at ≤480px */
+    /* Mobile — Figma 1214:18896: still side-by-side, gap-[16px], px-[16px]. */
     @media (max-width: 480px) {
-      .comparison { gap: 10px; }
-      .diagram { padding: 12px 16px; }
-    }
-    @media (max-width: 400px) {
-      .comparison { grid-template-columns: 1fr; gap: 24px; }
-      .diagram { padding: 8px 12px; }
-      .col-label { font-size: 9px; }
-      .spacer { height: 10px; }
+      .comparison { gap: 16px; padding: 0 16px; }
+      .col { gap: 16px; }
     }
   </style>
 </head>
@@ -139,30 +139,22 @@
   <div class="diagram">
     <div class="comparison">
       <div class="col before">
-        <div class="col-label">
-          <div class="dot"></div>
-          <span>Before &mdash; 5 tab layout</span>
-        </div>
-        <div class="spacer"></div>
+        <div class="col-label">Before</div>
         <div class="screenshot">
           <div class="mock">
             <img src="assets/not14-legacy-nav.png" alt="Legacy 5-tab navigation">
           </div>
         </div>
-        <div class="spacer-bottom"></div>
+        <div class="col-caption">5 tab layout</div>
       </div>
       <div class="col after">
-        <div class="col-label">
-          <div class="dot"></div>
-          <span>After &mdash; 3 tab model</span>
-        </div>
-        <div class="spacer"></div>
+        <div class="col-label">After</div>
         <div class="screenshot">
           <div class="mock">
             <img src="assets/not14-unified-nav.png" alt="Unified 3-tab navigation">
           </div>
         </div>
-        <div class="spacer-bottom"></div>
+        <div class="col-caption">3 tab model</div>
       </div>
     </div>
   </div>
