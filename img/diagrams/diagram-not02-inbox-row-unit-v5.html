@@ -128,10 +128,12 @@
   /* Row-mocks use each PNG's natural aspect-ratio so content isn't cropped.
      Widths match the atom-row (via equal-width cols), so all four row units
      scale together as the diagram resizes — same width, each at its own height.
-     Corner-radius scales with .col width: 14/16/16 desktop → 4 at mobile. */
-  .row-mock.row-1 { aspect-ratio: 579 / 158; border-radius: clamp(4px, calc(7.2cqw - 6.79px), 14px); }
-  .row-mock.row-2 { aspect-ratio: 579 / 124; border-radius: clamp(4px, calc(8.63cqw - 8.94px), 16px); }
-  .row-mock.row-3 { aspect-ratio: 579 / 116; border-radius: clamp(4px, calc(8.63cqw - 8.94px), 16px); border-width: 2px; }
+     Corner-radius: 8px universally per Della 2026-05-10 — these are single
+     notification rows (not full phone screens), so a smaller fixed radius
+     keeps them feeling row-like rather than phone-like. */
+  .row-mock.row-1 { aspect-ratio: 579 / 158; border-radius: 8px; }
+  .row-mock.row-2 { aspect-ratio: 579 / 124; border-radius: 8px; }
+  .row-mock.row-3 { aspect-ratio: 579 / 116; border-radius: 8px; border-width: 2px; }
 
   /* Image fills wrapper at its natural aspect — no positioning offsets needed
      because the PNG files are already the row strips themselves. */

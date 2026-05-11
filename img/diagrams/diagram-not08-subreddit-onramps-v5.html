@@ -97,7 +97,8 @@
     position: relative;
     width: 100%;
     overflow: hidden;
-    border-radius: 8px;
+    /* Phone-screenshot corner-radius — global rule: 16 desktop, scales to ~8 mobile. */
+    border-radius: clamp(6px, 2.1vw, 16px);
     box-shadow: inset 0 1px 0 rgba(224,223,228,0.06);
     background: #F6F6F6;
   }

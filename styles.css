@@ -1426,7 +1426,9 @@ main {
   height: auto;
   aspect-ratio: 322 / 697;
   object-fit: cover;
-  border-radius: 16px;
+  /* Phone-screenshot corner-radius — global rule per Della 2026-05-10:
+     16 at desktop, scales proportionally to ~8 at mobile. */
+  border-radius: clamp(6px, 2.1vw, 16px);
   display: block;
   box-shadow: inset 0 1px 0 rgba(224,223,228,0.06), 0 6px 24px rgba(0, 0, 0, 0.3);
 }
@@ -1552,10 +1554,15 @@ main {
     min-height: 320px;
   }
 }
-/* Only stack the GIF + metrics panel on the narrowest phones */
+/* Only stack the GIF + metrics panel on the narrowest phones.
+   FIX 2026-05-10: was using grid-template-columns: 1fr but .results-row is
+   display: flex — the rule was dead. Now uses flex-direction: column so the
+   stacking actually fires. Della reported the panel sitting beside the phone
+   at iPhone widths, taller than the phone — the intended stack-at-narrow
+   never happened because of the property mismatch. */
 @media (max-width: 480px) {
   .results-row {
-    grid-template-columns: 1fr;
+    flex-direction: column;
   }
 }
 @media (max-width: 480px) {

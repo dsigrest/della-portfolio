@@ -50,10 +50,11 @@
   .pref-side-label.before { color: var(--red); }
   .pref-side-label.after { color: var(--accent); }
 
-  /* Image-screenshot wrapper — aspect-ratio matches Figma frame */
+  /* Image-screenshot wrapper — aspect-ratio matches Figma frame.
+     Corner-radius: global phone-screenshot rule — 16 desktop, scales to ~8 mobile. */
   .pref-shot {
     aspect-ratio: 520 / 345; width: 100%;
-    border-radius: 16px; overflow: hidden; position: relative;
+    border-radius: clamp(6px, 2.1vw, 16px); overflow: hidden; position: relative;
     background: var(--card);
     box-shadow: inset 0 1px 0 rgba(224,223,228,0.06);
     opacity: 0; animation: mount 0.5s var(--spring) forwards;
@@ -109,7 +110,7 @@
     .transform-area { padding: 0 16px; }
     .pref-columns { grid-template-columns: 1fr 1fr; gap: 16px; }
     .pref-side { gap: 14px; }
-    .pref-shot { border-radius: 8px; }
+    /* pref-shot border-radius now uses clamp at all widths — no mobile override needed. */
     .transform-arrow { display: none; }
   }
 

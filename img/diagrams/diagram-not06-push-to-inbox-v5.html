@@ -51,6 +51,8 @@
   .row-stack { display: flex; flex-direction: column; gap: 16px; pointer-events: none; }
   .row-img {
     display: block; width: 100%; height: auto;
+    /* Corner-radius: 8px universally per Della 2026-05-10 — these are single
+       notification rows (not full phone screens). Matches NOT-02 row-mocks. */
     border-radius: 8px;
     box-shadow: inset 0 1px 0 rgba(224,223,228,0.06);
   }

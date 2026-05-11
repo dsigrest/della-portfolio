@@ -89,7 +89,8 @@
       position: relative;
       width: 100%;
       aspect-ratio: 1206/2622;
-      border-radius: 16px;
+      /* Phone-screenshot corner-radius — global rule: 16 desktop, scales to ~8 mobile. */
+      border-radius: clamp(6px, 2.1vw, 16px);
       overflow: hidden;
       background: var(--card);
       margin: 0 8px;
@@ -272,7 +273,8 @@
         position: relative;
         width: 100%;
         aspect-ratio: 1206/2622;
-        border-radius: 8px;
+        /* Phone-screenshot corner-radius — global rule (clamp gives ~8 at mobile vw). */
+        border-radius: clamp(6px, 2.1vw, 16px);
         overflow: hidden;
         background: var(--card);
       }
@@ -344,7 +346,8 @@
         position: relative;
         width: 100%;
         aspect-ratio: 1206/2622;
-        border-radius: 8px;
+        /* Phone-screenshot corner-radius — global rule (clamp gives ~8 at mobile vw). */
+        border-radius: clamp(6px, 2.1vw, 16px);
         overflow: hidden;
         background: var(--card);
       }

@@ -87,26 +87,28 @@
 
     /* Pill slot — sized to match the pre-cropped PNG exports (644×110 / 644×112).
        Figma uses 306/43 on uncropped source images; our PNGs are pre-cropped
-       so the slot frames the asset directly without crop math. */
+       so the slot frames the asset directly without crop math. NO aspect-ratio
+       on .mock — that combined with box-sizing: border-box + 6px border made
+       the content-box aspect different from the source PNG aspect, causing
+       object-fit: cover to crop icons at top/bottom. IMG inside now carries
+       the aspect-ratio and renders at its natural shape with no clipping. */
     .mock {
       flex: 1;
       min-width: 0;
-      aspect-ratio: 644 / 110;
       border: 6px solid #fff;       /* white pill bezel — intentional */
       border-radius: 20px;
       position: relative;
       overflow: hidden;
       background: #fff;
     }
-    .col.after .mock { aspect-ratio: 644 / 112; }
 
     .mock img {
       display: block;
       width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center;
+      height: auto;                 /* let height scale with natural aspect */
+      aspect-ratio: 644 / 110;
     }
+    .col.after .mock img { aspect-ratio: 644 / 112; }
 
     /* Caption — Figma: JetBrains Mono Regular 9/400, tracking 0.36px,
        color text-tertiary rgba(224,223,228,0.4), centered. */

@@ -121,7 +121,8 @@
     aspect-ratio: 1040 / 2250;
     overflow: hidden;
     background: #fff;
-    border-radius: 16px;
+    /* Phone-screenshot corner-radius — global rule: 16 desktop, scales to ~8 mobile. */
+    border-radius: clamp(6px, 2.1vw, 16px);
     border: 1px solid var(--border-subtle);
   }
   .mock img {
@@ -153,14 +154,15 @@
   .mock-stack .phone-1 {
     top: 0;
     height: 100%;
-    border-radius: 18px;
+    /* Phone-screenshot corner-radius — global rule (was 18; unified to 16 max). */
+    border-radius: clamp(6px, 2.1vw, 16px);
   }
   .mock-stack .phone-1 img {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 18px;
+    border-radius: clamp(6px, 2.1vw, 16px);
   }
   .mock-stack .phone-2 {
     top: 30.48%;

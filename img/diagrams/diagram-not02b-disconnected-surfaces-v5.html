@@ -111,11 +111,10 @@
   }
   .mock {
     width: 100%;
-    /* Proportional corner radius — 10.5cqw of .col width holds a real-iPhone-like
-       ratio (~11% of phone width) at every breakpoint. At Figma desktop col≈151px
-       this resolves to ~16px, matching Figma's rounded-[16px]. As the diagram
-       shrinks the radius shrinks in lockstep so corners never read pill-y. */
-    border-radius: 10.5cqw;
+    /* Phone-screenshot corner-radius — global rule per Della 2026-05-10:
+       16 at desktop (vw=760), scales proportionally to ~8 at mobile (vw=375),
+       6 floor. Was 10.5cqw which gave ~18-19px at desktop (too round). */
+    border-radius: clamp(6px, 2.1vw, 16px);
     overflow: hidden;
     background: #000;
     aspect-ratio: 1040 / 2250;

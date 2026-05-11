@@ -59,22 +59,29 @@
   .layout-card.best-fit {
     /* Width scales fluidly from 212 at vw=760 down to 110 at vw=481 so the other
        two cards don't get crushed below 70px each. Mobile @media flips it to flex:1.
-       padding-top: 16 matches the layout-card-wrap pt-16 on the other two cards so
-       all three card tops align in the same row. */
+       Uses CSS Grid with explicit row heights so the slot's bottom edge is
+       GUARANTEED to land at y=235 (matching pt-16 + illustration h-219 on
+       Chronological/Nested) regardless of any flex/aspect-ratio interactions. */
     flex: 0 0 clamp(110px, calc(36.4vw - 64.6px), 212px);
     align-self: stretch;
-    padding-top: 16px;
+    position: relative;
+    display: grid;
+    grid-template-rows: 235px auto 1fr;
   }
 
-  /* Best-fit pill — Figma renders top-left, half-overlapping the screenshot top */
+  /* Best-fit pill — absolute-positioned at top-left of the card so it overlaps
+     the slot's top WITHOUT consuming flow space. The slot then positions itself
+     based on margin-top (not crown height), so phone+stroke bottoms align
+     deterministically with Chronological/Nested phone bottoms at y=235. */
   .best-fit-crown {
     background: var(--accent); color: var(--canvas);
     padding: 8px 14px; border-radius: 999px;
     font-size: 11px; font-weight: 600; letter-spacing: 0.88px; text-transform: uppercase; line-height: 1.4;
     border: 1px solid var(--accent-hover);
-    align-self: flex-start;
     z-index: 2; white-space: nowrap;
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
   }
 
   /* ── Mock-UI illustration area (top of each card) ──
@@ -94,8 +101,9 @@
     display: block;
     flex-shrink: 0;
     /* Proportional radius — TOP corners only (phone sinks into the card divider
-       at the bottom, so bottom-left/right stay square). Scales 6 → 18 with viewport. */
-    border-radius: clamp(6px, calc(2vw + 2px), 18px) clamp(6px, calc(2vw + 2px), 18px) 0 0;
+       at the bottom, so bottom-left/right stay square). Ceiling 16 per global
+       phone-screenshot rule; scales 6 → 16 with viewport. */
+    border-radius: clamp(6px, calc(2vw + 2px), 16px) clamp(6px, calc(2vw + 2px), 16px) 0 0;
   }
   /* Tabbed (BEST FIT) — phone screenshot slot scales with best-fit card width.
      Aspect ratio 212/222 preserves Figma's slot shape; img inside has its own
@@ -103,23 +111,36 @@
      by the IMG itself, not the slot's border-radius. */
   .screenshot-slot {
     background: var(--surface-3);
-    border: 1px solid var(--accent-hover);
+    /* box-shadow: inset replaces border so the stroke doesn't consume content-box
+       dimensions (border-box CSS would shrink content height by 2px). */
+    box-shadow: inset 0 0 0 1px var(--accent-hover);
     border-radius: 12px;
+    /* Grid placement: row 1 (235px), bottom-aligned within that row. Slot's
+       aspect-ratio gives a height of ~222, so slot top = 235-222 = 13 and slot
+       bottom = 235. Matches Chronological/Nested phone bottoms (16+219=235). */
+    grid-row: 1;
+    align-self: end;
     width: 100%;
     aspect-ratio: 212 / 222;
-    margin-top: -19px;
     padding: 16px 16px 0;
     display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
     position: relative;
   }
+  .layout-card.best-fit .layout-divider { grid-row: 2; }
+  .layout-card.best-fit .layout-content { grid-row: 3; }
   .screenshot-slot img {
-    width: 85%;
+    /* width: 100% (not 85%) — phone IMG fills slot's content box (180px) to
+       match Chronological/Nested .illustration img (also 180px). All 3 phones
+       same visual size; the Tabbed wrapper extends past the phone to form the
+       "larger frame around best fit" visual per Figma. */
+    width: 100%;
     aspect-ratio: 180 / 190;
     object-fit: cover;
     display: block;
     flex-shrink: 0;
-    /* Top corners only — bottom is cut by the slot's bottom edge. */
-    border-radius: clamp(6px, calc(2vw + 2px), 18px) clamp(6px, calc(2vw + 2px), 18px) 0 0;
+    /* Top corners only — bottom is cut by the slot's bottom edge. Ceiling
+       lowered from 18 to 16 per the global phone-screenshot rule. */
+    border-radius: clamp(6px, calc(2vw + 2px), 16px) clamp(6px, calc(2vw + 2px), 16px) 0 0;
   }
 
   /* ── Card content: name + traits ── */
@@ -155,7 +176,12 @@
     .diagram { width: 100%; padding: 24px 0; }
     .layouts-grid {
       flex-direction: row;
-      gap: 4px;
+      /* gap 12px (was 4px per Figma spec) — 4px reads as overlap on real
+         iPhones because each card's full width includes the dark wrapper for
+         Tabbed but only the phone for Chronological/Nested, so the visual edges
+         collide. 12px gives proportional separation matching desktop's gap/card
+         ratio. */
+      gap: 12px;
       padding: 0 16px;
       align-items: flex-start;
     }
@@ -168,12 +194,17 @@
     /* Illustration uses aspect-ratio at narrow so card heights scale together */
     .illustration { height: auto; aspect-ratio: 360/380; padding: 24px 16px 0; }
     .illustration img { width: 100%; height: 100%; }
-    /* Best-fit screenshot slot fills card width and uses aspect ratio */
-    .screenshot-slot { width: 100%; height: auto; aspect-ratio: 1/1; margin-top: -16px; padding: 16px 16px 0; }
+    /* Best-fit screenshot slot fills card width. Aspect-ratio matches .illustration
+       at mobile (360/380) so slot height equals illustration height, and
+       margin-top: 16 matches .layout-card-wrap's pt-16 — guarantees slot bottom
+       aligns with illustration bottom across all three cards. */
+    .screenshot-slot { width: 100%; height: auto; aspect-ratio: 360/380; margin-top: 16px; padding: 16px 16px 0; }
     .screenshot-slot img { width: 100%; height: 100%; }
     .trait { gap: 4px; font-size: 8px; }
     .layout-content { padding: 10px; gap: 4px; }
-    .best-fit-crown { padding: 6px 10px; font-size: 9px; letter-spacing: 0.72px; }
+    /* Tighten pill so there's a defined gap between BEST FIT bottom edge and
+       phone screen top — was tangent at 6px padding. */
+    .best-fit-crown { padding: 4px 10px; font-size: 9px; letter-spacing: 0.72px; line-height: 1.2; }
   }
 
   /* Embed mode */

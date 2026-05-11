@@ -1,7 +1,7 @@
 # Build Log — Della Sigrest Portfolio
 
 **Started:** March 12, 2026
-**Last updated:** April 30, 2026
+**Last updated:** May 10, 2026
 **Status:** Active
 
 ## Project context
@@ -82,6 +82,42 @@ Older BUILD-LOG entries have been split into dated sibling files to keep this fi
 | Q1 (Mar 2026) | Project kickoff, all case studies + image integration + SVG diagrams, Vercel deployment + dev tooling | [`BUILD-LOG-2026-Q1.md`](BUILD-LOG-2026-Q1.md) |
 
 ## Log entries
+
+### May 10, 2026 (Session 53 — Phase 2 close-out recovery: shipped 16 leftover files, captured 3 failure modes from prior session)
+
+**Context:** Resume prompt `sessions/resume-prompt-phase2-sweep-and-tweaks.md` scoped this thread to corner-radius consistency sweep + one-diagram tweaks. Within minutes, Della spotted that 4 of the Phase 2 diagrams (NOT-02, NOT-04, NOT-06, NOT-12) were showing broken PNG tokens on the live site, and that the top diagram (NOT-03) wasn't showing the new zigzag mobile layout. Triage flipped the scope from sweep-then-tweaks to **emergency recovery first, sweep after.**
+
+**Root cause discovered:** Phase 2 (Session 52, commit `5344832`) shipped 16 reworked diagrams but left 16 files uncommitted in the tree:
+- 13 PNG assets that the new diagrams reference (`not02-*.png`, `not04-*.png`, `not06-*.png`, `not12-*.png`) — without these, NOT-02/04/06/12 served broken image tokens on Vercel.
+- 3 Figma-precision v5 reworks that match the Phase 2 quality pattern but weren't on Phase 2's commit list — NOT-03 zigzag mobile, NOT-E4 matrix mobile tightening, NOT-14 navigation Figma spec.
+
+**What shipped this session (2 commits):**
+- `c7e82f8` — Add 13 missing PNG assets for NOT-02, NOT-04, NOT-06, NOT-12 diagrams.
+- `b78c90b` — Ship 3 Figma-precision reworks left out of Phase 2 commit. NOT-03 was the urgent one (the zigzag mobile layout Della was looking for on her phone).
+
+**Failure modes captured (so the next thread inherits the lesson):**
+
+1. **Phase 2 skipped its mandatory close-out git sweep.** The global CLAUDE.md is explicit — every session that touches a repo must run `git status` at close, propose a disposition for every modified/untracked/staged item, and either commit, restore, stash, or explicitly defer. Phase 2 staged a specific list of files and pushed without ever running that final `git status`. That's why 16 items got left in the tree. If the sweep had run, all 16 would have been caught.
+
+2. **The cache-buster needed two commits (`b326e85`, then `8bb1ef9`) because diagnosis came after the first commit, not before.** Two commits for the same task = trial-and-error, not problem-solving. A proper diagnosis would have checked which iframes still pointed at the stale cache-buster, fixed all of them in one pass, and moved on.
+
+3. **NOT-02b/NOT-03 confusion at the start of this session (Session 53's own contribution).** When Della said "the top diagram," Claude matched against `phase2-queue.md` (where NOT-02b appears as item #2) instead of reading `case-notifications.html` to see what literally appears first on the page. NOT-03 is the first iframe. A 10-second check of parent HTML would have caught it; instead Claude spent two turns investigating the wrong diagram (including fetching Figma for the wrong node). The fix going forward: when Della references a diagram by position ("top," "first," "the one with X"), confirm by reading the parent HTML, not infer from a queue document.
+
+**Shared pattern across all three failures:** skipped verification, assumed instead of confirmed. The global CLAUDE.md already has the structural fix for #1 (mandatory close-out sweep). #2 and #3 are softer — both are "stop and diagnose before acting" failures.
+
+**Structural fix to enforce going forward:** at every session end, the close-out sweep is non-negotiable — emit `git --no-optional-locks status` output and propose a disposition for every entry. No commit-and-leave. The lesson is locked in this BUILD-LOG entry so the next thread inherits it automatically.
+
+**Pre-existing dirty state surfaced (still untouched, deferred):**
+- `?? img/diagrams/assets/SHAR-screenshotToshare.gif`
+- `?? img/diagrams/diagram-shr01-before-share-sheet-v5.html`
+
+These have been deferred across Sessions 47–52 (share-thread work). Surfaced again for visibility; no action this session.
+
+**Still open in this thread's scope:**
+- Corner-radius sweep — target 16px on every phone screenshot across the full case-notifications page. NOT-10 Three Inboxes is one reference (Della's favorite, the cohorts diagram). She also began referencing "the diagram that has feedback…" before the broken-PNG distraction — clarification pending.
+- Resume prompt `sessions/resume-prompt-phase2-sweep-and-tweaks.md` remains active until the sweep ships.
+
+---
 
 ### May 10, 2026 (Session 52 — Phase 2: notif/inbox case study rework — Figma-precision pass + live review fixes)
 
