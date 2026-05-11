@@ -113,9 +113,33 @@ Older BUILD-LOG entries have been split into dated sibling files to keep this fi
 
 These have been deferred across Sessions 47–52 (share-thread work). Surfaced again for visibility; no action this session.
 
-**Still open in this thread's scope:**
-- Corner-radius sweep — target 16px on every phone screenshot across the full case-notifications page. NOT-10 Three Inboxes is one reference (Della's favorite, the cohorts diagram). She also began referencing "the diagram that has feedback…" before the broken-PNG distraction — clarification pending.
-- Resume prompt `sessions/resume-prompt-phase2-sweep-and-tweaks.md` remains active until the sweep ships.
+**Phase 2 polish — commit `d0ba3f0`** (pushed late same day after additional rounds):
+
+After the resume-prompt-driven sweep started, Della surfaced four diagnostic-cycle bugs from auditing the live site on her phone — all queued, then fixed and shipped in one combined commit:
+
+1. **NOT-12 mobile gap** — `4px → 12px` (Phase 2's Figma-spec 4px read as overlap at real iPhone widths because Tabbed wrapper visually butts up against Nested phone with no breathing room).
+2. **NOT-12 mobile BEST FIT pill tangent** — pill padding `6 → 4`, line-height `1.4 → 1.2` to create defined gap between pill bottom and phone screen top.
+3. **NOT-12 desktop alignment** — three phones same size, all bottoms aligned including the stroke around best-fit. Three-stage CSS evolution: (a) margin-top tweak from -19 → -20 didn't fully work; (b) absolute crown + positive margin-top: 13 still showed misalignment in Della's view; (c) **CSS Grid with explicit `grid-template-rows: 235px auto 1fr`** + `align-self: end` on the slot — guarantees slot bottom at y=235 regardless of any flex/aspect-ratio/box-model interactions. Also changed slot border to `box-shadow: inset` so the stroke doesn't consume content-box dimensions. Mobile aspect-ratio changed from 1/1 to 360/380 (matching `.illustration`) with margin-top: 16 so mobile bottoms also align by construction.
+4. **NOT-12 Tabbed phone width** — `.screenshot-slot img` `width: 85% → 100%` so the phone fills the slot's content box (180px) matching `.illustration img`. All three phones now visually equal size at 180×190; the Tabbed wrapper extends past the phone as the "larger frame around best fit" per Figma.
+5. **NOT-14 navigation pill clipping** — `.mock` had `aspect-ratio: 644/110` + `border: 6px solid` + universal `box-sizing: border-box`, which gave the content box a different aspect than the source PNG, causing `object-fit: cover` to crop the icons. Fix: move aspect-ratio from `.mock` to `.mock img` and use `height: auto` so the IMG renders at its native source aspect, no cropping.
+6. **NOT-14 v2 outcomes mobile stacking** — the @media rule `grid-template-columns: 1fr` was DEAD CODE on a `display: flex` container, so the panel never stacked below the phone at mobile. Fix: `flex-direction: column`. Now phone + panel stack vertically at ≤480px (intended behavior since the original commit comment).
+7. **Phone-screenshot corner-radius sweep** — global rule `clamp(6px, 2.1vw, 16px)` applied to every phone screenshot across NOT-02b, NOT-07, NOT-08, NOT-10, NOT-12 (top corners only), NOT-24 (`.mock-frame` + `.ma-mock` + `.mb-mock`), and `.results-phone-gif` in styles.css. Yields 16px at desktop (vw=760), proportionally smaller at mobile.
+8. **Row-item corner-radius reverted to 8px fixed** — Della's call: NOT-02 row-mocks, NOT-06 row-imgs, and NOT-17 row strips are single-row pieces (not full phone screens), so a smaller fixed radius keeps them feeling row-like. (Earlier in the session these were briefly unified to a cqw-based clamp that reached 16; reverted after Della's review.)
+9. **Iframe cache-buster bump** — all 18 iframe srcs in case-notifications.html updated from `?v=2026-05-10-1` to `?v=2026-05-10-2` so browsers + Vercel edge cache re-fetch the updated diagrams.
+
+**Commit history this session:**
+- `c7e82f8` — 13 missing PNG assets
+- `b78c90b` — 3 Figma-precision reworks (NOT-03 zigzag, NOT-E4 matrix, NOT-14 nav spec)
+- `d0ba3f0` — Phase 2 polish: NOT-12 desktop alignment via CSS Grid + mobile bug fixes + phone corner-radius sweep + iframe cache-buster bump
+
+**Additional lesson captured this round (the alignment chase):** the flex+margin-top approach for the Tabbed slot's vertical position depended on the crown's rendered height being a specific value (33.4px) and went through three iterations before landing on CSS Grid with explicit row heights. Lesson: when an element's position relies on a sibling's intrinsic height for visual alignment, prefer CSS Grid with explicit row sizing over flex+margin arithmetic. Grid removes the "what's the actual rendered height of X" dependency entirely.
+
+**Local-server pitfall surfaced:** Della had been viewing case-notifications.html via a stale `python3 -m http.server` running on port 8001 from an earlier session, which was serving an older snapshot. Standalone file:// view (which reads directly from disk) confirmed the fixes were actually correct — the misalignment Della was seeing was stale-server content, not a real CSS issue. Going forward: always kill prior local servers before starting a new one (`lsof -ti:PORT | xargs kill -9`).
+
+**Still open / deferred:**
+- Pre-existing dirty share-thread files (`SHAR-screenshotToshare.gif`, `diagram-shr01-before-share-sheet-v5.html`) — untouched across many sessions.
+- Live-site phone verification after Vercel deploy of `d0ba3f0`.
+- Resume prompt + phase2-queue archive (deferred to tomorrow's thread per Della's request).
 
 ---
 
