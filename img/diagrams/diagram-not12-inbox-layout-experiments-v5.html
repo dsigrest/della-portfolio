@@ -94,12 +94,22 @@
     aspect-ratio: 212 / 219;
     padding: 24px 16px 0;
     display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-    opacity: 0.5;
+    /* opacity 0.75 — keeps "secondary to Tabbed" visual hierarchy but reads
+       clearly on the dark canvas. FIX 2026-05-12: 0.5 made the phones look
+       missing at mobile (Della: "they're missing the chronological and nested
+       PNGs"). 0.75 stays noticeably faded vs. Tabbed's full-opacity framed
+       slot, but the inbox content is recognizable. */
+    opacity: 0.75;
   }
   .illustration img {
     width: 100%;
     aspect-ratio: 180 / 190;
-    object-fit: cover;
+    /* object-fit: contain — show the FULL phone screenshot without horizontal
+       crop. FIX 2026-05-12: was object-fit: cover, which at narrow viewport
+       widths cropped the left edge of the phone PNG (Della reported "PNGs are
+       all cropped on the left side"). Contain preserves the whole asset. */
+    object-fit: contain;
+    object-position: bottom;
     display: block;
     flex-shrink: 0;
     /* Proportional radius — TOP corners only (phone sinks into the card divider
@@ -137,7 +147,10 @@
        "larger frame around best fit" visual per Figma. */
     width: 100%;
     aspect-ratio: 180 / 190;
-    object-fit: cover;
+    /* object-fit: contain — see matching note in .illustration img. Prevents
+       left-edge crop at narrow viewports. */
+    object-fit: contain;
+    object-position: bottom;
     display: block;
     flex-shrink: 0;
     /* Top corners only — bottom is cut by the slot's bottom edge. Ceiling
@@ -207,6 +220,12 @@
     /* Tighten pill so there's a defined gap between BEST FIT bottom edge and
        phone screen top — was tangent at 6px padding. */
     .best-fit-crown { padding: 4px 10px; font-size: 9px; letter-spacing: 0.72px; line-height: 1.2; }
+    /* Center-align layout titles at mobile (Della call 2026-05-12 round 3).
+       Chronological happens to read centered because it fills the card width;
+       Nested and Tabbed were noticeably left-aligned. Centering all three
+       balances each card. Width: 100% forces the p to stretch the full card
+       width so text-align actually has horizontal space to center within. */
+    .layout-name { text-align: center; width: 100%; }
   }
 
   /* Embed mode */

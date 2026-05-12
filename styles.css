@@ -1559,10 +1559,51 @@ main {
    display: flex — the rule was dead. Now uses flex-direction: column so the
    stacking actually fires. Della reported the panel sitting beside the phone
    at iPhone widths, taller than the phone — the intended stack-at-narrow
-   never happened because of the property mismatch. */
+   never happened because of the property mismatch.
+   FIX 2026-05-12: at mobile-stack, the 900px-breakpoint min-height: 320px on
+   .results-phone-slot kept the slot 320px tall even with flex: 1 1 0, and the
+   .has-asset justify-content: flex-end pinned the GIF to the bottom of that
+   slot — leaving 320px of empty space ABOVE the GIF that visually overlapped
+   the body text and h2 above the row on iPhone widths. Reset min-height and
+   justify-content at mobile so the phone slot uses natural block-flow height.
+   FIX 2026-05-12 round 2: full-width phone GIF at iPhone widths was ~743px
+   tall (aspect 322/697), which exceeded most mobile viewport heights and
+   overlapped the sticky nav header when scrolling. Cap the GIF width at
+   240px and center the slot so the phone fits comfortably within a single
+   viewport. */
 @media (max-width: 480px) {
   .results-row {
     flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-lg);
+  }
+  .results-phone-slot {
+    /* Override the 900px-breakpoint min-height so the phone slot shrinks to
+       its natural content height (the GIF + caption) instead of forcing 320px
+       of empty space that overlaps preceding text. */
+    min-height: 0;
+    flex: 0 0 auto;
+    width: 100%;
+    align-items: center;
+  }
+  .results-phone-slot.has-asset {
+    /* Reset desktop's flex-end which was pinning the GIF to the bottom of an
+       artificially-tall slot. At mobile the slot is content-sized; flex-start
+       puts the GIF at its natural top-of-slot position. */
+    justify-content: flex-start;
+    align-items: center;
+  }
+  .results-phone-slot .results-phone-gif {
+    /* Cap the phone so it fits inside a typical iPhone viewport (~700-800px
+       tall) with breathing room for the sticky nav and the OUTCOMES panel
+       below. 240px width × 697/322 aspect ≈ 519px tall — leaves enough room
+       for the nav header and the eyebrow of the panel below within one
+       screen on iPhone. */
+    max-width: 240px;
+    width: 100%;
+  }
+  .results-metrics-panel {
+    width: 100%;
   }
 }
 @media (max-width: 480px) {
@@ -1578,7 +1619,7 @@ main {
   /* Mobile metrics-panel padding/gap per Figma 1409:2638 (px-12 py-13 gap-12).
      max-width: none so panel takes 50% of row width (flex 1 1 0). */
   .results-metrics-panel {
-    flex: 1 1 0;
+    flex: 0 0 auto;
     max-width: none;
     padding: 13px 12px;
     gap: 12px;

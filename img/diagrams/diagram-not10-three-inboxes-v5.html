@@ -106,6 +106,16 @@
     text-align: center;
     width: 100%;
   }
+  /* Reserve space for up to 2 lines of label across ALL columns so the
+     mock-frame (and therefore the phone tops + annotations) starts at the
+     same y position regardless of whether a label wraps. Single-line labels
+     sit at the TOP of this reserved area (align-items: flex-start). Della
+     call 2026-05-12 — locks alignment even if a future label wraps. */
+  .col-header {
+    min-height: calc(11px * 1.4 * 2);
+    align-items: flex-start;
+  }
+  .col-label-mobile-only { display: none; }
   .spacer { height: 14px; }
 
   /* Phone mock area */
@@ -209,6 +219,25 @@
      Tighter gap and padding. */
   @media (max-width: 480px) {
     .comparison { gap: 12px; padding: 0 16px; }
+    /* At mobile, "Casual visitor" wraps to two lines and would push the phone
+       down. Della call 2026-05-12: drop "visitor" so the label is a single
+       word that fits on one line, matching New User / Regular. */
+    .col-label-mobile-hide { display: none; }
+    .col-label-mobile-only { display: inline; }
+    /* Center-align annotation quotes at mobile (Della call 2026-05-12 round 3).
+       Left-aligned text in narrow columns made the three quotes look ragged;
+       centering matches the centered col-label above and balances the column. */
+    .annotation { text-align: center; }
+    .annotation p { text-align: center; }
+    /* Tighten header → mock gap (Della call 2026-05-12 round 4).
+       At desktop the col-header reserves min-height for a 2-line label so
+       phone tops stay aligned even if one label wraps. At mobile every label
+       is a single short word (NEW USER / CASUAL / REGULAR), so the wrap
+       reservation isn't needed and was adding ~15px of dead space below the
+       label. Reset min-height to auto and shrink the spacer so the header
+       sits ~8-10px above the mock — matching the annotation gap below. */
+    .col-header { min-height: 0; }
+    .spacer { height: 0; }
   }
 </style>
 </head>
@@ -236,25 +265,18 @@
         </div>
       </div>
 
-      <!-- Column 2: Casual user (stacked layered phones) -->
+      <!-- Column 2: Casual visitor — single phone per Figma 1393:105 (was stacked-3-phones composition, replaced 2026-05-12 to match Figma).
+           Label is split so "visitor" hides at mobile, leaving just "Casual" — single-line label keeps phone tops aligned across columns. -->
       <div class="col">
         <div class="col-header">
           <div class="col-label-stack">
-            <span class="col-label">Casual visitor</span>
+            <span class="col-label">Casual<span class="col-label-mobile-hide"> visitor</span></span>
           </div>
         </div>
         <div class="spacer"></div>
         <div class="mock-frame">
-          <div class="mock-stack">
-            <div class="phone phone-1">
-              <img src="assets/not10-newuser.png" alt="">
-            </div>
-            <div class="phone phone-2">
-              <img src="assets/not10-subscriber.png" alt="Subscriber inbox view (cropped)">
-            </div>
-            <div class="phone phone-3">
-              <img src="assets/not10-contributor.png" alt="Contributor inbox view (cropped bottom)">
-            </div>
+          <div class="mock">
+            <img src="casualVisitor101.png" alt="Inbox for a casual visitor — sparse activity feed with a few followed-community updates" loading="lazy">
           </div>
         </div>
         <div class="spacer-bottom"></div>
@@ -263,7 +285,7 @@
         </div>
       </div>
 
-      <!-- Column 3: Core user -->
+      <!-- Column 3: Regular — Della-uploaded 2026-05-12 (regularVisitor101.png) to match Figma 1393:105 content. -->
       <div class="col">
         <div class="col-header">
           <div class="col-label-stack">
@@ -273,7 +295,7 @@
         <div class="spacer"></div>
         <div class="mock-frame">
           <div class="mock">
-            <img src="assets/not10-contributor.png" alt="Inbox for a core user — long stack of replies, post-view stats, and chat invites" loading="lazy">
+            <img src="regularVisitor101.png" alt="Inbox for a regular — long stack of post replies in r/AskReddit" loading="lazy">
           </div>
         </div>
         <div class="spacer-bottom"></div>
