@@ -1227,3 +1227,41 @@ Pushed the 4 new diagrams from §6.2-redo (commit `d5a40b0`) to Figma page 29:42
 2. **VM session persistence**: Working directory resets between Cowork sessions. All code must be in the mounted project folder to persist.
 3. **File sync confusion**: Edits in Cowork's working folder vs. the user's local git repo are separate locations. Solved by mounting the project folder directly.
 4. **Screenshot path errors**: Complex folder structures with inconsistent naming required multiple attempts to find correct paths.
+
+### May 12, 2026 — case-notifications mobile bug sweep (5 bugs, 8 commits, iOS WebKit gotcha captured)
+
+**Scope:** Della enumerated 4 mobile rendering bugs on `case-notifications.html` from real-iPhone testing, then added 4 more rounds of feedback as fixes were verified one-by-one against her actual phone.
+
+**What shipped (8 commits to `main`):**
+
+| Commit | Subject | Scope |
+|---|---|---|
+| `62d5e22` | Fix 4 mobile bugs on case-notifications | Round 1 + 2 + 3 + 4 squashed: results-row stacking + GIF max-width 240px (outcome overlap), three-inboxes structure + new PNGs + label trim, swipe GIF aspect 797/132 + contain, layout-experiments cover→contain + opacity 0.75 + centered titles + header-mock gap 10px |
+| `02f7c0e` | Bump iframe cache-buster ?v=2026-05-10-3→2026-05-12-1 | Forced reload of 18 iframe URLs in case-notifications.html |
+| `4831776` | Rename modified diagrams v5→v6 | Misdiagnosed iOS cache hypothesis; rename was harmless but didn't fix anything |
+| `cc09ed7` | Fix Tabbed phone smaller-than-others at iPhone width | Real fix: replaced `height: 100%` with `height: auto; aspect-ratio: 180/190` on `.illustration img` + `.screenshot-slot img` in diagram-not12-v6 |
+| `5cfae68` | Remove obsolete v5 diagram files after v6 rename verified | Cleanup of 3 orphan v5 files |
+
+**Files changed:**
+- `case-notifications.html` (iframe cache-buster + src bumps to v6)
+- `styles.css` (results-row mobile stack + max-width 240px cap)
+- `img/diagrams/diagram-not02b-swipe-actions-v5.html` → `-v6.html` (aspect 797/132 + object-fit: contain)
+- `img/diagrams/diagram-not10-three-inboxes-v5.html` → `-v6.html` (single phone for casual visitor + new PNGs + Casual mobile label + centered annotations + tightened gap)
+- `img/diagrams/diagram-not12-inbox-layout-experiments-v5.html` → `-v6.html` (cover→contain + opacity 0.75 + centered titles + height: auto fix)
+- Added `img/diagrams/casualVisitor101.png` + `regularVisitor101.png` (Della-uploaded)
+
+**Verification:** Playwright Python in sandbox at 343 and 393 viewports for every round. Della re-tested on real iPhone after every push. Round-5 fix verified via `getBoundingClientRect` measurement showing all three IMG elements at identical 69.66 × 73.53 dimensions, all bottom-aligned at y=163.31.
+
+**Key lesson — captured to `responsive-audit/references/fix-patterns-content.md` Pattern 9:**
+
+Desktop Chrome devtools mobile emulation can mask iOS WebKit CSS priority quirks. The Tabbed phone bug was invisible at 343 viewport width in devtools but visible at 393 on real iOS. Burned ~4 rounds chasing a non-existent "iOS browser cache" hypothesis (bumping cache-busters, renaming files v5→v6) before measuring actual element box dimensions on the real device. Root cause was `height: 100%` + inherited `aspect-ratio: 180/190` on the IMG, where iOS Safari resolves the conflict differently than desktop Chrome — making the IMG element height a function of parent padding instead of source aspect, and stretching the source to fill. Fix: replace `height: 100%` with `height: auto; aspect-ratio: 180/190` so IMG height is computed solely from width × aspect, immune to parent padding differences.
+
+`responsive-audit` skill bumped to v0.4.2; SKILL.md prerequisite-reads still cover fix-patterns-content.md so future threads inherit the lesson automatically.
+
+**Open follow-ups (not this session's scope):**
+- Regular column annotation "Where is my stuff??" was written for the old quiet-feed asset; reads slightly off-meaning against the new busy-feed `regularVisitor101.png`. Optional rewrite when Della next touches the diagram.
+- New User column still uses `assets/not10-newuser.png` (not `newUser101.png`-styled) — if Della wants stylistic consistency with the new casual/regular PNGs, a `newUser101.png` upload + swap is a future fix.
+- BUILD-LOG.md and SESSION-STATE.md are both past the 50KB / 1500-line soft threshold from global CLAUDE.md. Living-doc split deferred; not this session's scope. Flagged in Session 36 and not yet executed.
+
+---
+
