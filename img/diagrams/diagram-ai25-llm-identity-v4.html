@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Identity Explorations</title>
+<meta name="figma-source" content="node:1487:3181 page:29:42 file:TArUrZsBUocaAsqetjXq7V">
+<title>Layout Explorations — framing the answer</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -17,11 +18,10 @@
     --text-dim: rgba(224,223,228,0.2);
     --border-normal: rgba(224,223,228,0.07);
     --accent: #7FB5B0;
+    --accent-hover: #8AC4BE;
     --accent-dim: rgba(127,181,176,0.12);
-    --casual: #D4A574;
-    --resur: #C4B078;
-    --new-seg: #8A9EC4;
     --red: #C47878;
+    --reddit-orange: #EB5528;
     --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
     --glass-border: rgba(224,223,228,0.08);
     --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
@@ -41,199 +41,261 @@
     border-radius: 16px;
     overflow: hidden;
     position: relative;
+    padding: 24px 0;
   }
 
-  .title-area { padding: 48px 48px 0; }
-  .label {
-    font-size: 11px; font-weight: 500;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--accent); opacity: 0.8; margin-bottom: 8px;
-  }
-  h1 {
-    font-size: 36px; font-weight: 700;
-    color: var(--text-pri); letter-spacing: -0.025em;
-    margin-bottom: 8px; line-height: 1.15;
-  }
-  .subtitle {
-    font-size: 15px; color: var(--text-sec);
-    line-height: 1.55; max-width: 560px;
-  }
-
-  /* Grid area */
   .grid-area {
-    padding: 36px 48px 24px;
+    padding: 0 48px;
     position: relative;
   }
-  .grid-area::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 200px 150px at 30% 30%, rgba(212,165,116,0.04) 0%, transparent 70%),
-      radial-gradient(ellipse 200px 150px at 70% 70%, rgba(127,181,176,0.05) 0%, transparent 70%);
-    pointer-events: none;
+
+  /* Parent grid: 4 columns × 3 named rows (illustration / divider / content).
+     Cards span all 3 rows via subgrid so their internal rows inherit the parent's
+     row tracks. This is the Session 43 cross-column row-alignment pattern
+     (references/pipeline-diagrams-and-cross-column-alignment.md) — guarantees
+     that all 4 illustrations share row 1's height, all dividers share row 2's,
+     all content sections share row 3's, regardless of per-card content delta. */
+  /* Della 2026-05-15: dropped subgrid in favor of NOT-12-style approach.
+     All illustrations get the same height via a calc-derived height that
+     locks to the WINNER mock's intrinsic height + padding. Cards become
+     simple flex columns. Mock-frame at flex-end of illustration → bottom
+     always equals illustration bottom = card-content border-top = stroke.
+     No subgrid quirks at 2x2 / quad layout possible. */
+  .explorations-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    column-gap: 14px;
+  }
+
+  .exploration-card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    position: relative;
+    min-width: 0;
+  }
+
+  /* Illustration area at top — half-opacity stylized UI mock.
+     Della 2026-05-15: height computed from container inline-size so all
+     illustrations share the same height (column widths are equal via 1fr,
+     so 100cqi is identical across all cards). 100cqi × 0.452 = winner
+     mock's natural height (aspect 155/70), + 24 padding-top. Non-winner
+     mocks (shorter, aspect 135/45) sit at flex-end with empty space above. */
+  .illustration {
+    container-type: inline-size;
+    /* Height = mock-frame height + 24px padding-top. min() caps the cqi-based
+       portion at 230 to match mock-frame's max-width, so at very wide columns
+       illustration doesn't grow beyond what's needed for the mock. */
+    height: calc(min(100cqi, 230px) * 70 / 155 + 24px);
+    padding: 24px 0 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    opacity: 0.5;
+    overflow: hidden;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    position: relative;
     z-index: 0;
   }
 
-  .identities-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
+  .exploration-card.winner .illustration {
+    opacity: 1;
+    overflow: visible; /* let crown badge stick above the elevated container */
+  }
+
+  /* Mock frame — the visual "phone slot."
+     Della 2026-05-15: unified to winner aspect (155/70) and max-width (230)
+     across ALL cards so every mock-frame is the same size, and every mini-mock
+     inside has the same proportional margin (mini-mock is 135 wide × 45 tall
+     natural, mock-frame is 155 × 70 → mini-mock fills 87% horizontally and
+     64% vertically). For non-winners, mock-frame is invisible (no bg/border)
+     so the margin just shows canvas behind the mock. For winner, the bg + green
+     border are added on top so the margin is visibly framed. */
+  .mock-frame {
+    width: 100%;
+    max-width: 230px;
+    aspect-ratio: 155 / 70;
     position: relative;
-    z-index: 1;
+    flex-shrink: 1;
+  }
+  .exploration-card.winner .mock-frame {
+    background: var(--highest);
+    border: 1px solid var(--accent-hover);
+    border-radius: 12px;
+    box-sizing: border-box;
   }
 
-  .identity-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: var(--glass-highlight);
-    border-left: 3px solid var(--border-normal);
+  /* Mini UI mock — sized natively (135×45) then transform-scaled to fit the mock-frame.
+     Bottom-anchored and horizontally centered so the winner's mock sits flush with
+     the elevated container's bottom edge. */
+  .mini-mock {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 135px;
+    height: 45px;
+    background: #fff;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    box-shadow: 0 4px 4px rgba(0,0,0,0.25);
+    padding: 6.7px;
+    overflow: hidden;
+    transform-origin: bottom center;
+    /* All 4 mini-mocks use the SAME scale formula (winner's 155-based) so they
+       render at identical visual size at every column width. The mock-frame
+       (now winner-sized for all cards) is proportionally wider, giving every
+       mini-mock the same proportional margin inside its frame. */
+    transform: translateX(-50%) scale(calc(min(100cqi, 230px) / 155px));
+  }
+  .mini-mock-inner {
+    background: #fff;
+    border: 0.5px solid var(--reddit-orange);
+    border-radius: 5.7px;
+    padding: 5.7px 5.7px 1.5px;
     display: flex;
-    gap: 14px;
-    align-items: flex-start;
+    flex-direction: column;
+    gap: 5.7px;
+    width: 100%;
   }
-
-  .identity-card.character { border-left-color: var(--casual); }
-  .identity-card.tool { border-left-color: var(--new-seg); }
-  .identity-card.omnipresent {
-    border-left-color: var(--accent);
-    border: 1.5px solid rgba(127,181,176,0.2);
-    border-left: 3px solid var(--accent);
-    background: linear-gradient(135deg, rgba(127,181,176,0.06) 0%, rgba(224,223,228,0.015) 100%);
-  }
-  .identity-card.none {
-    border-left-color: var(--text-dim);
-    opacity: 0.6;
-  }
-
-  /* Icon containers — visual illustrations */
-  .id-icon-area {
-    width: 56px; height: 56px;
-    border-radius: 10px;
+  .mini-mock-header {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    gap: 1.4px;
+    align-items: center; /* Della 2026-05-15: icon vertically centered with title text */
+  }
+  .mini-mock-snoo {
+    width: 8.8px;
+    height: 8px;
     flex-shrink: 0;
-    background: rgba(224,223,228,0.02);
-    border: 1px solid rgba(224,223,228,0.05);
+    display: block;
   }
-  .identity-card.character .id-icon-area {
-    background: rgba(212,165,116,0.04);
-    border-color: rgba(212,165,116,0.1);
+  .mini-mock-title {
+    font-size: 5.5px; /* Della 2026-05-15: shrink slightly so "Dewy setting spray discussions" fits on one row */
+    font-weight: 600;
+    color: #0A0C16;
+    line-height: 1.1;
+    letter-spacing: 0.07px;
+    white-space: nowrap; /* never wrap to 2 lines — long titles clip at mock edge if needed */
+    overflow: hidden;
+    text-overflow: clip;
   }
-  .identity-card.tool .id-icon-area {
-    background: rgba(138,158,196,0.04);
-    border-color: rgba(138,158,196,0.1);
+  .mini-mock-body {
+    opacity: 0.8;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8px;
+    color: #343B40;
   }
-  .identity-card.omnipresent .id-icon-area {
-    background: rgba(127,181,176,0.06);
-    border-color: rgba(127,181,176,0.15);
+  .mini-mock-body p {
+    font-size: 5.3px;
+    line-height: 7.2px;
+    font-weight: 400;
+  }
+  .mini-mock-body ul {
+    list-style: none;
+    padding-left: 8px;
+  }
+  .mini-mock-body li {
+    font-size: 5.3px;
+    line-height: 7.2px;
+    font-weight: 600;
+    position: relative;
+  }
+  .mini-mock-body li::before {
+    content: '•';
+    position: absolute;
+    left: -6px;
+  }
+  .mini-mock-body li span {
+    font-weight: 400;
   }
 
-  .id-text {
-    flex: 1;
-    min-width: 0;
+  /* Winner crown badge — anchored to upper-left corner of the elevated container */
+  .crown-badge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateY(-50%);
+    background: var(--accent);
+    border: 1px solid var(--accent-hover);
+    border-radius: 999px;
+    padding: 5px 14px 5px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.88px;
+    text-transform: uppercase;
+    color: var(--canvas);
+    z-index: 2;
+    white-space: nowrap;
+    line-height: 1.4;
   }
-  .identity-card { min-width: 0; }
-  .identities-grid > * { min-width: 0; }
 
-  .identity-name {
-    font-size: 14px;
+  /* Bottom content zone — heading + traits, centered under the mock.
+     border-top IS the stroke (was a separate .card-divider row — folded in
+     here so the stroke sits flush against the illustration's bottom edge,
+     no gap possible).
+     margin-top: -1px overlaps card-content by 1px into illustration's row,
+     defeating sub-pixel CSS grid row rounding that can leave a hairline gap
+     between row 1 (illustration) bottom and row 2 (card-content) top at
+     certain iframe widths. */
+  .card-content {
+    padding: 14px;
+    margin-top: -1px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+    border-top: 1px solid var(--border-normal);
+  }
+  .card-heading {
+    font-size: 12px;
     font-weight: 600;
     color: var(--text-pri);
-    margin-bottom: 4px;
+    line-height: normal;
+    white-space: nowrap;
+  }
+  .trait {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
+    max-width: 100%;
   }
-
-  .winner-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 2px 8px;
-    border-radius: 10px;
-    background: var(--accent-dim);
-    border: 1px solid rgba(127,181,176,0.15);
+  .trait-icon {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+    display: block;
+  }
+  .trait-icon.check { color: var(--accent); }
+  .trait-icon.cross { color: var(--red); }
+  .trait-text {
     font-size: 9px;
-    font-weight: 600;
-    color: var(--accent);
-    letter-spacing: 0.03em;
-  }
-
-  .identity-desc {
-    font-size: 12px;
+    line-height: 1.3;
     color: var(--text-sec);
-    line-height: 1.5;
+    min-width: 0;
   }
 
-  .identity-detail {
-    font-size: 11px;
-    color: var(--text-ter);
-    line-height: 1.45;
-    margin-top: 4px;
+  /* Ambient pulse on winner — subtle accent glow */
+  .exploration-card.winner {
+    animation: winner-glow 5s ease-in-out infinite;
+  }
+  @keyframes winner-glow {
+    0%, 100% { filter: drop-shadow(0 0 8px rgba(127,181,176,0.05)); }
+    50% { filter: drop-shadow(0 0 14px rgba(127,181,176,0.18)); }
   }
 
-  /* Callout */
-  .callout {
-    margin: 8px 48px 16px;
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(127,181,176,0.15);
-    border-radius: 10px;
-    padding: 14px 20px;
-    box-shadow: var(--glass-highlight);
-    position: relative;
-    z-index: 1;
-  }
-  .callout p {
-    font-size: 13px;
-    color: var(--text-sec);
-    line-height: 1.5;
-  }
-  .callout-emphasis {
-    color: var(--accent);
-    font-weight: 600;
-  }
-
-  /* Outcome */
-  .outcome {
-    margin: 0 48px 48px;
-    background: var(--accent-dim);
-    border-radius: 10px;
-    padding: 14px 20px;
-    display: flex; align-items: center; gap: 12px;
-  }
-  .outcome-arrow {
-    font-size: 16px; color: var(--accent);
-    opacity: 0.55; flex-shrink: 0;
-  }
-  .outcome p {
-    font-size: 13px; font-weight: 500;
-    color: var(--text-sec); line-height: 1.5;
-  }
-
-  /* SHR-05 ambient on winner card */
-  .omnipresent-glow {
-    animation: omni-ambient 5s ease-in-out infinite;
-  }
-  @keyframes omni-ambient {
-    0%, 100% { box-shadow: var(--glass-highlight), 0 0 16px rgba(127,181,176,0.06); }
-    50% { box-shadow: var(--glass-highlight), 0 0 16px rgba(127,181,176,0.12); }
-  }
-
+  /* Responsive: 4-up → 2x2 → 1col */
   @media (max-width: 680px) {
-    .title-area, .grid-area, .callout, .outcome { padding-left: 24px; padding-right: 24px; }
     body { padding: 16px; }
-    .identities-grid { gap: 12px; }
+    .grid-area { padding-left: 24px; padding-right: 24px; }
+    .explorations-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
   }
   /* Only stack on the narrowest phones */
   @media (max-width: 400px) {
-    .identities-grid { grid-template-columns: 1fr; }
+    .explorations-grid { grid-template-columns: 1fr; }
   }
+
   /* Embed mode: strip body chrome when loaded in iframe */
   body.embedded {
     padding: 0;
@@ -252,80 +314,181 @@
 <body>
   <div class="diagram">
     <div class="grid-area">
-      <div class="identities-grid">
-        <!-- Character -->
-        <div class="identity-card character">
-          <div class="id-icon-area">
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-              <circle cx="14" cy="12" r="4" stroke="rgba(212,165,116,0.4)" stroke-width="1.2" fill="none"/>
-              <circle cx="12.5" cy="11" r="1" fill="rgba(212,165,116,0.35)"/>
-              <circle cx="15.5" cy="11" r="1" fill="rgba(212,165,116,0.35)"/>
-              <path d="M12.5 14C13 14.5 15 14.5 15.5 14" stroke="rgba(212,165,116,0.3)" stroke-width="0.8" stroke-linecap="round"/>
-              <path d="M10 18C10 16 11.5 14.5 14 14.5C16.5 14.5 18 16 18 18" stroke="rgba(212,165,116,0.35)" stroke-width="1.2" stroke-linecap="round" fill="none"/>
-            </svg>
-          </div>
-          <div class="id-text">
-            <p class="identity-name">Character</p>
-            <p class="identity-desc">Snoo/Clippy-style personality</p>
-            <p class="identity-detail">Risk of novelty wearing off and not scaling across surfaces</p>
-          </div>
-        </div>
+      <div class="explorations-grid">
 
-        <!-- Tool -->
-        <div class="identity-card tool">
-          <div class="id-icon-area">
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-              <path d="M8 18L10 20L15 15" stroke="rgba(138,158,196,0.4)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M20 8L18 10L15 15" stroke="rgba(138,158,196,0.4)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-              <circle cx="22" cy="6" r="2" stroke="rgba(138,158,196,0.3)" stroke-width="1" fill="none"/>
-              <circle cx="6" cy="22" r="2" stroke="rgba(138,158,196,0.3)" stroke-width="1" fill="none"/>
-            </svg>
+        <!-- 1. Brand-centric (Chronological layout) -->
+        <article class="exploration-card">
+          <div class="illustration">
+            <div class="mock-frame">
+              <div class="mini-mock">
+                <div class="mini-mock-inner">
+                <div class="mini-mock-header">
+                  <svg class="mini-mock-snoo" viewBox="0 0 9 8" aria-hidden="true">
+                    <!-- 4-point sparkle per Figma 1487:3307 imgFrame52 -->
+                    <path d="M4.5 0.5 L5.1 3.4 L8 4 L5.1 4.6 L4.5 7.5 L3.9 4.6 L1 4 L3.9 3.4 Z" fill="#EB5528"/>
+                  </svg>
+                  <p class="mini-mock-title">What Reddit thinks</p>
+                </div>
+                <div class="mini-mock-body">
+                  <p>Highly Recommended Dewy Setting Sprays:</p>
+                  <ul>
+                    <li>Urban Decay All Nighter Extra Glow: <span>Praised for its light, dewy finish and durability.</span></li>
+                    <li>NYX Dewy Setting Spray: <span>A long-time favorite for its affordability and effectiveness, though…</span></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            </div>
           </div>
-          <div class="id-text">
-            <p class="identity-name">Tool</p>
-            <p class="identity-desc">Utility without identity</p>
-            <p class="identity-detail">Too cold — stripped the experience of warmth and community feel</p>
+          <div class="card-content">
+            <p class="card-heading">Brand-centric</p>
+            <div class="trait">
+              <svg class="trait-icon check" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="2.5,6.5 5,9 9.5,3.5"/>
+              </svg>
+              <p class="trait-text">Clear contextualization</p>
+            </div>
+            <div class="trait">
+              <svg class="trait-icon cross" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+                <line x1="3" y1="3" x2="9" y2="9"/>
+                <line x1="9" y1="3" x2="3" y2="9"/>
+              </svg>
+              <p class="trait-text">Conflates brand and UGC</p>
+            </div>
           </div>
-        </div>
+        </article>
 
-        <!-- Omnipresent — Winner -->
-        <div class="identity-card omnipresent omnipresent-glow">
-          <div class="id-icon-area">
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-              <circle cx="14" cy="14" r="8" stroke="rgba(127,181,176,0.4)" stroke-width="1.2" fill="none"/>
-              <circle cx="14" cy="14" r="5" stroke="rgba(127,181,176,0.3)" stroke-width="1" fill="none"/>
-              <circle cx="14" cy="14" r="2" fill="rgba(127,181,176,0.45)"/>
-              <path d="M14 7V5M20 14H22M14 21V23M8 14H6" stroke="rgba(127,181,176,0.3)" stroke-width="1" stroke-linecap="round"/>
-            </svg>
+        <!-- 2. Discussion focused (Nested layout) -->
+        <article class="exploration-card">
+          <div class="illustration">
+            <div class="mock-frame">
+              <div class="mini-mock">
+                <div class="mini-mock-inner">
+                <div class="mini-mock-header">
+                  <svg class="mini-mock-snoo" viewBox="0 0 9 8" aria-hidden="true">
+                    <!-- 4-point sparkle per Figma 1487:3307 imgFrame52 -->
+                    <path d="M4.5 0.5 L5.1 3.4 L8 4 L5.1 4.6 L4.5 7.5 L3.9 4.6 L1 4 L3.9 3.4 Z" fill="#EB5528"/>
+                  </svg>
+                  <p class="mini-mock-title">Dewy setting spray discussions</p>
+                </div>
+                <div class="mini-mock-body">
+                  <p>Highly Recommended Dewy Setting Sprays:</p>
+                  <ul>
+                    <li>Urban Decay All Nighter Extra Glow: <span>Praised for its light, dewy finish and durability.</span></li>
+                    <li>NYX Dewy Setting Spray: <span>A long-time favorite for its affordability and effectiveness, though…</span></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            </div>
           </div>
-          <div class="id-text">
-            <p class="identity-name">Omnipresent narrator <span class="winner-badge">Winner</span></p>
-            <p class="identity-desc">Part of the product itself</p>
-            <p class="identity-detail">Preserved scalability — the synthesis felt like Reddit, not a separate assistant</p>
+          <div class="card-content">
+            <p class="card-heading">Discussion focused</p>
+            <div class="trait">
+              <svg class="trait-icon check" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="2.5,6.5 5,9 9.5,3.5"/>
+              </svg>
+              <p class="trait-text">Shows unique value prop</p>
+            </div>
+            <div class="trait">
+              <svg class="trait-icon cross" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+                <line x1="3" y1="3" x2="9" y2="9"/>
+                <line x1="9" y1="3" x2="3" y2="9"/>
+              </svg>
+              <p class="trait-text">Buries brand context</p>
+            </div>
           </div>
-        </div>
+        </article>
 
-        <!-- No Identity -->
-        <div class="identity-card none">
-          <div class="id-icon-area">
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-              <circle cx="14" cy="14" r="8" stroke="rgba(224,223,228,0.2)" stroke-width="1" fill="none"/>
-              <path d="M9 19L19 9" stroke="rgba(224,223,228,0.15)" stroke-width="1" stroke-linecap="round"/>
-            </svg>
+        <!-- 3. User centered (Tabbed layout) — WINNER -->
+        <article class="exploration-card winner">
+          <div class="illustration">
+            <div class="mock-frame">
+              <div class="crown-badge">✓ Best fit</div>
+              <div class="mini-mock">
+                <div class="mini-mock-inner">
+                <div class="mini-mock-header">
+                  <svg class="mini-mock-snoo" viewBox="0 0 9 8" aria-hidden="true">
+                    <!-- 4-point sparkle per Figma 1487:3307 imgFrame52 -->
+                    <path d="M4.5 0.5 L5.1 3.4 L8 4 L5.1 4.6 L4.5 7.5 L3.9 4.6 L1 4 L3.9 3.4 Z" fill="#EB5528"/>
+                  </svg>
+                  <p class="mini-mock-title">What people on Reddit think</p>
+                </div>
+                <div class="mini-mock-body">
+                  <p>Highly Recommended Dewy Setting Sprays:</p>
+                  <ul>
+                    <li>Urban Decay All Nighter Extra Glow: <span>Praised for its light, dewy finish and durability.</span></li>
+                    <li>NYX Dewy Setting Spray: <span>A long-time favorite for its affordability and effectiveness, though…</span></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            </div>
           </div>
-          <div class="id-text">
-            <p class="identity-name">No identity</p>
-            <p class="identity-desc">Anonymous, invisible</p>
-            <p class="identity-detail">Users couldn&rsquo;t distinguish generated content from user content — trust failure</p>
+          <div class="card-content">
+            <p class="card-heading">User centered</p>
+            <div class="trait">
+              <svg class="trait-icon check" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="2.5,6.5 5,9 9.5,3.5"/>
+              </svg>
+              <p class="trait-text">Centers human voices</p>
+            </div>
+            <div class="trait">
+              <svg class="trait-icon check" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="2.5,6.5 5,9 9.5,3.5"/>
+              </svg>
+              <p class="trait-text">Clear contextualization</p>
+            </div>
           </div>
-        </div>
+        </article>
+
+        <!-- 4. Objectively framed (Nested layout) -->
+        <article class="exploration-card">
+          <div class="illustration">
+            <div class="mock-frame">
+              <div class="mini-mock">
+                <div class="mini-mock-inner">
+                <div class="mini-mock-header">
+                  <svg class="mini-mock-snoo" viewBox="0 0 9 8" aria-hidden="true">
+                    <!-- 4-point sparkle per Figma 1487:3307 imgFrame52 -->
+                    <path d="M4.5 0.5 L5.1 3.4 L8 4 L5.1 4.6 L4.5 7.5 L3.9 4.6 L1 4 L3.9 3.4 Z" fill="#EB5528"/>
+                  </svg>
+                  <p class="mini-mock-title">Dewy setting spray on Reddit</p>
+                </div>
+                <div class="mini-mock-body">
+                  <p>Highly Recommended Dewy Setting Sprays:</p>
+                  <ul>
+                    <li>Urban Decay All Nighter Extra Glow: <span>Praised for its light, dewy finish and durability.</span></li>
+                    <li>NYX Dewy Setting Spray: <span>A long-time favorite for its affordability and effectiveness, though…</span></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            </div>
+          </div>
+          <div class="card-content">
+            <p class="card-heading">Objectively framed</p>
+            <div class="trait">
+              <svg class="trait-icon check" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="2.5,6.5 5,9 9.5,3.5"/>
+              </svg>
+              <p class="trait-text">Clear contextualization</p>
+            </div>
+            <div class="trait">
+              <svg class="trait-icon cross" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+                <line x1="3" y1="3" x2="9" y2="9"/>
+                <line x1="9" y1="3" x2="3" y2="9"/>
+              </svg>
+              <p class="trait-text">Buries human voices</p>
+            </div>
+          </div>
+        </article>
+
       </div>
     </div>
-
   </div>
-</body>
-<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
-<!-- diagram-height-poster v2 -->
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+<!-- diagram-height-poster v1 -->
 <script>
 (function () {
   function compute() {
@@ -357,8 +520,9 @@
   window.addEventListener('resize', function () {
     requestAnimationFrame(send);
     setTimeout(send, 50);
+    setTimeout(send, 250);
+    setTimeout(send, 500);
   });
-  // Respond to parent re-measure requests (fires on any iframe-width change)
   window.addEventListener('message', function (e) {
     if (e && e.data && e.data.type === 'request-diagram-height') {
       requestAnimationFrame(send);
@@ -366,4 +530,5 @@
   });
 })();
 </script>
+</body>
 </html>
