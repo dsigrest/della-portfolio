@@ -370,6 +370,16 @@
         color: var(--text-secondary);
         line-height: 1.4;
     }
+    /* Inline variant: 15M number sits horizontally next to the label so the
+       outcome callout fills the row instead of stacking vertically. */
+    .metric.metric--inline {
+        flex-direction: row;
+        align-items: center; /* Della 2026-05-15: vertical-center 15M and label on Y axis */
+        gap: var(--spacing-md);
+        text-align: left;
+    }
+    .metric.metric--inline .metric-value { margin-bottom: 0; flex-shrink: 0; }
+    .metric.metric--inline .metric-label { text-align: left; }
     @media (max-width: 768px) {
         .metrics-callout {
             grid-template-columns: repeat(2, 1fr);

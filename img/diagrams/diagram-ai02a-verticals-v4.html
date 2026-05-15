@@ -11,7 +11,6 @@
     --canvas: #0A0C16;
     --card: #10121C;
     --elevated: #151722;
-    --highest: #1A1C28;
     --text-pri: #E0DFE4;
     --text-sec: rgba(224,223,228,0.6);
     --text-ter: rgba(224,223,228,0.4);
@@ -20,12 +19,12 @@
     --accent: #7FB5B0;
     --accent-dim: rgba(127,181,176,0.12);
     --casual: #D4A574;
-    --resur: #C4B078;
     --new-seg: #8A9EC4;
     --red: #C47878;
     --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
     --glass-border: rgba(224,223,228,0.08);
     --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   body {
@@ -40,41 +39,31 @@
     width: 760px;
     background: var(--canvas);
     border-radius: 16px;
+    padding: 24px 0;
     overflow: hidden;
     position: relative;
   }
 
-  /* Verticals area */
   .verticals-area {
-    padding: 48px;
-    position: relative;
-  }
-  .verticals-area::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 160px 160px at 17% 45%, rgba(212,165,116,0.05) 0%, transparent 70%),
-      radial-gradient(ellipse 160px 160px at 50% 45%, rgba(127,181,176,0.06) 0%, transparent 70%),
-      radial-gradient(ellipse 160px 160px at 83% 45%, rgba(138,158,196,0.06) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
+    padding: 0 48px;
+    width: 100%;
   }
 
   .verticals-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
     gap: 24px;
-    position: relative;
-    z-index: 1;
+    align-items: start;
+    width: 100%;
   }
 
   .vertical {
+    flex: 1 1 0;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: 20px 12px;
+    padding: 0 12px;
   }
 
   /* Icon containers */
@@ -85,32 +74,12 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    margin-bottom: 20px;
+    margin-bottom: 8px;
   }
-  .vertical.step-gen .vertical-icon { width: 100px; height: 100px; }
+  .vertical.step-gen .vertical-icon { width: 100px; height: 96px; }
 
-  /* SHR-05 style ambient glow — static, no breathing */
-  .vertical-icon::before {
-    content: '';
-    position: absolute;
-    inset: -8px;
-    border-radius: 50%;
-    opacity: 0.5;
-  }
-  .vertical.step-data .vertical-icon::before {
-    background: radial-gradient(circle, rgba(212,165,116,0.10) 0%, transparent 70%);
-  }
-  .vertical.step-select .vertical-icon::before {
-    background: radial-gradient(circle, rgba(127,181,176,0.10) 0%, transparent 70%);
-  }
-  .vertical.step-gen .vertical-icon::before {
-    background: radial-gradient(circle, rgba(138,158,196,0.10) 0%, transparent 70%);
-  }
-
-  /* ── DATA AUDIT: 5×3 pixel grid — canonical dancing pixel pattern ──
-     Non-sequential delays, two close brightness levels, no scale */
+  /* ── DATA AUDIT: 5×3 pixel grid — each lights up then fades, independent timing ── */
   .step-data .pixel-grid {
-    position: relative;
     display: grid;
     grid-template-columns: repeat(5, 6px);
     grid-template-rows: repeat(3, 6px);
@@ -119,33 +88,35 @@
   .step-data .px {
     width: 6px; height: 6px;
     border-radius: 1px;
-    background: rgba(212,165,116,0.4);
-    animation: pixel-dance 4s ease-in-out infinite;
+    background: var(--casual);
+    opacity: 0.2;
+    animation: pixel-blink 5s linear infinite;
   }
+  /* Sparse staggered delays — only 1–2 pixels lit at any time over 5s cycle */
   .step-data .px:nth-child(1)  { animation-delay: 0.10s; }
-  .step-data .px:nth-child(2)  { animation-delay: 0.55s; }
-  .step-data .px:nth-child(3)  { animation-delay: 0.30s; }
-  .step-data .px:nth-child(4)  { animation-delay: 0.85s; }
-  .step-data .px:nth-child(5)  { animation-delay: 0.20s; }
-  .step-data .px:nth-child(6)  { animation-delay: 0.65s; }
-  .step-data .px:nth-child(7)  { animation-delay: 0.40s; }
-  .step-data .px:nth-child(8)  { animation-delay: 0.15s; }
-  .step-data .px:nth-child(9)  { animation-delay: 0.75s; }
-  .step-data .px:nth-child(10) { animation-delay: 0.45s; }
-  .step-data .px:nth-child(11) { animation-delay: 0.05s; }
-  .step-data .px:nth-child(12) { animation-delay: 0.60s; }
-  .step-data .px:nth-child(13) { animation-delay: 0.35s; }
-  .step-data .px:nth-child(14) { animation-delay: 0.80s; }
-  .step-data .px:nth-child(15) { animation-delay: 0.25s; }
-  @keyframes pixel-dance {
-    0%, 100% { opacity: 0.35; }
-    50% { opacity: 0.7; }
+  .step-data .px:nth-child(2)  { animation-delay: 3.55s; }
+  .step-data .px:nth-child(3)  { animation-delay: 1.30s; }
+  .step-data .px:nth-child(4)  { animation-delay: 4.65s; }
+  .step-data .px:nth-child(5)  { animation-delay: 0.55s; }
+  .step-data .px:nth-child(6)  { animation-delay: 2.40s; }
+  .step-data .px:nth-child(7)  { animation-delay: 1.85s; }
+  .step-data .px:nth-child(8)  { animation-delay: 4.20s; }
+  .step-data .px:nth-child(9)  { animation-delay: 0.95s; }
+  .step-data .px:nth-child(10) { animation-delay: 3.10s; }
+  .step-data .px:nth-child(11) { animation-delay: 1.65s; }
+  .step-data .px:nth-child(12) { animation-delay: 4.45s; }
+  .step-data .px:nth-child(13) { animation-delay: 2.75s; }
+  .step-data .px:nth-child(14) { animation-delay: 0.30s; }
+  .step-data .px:nth-child(15) { animation-delay: 3.85s; }
+  @keyframes pixel-blink {
+    0% { opacity: 0.2; }
+    6% { opacity: 1; }
+    16% { opacity: 0.2; }
+    100% { opacity: 0.2; }
   }
 
-  /* ── VERTICAL SELECTION: 6 data bars — SHR-05 dancing-bar pattern ──
-     Non-sequential delays, two close brightness levels */
+  /* ── VERTICAL SELECTION: 6 data bars — each lights up then fades independently ── */
   .step-select .data-bars {
-    position: relative;
     display: flex;
     gap: 2px;
     align-items: flex-end;
@@ -154,71 +125,78 @@
   .step-select .bar {
     width: 4px;
     border-radius: 1px;
-    background: rgba(127,181,176,0.4);
-    animation: bar-dance 3.5s ease-in-out infinite;
+    background: var(--accent);
+    opacity: 0.25;
+    animation: bar-blink 4s linear infinite;
   }
-  .step-select .bar:nth-child(1) { height: 14px; animation-delay: 0.25s; }
-  .step-select .bar:nth-child(2) { height: 24px; animation-delay: 0.70s; }
-  .step-select .bar:nth-child(3) { height: 10px; animation-delay: 0.10s; }
-  .step-select .bar:nth-child(4) { height: 28px; animation-delay: 0.85s; }
-  .step-select .bar:nth-child(5) { height: 18px; animation-delay: 0.40s; }
-  .step-select .bar:nth-child(6) { height: 20px; animation-delay: 0.55s; }
-  @keyframes bar-dance {
-    0%, 100% { opacity: 0.40; }
-    50% { opacity: 0.75; }
+  /* Sequential left→right wave — differentiates from data-audit's scattered dance */
+  .step-select .bar:nth-child(1) { height: 14px; animation-delay: 0s; }
+  .step-select .bar:nth-child(2) { height: 24px; animation-delay: 0.5s; }
+  .step-select .bar:nth-child(3) { height: 10px; animation-delay: 1.0s; }
+  .step-select .bar:nth-child(4) { height: 28px; animation-delay: 1.5s; }
+  .step-select .bar:nth-child(5) { height: 18px; animation-delay: 2.0s; }
+  .step-select .bar:nth-child(6) { height: 20px; animation-delay: 2.5s; }
+  @keyframes bar-blink {
+    0% { opacity: 0.25; }
+    8% { opacity: 1; }
+    20% { opacity: 0.25; }
+    100% { opacity: 0.25; }
   }
 
-  /* ── PAGE GENERATION: regen arc — gentle ambient pulse ── */
+  /* ── PAGE GENERATION: regen arc — rotates continuously ── */
   .step-gen .regen-icon {
-    position: relative;
-    animation: regen-pulse 4s ease-in-out infinite;
+    animation: regen-rotate 6s linear infinite;
+    transform-origin: center center;
+    opacity: 0.7;
   }
-  @keyframes regen-pulse {
-    0%, 100% { opacity: 0.55; }
-    50% { opacity: 0.95; }
+  @keyframes regen-rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
   }
 
   .vertical-name {
-    font-size: 16px; font-weight: 600;
+    font-size: 16px;
+    font-weight: 600;
     color: var(--text-pri);
     letter-spacing: -0.01em;
-    margin-top: 20px;
-    margin-bottom: 6px;
+    line-height: normal;
+    margin-bottom: 4px;
   }
   .vertical-reason {
     font-size: 12px;
     color: var(--text-ter);
-    line-height: 1.45;
-    max-width: 180px;
+    line-height: 17px;
+    max-width: 160px;
+    min-height: 51px;       /* reserves 3 lines so all 3 verticals align vertically */
+    text-wrap: balance;
   }
 
-  @media (max-width: 680px) {
-    .verticals-area { padding-left: 24px; padding-right: 24px; }
-    body { padding: 16px; }
-    .verticals-grid { gap: 24px; }
-    .verticals-area::before {
-      background:
-        radial-gradient(ellipse 200px 200px at 50% 12%, rgba(212,165,116,0.05) 0%, transparent 70%),
-        radial-gradient(ellipse 200px 200px at 50% 50%, rgba(127,181,176,0.06) 0%, transparent 70%),
-        radial-gradient(ellipse 200px 200px at 50% 88%, rgba(138,158,196,0.06) 0%, transparent 70%);
-    }
-  }
-  /* Only stack on the narrowest phones */
-  @media (max-width: 400px) {
-    .verticals-grid { grid-template-columns: 1fr; gap: 24px; }
-  }
-  /* Embed mode: strip body chrome when loaded in iframe */
+  /* Embedded mode */
   body.embedded {
     padding: 0;
+    background: transparent;
     min-height: auto;
     display: block;
-    background: transparent;
     overflow: hidden;
-    align-items: initial;
   }
   body.embedded .diagram {
     width: 100%;
     border-radius: 0;
+  }
+
+  /* Mobile @ 480px */
+  @media (max-width: 480px) {
+    .verticals-area { padding: 0 16px; }
+    .verticals-grid { gap: 4px; }
+    .vertical { padding: 0 8px; }
+    .vertical-name { font-size: 11px; letter-spacing: -0.005em; text-align: left; align-self: stretch; }
+    .vertical-reason {
+      font-size: 10px;
+      line-height: 13px;
+      max-width: 100%;
+      min-height: 39px;     /* 3 lines at 13px line-height — keeps mobile aligned too */
+      text-align: left;
+    }
   }
 </style>
 </head>
@@ -236,7 +214,7 @@
             </div>
           </div>
           <div class="vertical-name">Data audit</div>
-          <div class="vertical-reason">Understand usage patterns, coverage, and experiment requirements</div>
+          <div class="vertical-reason">Usage patterns guided experiment plan &amp; requirements</div>
         </div>
 
         <!-- Step 2: Vertical selection -->
@@ -248,7 +226,7 @@
             </div>
           </div>
           <div class="vertical-name">Vertical selection</div>
-          <div class="vertical-reason">Target high-traffic verticals with strong Reddit coverage</div>
+          <div class="vertical-reason">Targeting high traffic verticals maximized coverage</div>
         </div>
 
         <!-- Step 3: Page generation -->
@@ -256,20 +234,20 @@
           <div class="vertical-icon">
             <svg class="regen-icon" width="56" height="56" viewBox="0 0 56 56" fill="none" aria-hidden="true">
               <!-- Refresh-cycle arc: ~300° open circle with arrow head -->
-              <path d="M 28 8 A 20 20 0 1 1 9.4 21" stroke="rgba(138,158,196,0.5)" stroke-width="2" fill="none" stroke-linecap="round"/>
-              <!-- Arrowhead at top-left endpoint (suggests counterclockwise regen) -->
-              <path d="M 21.5 7.5 L 28 8 L 27 14.5" stroke="rgba(138,158,196,0.5)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M 28 8 A 20 20 0 1 1 9.4 21" stroke="var(--new-seg)" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <!-- Arrowhead at top endpoint -->
+              <path d="M 21.5 7.5 L 28 8 L 27 14.5" stroke="var(--new-seg)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
           <div class="vertical-name">Page generation</div>
-          <div class="vertical-reason">Refresh pages periodically without real-time generation overhead</div>
+          <div class="vertical-reason">Static pages refreshed regularly reduced overhead</div>
         </div>
       </div>
     </div>
   </div>
-</body>
-<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
-<!-- diagram-height-poster v2 -->
+
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+<!-- diagram-height-poster v1 -->
 <script>
 (function () {
   function compute() {
@@ -302,7 +280,6 @@
     requestAnimationFrame(send);
     setTimeout(send, 50);
   });
-  // Respond to parent re-measure requests (fires on any iframe-width change)
   window.addEventListener('message', function (e) {
     if (e && e.data && e.data.type === 'request-diagram-height') {
       requestAnimationFrame(send);
@@ -310,4 +287,5 @@
   });
 })();
 </script>
+</body>
 </html>

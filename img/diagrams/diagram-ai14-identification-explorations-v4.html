@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="figma-source" content="node:1487:2129 page:29:42 file:TArUrZsBUocaAsqetjXq7V">
 <title>Identification Explorations</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
   :root {
     --canvas: #0A0C16;
     --card: #10121C;
     --elevated: #151722;
-    --highest: #1A1C28;
     --text-pri: #E0DFE4;
     --text-sec: rgba(224,223,228,0.6);
     --text-ter: rgba(224,223,228,0.4);
@@ -19,12 +19,15 @@
     --accent: #7FB5B0;
     --accent-dim: rgba(127,181,176,0.12);
     --casual: #D4A574;
-    --resur: #C4B078;
     --new-seg: #8A9EC4;
     --red: #C47878;
+    --reddit-orange: #EB5528;
+    --reddit-coral: #F88461;
+    --reddit-peach: #FFA68B;
     --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
     --glass-border: rgba(224,223,228,0.08);
     --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   body {
@@ -39,386 +42,495 @@
     width: 760px;
     background: var(--canvas);
     border-radius: 16px;
+    padding: 24px 48px;
     overflow: hidden;
     position: relative;
+    container-type: inline-size;
+    container-name: ai14;
   }
 
-  .title-area { padding: 48px 48px 0; }
-  .label {
-    font-size: 11px; font-weight: 500;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--accent); opacity: 0.8; margin-bottom: 8px;
-  }
-  h1 {
-    font-size: 36px; font-weight: 700;
-    color: var(--text-pri); letter-spacing: -0.025em;
-    margin-bottom: 8px; line-height: 1.15;
-  }
-  .subtitle {
-    font-size: 15px; color: var(--text-sec);
-    line-height: 1.55; max-width: 560px;
-  }
-
-  /* Explorations area */
-  .explorations-area {
-    padding: 40px 48px 24px;
-    position: relative;
-  }
-  .explorations-area::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse 400px 250px at 50% 40%, rgba(127,181,176,0.04) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .section-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    margin-bottom: 12px;
-    position: relative;
-    z-index: 1;
-  }
-
-  /* Viable explorations — flexible grid */
-  .viable-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-bottom: 24px;
-    position: relative;
-    z-index: 1;
-  }
-
-  .exp-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-highlight);
-    border-radius: 10px;
-    padding: 16px 12px;
-    text-align: center;
-  }
-
-  .exp-icon {
-    width: 40px; height: 40px;
-    margin: 0 auto 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .exp-name {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-pri);
-    margin-bottom: 4px;
-  }
-  .exp-desc {
-    font-size: 10px;
-    color: var(--text-ter);
-    line-height: 1.4;
-  }
-
-  /* Rejected section */
-  .rejected-area {
-    padding: 0 48px 40px;
-    position: relative;
-    z-index: 1;
-  }
-
-  .rejected-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-  }
-
-  .exp-card.rejected {
-    opacity: 0.5;
-    border-color: rgba(196,120,120,0.15);
-    position: relative;
-  }
-  .exp-card.rejected::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 15%;
-    right: 15%;
-    height: 1.5px;
-    background: var(--red);
-    opacity: 0.5;
-    transform: translateY(-50%);
-    border-radius: 1px;
-  }
-
-  .rejected-tag {
-    font-size: 9px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--red);
-    margin-top: 6px;
-  }
-
-  /* Phone mock placeholder showing the winning approach */
-  .phone-area {
-    padding: 0 48px 8px;
-    display: flex;
-    justify-content: center;
-    position: relative;
-    z-index: 1;
-  }
-
-  .phone-mock {
-    aspect-ratio: 9 / 16;
-    max-height: 280px;
-    width: 158px;
-    border-radius: 20px;
-    background: linear-gradient(135deg, rgba(127,181,176,0.06) 0%, rgba(224,223,228,0.02) 100%);
-    border: 1.5px dashed rgba(127,181,176,0.25);
-    padding: 10px;
+  .sections {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    position: relative;
+    gap: 24px;
   }
 
-  .ph-bar {
-    height: 6px;
-    display: flex;
-    justify-content: space-between;
-  }
-  .ph-time { width: 20px; height: 3px; border-radius: 2px; background: rgba(224,223,228,0.12); }
-  .ph-dots { width: 28px; height: 3px; border-radius: 2px; background: rgba(224,223,228,0.08); }
-
-  /* AI label highlight in phone */
-  .ph-ai-label {
-    padding: 6px 8px;
-    border-radius: 6px;
-    background: rgba(127,181,176,0.08);
-    border: 1px solid rgba(127,181,176,0.15);
+  /* Section divider — label flanked by horizontal lines */
+  .section-label {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 12px;
   }
-  .ph-ai-dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: rgba(127,181,176,0.4);
-  }
-  .ph-ai-text {
-    height: 3px; width: 40px; border-radius: 2px;
-    background: rgba(127,181,176,0.25);
-  }
-
-  .ph-content-line {
-    height: 2.5px; border-radius: 2px;
-    background: rgba(224,223,228,0.06);
-  }
-
-  .ph-source {
-    padding: 5px 6px;
-    border-radius: 4px;
-    background: rgba(224,223,228,0.02);
-    border: 1px solid rgba(224,223,228,0.04);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .ph-src-avatar {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: rgba(224,223,228,0.08);
-  }
-  .ph-src-text {
-    height: 2px; width: 50%; border-radius: 2px;
-    background: rgba(224,223,228,0.06);
-  }
-
-  /* Hotspot on phone */
-  .hotspot {
-    position: absolute;
-    border-radius: 4px;
-    border: 1.5px solid rgba(127,181,176,0.5);
-    background: rgba(127,181,176,0.06);
-    box-shadow: 0 0 10px rgba(127,181,176,0.08);
-    pointer-events: none;
-  }
-
-  .phone-annotation {
-    position: absolute;
-    right: -130px;
-    font-size: 10px;
-    color: var(--accent);
-    background: rgba(127,181,176,0.06);
-    border: 1px solid rgba(127,181,176,0.12);
-    border-radius: 6px;
-    padding: 5px 8px;
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .ann-line {
-    position: absolute;
-    right: -8px;
-    width: 8px;
+  .section-label::before,
+  .section-label::after {
+    content: '';
+    flex: 1 1 0;
     height: 1px;
-    background: rgba(127,181,176,0.2);
+    background: var(--accent);
+    opacity: 0.3;
+  }
+  .section-label.rejected::before,
+  .section-label.rejected::after {
+    background: var(--red);
+    opacity: 0.3;
+  }
+  .section-label-text {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .section-label.rejected .section-label-text { color: var(--red); }
+
+  /* Cards row */
+  .cards-row {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    align-items: flex-start;
   }
 
-  /* SHR-05 ambient */
-  .id-shimmer {
-    animation: shimmer-ambient 4s ease-in-out infinite;
+  .card {
+    width: 171px;
+    container-type: inline-size;
+    container-name: ai14card;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
   }
-  @keyframes shimmer-ambient {
-    0%, 100% { opacity: 0.25; }
-    50% { opacity: 0.55; }
+  .card-illo {
+    width: 171px;
+    height: 111px;
+    background: var(--canvas);
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    transform-origin: top center;
+  }
+  /* Container-query scaling: when .card is narrower than its native 171px,
+     scale the .card-illo down proportionally. Margin compensation keeps the
+     layout box matching the scaled visual size so labels below sit flush. */
+  @container ai14card (max-width: 170px) {
+    .card-illo {
+      transform: scale(calc(100cqi / 171px));
+      margin-left: calc((100cqi - 171px) / 2);
+      margin-right: calc((100cqi - 171px) / 2);
+      margin-bottom: calc((100cqi / 171px - 1) * 111px);
+    }
+  }
+  .card-label {
+    font-size: 12px;
+    color: var(--text-ter);
+    text-align: center;
+    line-height: 17px;
   }
 
-  /* Outcome */
-  .outcome {
-    margin: 16px 48px 48px;
-    background: var(--accent-dim);
-    border-radius: 10px;
-    padding: 14px 20px;
-    display: flex; align-items: center; gap: 12px;
+  /* === ICON card — 2x2 AI-themed glyphs === */
+  .illo-icons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  .outcome-arrow {
-    font-size: 16px; color: var(--accent);
-    opacity: 0.55; flex-shrink: 0;
+  .illo-icons-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 28px);
+    gap: 16px 16px;
+    padding: 8px;
   }
-  .outcome p {
-    font-size: 13px; font-weight: 500;
-    color: var(--text-sec); line-height: 1.5;
+  .illo-icons-grid svg {
+    width: 28px; height: 28px;
+    color: var(--text-sec);
+    opacity: 0.7;
   }
 
-  /* Tighten internal padding earlier so the 3-col grid keeps breathing room */
-  @media (max-width: 680px) {
-    .title-area, .explorations-area, .rejected-area, .phone-area, .outcome { padding-left: 24px; padding-right: 24px; }
-    body { padding: 16px; }
-    .phone-annotation { display: none; }
-    .exp-card { padding: 14px 8px; }
-    .exp-name { font-size: 11px; }
-    .exp-desc { font-size: 9.5px; }
+  /* === CONTAINER card — two stacked Reddit-summary cards, one with orange tint === */
+  .illo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 22px;
   }
-  /* Only collapse to a single column on the narrowest phones */
-  @media (max-width: 400px) {
-    .viable-grid { grid-template-columns: 1fr; }
-    .rejected-grid { grid-template-columns: 1fr; }
+  .illo-mini-card {
+    position: absolute;
+    width: 116px;
+    height: 64px;
+    background: #ebebeb;
+    border-radius: 6px;
+    padding: 5px;
+    overflow: hidden;
   }
-  /* Embed mode: strip body chrome when loaded in iframe */
+  .illo-mini-card.left {
+    top: 22px; left: 21px;
+    z-index: 1;
+  }
+  .illo-mini-card.right {
+    bottom: 4px; right: 19px;
+    background: #ffffff;
+    z-index: 2;
+    box-shadow: 0 3px 2px rgba(0,0,0,0.25);
+  }
+  .illo-mini-card.left .mini-inner {
+    background: rgba(235,85,40,0.09);
+    border-radius: 4px;
+    padding: 6px;
+    height: 100%;
+  }
+  .illo-mini-card.right .mini-inner {
+    padding: 5px 4px 1px;
+    height: 100%;
+  }
+  /* Container card: orange stroke is inset — outer keeps ~5px white margin */
+  .illo-container .illo-mini-card.right .mini-inner {
+    border: 1px solid var(--reddit-orange);
+    border-radius: 4px;
+  }
+  /* Typography card: strip orange-themed peach tint + stroke — plain gray/white cards.
+     Override needed because typography card has both .illo-container AND .illo-typo classes. */
+  .illo-typo .illo-mini-card.left .mini-inner { background: transparent; }
+  .illo-typo .illo-mini-card.right .mini-inner { border: none; }
+  .mini-title {
+    font-size: 5px;
+    font-weight: 600;
+    color: #0a0c16;
+    line-height: 1;
+    margin-bottom: 3px;
+  }
+  .mini-body {
+    font-size: 4px;
+    color: #343b40;
+    line-height: 1.4;
+    opacity: 0.8;
+  }
+  .mini-body b { font-weight: 600; }
+
+  /* === COLOR card — 5-step gradient strip === */
+  .illo-color {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .illo-color-strip {
+    width: 97px;
+    height: 43px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 11px;
+    display: flex;
+    flex-direction: column;
+  }
+  .illo-color-top {
+    height: 21px;
+    border: 0.5px solid rgba(252,244,228,0.5);
+    border-bottom: none;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+  .illo-color-swatches {
+    display: flex;
+    height: 22px;
+  }
+  .illo-color-swatches div { flex: 1 1 0; }
+  .swatch-1 { background: #ffffff; }
+  .swatch-2 { background: #ebd1ca; }
+  .swatch-3 { background: #f88461; }
+  .swatch-4 { background: #eb5528; }
+  .swatch-5 { background: #9c452c; }
+
+  /* === SNOO card — Steve Huffman PNG === */
+  .illo-snoo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .illo-snoo img {
+    width: 61px;
+    height: 105px;
+    object-fit: cover;
+    object-position: top;
+    margin-top: 7px;
+  }
+
+  /* === TAG card — 4 pill labels in various styles === */
+  .illo-tag {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 10px;
+  }
+  .illo-tag-grid {
+    display: grid;
+    grid-template-rows: auto auto;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .illo-tag-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+  }
+  .pill {
+    font-size: 7.9px;
+    font-weight: 600;
+    line-height: 1;
+    padding: 3.5px 5px;
+    white-space: nowrap;
+  }
+  .pill.made { background: #ffc2af; border: 1px solid #000; border-radius: 3px; color: var(--reddit-orange); }
+  .pill.generated { background: var(--reddit-peach); border: 1.5px solid var(--reddit-orange); border-radius: 24px; color: #fff; padding: 3.5px 7px; }
+  .pill.created { background: var(--reddit-orange); border-radius: 24px; color: #fff; padding: 3.5px 6px; }
+  .pill.content { color: var(--reddit-peach); border: 1px solid var(--reddit-peach); border-radius: 3px; padding: 3.5px 7px; }
+
+  /* === TYPOGRAPHY card — two stacked cards w/ different type treatments === */
+  .illo-typo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 22px;
+  }
+  .illo-typo .illo-mini-card.left .mini-title {
+    font-style: italic;
+  }
+  .illo-typo .illo-mini-card.left .mini-body {
+    font-style: italic;
+  }
+  .illo-typo .illo-mini-card.right .mini-title,
+  .illo-typo .illo-mini-card.right .mini-body {
+    font-family: 'DM Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: -0.05em;
+    color: #1f1f21;
+  }
+  .illo-typo .illo-mini-card.right .mini-title { text-transform: uppercase; letter-spacing: -0.05em; }
+  .illo-typo .illo-mini-card.right .mini-body { text-transform: none; }
+
+  /* Embed mode */
   body.embedded {
     padding: 0;
+    background: transparent;
     min-height: auto;
     display: block;
-    background: transparent;
     overflow: hidden;
-    align-items: initial;
   }
   body.embedded .diagram {
     width: 100%;
     border-radius: 0;
   }
+
+  /* Mobile — side-by-side sections per Figma 1487:2252.
+     Container query so layout responds to iframe width, not viewport.
+     Uses CSS grid + subgrid so section labels in both columns reserve the
+     same height — when VIABLE wraps to 2 lines, REJECTED reserves 2-line
+     height too, keeping the cards beneath aligned row-by-row. */
+  @container ai14 (max-width: 540px) {
+    .sections {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto 1fr;
+      column-gap: 12px;
+      row-gap: 0;
+    }
+    .sections > section {
+      display: grid;
+      grid-template-rows: subgrid;
+      grid-row: span 2;
+      min-width: 0;
+    }
+    /* Propagate min-width: 0 so the Tag card's pill min-content widths
+       don't blow past their 1fr column allocation. */
+    .cards-row { min-width: 0; }
+    .card { min-width: 0; }
+    /* Vertical divider between VIABLE and REJECTED columns */
+    .sections > section + section {
+      border-left: 1px solid var(--text-dim);
+      padding-left: 12px;
+    }
+    /* Section labels: wrap to 2 lines, drop the flanking horizontal lines */
+    .section-label::before,
+    .section-label::after { display: none; }
+    .section-label {
+      justify-content: center;
+      align-self: end;
+      margin-bottom: 12px;
+    }
+    .section-label-text {
+      white-space: normal;
+      text-align: center;
+      line-height: 1.3;
+    }
+    /* Stack cards vertically within each section column */
+    .cards-row {
+      flex-direction: column;
+      gap: 16px;
+      align-items: center;
+    }
+    /* Cards inherit container-query scaling from base CSS above.
+       Mobile only needs to constrain card width to the available column. */
+    .card {
+      width: 100%;
+      max-width: 171px;
+    }
+  }
+  /* Diagram-level padding adjusts at narrow viewports */
+  @media (max-width: 480px) {
+    .diagram { padding: 24px 12px; }
+  }
 </style>
 </head>
 <body>
   <div class="diagram">
-    <div class="explorations-area">
-      <div class="section-label">Viable approaches</div>
-      <div class="viable-grid">
-        <div class="exp-card">
-          <div class="exp-icon">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-              <circle cx="14" cy="20" r="6" stroke="rgba(127,181,176,0.35)" stroke-width="1" fill="rgba(127,181,176,0.05)"/>
-              <circle cx="26" cy="20" r="6" stroke="rgba(127,181,176,0.3)" stroke-width="1" fill="rgba(127,181,176,0.04)"/>
-              <line x1="20" y1="12" x2="20" y2="28" stroke="rgba(127,181,176,0.15)" stroke-width="0.6"/>
-            </svg>
-          </div>
-          <div class="exp-name">Icons</div>
-          <div class="exp-desc">Robot, brain, circuit variants</div>
-        </div>
+    <div class="sections">
 
-        <div class="exp-card">
-          <div class="exp-icon">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-              <rect x="8" y="8" width="24" height="24" rx="4" stroke="rgba(127,181,176,0.35)" stroke-width="1.2" fill="rgba(127,181,176,0.03)"/>
-              <line class="id-shimmer" x1="12" y1="14" x2="28" y2="14" stroke="rgba(127,181,176,0.25)" stroke-width="1" stroke-linecap="round"/>
-              <line class="id-shimmer" x1="12" y1="20" x2="26" y2="20" stroke="rgba(127,181,176,0.2)" stroke-width="1" stroke-linecap="round" style="animation-delay: 0.3s;"/>
-              <line class="id-shimmer" x1="12" y1="26" x2="20" y2="26" stroke="rgba(127,181,176,0.15)" stroke-width="1" stroke-linecap="round" style="animation-delay: 0.6s;"/>
-            </svg>
-          </div>
-          <div class="exp-name">Containers</div>
-          <div class="exp-desc">Stroke or surface treatment around generated content</div>
+      <!-- ===== VIABLE ===== -->
+      <section>
+        <div class="section-label">
+          <span class="section-label-text">VIABLE APPROACHES</span>
         </div>
+        <div class="cards-row">
 
-        <div class="exp-card">
-          <div class="exp-icon">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-              <rect x="6" y="12" width="13" height="16" rx="3" fill="rgba(224,223,228,0.06)" stroke="rgba(224,223,228,0.18)" stroke-width="0.8"/>
-              <rect x="21" y="12" width="13" height="16" rx="3" fill="rgba(127,181,176,0.18)" stroke="rgba(127,181,176,0.4)" stroke-width="0.8"/>
-              <line x1="9" y1="18" x2="16" y2="18" stroke="rgba(224,223,228,0.18)" stroke-width="0.8" stroke-linecap="round"/>
-              <line x1="9" y1="22" x2="14" y2="22" stroke="rgba(224,223,228,0.14)" stroke-width="0.8" stroke-linecap="round"/>
-              <line x1="24" y1="18" x2="31" y2="18" stroke="rgba(127,181,176,0.5)" stroke-width="0.8" stroke-linecap="round"/>
-              <line x1="24" y1="22" x2="29" y2="22" stroke="rgba(127,181,176,0.4)" stroke-width="0.8" stroke-linecap="round"/>
-            </svg>
+          <!-- Icon -->
+          <div class="card">
+            <div class="card-illo illo-icons">
+              <div class="illo-icons-grid">
+                <!-- Brain -->
+                <svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 6 C10 6 7 9 7 13 C7 15 8 17 9 18 C9 21 12 22 14 22 C16 22 19 21 19 18 C20 17 21 15 21 13 C21 9 18 6 14 6 Z"/>
+                  <path d="M14 6 L14 22 M10 11 L18 11 M10 16 L18 16"/>
+                </svg>
+                <!-- Lightbulb -->
+                <svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 4 C10 4 7 7 7 11 C7 13 8 15 10 17 L10 19 L18 19 L18 17 C20 15 21 13 21 11 C21 7 18 4 14 4 Z"/>
+                  <line x1="11" y1="22" x2="17" y2="22"/>
+                  <line x1="12" y1="25" x2="16" y2="25"/>
+                </svg>
+                <!-- Robot -->
+                <svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="6" y="9" width="16" height="13" rx="2"/>
+                  <line x1="14" y1="5" x2="14" y2="9"/>
+                  <circle cx="14" cy="4" r="1.2"/>
+                  <circle cx="10.5" cy="14" r="1.5" fill="currentColor"/>
+                  <circle cx="17.5" cy="14" r="1.5" fill="currentColor"/>
+                  <line x1="11" y1="18" x2="17" y2="18"/>
+                </svg>
+                <!-- Sparkle -->
+                <svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round">
+                  <path d="M14 4 L16 12 L24 14 L16 16 L14 24 L12 16 L4 14 L12 12 Z" fill="currentColor" fill-opacity="0.15"/>
+                </svg>
+              </div>
+            </div>
+            <div class="card-label">Icon</div>
           </div>
-          <div class="exp-name">Color</div>
-          <div class="exp-desc">Subtle color signal to distinguish generated content from user content</div>
+
+          <!-- Container -->
+          <div class="card">
+            <div class="card-illo illo-container">
+              <div class="illo-mini-card left">
+                <div class="mini-inner">
+                  <div class="mini-title">Dewy setting spray on Reddit</div>
+                  <div class="mini-body">Highly Recommended Dewy Setting Sprays:</div>
+                  <div class="mini-body" style="margin-top:2px"><b>• Urban Decay All Nighter:</b> Praised for light dewy finish.</div>
+                  <div class="mini-body" style="margin-top:2px"><b>• NYX Dewy Setting Spray:</b> A long-time favorite&hellip;</div>
+                </div>
+              </div>
+              <div class="illo-mini-card right">
+                <div class="mini-inner">
+                  <div class="mini-title">Dewy setting spray on Reddit</div>
+                  <div class="mini-body">Highly Recommended Dewy Setting Sprays:</div>
+                  <div class="mini-body" style="margin-top:2px"><b>• Urban Decay All Nighter:</b> Praised for light dewy finish.</div>
+                  <div class="mini-body" style="margin-top:2px"><b>• NYX Dewy Setting Spray:</b> A long-time favorite&hellip;</div>
+                </div>
+              </div>
+            </div>
+            <div class="card-label">Container</div>
+          </div>
+
+          <!-- Color -->
+          <div class="card">
+            <div class="card-illo illo-color">
+              <div class="illo-color-strip">
+                <div class="illo-color-top"></div>
+                <div class="illo-color-swatches">
+                  <div class="swatch-1"></div>
+                  <div class="swatch-2"></div>
+                  <div class="swatch-3"></div>
+                  <div class="swatch-4"></div>
+                  <div class="swatch-5"></div>
+                </div>
+              </div>
+            </div>
+            <div class="card-label">Color</div>
+          </div>
+
         </div>
-      </div>
+      </section>
+
+      <!-- ===== REJECTED ===== -->
+      <section>
+        <div class="section-label rejected">
+          <span class="section-label-text">REJECTED</span>
+        </div>
+        <div class="cards-row">
+
+          <!-- Snoo -->
+          <div class="card">
+            <div class="card-illo illo-snoo">
+              <img src="assets/snoo_alphachannel.png" alt="Reddit Snoo character" />
+            </div>
+            <div class="card-label">Snoo</div>
+          </div>
+
+          <!-- Tag -->
+          <div class="card">
+            <div class="card-illo illo-tag">
+              <div class="illo-tag-grid">
+                <div class="illo-tag-row">
+                  <span class="pill made">Made with AI</span>
+                  <span class="pill generated">AI GENERATED</span>
+                </div>
+                <div class="illo-tag-row">
+                  <span class="pill created">Created with AI</span>
+                  <span class="pill content">AI content</span>
+                </div>
+              </div>
+            </div>
+            <div class="card-label">Tag</div>
+          </div>
+
+          <!-- Typography -->
+          <div class="card">
+            <div class="card-illo illo-container illo-typo">
+              <div class="illo-mini-card left">
+                <div class="mini-inner">
+                  <div class="mini-title">What Reddit thinks</div>
+                  <div class="mini-body">Highly Recommended Dewy Setting Sprays:</div>
+                  <div class="mini-body" style="margin-top:2px"><b>• Urban Decay All Nighter:</b> Praised for light dewy finish.</div>
+                  <div class="mini-body" style="margin-top:2px"><b>• NYX Dewy Setting Spray:</b> A long-time favorite&hellip;</div>
+                </div>
+              </div>
+              <div class="illo-mini-card right">
+                <div class="mini-inner">
+                  <div class="mini-title">WHAT REDDIT THINKS</div>
+                  <div class="mini-body">Highly Recommended Dewy Setting Sprays:</div>
+                  <div class="mini-body" style="margin-top:2px"><b>• Urban Decay All Nighter:</b> Praised for light dewy finish.</div>
+                  <div class="mini-body" style="margin-top:2px"><b>• NYX Dewy Setting Spray:</b> A long-time favorite&hellip;</div>
+                </div>
+              </div>
+            </div>
+            <div class="card-label">Typography</div>
+          </div>
+
+        </div>
+      </section>
+
     </div>
-
-    <div class="rejected-area">
-      <div class="section-label" style="color: var(--red); opacity: 0.5;">Rejected</div>
-      <div class="rejected-grid">
-        <div class="exp-card rejected">
-          <div class="exp-icon">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-              <circle cx="20" cy="16" r="6" stroke="rgba(196,120,120,0.3)" stroke-width="1" fill="none"/>
-              <path d="M12 34 c0-4.42 3.58-8 8-8s8 3.58 8 8" stroke="rgba(196,120,120,0.25)" stroke-width="1" fill="none"/>
-              <circle cx="15" cy="10" r="1.5" fill="rgba(196,120,120,0.2)"/>
-              <circle cx="25" cy="10" r="1.5" fill="rgba(196,120,120,0.2)"/>
-            </svg>
-          </div>
-          <div class="exp-name">Snoo character</div>
-          <div class="exp-desc">Talking Snoo head — too playful for the context</div>
-          <div class="rejected-tag">Rejected</div>
-        </div>
-
-        <div class="exp-card rejected">
-          <div class="exp-icon">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-              <rect x="8" y="15" width="24" height="10" rx="5" stroke="rgba(196,120,120,0.3)" stroke-width="1" fill="rgba(196,120,120,0.04)"/>
-              <text x="20" y="23" text-anchor="middle" font-size="8" font-weight="600" font-family="Inter" fill="rgba(196,120,120,0.4)">AI</text>
-            </svg>
-          </div>
-          <div class="exp-name">Tag</div>
-          <div class="exp-desc">&ldquo;AI&rdquo; label near generated content &mdash; clear, but too visually heavy for repeated use</div>
-          <div class="rejected-tag">Rejected</div>
-        </div>
-
-        <div class="exp-card rejected">
-          <div class="exp-icon">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-              <line x1="8" y1="14" x2="32" y2="14" stroke="rgba(196,120,120,0.2)" stroke-width="1"/>
-              <line x1="8" y1="20" x2="28" y2="20" stroke="rgba(196,120,120,0.15)" stroke-width="1"/>
-              <text x="20" y="30" text-anchor="middle" font-size="7" font-family="Inter" fill="rgba(196,120,120,0.35)" font-style="italic">AI Summary</text>
-            </svg>
-          </div>
-          <div class="exp-name">Text treatment</div>
-          <div class="exp-desc">Font, color, or size variation alone &mdash; too subtle to establish a reusable pattern</div>
-          <div class="rejected-tag">Rejected</div>
-        </div>
-      </div>
-    </div>
-
   </div>
-</body>
-<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
-<!-- diagram-height-poster v2 -->
+
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+<!-- diagram-height-poster v1 -->
 <script>
 (function () {
   function compute() {
@@ -451,7 +563,6 @@
     requestAnimationFrame(send);
     setTimeout(send, 50);
   });
-  // Respond to parent re-measure requests (fires on any iframe-width change)
   window.addEventListener('message', function (e) {
     if (e && e.data && e.data.type === 'request-diagram-height') {
       requestAnimationFrame(send);
@@ -459,4 +570,5 @@
   });
 })();
 </script>
+</body>
 </html>

@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="figma-source" content="node:384:2 page:29:42 file:TArUrZsBUocaAsqetjXq7V">
 <title>Evaluation Matrix</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
@@ -102,6 +103,11 @@
     text-align: center;
   }
   .matrix-header-cell:first-child {
+    /* Della 2026-05-15: visual-align PARAMETER's "P" glyph with the row labels'
+       leftmost letter. Both cells have padding-left: 16px but letter-spaced
+       uppercase at 10px renders ~2-3px right of mixed-case 12px text at the
+       same padding. Reducing padding-left + text-indent compensates. */
+    padding-left: 18px;  /* Della 2026-05-15: +4px left margin */
     text-align: left;
     color: var(--accent);
   }
@@ -119,9 +125,10 @@
   .matrix-row:last-child { border-bottom: none; }
 
   .matrix-param {
-    padding: 12px 14px;
+    padding: 12px 12px 12px 20px;  /* Della 2026-05-15: +4px left margin (was 16, now 20) */
     display: flex;
     flex-direction: column;
+    justify-content: center; /* Figma items-start + justify-center → vertical center */
     gap: 1px;
   }
   .param-name {
@@ -263,11 +270,15 @@
     .matrix-area { padding: 24px 18px; }
     .matrix-header,
     .matrix-row { grid-template-columns: 110px repeat(4, 1fr); }
-    .matrix-param { padding: 10px 8px; }
+    .matrix-param { padding: 10px 8px 10px 12px; }  /* +4px left */
     .param-name { font-size: 11px; }
     .param-desc { font-size: 10px; }
     .matrix-score { padding: 10px 4px; gap: 4px; }
     .matrix-header-cell { padding: 12px 4px; font-size: 9px; letter-spacing: 0.05em; }
+    /* Della 2026-05-15: keep PARAMETER's padding-left in lockstep with .matrix-param
+       at every breakpoint so they stay visually X-aligned. -2px compensation for the
+       letter-spacing visual offset (smaller at narrower widths but still in same direction). */
+    .matrix-header-cell:first-child { padding-left: 10px; }
     .score-label { display: none; }
     .score-dot { width: 7px; height: 7px; }
     .score-indicator { gap: 2px; }
@@ -277,11 +288,12 @@
     .matrix-area { padding: 18px 12px; }
     .matrix-header,
     .matrix-row { grid-template-columns: 90px repeat(4, 1fr); }
-    .matrix-param { padding: 8px 6px; }
+    .matrix-param { padding: 8px 6px 8px 10px; }  /* +4px left */
     .param-name { font-size: 10px; line-height: 1.25; }
     .param-desc { font-size: 9px; }
     .matrix-score { padding: 8px 2px; }
     .matrix-header-cell { font-size: 8px; padding: 10px 2px; letter-spacing: 0.03em; }
+    .matrix-header-cell:first-child { padding-left: 8px; }
     .score-dot { width: 6px; height: 6px; }
     .legend-label { font-size: 9px; }
   }
@@ -289,8 +301,9 @@
     .matrix-area { padding: 14px 8px; }
     .matrix-header,
     .matrix-row { grid-template-columns: 78px repeat(4, 1fr); }
-    .matrix-param { padding: 7px 4px; }
+    .matrix-param { padding: 7px 4px 7px 8px; }  /* +4px left */
     .matrix-header-cell { font-size: 7px; padding: 8px 1px; }
+    .matrix-header-cell:first-child { padding-left: 6px; }
     .param-name { font-size: 9px; }
     .param-desc { font-size: 8px; }
   }
@@ -469,7 +482,7 @@
         <div class="matrix-row">
           <div class="matrix-param">
             <div class="param-name">Tone</div>
-            <div class="param-desc">Human, not mechanical</div>
+            <div class="param-desc">Like a friend — not cold</div>
           </div>
           <div class="matrix-score">
             <div class="score-indicator">
@@ -556,8 +569,8 @@
     </div>
   </div>
 </body>
-<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
-<!-- diagram-height-poster v2 -->
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+<!-- diagram-height-poster v1 -->
 <script>
 (function () {
   function compute() {

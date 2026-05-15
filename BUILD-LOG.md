@@ -1,8 +1,40 @@
 # Build Log — Della Sigrest Portfolio
 
 **Started:** March 12, 2026
-**Last updated:** May 10, 2026
+**Last updated:** May 15, 2026
 **Status:** Active
+
+## 2026-05-15 — case-ai polish: feedback iteration + figma-to-html v2.12.0
+
+Closed the case-ai feedback-iteration scope started 2026-05-13. Della walked through every section of `case-ai.html` and flagged visual/scaling issues across all 13 diagrams + the outcome callout. All 7 rounds of feedback addressed.
+
+**Diagrams touched (23 files modified):**
+- `case-ai.html` — Option A integration of "Brand on identification, Legal on attribution, Design Systems on scale" into Section 5 paragraph; standalone "Partnered with:" callout removed; line 194 deduplicated; outcome metric callout converted to horizontal layout via new `.metric--inline` modifier in `styles.css`; iframe order matches Figma narrative; cache buster sweep `?v=2026-05-15-12`; `data-diagram="ai-page-ia"` and `data-diagram="ai-10"` converted from `diagram-pair` back to single `diagram-embed` (single responsive HTML).
+- `diagram-ai-page-ia-v1.html` — rebuilt as single responsive file with `object-fit: cover` + `object-position: 50% 50.74%` for stable phone crop; container queries replace media queries.
+- `diagram-ai-identification-precedent-v1.html` — rebuilt verbatim against ai20-threaded-posts structure (asymmetric padding on `.diagram`, `gap: 32px` on `.row`, no `padding-left` on `.row`) + object-fit/position crop.
+- `diagram-ai20-threaded-posts-v4.html` — annotations flex with `min-width: 0; max-width: 276` so text wraps cleanly at narrow widths.
+- `diagram-ai10-failure-state-v4.html` — full rebuild from new Figma nodes `1513:361` (desktop) and `1513:246` (mobile), now single responsive file matching ai-overview pattern (`flex-direction: row-reverse` mirror trick, aspect 1158/2532 matching `ui-source-posts.png` and `ui-reddit-answers-mobile.png` natively). `.pill` `white-space: nowrap` removed so BELOW THRESHOLD / ABOVE THRESHOLD wrap to 2 lines.
+- `diagram-ai13-transparency-framework-v4.html` — `.diagram` `background` changed from `var(--card)` to `transparent` so the Identification/Content/Quality trio sits directly on canvas.
+- `diagram-ai14-identification-explorations-v4.html` — container card orange stroke moved from outer to `.illo-container .illo-mini-card.right .mini-inner` (inset stroke per Figma); typography card stripped of orange treatment; mobile changed from 480px stacking to side-by-side sections via container query + subgrid; `min-width: 0` chain on `.sections > section`, `.cards-row`, `.card`; container-query transform-scale on `.card-illo` so mini-mocks scale proportionally with column width.
+- `diagram-ai09-dual-user-framework-v4.html` — converted from flex to CSS grid + subgrid for row alignment across HUMANS/BOTH/GOOGLEBOT columns; hand-coded `<br>` in every title + body to force consistent 2-line layout regardless of column width.
+- `diagram-ai06-evaluation-matrix-v4.html` — `.matrix-header-cell:first-child` padding tuned with 4 breakpoints (18 / 10 / 8 / 6 px) to track `.matrix-param`'s shrinking padding (20 / 12 / 10 / 8) at each viewport, with -2px visual offset to compensate for letter-spaced uppercase rendering vs mixed case.
+- `diagram-ai25-llm-identity-v4.html` — **biggest refactor of the session.** Replaced subgrid (which broke at 2×2 quad layout due to implicit-row issue) with aspect-driven height via `calc(min(100cqi, 230px) * 70 / 155 + 24px)`. Unified all mock-frames to aspect 155/70 + max-width 230 (winner's dimensions) so every mini-mock has identical visual size + identical proportional margin inside its frame. Non-winner mock-frames transparent → margin shows canvas; winner adds bg + green border so margin is visibly framed. Mini-mock title `white-space: nowrap` + font 5.5px so all titles render on 1 line. `.mini-mock-header` `align-items: center` so sparkle icon vertically centered with title. Sparkle SVG replaces 3-circle face icon (matches Figma `imgFrame52`). `margin-top: -1px` on `.card-content` defeats sub-pixel grid row rounding gap. Resize handler hardened with extra `setTimeout(send, 250)` and `setTimeout(send, 500)` retries to prevent height-preservation issue on narrow → wide scaling.
+- `diagram-ai12-unified-feedback-v4.html` + mobile — spoke icon stroke opacities bumped from 0.55/0.4/0.3 → 0.9/0.7/0.55 and fills 0.05 → 0.12 per Figma 1481:210 update.
+- Various others (ai02a, ai23, ai-overview) inherited cache-buster changes only.
+
+**Lessons captured into `Skills/figma-to-html/references/`:**
+- **New file** `responsive-mock-scaling.md` — 7 patterns from case-ai polish: container queries + transform-scale for HTML mocks; **critical** `scale()` unitless-number rule (`100cqi / 171px` not `100cqi / 171`); unified frame geometry for cross-card consistency; subgrid + implicit rows breaks at 2×2 layouts (use aspect-driven height instead); `margin-top: -1px` for sub-pixel grid row rounding; `container-type` + `fit-content` conflict gotcha; iframe-height resize hardening with 3 setTimeout retries.
+- **Appended** to `pipeline-diagrams-and-cross-column-alignment.md` — Section 6 covers subgrid generalization to N-card grids AND the implicit-row gotcha.
+- **Skill bumped** `figma-to-html` 2.11.0 → 2.12.0. New reference wired into Step 0 mandatory reads (loads when diagram has HTML-rendered mock cards needing responsive scaling).
+
+**Open items (closed):**
+- ✅ ai25 filename rename — DEFERRED. Filename stays `diagram-ai25-llm-identity-v4.html` despite content being layout explorations. Will rename in a future cleanup pass.
+- ✅ AI-30 PNG (now `ui-answers-composition.png`) — exported by Della, lives at `img/diagrams/assets/`. ai-page-ia references it correctly.
+- ✅ 4 untracked sharing-scope files — NOT committed on this branch (per predecessor's plan). Stay in working tree for case-sharing scope.
+
+**Architecture follow-up queued (not this scope):** consolidate remaining `diagram-pair` files in case-ai (ai-overview, ai-identification-precedent, ai-23, ai-06, ai-12) to single responsive HTML, per Della's "one source of truth" preference. ai-page-ia and ai-10 already consolidated in this session.
+
+**Voice + audit gates:** voice-check.py PASS on case-ai.html (only nav-noise warnings). `audit-diagram.sh` PASS on every modified diagram throughout the session.
 
 ## Project context
 
