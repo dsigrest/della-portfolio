@@ -9,9 +9,11 @@
 <style>
   :root {
     --canvas: #0A0C16;
-    --cool-teal: #7FB5B0;
-    --text-primary: #E0DFE4;
-    --text-tertiary: rgba(224,223,228,0.4);
+    --card: #10121C;
+    --accent: #7FB5B0;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -30,17 +32,17 @@
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    gap: 14px;
+    gap: 16px;
   }
 
   .eyebrow {
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.88px;
-    color: var(--cool-teal);
+    color: var(--accent);
     text-transform: uppercase;
     line-height: 1.4;
-    padding-left: 3px;
+    text-align: center;
   }
 
   /* Embedded UI screenshot — CSS-cropped, max 205px wide, centered */
@@ -88,7 +90,7 @@
     align-items: center;
     justify-content: center;
     margin-top: 1px;
-    color: var(--cool-teal);
+    color: var(--accent);
   }
   .annotation .ann-icon svg { display: block; }
   .ann-content {
@@ -101,13 +103,13 @@
   .ann-heading {
     font-size: 11px;
     font-weight: 600;
-    color: var(--text-primary);
+    color: var(--text-pri);
     line-height: normal;
   }
   .ann-desc {
     font-size: 10px;
     font-weight: 400;
-    color: var(--text-tertiary);
+    color: var(--text-ter);
     line-height: 1.4;
   }
 
@@ -144,7 +146,7 @@
         </span>
         <div class="ann-content">
           <div class="ann-heading">Visual separation</div>
-          <div class="ann-desc">Stroke, icon, and color distinguish generated content</div>
+          <div class="ann-desc">Stroke, icon, and color treatment clearly distinguish generated content</div>
         </div>
       </div>
 
@@ -156,7 +158,7 @@
         </span>
         <div class="ann-content">
           <div class="ann-heading">Linked attribution</div>
-          <div class="ann-desc">Users can quickly inspect the source discussions behind the answer</div>
+          <div class="ann-desc">Users can quickly see and explore source content</div>
         </div>
       </div>
 
@@ -168,7 +170,7 @@
         </span>
         <div class="ann-content">
           <div class="ann-heading">Truncated container</div>
-          <div class="ann-desc">Gives users an immediate answer without burying source material</div>
+          <div class="ann-desc">Balances providing users an immediate answer without burying critical source posts</div>
         </div>
       </div>
 
@@ -180,15 +182,15 @@
         </span>
         <div class="ann-content">
           <div class="ann-heading">Feedback unit</div>
-          <div class="ann-desc">Lets users evaluate usefulness and generation quality</div>
+          <div class="ann-desc">Provides user control and generation quality</div>
         </div>
       </div>
     </div>
 
   </div>
 
-<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
-<!-- diagram-height-poster v2 -->
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+<!-- diagram-height-poster v1 -->
 <script>
 (function () {
   function compute() {

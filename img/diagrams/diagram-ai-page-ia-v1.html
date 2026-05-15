@@ -3,12 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="figma-source" content="node:230:2 page:29:42 file:TArUrZsBUocaAsqetjXq7V">
-<title>Page Information Architecture</title>
+<meta name="figma-source" content="node:1481:751 page:29:42 file:TArUrZsBUocaAsqetjXq7V">
+<title>Reddit Answers — Result Composition</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
     --text-pri: #E0DFE4;
     --text-sec: rgba(224,223,228,0.6);
     --text-ter: rgba(224,223,228,0.4);
@@ -18,6 +20,11 @@
     --accent-dim: rgba(127,181,176,0.12);
     --casual: #D4A574;
     --new-seg: #8A9EC4;
+    --red: #C47878;
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   body {
@@ -32,301 +39,200 @@
     width: 760px;
     background: var(--canvas);
     border-radius: 16px;
+    padding: 24px 0;
     overflow: hidden;
     position: relative;
+    container-type: inline-size;
+    container-name: aiPageIa;
   }
 
-  /* Mock area: phone left, annotations right */
-  .mock-area {
-    padding: 36px 48px 24px;
+  .ai30-wrap {
+    padding: 0 48px;
     display: flex;
-    gap: 32px;
-    align-items: flex-start;
-    position: relative;
-  }
-  .mock-area::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse 280px 220px at 22% 50%, rgba(127,181,176,0.04) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
+    align-items: center;
+    width: 100%;
   }
 
-  /* Phone mock — dashed teal border */
+  .ai30-row {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding-left: 120px; /* per Figma pl-120 */
+  }
+
+  /* Phone mock — fixed 220px (matches diagram-ai-identification-precedent
+     pattern: fixed-width image + fixed-width annotations, no flex shrinking
+     that produces the mid-width dead zone). */
   .phone-mock {
-    width: 200px;
-    background: rgba(127,181,176,0.04);
-    border: 1.5px dashed rgba(127,181,176,0.25);
-    border-radius: 20px;
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    position: relative;
-    z-index: 1;
+    width: 220px;
     flex-shrink: 0;
-  }
-
-  /* Status bar */
-  .ph-status {
-    width: 176px;
-    height: 17px;
-    background: rgba(224,223,228,0.1);
-    border-radius: 100px;
-    flex-shrink: 0;
-  }
-
-  /* Post — base */
-  .ph-post {
-    width: 176px;
-    padding: 8px;
-    border-radius: 6px;
-    background: rgba(224,223,228,0.02);
-    border: 1.5px solid;
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-  }
-
-  /* Search bar variant — teal */
-  .ph-post.search-bar {
-    border-color: rgba(127,181,176,0.5);
-    box-shadow: 0 0 10px rgba(127,181,176,0.08);
-    height: 50px;
-    gap: 4px;
-  }
-
-  /* Source-post variant — casual */
-  .ph-post.source {
-    border-color: rgba(212,165,116,0.3);
-    box-shadow: 0 0 10px rgba(212,165,116,0.06);
-    height: 93px;
-  }
-
-  /* Lines */
-  .ph-line {
-    height: 2px;
-    border-radius: 1px;
-    background: rgba(224,223,228,0.05);
-    flex-shrink: 0;
-  }
-  .ph-line.title {
-    width: 35px;
-    background: rgba(224,223,228,0.1);
-  }
-  .ph-line.long { width: 140px; }
-  .ph-line.short { width: 110px; }
-
-  /* Post header (source posts only) */
-  .ph-post-header {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    margin-bottom: 4px;
-  }
-  .ph-avatar {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    background: rgba(224,223,228,0.08);
-    flex-shrink: 0;
-  }
-  .ph-username {
-    width: 35px; height: 2px;
-    border-radius: 1px;
-    background: rgba(224,223,228,0.1);
-    flex-shrink: 0;
-  }
-  .ph-post.source .ph-line { margin-top: 4px; }
-
-  /* Comments zone — blue border */
-  .ph-comments {
-    margin-top: 4px;
-    border: 1.5px solid rgba(138,158,196,0.5);
-    border-radius: 4px;
-    padding-left: 6px;
+    aspect-ratio: 632 / 1222;
+    background: var(--card);
+    border-radius: 16px;
     overflow: hidden;
-  }
-  .ph-comments-inner {
-    padding: 8px 0;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .ph-comment {
-    width: 147px;
-    padding: 5px 6px;
-    border-radius: 4px;
-    background: rgba(224,223,228,0.01);
-    border: 1px solid rgba(224,223,228,0.03);
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 3px;
+    justify-content: center;
   }
-  .ph-comment-avatar {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: rgba(224,223,228,0.06);
-    flex-shrink: 0;
+  .phone-mock img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 16px;
   }
-  .ph-comment-line {
-    width: 25px;
-    height: 1.5px;
-    border-radius: 1px;
-    background: rgba(224,223,228,0.08);
+  .phone-mock .placeholder {
+    font-size: 11px;
+    color: var(--text-ter);
+    text-align: center;
+    padding: 16px;
+    line-height: 1.5;
+    border: 1px dashed var(--border-normal);
+    border-radius: 12px;
+    margin: 12px;
+    width: calc(100% - 24px);
+    height: calc(100% - 24px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  /* Annotations — right column */
+  /* Annotations column — flexes to fill remaining width, capped at 276px.
+     At narrow widths it shrinks and the text wraps cleanly without clipping
+     because min-width: 0 propagates to .ann-content. */
   .annotations {
-    flex: 1;
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 276px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    padding-top: 20px;
-    position: relative;
-    z-index: 1;
+    gap: 16px;
+    justify-content: center;
   }
 
   .annotation {
     display: flex;
-    align-items: flex-start;
     gap: 10px;
+    align-items: flex-start;
   }
 
   .ann-marker {
-    width: 8px; height: 8px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     flex-shrink: 0;
-    margin-top: 4px;
+    margin-top: 5px;
   }
-  .ann-marker.teal { background: rgba(127,181,176,0.5); }
-  .ann-marker.warm { background: rgba(212,165,116,0.5); }
-  .ann-marker.blue { background: rgba(138,158,196,0.5); }
+  .ann-marker.warm { background: var(--casual); }
+  .ann-marker.teal { background: var(--accent); }
+  .ann-marker.blue { background: var(--new-seg); }
 
+  .ann-content {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
   .ann-title {
     font-size: 12px;
     font-weight: 600;
     color: var(--text-pri);
-    margin-bottom: 3px;
+    line-height: normal;
   }
   .ann-desc {
     font-size: 11px;
     color: var(--text-ter);
-    line-height: 1.45;
+    line-height: 16px;
   }
 
   /* Embed mode */
   body.embedded {
     padding: 0;
+    background: transparent;
     min-height: auto;
     display: block;
-    background: transparent;
     overflow: hidden;
-    align-items: initial;
   }
   body.embedded .diagram {
     width: 100%;
     border-radius: 0;
   }
+
+  /* Container queries: layout responds to iframe width, not page viewport.
+     Single responsive file handles all widths — no separate mobile variant. */
+  @container aiPageIa (max-width: 720px) {
+    .diagram { padding: 24px 16px; }
+    .ai30-wrap { padding: 0; }
+    .ai30-row { padding-left: 0; }
+  }
+  /* Mobile column layout: phone centered above annotations stack */
+  @container aiPageIa (max-width: 480px) {
+    .ai30-wrap { padding: 0; }
+    .ai30-row {
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+    .phone-mock { width: 220px; max-width: 100%; }
+    .annotations {
+      width: 100%;
+      max-width: 100%;
+      padding: 0 16px;
+      justify-content: flex-start;
+    }
+  }
 </style>
 </head>
 <body>
   <div class="diagram">
-    <div class="mock-area">
-      <div class="phone-mock">
-        <div class="ph-status"></div>
+    <div class="ai30-wrap">
+      <div class="ai30-row">
 
-        <!-- Search bar with query -->
-        <div class="ph-post search-bar">
-          <div class="ph-line title"></div>
-          <div class="ph-line long"></div>
-          <div class="ph-line short"></div>
+        <div class="phone-mock">
+          <img src="assets/ui-answers-composition.png"
+               alt="Reddit Answers result page for 'Best AI video generator' showing synthesized summary card, source posts, and threaded comments"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+          <div class="placeholder" style="display:none">
+            Phone screenshot pending —<br>export Figma node <code>1481:802</code> to<br><code>assets/ui-answers-composition.png</code>
+          </div>
         </div>
 
-        <!-- Synthesized summary post -->
-        <div class="ph-post source">
-          <div class="ph-post-header">
-            <div class="ph-avatar"></div>
-            <div class="ph-username"></div>
+        <div class="annotations">
+          <div class="annotation">
+            <div class="ann-marker warm"></div>
+            <div class="ann-content">
+              <div class="ann-title">Synthesized summary</div>
+              <div class="ann-desc">The user&rsquo;s answer in one place, generated from posts most relevant to the query</div>
+            </div>
           </div>
-          <div class="ph-line long"></div>
-          <div class="ph-line short"></div>
-          <div class="ph-comments">
-            <div class="ph-comments-inner">
-              <div class="ph-comment">
-                <div class="ph-comment-avatar"></div>
-                <div class="ph-comment-line"></div>
-              </div>
-              <div class="ph-comment">
-                <div class="ph-comment-avatar"></div>
-                <div class="ph-comment-line"></div>
-              </div>
+
+          <div class="annotation">
+            <div class="ann-marker teal"></div>
+            <div class="ann-content">
+              <div class="ann-title">Source Posts</div>
+              <div class="ann-desc">Original post with title, body preview, and vote count &mdash; the primary source for the synthesis above</div>
+            </div>
+          </div>
+
+          <div class="annotation">
+            <div class="ann-marker blue"></div>
+            <div class="ann-content">
+              <div class="ann-title">Threaded Comments</div>
+              <div class="ann-desc">Two comments per post &mdash; enough to show conversation context without overwhelming the card</div>
             </div>
           </div>
         </div>
 
-        <!-- Source post -->
-        <div class="ph-post source">
-          <div class="ph-post-header">
-            <div class="ph-avatar"></div>
-            <div class="ph-username"></div>
-          </div>
-          <div class="ph-line long"></div>
-          <div class="ph-line short"></div>
-          <div class="ph-comments">
-            <div class="ph-comments-inner">
-              <div class="ph-comment">
-                <div class="ph-comment-avatar"></div>
-                <div class="ph-comment-line"></div>
-              </div>
-              <div class="ph-comment">
-                <div class="ph-comment-avatar"></div>
-                <div class="ph-comment-line"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="annotations">
-        <div class="annotation">
-          <div class="ann-marker teal"></div>
-          <div class="ann-content">
-            <div class="ann-title">Search bar with query</div>
-            <div class="ann-desc">Contextualizes the page and reinforces Reddit as the place to continue searching</div>
-          </div>
-        </div>
-
-        <div class="annotation">
-          <div class="ann-marker warm"></div>
-          <div class="ann-content">
-            <div class="ann-title">Synthesized summary</div>
-            <div class="ann-desc">Gives users one answer generated from the discussions most relevant to their query</div>
-          </div>
-        </div>
-
-        <div class="annotation">
-          <div class="ann-marker warm"></div>
-          <div class="ann-content">
-            <div class="ann-title">Source posts</div>
-            <div class="ann-desc">Original posts with title, preview text, and vote count &mdash; the evidence behind the synthesis</div>
-          </div>
-        </div>
-
-        <div class="annotation">
-          <div class="ann-marker blue"></div>
-          <div class="ann-content">
-            <div class="ann-title">Threaded comments</div>
-            <div class="ann-desc">Two comments per post &mdash; enough to show conversation context without overwhelming the unit</div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
-</body>
-<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
-<!-- diagram-height-poster v2 -->
+
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+<!-- diagram-height-poster v1 -->
 <script>
 (function () {
   function compute() {
@@ -359,7 +265,6 @@
     requestAnimationFrame(send);
     setTimeout(send, 50);
   });
-  // Respond to parent re-measure requests (fires on any iframe-width change)
   window.addEventListener('message', function (e) {
     if (e && e.data && e.data.type === 'request-diagram-height') {
       requestAnimationFrame(send);
@@ -367,4 +272,5 @@
   });
 })();
 </script>
+</body>
 </html>

@@ -3,12 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="figma-source" content="node:1207:5594 page:29:42 file:TArUrZsBUocaAsqetjXq7V">
+<meta name="figma-source" content="node:1411:4671 page:29:42 file:TArUrZsBUocaAsqetjXq7V">
 <title>Reddit Answers — Page Overview (mobile, Search Results Before vs After)</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --canvas: #0A0C16;
+    --card: #10121C;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.30);
+    --red: #C47878;
+    --accent: #7FB5B0;
+    --border-normal: rgba(224,223,228,0.07);
+    /* Phone UI mock tokens */
     --phone-bg: #0E0F14;
     --phone-text-pri: #F2F2F2;
     --phone-text-sec: rgba(255,255,255,0.65);
@@ -17,10 +26,6 @@
     --reddit-orange: #FF4500;
     --google-blue: #8AB4F8;
     --tab-active: #8AB4F8;
-    --casual-red: #C47878;
-    --cool-teal: #7FB5B0;
-    --text-primary: #E0DFE4;
-    --text-dim: rgba(224,223,228,0.30);
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -35,430 +40,58 @@
     width: 375px;
     background: var(--canvas);
     border-radius: 16px;
-    padding: 12px 16px 24px;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 24px;
-  }
-
-  .stack {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-  }
-
-  /* State pills (BEFORE / AFTER) */
-  .pill {
-    display: inline-flex;
-    align-items: center;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.6px;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-  .pill.below {
-    color: var(--casual-red);
-    background: rgba(196,120,120,0.08);
-    border: 1px solid rgba(196,120,120,0.18);
-  }
-  .pill.above {
-    color: var(--cool-teal);
-    background: rgba(127,181,176,0.08);
-    border: 1px solid rgba(127,181,176,0.18);
-  }
-
-  /* Phone bezel — wraps the embedded UI screenshot PNG */
-  .phone {
-    width: 100%;
-    background: var(--phone-bg);
-    border-radius: 24px;
-    overflow: hidden;
-    box-shadow:
-      0 1px 0 rgba(255,255,255,0.04) inset,
-      0 0 0 1px rgba(255,255,255,0.05),
-      0 14px 32px rgba(0,0,0,0.45);
-    display: block;
-  }
-  .phone img.ui-screenshot {
-    width: 100%;
-    height: auto;
-    display: block;
-    border-radius: 24px;
-  }
-
-  /* Status bar */
-  .status-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 20px 6px;
-    font-size: 12px;
-    color: var(--phone-text-pri);
-    font-weight: 600;
-  }
-  .status-icons {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .status-icons svg { display: block; }
-
-  /* Google search bar */
-  .gbar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 14px 10px;
-  }
-  .gbar-input {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: #1F2024;
-    border-radius: 999px;
-    padding: 9px 14px;
-    font-size: 13px;
-    color: var(--phone-text-pri);
-  }
-  .g-logo {
-    width: 16px; height: 16px;
-    border-radius: 50%;
-    background: conic-gradient(from 0deg,#4285F4 0 25%,#EA4335 25% 50%,#FBBC05 50% 75%,#34A853 75% 100%);
-    flex-shrink: 0;
-  }
-  .gbar-input .query { flex: 1; line-height: 1; }
-  .mic {
-    width: 14px; height: 14px;
-    color: var(--phone-text-sec);
-    flex-shrink: 0;
-  }
-  .profile-pic {
-    width: 30px; height: 30px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #FFB58A 0%, #C47878 60%, #6B4F3D 100%);
-    flex-shrink: 0;
-    border: 1.5px solid var(--cool-teal);
-  }
-
-  /* Tabs row */
-  .tabs {
-    display: flex;
-    gap: 20px;
-    padding: 8px 18px 0;
-    overflow: hidden;
-    border-bottom: 1px solid var(--phone-divider);
-  }
-  .tab {
-    font-size: 13px;
-    color: var(--phone-text-sec);
-    padding: 8px 0 10px;
-    white-space: nowrap;
+    padding: 24px 16px;
     position: relative;
-    flex-shrink: 0;
-  }
-  .tab.active {
-    color: var(--tab-active);
-    font-weight: 600;
-  }
-  .tab.active::after {
-    content: '';
-    position: absolute;
-    left: 0; right: 0; bottom: -1px;
-    height: 2px;
-    background: var(--tab-active);
-    border-radius: 2px;
-  }
-
-  /* Filter chips */
-  .chips {
-    display: flex;
-    gap: 7px;
-    padding: 12px 14px 8px;
     overflow: hidden;
   }
-  .chip {
-    border: 1px solid rgba(255,255,255,0.18);
-    border-radius: 999px;
-    padding: 6px 12px;
-    font-size: 11.5px;
-    color: var(--phone-text-pri);
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
 
-  /* Search result cards (BELOW) */
-  .results {
+  /* Two sections STACKED vertically on mobile (Figma .comparison is flex-col here) */
+  .comparison {
     display: flex;
     flex-direction: column;
-    padding: 0 18px;
-    flex: 1;
-  }
-  .result {
-    padding: 14px 0;
-    border-bottom: 1px solid var(--phone-divider);
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
-  .result:last-child { border-bottom: none; }
-  .result-head {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .reddit-icon {
-    width: 16px; height: 16px;
-    border-radius: 50%;
-    background: var(--reddit-orange);
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 10px;
-    font-weight: 700;
-  }
-  .result-source {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.15;
-    flex: 1;
-  }
-  .result-domain {
-    font-size: 11.5px;
-    color: var(--phone-text-pri);
-  }
-  .result-url {
-    font-size: 10.5px;
-    color: var(--phone-text-ter);
-  }
-  .result-more {
-    color: var(--phone-text-ter);
-    font-size: 14px;
-    line-height: 1;
-    flex-shrink: 0;
-  }
-  .result-title {
-    font-size: 15px;
-    color: var(--google-blue);
-    font-weight: 500;
-    line-height: 1.3;
-    margin-top: 2px;
-  }
-  .result-snippet {
-    font-size: 12px;
-    color: var(--phone-text-sec);
-    line-height: 1.45;
-  }
-
-  /* ABOVE — Reddit Answers card */
-  .answers-card {
-    margin: 6px 18px 0;
-    padding: 12px 0 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-    border-bottom: 1px solid var(--phone-divider);
-  }
-  .answers-head {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .answers-source {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    line-height: 1.15;
-  }
-  .answers-platform {
-    font-size: 11.5px;
-    color: var(--phone-text-pri);
-    font-weight: 500;
-  }
-  .answers-meta {
-    font-size: 10.5px;
-    color: var(--phone-text-ter);
-  }
-  .answers-title {
-    font-size: 15px;
-    color: var(--google-blue);
-    font-weight: 500;
-    line-height: 1.3;
-  }
-  .answers-snippet {
-    font-size: 12px;
-    color: var(--phone-text-sec);
-    line-height: 1.45;
-  }
-  .answer-quotes {
-    display: grid;
-    grid-template-columns: 1fr 0.7fr;
-    gap: 8px;
-    margin-top: 4px;
-  }
-  .quote {
-    background: rgba(255,255,255,0.04);
-    border-radius: 8px;
-    padding: 9px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    overflow: hidden;
-  }
-  .quote-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 9.5px;
-    color: var(--cool-teal);
-    font-weight: 600;
-  }
-  .quote-tag.plain { color: var(--phone-text-sec); font-weight: 500; }
-  .quote-check {
-    width: 11px; height: 11px;
-    border-radius: 50%;
-    background: var(--cool-teal);
-    color: #0A0C16;
-    font-size: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
-    font-weight: 800;
-  }
-  .quote-text {
-    font-size: 11px;
-    color: var(--phone-text-pri);
-    line-height: 1.4;
-  }
-  .quote-more {
-    color: var(--phone-text-ter);
-    font-weight: 500;
-  }
-
-  /* Sourced post links (ABOVE) */
-  .source-links {
-    padding: 0 18px;
-    display: flex;
-    flex-direction: column;
-  }
-  .source-link {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    padding: 11px 0;
-    border-bottom: 1px solid var(--phone-divider);
-  }
-  .source-link-text {
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-    flex: 1;
-    min-width: 0;
-  }
-  .source-link-title {
-    font-size: 12.5px;
-    color: var(--phone-text-pri);
-    font-weight: 500;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .source-link-date {
-    font-size: 11px;
-    color: var(--phone-text-ter);
-  }
-  .source-link-arrow {
-    color: var(--phone-text-ter);
-    font-size: 14px;
-    flex-shrink: 0;
-  }
-  .more-results {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 11px 0;
-    border-bottom: 1px solid var(--phone-divider);
-    font-size: 12.5px;
-    color: var(--phone-text-pri);
-  }
-  .more-arrow {
-    color: var(--phone-text-sec);
-    font-size: 14px;
-  }
-  .cr-card {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 0;
-  }
-  .cr-icon {
-    width: 26px; height: 26px;
-    border-radius: 4px;
-    background: #008060;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    font-weight: 800;
-    flex-shrink: 0;
-  }
-  .cr-meta {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    line-height: 1.15;
-  }
-  .cr-name { font-size: 11.5px; color: var(--phone-text-pri); }
-  .cr-url { font-size: 10.5px; color: var(--phone-text-ter); }
-
-  /* Phone bottom nav */
-  .phone-nav {
-    margin-top: auto;
-    display: flex;
-    justify-content: space-around;
-    padding: 14px 18px 12px;
-    border-top: 1px solid var(--phone-divider);
-    background: rgba(0,0,0,0.25);
-  }
-  .nav-icon {
-    color: var(--phone-text-sec);
-    width: 18px; height: 18px;
-    flex-shrink: 0;
-  }
-  .home-bar {
-    display: block;
-    width: 110px;
-    height: 4px;
-    border-radius: 2px;
-    background: rgba(255,255,255,0.6);
-    margin: 8px auto 8px;
-  }
-
-  /* Annotation list — prose style, no chip backgrounds */
-  .annotations {
-    display: flex;
-    flex-direction: column;
+    gap: 24px;
     width: 100%;
   }
+
+  /* Each section: annotations LEFT, phone RIGHT (BEFORE)
+     AFTER reverses: phone LEFT, annotations RIGHT (sandwiched per Figma) */
+  .col {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 16px;
+    width: 100%;
+  }
+  .col.after {
+    flex-direction: row-reverse;
+  }
+
+  .annotations {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .pill {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.88px;
+    text-transform: uppercase;
+    line-height: 1.4;
+    padding-left: 3px;
+    white-space: nowrap;
+  }
+  .pill.below { color: var(--red); }
+  .pill.above { color: var(--accent); }
+
   .annotation {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 10px;
     padding: 9px 0;
-    font-size: 11px;
-    font-weight: 600;
-    line-height: normal;
-    color: var(--text-primary);
   }
   .annotation .ann-icon {
     width: 16px;
@@ -469,8 +102,36 @@
     justify-content: center;
   }
   .annotation .ann-icon svg { display: block; }
-  .annotation.below .ann-icon { color: var(--casual-red); }
-  .annotation.above .ann-icon { color: var(--cool-teal); }
+  .annotation.below .ann-icon { color: var(--red); }
+  .annotation.above .ann-icon { color: var(--accent); }
+  .ann-title {
+    font-size: 11px;
+    font-weight: 600;
+    line-height: normal;
+    color: var(--text-pri);
+  }
+
+  /* Phone bezel */
+  .phone {
+    flex: 1 1 0;
+    min-width: 0;
+    background: var(--phone-bg);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.04) inset,
+      0 0 0 1px rgba(255,255,255,0.05),
+      0 14px 32px rgba(0,0,0,0.45);
+    align-self: start;
+    aspect-ratio: 1158 / 2532;
+  }
+  .phone img.ui-screenshot {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 16px;
+  }
 
   /* Embedded mode */
   body.embedded {
@@ -487,69 +148,67 @@
 </head>
 <body>
   <div class="diagram">
+    <div class="comparison">
 
-    <!-- ===== SEARCH RESULTS BEFORE ===== -->
-    <div class="stack">
-      <span class="pill below">Search Results Before</span>
-
-      <div class="phone">
-        <img class="ui-screenshot" src="../ui-overview-below.png" alt="Google search results page for 'best sunscreen 2024' showing three reddit.com result cards — multiple links competed for attention, users bounced before finding an answer" />
+      <!-- ===== BEFORE ===== -->
+      <div class="col">
+        <div class="annotations">
+          <div class="pill below">Before</div>
+          <div class="annotation below">
+            <span class="ann-icon" aria-hidden="true">
+              <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+                <line x1="4" y1="4" x2="12" y2="12"/>
+                <line x1="12" y1="4" x2="4" y2="12"/>
+              </svg>
+            </span>
+            <div class="ann-title">Multiple links compete to rank</div>
+          </div>
+          <div class="annotation below">
+            <span class="ann-icon" aria-hidden="true">
+              <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+                <line x1="4" y1="4" x2="12" y2="12"/>
+                <line x1="12" y1="4" x2="4" y2="12"/>
+              </svg>
+            </span>
+            <div class="ann-title">User bounces in search of answer</div>
+          </div>
+        </div>
+        <div class="phone">
+          <img class="ui-screenshot" src="../ui-overview-below.png" alt="Google search results page for 'best sunscreen 2024' showing three reddit.com result cards — multiple links compete to rank, user bounces in search of answer" />
+        </div>
       </div>
 
-      <div class="annotations">
-        <div class="annotation below">
-          <span class="ann-icon" aria-hidden="true">
-            <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
-              <line x1="4" y1="4" x2="12" y2="12"/>
-              <line x1="12" y1="4" x2="4" y2="12"/>
-            </svg>
-          </span>
-          Multiple links competed for attention
+      <!-- ===== AFTER — flipped: phone LEFT, annotations RIGHT ===== -->
+      <div class="col after">
+        <div class="annotations">
+          <div class="pill above">After</div>
+          <div class="annotation above">
+            <span class="ann-icon" aria-hidden="true">
+              <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
+              </svg>
+            </span>
+            <div class="ann-title">Single link consolidates information</div>
+          </div>
+          <div class="annotation above">
+            <span class="ann-icon" aria-hidden="true">
+              <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
+              </svg>
+            </span>
+            <div class="ann-title">User discovers answer on platform</div>
+          </div>
         </div>
-        <div class="annotation below">
-          <span class="ann-icon" aria-hidden="true">
-            <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
-              <line x1="4" y1="4" x2="12" y2="12"/>
-              <line x1="12" y1="4" x2="4" y2="12"/>
-            </svg>
-          </span>
-          Users bounced before finding an answer
+        <div class="phone">
+          <img class="ui-screenshot" src="../ui-overview-above.png" alt="Google search results page for 'best sunscreen 2024' showing Reddit Answers AI-synthesis card above fold with cited source posts and a Consumer Reports linked reference — single link consolidates information, user discovers answer on platform" />
         </div>
       </div>
+
     </div>
-
-    <!-- ===== SEARCH RESULTS AFTER ===== -->
-    <div class="stack">
-      <span class="pill above">Search Results After</span>
-
-      <div class="phone">
-        <img class="ui-screenshot" src="../ui-overview-above.png" alt="Google search results page for 'best sunscreen 2024' showing Reddit Answers AI-synthesis card above fold with cited source posts and a Consumer Reports linked reference — one entry point consolidated relevant discussion" />
-      </div>
-
-      <div class="annotations">
-        <div class="annotation above">
-          <span class="ann-icon" aria-hidden="true">
-            <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
-            </svg>
-          </span>
-          One entry point consolidated relevant discussion
-        </div>
-        <div class="annotation above">
-          <span class="ann-icon" aria-hidden="true">
-            <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
-            </svg>
-          </span>
-          Users could verify the answer on Reddit
-        </div>
-      </div>
-    </div>
-
   </div>
 
-<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
-<!-- diagram-height-poster v2 -->
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+<!-- diagram-height-poster v1 -->
 <script>
 (function () {
   function compute() {
@@ -582,7 +241,6 @@
     requestAnimationFrame(send);
     setTimeout(send, 50);
   });
-  // Respond to parent re-measure requests (fires on any iframe-width change)
   window.addEventListener('message', function (e) {
     if (e && e.data && e.data.type === 'request-diagram-height') {
       requestAnimationFrame(send);

@@ -3,15 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="figma-source" content="node:393:2 page:29:42 file:TArUrZsBUocaAsqetjXq7V">
+<meta name="figma-source" content="node:1481:210 page:29:42 file:TArUrZsBUocaAsqetjXq7V">
 <title>One Pattern, Three Teams — unified feedback component</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --canvas: #0A0C16;
-    --cool-teal: #7FB5B0;
-    --text-primary: #E0DFE4;
-    --text-tertiary: rgba(224,223,228,0.4);
+    --card: #10121C;
+    --accent: #7FB5B0;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -55,14 +57,14 @@
     font-weight: 600;
     letter-spacing: 0.6px;
     text-transform: uppercase;
-    color: var(--cool-teal);
+    color: var(--accent);
     text-align: center;
     line-height: normal;
   }
   .hub-title {
     font-size: 16px;
     font-weight: 700;
-    color: var(--cool-teal);
+    color: var(--accent);
     letter-spacing: -0.16px;
     line-height: normal;
     text-align: center;
@@ -99,12 +101,8 @@
     align-items: stretch;
   }
   .spoke-card {
-    border: 1px solid rgba(224,223,228,0.08);
     border-radius: 10px;
     padding: 16px;
-    background:
-      linear-gradient(27.78deg, rgba(224,222,227,0.05) 14.6%, rgba(224,222,227,0.016) 85.4%);
-    box-shadow: inset 0 1px 0 rgba(224,222,227,0.06);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -121,13 +119,13 @@
   .spoke-name {
     font-size: 13px;
     font-weight: 600;
-    color: var(--text-primary);
+    color: var(--text-pri);
     line-height: normal;
   }
   .spoke-desc {
     font-size: 11px;
     font-weight: 400;
-    color: var(--text-tertiary);
+    color: var(--text-ter);
     line-height: 15px;
     text-align: center;
   }
@@ -162,7 +160,6 @@
       <!-- Hub: shared feedback component -->
       <div class="hub-card-wrap">
         <div class="hub-card">
-          <div class="hub-title">Unified feedback pattern</div>
           <div class="feedback-shot">
             <img class="ui-screenshot" src="../ui-reddit-answers-mobile.png" alt="Feedback widget — 'Is this summary helpful?' with thumbs up / thumbs down options" />
           </div>
@@ -173,36 +170,37 @@
       <div class="spokes">
         <div class="spoke-card">
           <div class="spoke-icon" aria-hidden="true">
+            <!-- Della 2026-05-15: bumped stroke opacities for higher-contrast icons per Figma 1481:210 -->
             <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-              <rect x="10" y="12" width="20" height="16" rx="3" stroke="rgba(127,181,176,0.55)" stroke-width="1.2" fill="rgba(127,181,176,0.05)"/>
-              <line x1="14" y1="18" x2="26" y2="18" stroke="rgba(127,181,176,0.4)" stroke-width="1.2" stroke-linecap="round"/>
-              <line x1="14" y1="22" x2="22" y2="22" stroke="rgba(127,181,176,0.3)" stroke-width="1.2" stroke-linecap="round"/>
+              <rect x="10" y="12" width="20" height="16" rx="3" stroke="rgba(127,181,176,0.9)" stroke-width="1.2" fill="rgba(127,181,176,0.12)"/>
+              <line x1="14" y1="18" x2="26" y2="18" stroke="rgba(127,181,176,0.7)" stroke-width="1.2" stroke-linecap="round"/>
+              <line x1="14" y1="22" x2="22" y2="22" stroke="rgba(127,181,176,0.55)" stroke-width="1.2" stroke-linecap="round"/>
             </svg>
           </div>
-          <div class="spoke-name">Keyword Landing Pages</div>
+          <div class="spoke-name">KLPs Team</div>
           <div class="spoke-desc">AI-generated content pages</div>
         </div>
 
         <div class="spoke-card">
           <div class="spoke-icon" aria-hidden="true">
             <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-              <circle cx="18" cy="18" r="6" stroke="rgba(138,158,196,0.55)" stroke-width="1.4" fill="rgba(138,158,196,0.05)"/>
-              <line x1="22.5" y1="22.5" x2="28" y2="28" stroke="rgba(138,158,196,0.55)" stroke-width="1.4" stroke-linecap="round"/>
+              <circle cx="18" cy="18" r="6" stroke="rgba(138,158,196,0.9)" stroke-width="1.4" fill="rgba(138,158,196,0.12)"/>
+              <line x1="22.5" y1="22.5" x2="28" y2="28" stroke="rgba(138,158,196,0.9)" stroke-width="1.4" stroke-linecap="round"/>
             </svg>
           </div>
-          <div class="spoke-name">Search</div>
+          <div class="spoke-name">Search Team</div>
           <div class="spoke-desc">Search result quality signals</div>
         </div>
 
         <div class="spoke-card">
           <div class="spoke-icon" aria-hidden="true">
             <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-              <circle cx="20" cy="20" r="8" stroke="rgba(212,165,116,0.55)" stroke-width="1.2" fill="rgba(212,165,116,0.05)"/>
-              <ellipse cx="20" cy="20" rx="4" ry="8" stroke="rgba(212,165,116,0.4)" stroke-width="1" fill="none"/>
-              <line x1="12" y1="20" x2="28" y2="20" stroke="rgba(212,165,116,0.3)" stroke-width="1"/>
+              <circle cx="20" cy="20" r="8" stroke="rgba(212,165,116,0.9)" stroke-width="1.2" fill="rgba(212,165,116,0.12)"/>
+              <ellipse cx="20" cy="20" rx="4" ry="8" stroke="rgba(212,165,116,0.7)" stroke-width="1" fill="none"/>
+              <line x1="12" y1="20" x2="28" y2="20" stroke="rgba(212,165,116,0.55)" stroke-width="1"/>
             </svg>
           </div>
-          <div class="spoke-name">i18n</div>
+          <div class="spoke-name">i18n Team</div>
           <div class="spoke-desc">Localized content quality</div>
         </div>
       </div>
@@ -210,8 +208,8 @@
     </div>
   </div>
 
-<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
-<!-- diagram-height-poster v2 -->
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+<!-- diagram-height-poster v1 -->
 <script>
 (function () {
   function compute() {

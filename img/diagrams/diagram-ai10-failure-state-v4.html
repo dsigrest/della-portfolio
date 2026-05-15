@@ -3,15 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="figma-source" content="node:390:2 page:29:42 file:TArUrZsBUocaAsqetjXq7V">
-<title>Graceful Degradation — above vs below threshold</title>
+<meta name="figma-source" content="node:1513:361 page:29:42 file:TArUrZsBUocaAsqetjXq7V">
+<title>Graceful degradation — above vs below threshold</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --canvas: #0A0C16;
-    --casual-red: #C47878;
-    --cool-teal: #7FB5B0;
-    --text-primary: #E0DFE4;
+    --card: #10121C;
+    --elevated: #151722;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --red: #C47878;
+    /* Phone bezel token — matches ai-overview pattern */
+    --phone-bg: #0E0F14;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -26,73 +34,63 @@
     width: 760px;
     background: var(--canvas);
     border-radius: 16px;
-    padding: 24px 48px;
+    padding: 24px 16px;
+    overflow: hidden;
+    position: relative;
   }
 
-  .columns {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 32px;
-    align-items: start;
-  }
-  .column {
+  /* Two-column comparison — matches diagram-ai-overview-v1 pattern */
+  .comparison {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    gap: 24px;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  /* Each col: BEFORE has annotations LEFT + phone RIGHT (default row).
+     AFTER reverses to phone LEFT + annotations RIGHT via row-reverse. */
+  .col {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
     gap: 16px;
   }
-
-  /* State pills (ABOVE / BELOW) */
-  .pill {
-    display: inline-flex;
-    align-items: center;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.6px;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-  .pill.below {
-    color: var(--casual-red);
-    background: rgba(196,120,120,0.08);
-    border: 1px solid rgba(196,120,120,0.18);
-  }
-  .pill.above {
-    color: var(--cool-teal);
-    background: rgba(127,181,176,0.08);
-    border: 1px solid rgba(127,181,176,0.18);
+  .col.after {
+    flex-direction: row-reverse;
   }
 
-  /* Embedded UI screenshot — clean rounded image, no bezel chrome */
-  .shot {
-    width: 100%;
-    max-width: 180px;
-    display: block;
-  }
-  .shot img.ui-screenshot {
-    width: 100%;
-    height: auto;
-    display: block;
-    border-radius: 16px;
-  }
-
-  /* Annotation list — prose style, no chip backgrounds */
+  /* Annotations column — flex-col, vertically centered against the phone */
   .annotations {
+    flex: 1 1 0;
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    width: 100%;
+    justify-content: center;
+    gap: 4px;
   }
-  .annotation {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 9px 0;
+
+  /* Eyebrow — uppercase colored label per Figma 1513:368 / 1513:391.
+     Della 2026-05-15: dropped white-space: nowrap so "BELOW THRESHOLD" /
+     "ABOVE THRESHOLD" wrap to 2 lines at narrow widths instead of clipping. */
+  .pill {
     font-size: 11px;
     font-weight: 600;
-    line-height: normal;
-    color: var(--text-primary);
+    letter-spacing: 0.88px;
+    text-transform: uppercase;
+    line-height: 1.4;
+    padding-left: 3px;
+  }
+  .pill.below { color: var(--red); }
+  .pill.above { color: var(--accent); }
+
+  /* Annotation row */
+  .annotation {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px 0;
   }
   .annotation .ann-icon {
     width: 16px;
@@ -101,10 +99,41 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    margin-top: 1px;
   }
+  .annotation.below .ann-icon { color: var(--red); }
+  .annotation.above .ann-icon { color: var(--accent); }
   .annotation .ann-icon svg { display: block; }
-  .annotation.below .ann-icon { color: var(--casual-red); }
-  .annotation.above .ann-icon { color: var(--cool-teal); }
+  .ann-title {
+    font-size: 11px;
+    font-weight: 600;
+    line-height: normal;
+    color: var(--text-pri);
+  }
+
+  /* Phone bezel — matches ai-overview pattern.
+     aspect-ratio 1158/2532 matches the natural aspect of ui-source-posts.png
+     and ui-reddit-answers-mobile.png so object-fit: cover doesn't crop. */
+  .phone {
+    flex: 1 1 0;
+    min-width: 0;
+    background: var(--phone-bg);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.04) inset,
+      0 0 0 1px rgba(255,255,255,0.05),
+      0 18px 40px rgba(0,0,0,0.45);
+    align-self: start;
+    aspect-ratio: 1158 / 2532;
+  }
+  .phone img.ui-screenshot {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 16px;
+  }
 
   /* Embedded mode */
   body.embedded {
@@ -112,98 +141,87 @@
     background: transparent;
     min-height: auto;
     display: block;
+    overflow: hidden;
   }
   body.embedded .diagram {
     width: 100%;
     border-radius: 0;
   }
 
-  /* Narrow viewport: stack columns */
-  /* Tighten margins + gap as viewport narrows so two screens stay side-by-side */
+  /* Responsive — tighten gap, stack on narrow */
   @media (max-width: 720px) {
-    .diagram { padding: 20px 16px; }
-    .columns { gap: 16px; }
-    .shot { max-width: 160px; }
+    .comparison { gap: 16px; }
+    .col { gap: 12px; }
   }
   @media (max-width: 480px) {
-    .diagram { padding: 16px 8px; }
-    .columns { gap: 8px; }
-    .shot { max-width: 140px; }
-  }
-  /* Only stack on the narrowest phones */
-  @media (max-width: 400px) {
-    .columns { grid-template-columns: 1fr; gap: 24px; }
-    .shot { max-width: 220px; }
+    .comparison { flex-direction: column; gap: 24px; }
+    .col { gap: 16px; }
   }
 </style>
 </head>
 <body>
   <div class="diagram">
-    <div class="columns">
+    <div class="comparison">
 
-      <!-- ===== ABOVE THRESHOLD — left ===== -->
-      <div class="column">
-        <span class="pill above">Above Threshold</span>
-
-        <div class="shot">
-          <img class="ui-screenshot" src="../ui-reddit-answers-mobile.png" alt="Reddit Answers mobile mock — AI synthesis visible above fold with citations, source posts available below" />
-        </div>
-
+      <!-- ===== BELOW THRESHOLD (left) — annotations LEFT, phone RIGHT ===== -->
+      <div class="col">
         <div class="annotations">
-          <div class="annotation above">
+          <div class="pill below">Below threshold</div>
+          <div class="annotation below">
             <span class="ann-icon" aria-hidden="true">
-              <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
+              <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+                <line x1="4" y1="4" x2="12" y2="12"/>
+                <line x1="12" y1="4" x2="4" y2="12"/>
               </svg>
             </span>
-            AI synthesis visible above fold with citations
+            <div class="ann-title">Synthesis suppressed &mdash; quality below confidence threshold</div>
           </div>
-          <div class="annotation above">
+          <div class="annotation below">
             <span class="ann-icon" aria-hidden="true">
-              <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
+              <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+                <line x1="4" y1="4" x2="12" y2="12"/>
+                <line x1="12" y1="4" x2="4" y2="12"/>
               </svg>
             </span>
-            Source posts available below
+            <div class="ann-title">Raw source posts surface as fallback</div>
           </div>
+        </div>
+        <div class="phone">
+          <img class="ui-screenshot" src="../ui-source-posts.png" alt="Reddit threaded source posts mock — synthesis suppressed below confidence threshold, raw source posts surface as fallback" />
         </div>
       </div>
 
-      <!-- ===== BELOW THRESHOLD — right ===== -->
-      <div class="column">
-        <span class="pill below">Below Threshold</span>
-
-        <div class="shot">
-          <img class="ui-screenshot" src="../ui-source-posts.png" alt="Reddit threaded source posts mock — synthesis suppressed below confidence threshold, raw source posts surface as fallback" />
-        </div>
-
+      <!-- ===== ABOVE THRESHOLD (right) — phone LEFT, annotations RIGHT via row-reverse ===== -->
+      <div class="col after">
         <div class="annotations">
-          <div class="annotation below">
+          <div class="pill above">Above threshold</div>
+          <div class="annotation above">
             <span class="ann-icon" aria-hidden="true">
-              <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
-                <line x1="4" y1="4" x2="12" y2="12"/>
-                <line x1="12" y1="4" x2="4" y2="12"/>
+              <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
               </svg>
             </span>
-            Synthesis suppressed when confidence was too low
+            <div class="ann-title">AI synthesis visible above fold with citations</div>
           </div>
-          <div class="annotation below">
+          <div class="annotation above">
             <span class="ann-icon" aria-hidden="true">
-              <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
-                <line x1="4" y1="4" x2="12" y2="12"/>
-                <line x1="12" y1="4" x2="4" y2="12"/>
+              <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
               </svg>
             </span>
-            Source posts became the fallback experience
+            <div class="ann-title">Source posts available below</div>
           </div>
+        </div>
+        <div class="phone">
+          <img class="ui-screenshot" src="../ui-reddit-answers-mobile.png" alt="Reddit Answers result page above confidence threshold — AI synthesis visible above fold with citations, source posts available below" />
         </div>
       </div>
 
     </div>
   </div>
 
-<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
-<!-- diagram-height-poster v2 -->
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+<!-- diagram-height-poster v1 -->
 <script>
 (function () {
   function compute() {
@@ -236,7 +254,6 @@
     requestAnimationFrame(send);
     setTimeout(send, 50);
   });
-  // Respond to parent re-measure requests (fires on any iframe-width change)
   window.addEventListener('message', function (e) {
     if (e && e.data && e.data.type === 'request-diagram-height') {
       requestAnimationFrame(send);

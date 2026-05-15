@@ -9,9 +9,11 @@
 <style>
   :root {
     --canvas: #0A0C16;
-    --cool-teal: #7FB5B0;
-    --text-primary: #E0DFE4;
-    --text-tertiary: rgba(224,223,228,0.4);
+    --card: #10121C;
+    --accent: #7FB5B0;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -22,22 +24,28 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     -webkit-font-smoothing: antialiased;
   }
+  /* Structure cloned verbatim from diagram-ai20-threaded-posts-v4 (the
+     "Surfacing the source layer" diagram directly below this one in the
+     case study). Only differences: shot aspect-ratio + object-position
+     tune the crop to the synthesized-summary region of the same PNG,
+     and the annotation text below describes the synthesis pattern. */
   .diagram {
     width: 760px;
     background: var(--canvas);
     border-radius: 16px;
-    padding: 24px 0;
+    padding: 14px 48px 14px 100px;
   }
 
   .row {
     display: flex;
-    gap: 24px;
-    align-items: stretch;
-    justify-content: center;
-    padding-left: 120px;
+    gap: 32px;
+    align-items: flex-start;
   }
 
-  /* Embedded UI screenshot — CSS-cropped to top-of-page synthesized summary view */
+  /* Embedded UI screenshot — object-fit: cover + object-position references
+     the image's own dimensions (not the containing block) so the visible
+     crop region stays stable at any scale. 50% 50.7% reproduces the
+     previous visible region (image y ≈ 19% to 82%) without drift. */
   .shot {
     width: 205px;
     flex-shrink: 0;
@@ -47,29 +55,39 @@
     position: relative;
   }
   .shot img.ui-screenshot {
-    position: absolute;
-    left: 0;
-    top: -31.05%;
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 50.7%;
     display: block;
   }
 
-  /* Annotations column — vertically centered against the shot */
+  /* Annotations column — flexes to fill remaining width, capped at 276px.
+     Fixed height matches .shot so the column stays vertically centered
+     against the phone. */
   .annotations {
-    width: 276px;
-    flex-shrink: 0;
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 276px;
+    height: 279px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .annotations-group {
+    display: flex;
+    flex-direction: column;
     gap: 4px;
+    width: 100%;
   }
 
   .eyebrow {
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.88px;
-    color: var(--cool-teal);
+    color: var(--accent);
     text-transform: uppercase;
     line-height: 1.4;
     padding-left: 3px;
@@ -89,7 +107,7 @@
     align-items: center;
     justify-content: center;
     margin-top: 1px;
-    color: var(--cool-teal);
+    color: var(--accent);
   }
   .annotation .ann-icon svg { display: block; }
   .ann-content {
@@ -102,13 +120,13 @@
   .ann-heading {
     font-size: 11px;
     font-weight: 600;
-    color: var(--text-primary);
+    color: var(--text-pri);
     line-height: normal;
   }
   .ann-desc {
     font-size: 10px;
     font-weight: 400;
-    color: var(--text-tertiary);
+    color: var(--text-ter);
     line-height: 1.4;
   }
 
@@ -124,15 +142,16 @@
     border-radius: 0;
   }
 
-  /* Tighten padding as viewport narrows but keep image + annotations side-by-side */
+  /* Narrow viewport: tighten gaps but keep two columns side-by-side until very narrow */
   @media (max-width: 720px) {
     .diagram { padding: 24px 16px; }
+    .row { gap: 16px; }
   }
   /* Only stack on the narrowest phones */
   @media (max-width: 400px) {
-    .row { flex-direction: column; align-items: stretch; gap: 14px; padding-left: 0; }
+    .row { flex-direction: column; align-items: stretch; gap: 14px; }
     .shot { width: 205px; max-width: 100%; margin: 0 auto; }
-    .annotations { width: 100%; padding: 0; }
+    .annotations { width: 100%; padding: 0; height: auto; }
   }
 </style>
 </head>
@@ -147,51 +166,53 @@
       <div class="annotations">
         <div class="eyebrow">Synthesized summary</div>
 
-        <div class="annotation">
-          <span class="ann-icon" aria-hidden="true">
-            <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
-            </svg>
-          </span>
-          <div class="ann-content">
-            <div class="ann-heading">Visual separation</div>
-            <div class="ann-desc">Stroke, icon, and color distinguish generated content</div>
+        <div class="annotations-group">
+          <div class="annotation">
+            <span class="ann-icon" aria-hidden="true">
+              <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
+              </svg>
+            </span>
+            <div class="ann-content">
+              <div class="ann-heading">Visual separation</div>
+              <div class="ann-desc">Stroke, icon, and color treatment clearly distinguish generated content</div>
+            </div>
           </div>
-        </div>
 
-        <div class="annotation">
-          <span class="ann-icon" aria-hidden="true">
-            <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
-            </svg>
-          </span>
-          <div class="ann-content">
-            <div class="ann-heading">Linked attribution</div>
-            <div class="ann-desc">Users can quickly inspect the source discussions behind the answer</div>
+          <div class="annotation">
+            <span class="ann-icon" aria-hidden="true">
+              <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
+              </svg>
+            </span>
+            <div class="ann-content">
+              <div class="ann-heading">Linked attribution</div>
+              <div class="ann-desc">Users can quickly see and explore source content</div>
+            </div>
           </div>
-        </div>
 
-        <div class="annotation">
-          <span class="ann-icon" aria-hidden="true">
-            <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
-            </svg>
-          </span>
-          <div class="ann-content">
-            <div class="ann-heading">Truncated container</div>
-            <div class="ann-desc">Gives users an immediate answer without burying source material</div>
+          <div class="annotation">
+            <span class="ann-icon" aria-hidden="true">
+              <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
+              </svg>
+            </span>
+            <div class="ann-content">
+              <div class="ann-heading">Truncated container</div>
+              <div class="ann-desc">Balances providing users an immediate answer without burying critical source posts</div>
+            </div>
           </div>
-        </div>
 
-        <div class="annotation">
-          <span class="ann-icon" aria-hidden="true">
-            <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
-            </svg>
-          </span>
-          <div class="ann-content">
-            <div class="ann-heading">Feedback unit</div>
-            <div class="ann-desc">Lets users evaluate usefulness and generation quality</div>
+          <div class="annotation">
+            <span class="ann-icon" aria-hidden="true">
+              <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3.5,8.5 6.5,11.5 12.5,5"/>
+              </svg>
+            </span>
+            <div class="ann-content">
+              <div class="ann-heading">Feedback unit</div>
+              <div class="ann-desc">Provides user control and generation quality</div>
+            </div>
           </div>
         </div>
       </div>
@@ -199,8 +220,8 @@
     </div>
   </div>
 
-<script>if(window!==window.parent)document.body.classList.add("embedded");</script>
-<!-- diagram-height-poster v2 -->
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+<!-- diagram-height-poster v1 -->
 <script>
 (function () {
   function compute() {
