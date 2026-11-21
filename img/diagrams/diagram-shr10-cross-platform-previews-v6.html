@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="figma-source" content="node:1345:281 page:29:41 file:TArUrZsBUocaAsqetjXq7V">
+<title>SHR-10 — Cross-Platform Previews</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --red: #C47878;
+    --casual: #C4B078;
+    --new-seg: #8A9EC4;
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    color: var(--text-pri);
+  }
+  .diagram {
+    width: 100%;
+    max-width: 760px;
+    background: transparent;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  /* Desktop: BEFORE | divider | AFTER-wrapper (2 cols)  — horizontal flex */
+  .content-row {
+    display: flex;
+    gap: 28px;
+    align-items: stretch;
+    justify-content: center;
+    padding: 32px 24px;
+    width: 100%;
+  }
+
+  /* BEFORE column */
+  .before-col {
+    width: 200px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(12px);
+    animation: fadeUp 600ms var(--spring) 100ms forwards;
+  }
+  .col-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .before-col .col-label { color: var(--red); }
+  .after-col-a .col-label { color: var(--accent); }
+
+  .hub-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 16px;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .legacy-frame {
+    width: 100%;
+    aspect-ratio: 752 / 428;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+  }
+  .legacy-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .legacy-caption {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: var(--text-ter);
+    text-align: center;
+  }
+
+  /* Divider — vertical on desktop, horizontal on mobile */
+  .divider {
+    width: 1px;
+    background: var(--highest);
+    align-self: stretch;
+    flex-shrink: 0;
+  }
+
+  /* AFTER wrapper — always 2 columns (desktop AND mobile) */
+  .after-wrapper {
+    flex: 1;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    align-items: start;
+  }
+
+  .after-col-a, .after-col-b {
+    min-width: 0;
+    padding: 0 2px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .after-col-a {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: fadeUp 600ms var(--spring) 300ms forwards;
+  }
+  .after-col-b {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: fadeUp 600ms var(--spring) 450ms forwards;
+    padding-top: 26px; /* aligns col-b's first card with col-a's first card (col-a has the label) */
+  }
+
+  /* Platform tile (image + caption underneath) */
+  .platform-tile {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .preview-frame {
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    background: transparent;
+    position: relative;
+  }
+  .preview-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 8px;
+  }
+  /* Per-tile aspect ratios from Figma */
+  .t-imessage-travel    .preview-frame { aspect-ratio: 734 / 620; }
+  .t-whatsapp-aividio   .preview-frame { aspect-ratio: 696 / 1084; }
+  .t-facebook-asteroid  .preview-frame { aspect-ratio: 1040 / 754; }
+  .t-imessage-asteroid  .preview-frame { aspect-ratio: 560 / 1066; }
+  .t-instagram-baking   .preview-frame { aspect-ratio: 1030 / 1726; }
+
+  .platform-name {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: var(--text-sec);
+    text-align: center;
+  }
+
+  /* Placeholder fill (shown when img missing) */
+  .preview-placeholder {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    background:
+      repeating-linear-gradient(
+        45deg,
+        rgba(224,223,228,0.04),
+        rgba(224,223,228,0.04) 10px,
+        rgba(224,223,228,0.015) 10px,
+        rgba(224,223,228,0.015) 20px
+      );
+    border: 1px dashed rgba(224,223,228,0.12);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 16px;
+    text-align: center;
+  }
+  .placeholder-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    color: var(--text-sec);
+    line-height: 1.4;
+  }
+  .placeholder-path {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5px;
+    color: var(--text-ter);
+    line-height: 1.5;
+    word-break: break-all;
+  }
+
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+  /* Mobile (Figma node 1066:8): BEFORE full-width on top, horizontal divider, AFTER stays as 2-col grid */
+  @media (max-width: 600px) {
+    .content-row {
+      flex-direction: column;
+      gap: 28px;
+      padding: 32px 24px;
+      align-items: stretch;
+    }
+    .before-col {
+      width: 100%;
+      align-items: center;
+    }
+    .before-col .col-label { text-align: center; }
+    .before-col .hub-center { padding: 0 32px 16px; }
+    .divider {
+      width: 100%;
+      height: 1px;
+      align-self: stretch;
+    }
+    .after-wrapper {
+      gap: 12px;
+    }
+    .after-col-b {
+      padding-top: 3px;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .content-row { padding: 24px 16px; }
+    .before-col .hub-center { padding: 0 16px 12px; }
+  }
+
+  body.embedded {
+    padding: 0; min-height: auto; display: block;
+    background: transparent; overflow: hidden; align-items: initial;
+  }
+  body.embedded .diagram { width: 100%; border-radius: 0; }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="content-row">
+
+      <!-- BEFORE column -->
+      <div class="before-col">
+        <div class="col-label">Before</div>
+        <div class="hub-center">
+          <div class="legacy-frame">
+            <img src="assets/shr10-legacy-share-preview.png" alt="Legacy share preview — raw URL with utm tracking parameters" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="preview-placeholder" style="display:none;">
+              <div class="placeholder-label">Legacy share preview</div>
+              <div class="placeholder-path">shr10-legacy-share-preview.png</div>
+            </div>
+          </div>
+          <div class="legacy-caption">Legacy share preview</div>
+        </div>
+      </div>
+
+      <!-- Divider (vertical on desktop, horizontal on mobile) -->
+      <div class="divider" aria-hidden="true"></div>
+
+      <!-- AFTER wrapper: 2-col grid that holds at all breakpoints -->
+      <div class="after-wrapper">
+
+        <!-- AFTER column A: iMessage travel, WhatsApp aividio, Facebook Asteroid -->
+        <div class="after-col-a">
+          <div class="col-label">After</div>
+
+          <div class="platform-tile t-imessage-travel">
+            <div class="preview-frame">
+              <img src="assets/shr10-imessage-travel.png" alt="iMessage preview of r/travel desert destination post" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="preview-placeholder" style="display:none;">
+                <div class="placeholder-label">iMessage &mdash; travel post</div>
+                <div class="placeholder-path">shr10-imessage-travel.png</div>
+              </div>
+            </div>
+            <div class="platform-name">iMessage</div>
+          </div>
+
+          <div class="platform-tile t-whatsapp-aividio">
+            <div class="preview-frame">
+              <img src="assets/shr10-whatsapp-aividio.png" alt="WhatsApp preview of r/aividio post" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="preview-placeholder" style="display:none;">
+                <div class="placeholder-label">WhatsApp &mdash; aividio post</div>
+                <div class="placeholder-path">shr10-whatsapp-aividio.png</div>
+              </div>
+            </div>
+            <div class="platform-name">Whatsapp</div>
+          </div>
+
+          <div class="platform-tile t-facebook-asteroid">
+            <div class="preview-frame">
+              <img src="assets/shr10-facebook-asteroid.png" alt="Facebook post sharing r/movies Asteroid City poster" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="preview-placeholder" style="display:none;">
+                <div class="placeholder-label">Facebook &mdash; Asteroid City post</div>
+                <div class="placeholder-path">shr10-facebook-asteroid.png</div>
+              </div>
+            </div>
+            <div class="platform-name">Facebook</div>
+          </div>
+        </div>
+
+        <!-- AFTER column B: iMessage Asteroid (tall), Instagram baking (taller) -->
+        <div class="after-col-b">
+
+          <div class="platform-tile t-imessage-asteroid">
+            <div class="preview-frame">
+              <img src="assets/shr10-imessage-asteroid.png" alt="iMessage preview of r/movies Asteroid City post with poster" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="preview-placeholder" style="display:none;">
+                <div class="placeholder-label">iMessage &mdash; Asteroid City poster</div>
+                <div class="placeholder-path">shr10-imessage-asteroid.png</div>
+              </div>
+            </div>
+            <div class="platform-name">iMessage</div>
+          </div>
+
+          <div class="platform-tile t-instagram-baking">
+            <div class="preview-frame">
+              <img src="assets/shr10-instagram-baking.png" alt="Instagram post sharing r/baking content" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="preview-placeholder" style="display:none;">
+                <div class="placeholder-label">Instagram &mdash; baking post</div>
+                <div class="placeholder-path">shr10-instagram-baking.png</div>
+              </div>
+            </div>
+            <div class="platform-name">Instagram</div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+<!-- diagram-height-poster v1 -->
+<script>
+(function () {
+  function compute() {
+    var d = document.querySelector('.diagram');
+    if (d) {
+      var rect = d.getBoundingClientRect();
+      if (rect.height > 0) return Math.ceil(rect.height);
+    }
+    return Math.max(
+      document.documentElement ? document.documentElement.scrollHeight : 0,
+      document.body ? document.body.scrollHeight : 0
+    );
+  }
+  function send() {
+    if (!window.parent || window.parent === window) return;
+    var h = compute();
+    if (h > 0) window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', send);
+  else send();
+  window.addEventListener('load', send);
+  setTimeout(send, 50); setTimeout(send, 250); setTimeout(send, 1000);
+  if (window.ResizeObserver) {
+    var ro = new ResizeObserver(send);
+    var d = document.querySelector('.diagram');
+    if (d) ro.observe(d);
+    if (document.body) ro.observe(document.body);
+  }
+  window.addEventListener('resize', function () {
+    requestAnimationFrame(send);
+    setTimeout(send, 50);
+  });
+  window.addEventListener('message', function (e) {
+    if (e && e.data && e.data.type === 'request-diagram-height') {
+      requestAnimationFrame(send);
+    }
+  });
+})();
+</script>
+</body>
+</html>

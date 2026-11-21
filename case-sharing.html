@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="How I designed a 3-stage sharing system to capture off-platform reach for Reddit's 100M+ daily active users.">
+    <meta name="description" content="How I designed a sharing growth loop to capture off-platform reach for Reddit's 100M+ daily active users.">
     <title>Sharing &amp; Embeds — Della Sigrest</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -81,86 +81,100 @@
 
             <section class="case-body">
 
-                <!-- Challenge -->
-                <h2>Challenge</h2>
+                <!-- ═══════════════════════════════════════════ -->
+                <!-- §2 — Designing a sharing growth loop       -->
+                <!-- (merges old Challenge + Solution)          -->
+                <!-- ═══════════════════════════════════════════ -->
+
+                <h2>Designing a sharing growth loop</h2>
 
                 <p>Reddit content was already everywhere on the internet&mdash;but without attribution. Screenshots stripped context, URLs looked sketchy, and the platform had no recognizable off-platform presence. Seven-figure daily sharing volume, completely unoptimized.</p>
 
+                <p>As the <strong>first designer on this team</strong>, I stood up design workflows, established cross-functional processes, and framed sharing as a growth loop I owned end-to-end. The goal: make proper sharing channels faster and more appealing than a screenshot, so attribution and brand travel with every piece of content that leaves the platform.</p>
+
                 <div class="case-img-full diagram-embed" data-diagram="shr-01">
                     <iframe
-                        src="img/diagrams/diagram-shr01-before-share-sheet-v5.html"
+                        src="img/diagrams/diagram-shr01-before-share-sheet-v6.html?v=2026-05-22"
                         loading="lazy"
                         scrolling="no"
-                        title="Default iOS share sheet — before state, real screenshot with annotated friction points"
-                        style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-                    ></iframe>
-                </div>
-
-                <!-- Solution -->
-                <h2>Solution</h2>
-
-                <p>As the <strong>first designer on this team</strong>, I stood up design workflows, established cross-functional processes, and framed sharing as a three-stage system I owned end-to-end. The goal: make proper sharing channels faster and more appealing than a screenshot, so attribution and brand travel with every piece of content that leaves the platform.</p>
-
-                <div class="case-img-full diagram-embed" data-diagram="shr-02">
-                    <iframe
-                        src="img/diagrams/diagram-shr02-after-branded-sharing-v4.html"
-                        loading="lazy"
-                        scrolling="no"
-                        title="Branded share sheet — after state with rich previews and privacy controls"
+                        title="Before/after share sheet — iOS default versus Reddit custom"
                         style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
                     ></iframe>
                 </div>
 
 
                 <!-- ═══════════════════════════════════════════ -->
-                <!-- RESEARCH FOUNDATION                        -->
+                <!-- §3 — Understanding both sides of sharing   -->
                 <!-- ═══════════════════════════════════════════ -->
 
-                <h2>Research</h2>
+                <h2>Understanding both sides of sharing</h2>
 
-                <p>I partnered with UXR on a longitudinal, foundational study that ran the length of this project&mdash;spanning social behavior on pseudonymous platforms, privacy perception, and sharing motivations across both Reddit users and non-users. The study shaped every stage of the framework.</p>
+                <p>I partnered with UXR on a longitudinal, foundational study that ran the length of this project&mdash;<strong>spanning four cohorts</strong> (new users, browsing users, searching visitors, and regulars) across social behavior on pseudonymous platforms, privacy perception, and sharing motivations. The study shaped every stage of the framework.</p>
 
                 <div class="case-img-full diagram-embed" data-diagram="shr-03">
                     <iframe
-                      src="img/diagrams/diagram-shr03-research-overview-v4.html"
+                      src="img/diagrams/diagram-shr03-research-overview-v6.html?v=2026-05-22"
                       loading="lazy"
                       scrolling="no"
-                      title="Research overview — study scope, participant types, key research questions"
+                      title="Research overview — participants, study scope, key questions, methodology"
                       style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
                     ></iframe>
                 </div>
 
-                <h3>Testing Both Sides of the Share</h3>
 
-                <p>We tested the existing sharing experience to identify breakdowns, then tested what we&rsquo;d designed with the same participants to validate whether we&rsquo;d addressed the actual problems. We also user-tested different preview formats with non-Redditors to understand what made sense, what didn&rsquo;t, and what they&rsquo;d expect after clicking.</p>
+                <!-- ═══════════════════════════════════════════ -->
+                <!-- §4 — Mapping motivation, inhibition, and   -->
+                <!--      outside perception                    -->
+                <!-- ═══════════════════════════════════════════ -->
 
-                <div class="case-img-full diagram-embed" data-diagram="shr-04">
-                    <iframe
-                      src="img/diagrams/diagram-shr04-research-methodology-v4.html"
-                      loading="lazy"
-                      scrolling="no"
-                      title="Research methodology — before/after testing with same participants, non-Redditor preview comprehension"
-                      style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-                    ></iframe>
-                </div>
-
-                <h3>Foundational Questions</h3>
+                <h2>Mapping motivation, inhibition, and outside perception</h2>
 
                 <p>Our team&rsquo;s core product questions shaped UXR&rsquo;s study design&mdash;what motivates sharing on a pseudonymous platform, what inhibits it, and how do non-users perceive Reddit content when they encounter it in the wild? The answers built the behavioral model that informed every design decision in this project.</p>
 
                 <div class="case-img-full diagram-embed" data-diagram="shr-05">
                     <iframe
-                      src="img/diagrams/diagram-shr05-behavioral-model-v4.html"
+                      src="img/diagrams/diagram-shr05-behavioral-model-v6.html?v=2026-05-22"
                       loading="lazy"
                       scrolling="no"
-                      title="Behavioral model — sharing motivations, inhibitors, and non-user perception"
+                      title="Behavioral model — motivators, inhibitors, and user perception"
                       style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
                     ></iframe>
                 </div>
 
 
                 <!-- ═══════════════════════════════════════════ -->
-                <!-- SECTION 1: STREAMLINE SHARING              -->
+                <!-- §5 — Reducing risk and effort              -->
+                <!-- ═══════════════════════════════════════════ -->
+
+                <h2>Reducing risk and effort</h2>
+
+                <p>The research surfaced an asymmetry the work had to address: <strong>senders saw sharing as a risk to manage; recipients saw shared content as effort, not value.</strong> Every downstream design decision worked to reduce both.</p>
+
+                <p>We tested the existing sharing experience to identify breakdowns, then tested what we&rsquo;d designed with the same participants to validate whether we&rsquo;d addressed the actual problems. We also user-tested different preview formats with non-Redditors to understand what made sense, what didn&rsquo;t, and what they&rsquo;d expect after clicking.</p>
+
+                <div class="case-img-full diagram-embed" data-diagram="shr-04">
+                    <iframe
+                      src="img/diagrams/diagram-shr04-research-methodology-v6.html?v=2026-05-22"
+                      loading="lazy"
+                      scrolling="no"
+                      title="Research methodology — senders' perceptions of sharing, recipients' perceptions of receiving"
+                      style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+                    ></iframe>
+                </div>
+
+
+                <!-- ═══════════════════════════════════════════ -->
+                <!-- Bridge — Three principles for the growth   -->
+                <!--          loop                              -->
+                <!-- ═══════════════════════════════════════════ -->
+
+                <h3>Three principles for the growth loop</h3>
+
+                <p>The growth loop only works if each leg pulls its weight &mdash; <strong>sharing has to be easy, shared content has to feel enticing, and sharing has to feel trustworthy.</strong> Those three design principles became the three pillars of the work: Streamline Sharing, Simplify Engagement, and Establish Trust.</p>
+
+
+                <!-- ═══════════════════════════════════════════ -->
+                <!-- §6 — 01 Streamline Sharing                 -->
                 <!-- ═══════════════════════════════════════════ -->
 
                 <h2><span class="section-num">01</span> Streamline Sharing</h2>
@@ -169,126 +183,98 @@
 
                 <div class="case-img-full diagram-embed" data-diagram="shr-06">
                     <iframe
-                        src="img/diagrams/diagram-shr06-before-entry-points-v4.html"
+                        src="img/diagrams/diagram-shr06-share-icon-comparison-v1.html?v=2026-05-22"
                         loading="lazy"
                         scrolling="no"
-                        title="Sharing entry points — before state across the Reddit app"
+                        title="Share icon comparison — connected nodes, curved arrow (best fit), export sheet"
                         style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
                     ></iframe>
                 </div>
 
-                <!-- Subsection: Surface sharing contextually -->
-                <h3>Surface Sharing Contextually</h3>
-
-                <p>Sharing was buried in overflow menus&mdash;invisible at the moments users were most likely to want it. I mapped contextual triggers across the post detail page and feed, then surfaced controls directly at those points.</p>
-
-                <div class="case-img-full diagram-embed" data-diagram="shr-07">
-                    <iframe
-                        src="img/diagrams/diagram-shr07-contextual-share-controls-v4.html"
-                        loading="lazy"
-                        scrolling="no"
-                        title="Contextual share controls — entry points on post detail page and feed"
-                        style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-                    ></iframe>
-                </div>
-
-                <!-- Subsection: Standardize overflow menus -->
-                <h3>Standardize Overflow Menus</h3>
+                <!-- §6a — Standardize the share menu -->
+                <h3>Standardize the share menu</h3>
 
                 <p>Every overflow button in the app looked different&mdash;inconsistent across every surface. I designed a standardized overflow sheet with share controls at the top, then partnered with design systems and content design to establish a repeatable action hierarchy that held across surfaces with different tool sets.</p>
 
-                <div class="case-img-full diagram-embed" data-diagram="shr-08">
+                <div class="case-img-full diagram-embed" data-diagram="shr-06a">
                     <iframe
-                        src="img/diagrams/diagram-shr08-overflow-standardization-v4.html"
+                        src="img/diagrams/diagram-shr06a-overflow-standardization-v1.html?v=2026-05-22"
                         loading="lazy"
                         scrolling="no"
-                        title="Overflow menu standardization — inconsistent before, unified hierarchy after"
+                        title="Overflow standardization — legacy menu vs. standardized share menu"
                         style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
                     ></iframe>
                 </div>
 
-                <!-- Subsection: Screenshot to share -->
-                <h3>Screenshot to Share</h3>
+                <!-- §6b — Channel Existing Behavior -->
+                <h3>Channel Existing Behavior</h3>
 
-                <p>Users defaulted to screenshots because they were fast and certain. I designed a capture-and-share path that intercepted the screenshot gesture and channeled it into a branded, attributable flow. Instead of fighting the instinct, I built on top of it.</p>
+                <p>Sharing was buried in overflow menus&mdash;invisible at the moments users were most likely to want it. I mapped contextual triggers across the post detail page and feed, then surfaced controls directly at those points.</p>
 
-                <div class="case-img-full diagram-embed" data-diagram="shr-09">
+                <p><strong>Even with contextual entry points in place,</strong> users defaulted to screenshots because they were fast and certain. I designed a capture-and-share path that intercepted the screenshot gesture and channeled it into a branded, attributable flow. Instead of fighting the instinct, I built on top of it.</p>
+
+                <div class="case-img-full diagram-embed" data-diagram="shr-09b">
                     <iframe
-                      src="img/diagrams/diagram-shr09-screenshot-to-share-v4.html"
-                      loading="lazy"
-                      scrolling="no"
-                      title="Screenshot to share — capture-and-share path with branded preview"
-                      style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+                        src="img/diagrams/diagram-shr09b-channel-instinct-v1.html?v=2026-05-22"
+                        loading="lazy"
+                        scrolling="no"
+                        title="Screenshot to share — intercept the gesture, channel it into a branded flow"
+                        style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
                     ></iframe>
                 </div>
 
 
                 <!-- ═══════════════════════════════════════════ -->
-                <!-- SECTION 2: RECEIVE & ENGAGE                -->
+                <!-- §7 — 02 Simplify Engagement                -->
                 <!-- ═══════════════════════════════════════════ -->
 
                 <h2><span class="section-num">02</span> Simplify Engagement</h2>
 
                 <p>Wherever Reddit content appeared off-platform, it needed to be consistent, attributable, and enticing. I designed previews as a first introduction to the platform&mdash;a learning tool that established what Reddit is before anyone ever landed on it.</p>
 
-                <div class="case-img-full diagram-embed" data-diagram="shr-10">
-                    <iframe
-                        src="img/diagrams/diagram-shr10-cross-platform-previews-v4.html"
-                        loading="lazy"
-                        scrolling="no"
-                        title="Cross-platform preview grid — Reddit post on iMessage, WhatsApp, Twitter, LinkedIn"
-                        style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-                    ></iframe>
-                </div>
-
-                <!-- Subsection: Aligning on-platform and off-platform design -->
-                <h3>Aligning Off-Platform with On-Platform</h3>
-
-                <p>I partnered with design systems to build a <strong>preview component system</strong> that scaled across six-plus platforms without per-platform redesigns. Upvotes and comment counts served double duty&mdash;social proof to entice clicks, and education about how the platform works. Reddit&rsquo;s logo anchored brand recognition for first-time viewers.</p>
-
-                <div class="case-img-full diagram-embed" data-diagram="shr-11">
-                    <iframe
-                        src="img/diagrams/diagram-shr11-preview-component-anatomy-v4.html"
-                        loading="lazy"
-                        scrolling="no"
-                        title="Preview component anatomy — upvotes, comment count, and brand anchor callouts"
-                        style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-                    ></iframe>
-                </div>
-
-                <!-- Subsection: Text post previews -->
-                <h3>Text Post Previews</h3>
-
-                <p>Text posts&mdash;the majority of Reddit content&mdash;had no thumbnails at all. Our first attempt generated full desktop-page screenshots, which were <strong>illegible at mobile preview scale</strong>. Rather than pushing for a larger preview surface, I redesigned what to show&mdash;working with engineering to strip chrome, isolate the text body and title, and tune truncation until we had crisp, legible cards that scaled for both long and short form.</p>
-
-                <div class="case-img-full diagram-embed" data-diagram="shr-12">
-                    <iframe
-                        src="img/diagrams/diagram-shr12-text-post-preview-v4.html"
-                        loading="lazy"
-                        scrolling="no"
-                        title="Text post preview iteration — early desktop screenshot vs. final crisp text card"
-                        style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-                    ></iframe>
-                </div>
-
-                <!-- Subsection: Brand expression vs. systematic scalability -->
-                <h3>Balancing Brand Expression and Systematic Scale</h3>
+                <!-- §7a — Building brand awareness with previews -->
+                <h3>Building brand awareness with previews</h3>
 
                 <p>I worked with OrangeRed&mdash;Reddit&rsquo;s external branding team&mdash;to negotiate the core brand components previews needed to carry. OrangeRed favored rich illustrative concepts; design systems pushed for scalable UI. <strong>The resolution: model previews off familiar Reddit platform patterns</strong>, injecting brand in high-visibility spots&mdash;upvotes and downvotes are brand elements too, not just the logo&mdash;so the system carried recognition without sacrificing scalability across six-plus platforms.</p>
 
                 <div class="case-img-full diagram-embed" data-diagram="shr-13">
                     <iframe
-                      src="img/diagrams/diagram-shr13-brand-expression-spectrum-v4.html"
+                      src="img/diagrams/diagram-shr13-brand-expression-spectrum-v6.html?v=2026-05-22"
                       loading="lazy"
                       scrolling="no"
-                      title="Brand expression spectrum — illustrative vs. systematic vs. balanced resolution"
+                      title="Brand expression spectrum — expression vs. scalability, with the resolution point in between"
                       style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
                     ></iframe>
                 </div>
 
+                <!-- §7b — Designing first impressions off-platform -->
+                <h3>Designing first impressions off-platform</h3>
+
+                <p>I partnered with design systems to build a <strong>preview component system</strong> that scaled across six-plus platforms without per-platform redesigns. Upvotes and comment counts served double duty&mdash;social proof to entice clicks, and education about how the platform works. Reddit&rsquo;s logo anchored brand recognition for first-time viewers.</p>
+
+                <div class="case-img-full diagram-embed" data-diagram="shr-10">
+                    <iframe
+                      src="img/diagrams/diagram-shr10-cross-platform-previews-v6.html?v=2026-05-22"
+                      loading="lazy"
+                      scrolling="no"
+                      title="Cross-platform previews — Reddit content on iMessage, WhatsApp, Facebook, Instagram"
+                      style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+                    ></iframe>
+                </div>
+
+                <!-- §7c — Creating previews for text posts -->
+                <h3>Creating previews for text posts</h3>
+
+                <p>Text posts&mdash;the majority of Reddit content&mdash;had no thumbnails at all. Our first attempt generated full desktop-page screenshots, which were <strong>illegible at mobile preview scale</strong>. Rather than pushing for a larger preview surface, I redesigned what to show&mdash;working with engineering to strip chrome, isolate the text body and title, and tune truncation until we had crisp, legible cards that scaled for both long and short form.</p>
+
+                <!-- SHR-12 — pending Figma mock from Della -->
+                <div class="case-img-full">
+                    <div class="img-placeholder">SHR-12 &mdash; text post previews (BEFORE generic fallback / AFTER stripped chrome) &mdash; pending Figma mock</div>
+                </div>
+
 
                 <!-- ═══════════════════════════════════════════ -->
-                <!-- SECTION 3: TRUST                           -->
+                <!-- §8 — 03 Establish Trust                    -->
                 <!-- ═══════════════════════════════════════════ -->
 
                 <h2><span class="section-num">03</span> Establish Trust</h2>
@@ -297,7 +283,7 @@
 
                 <div class="case-img-full diagram-embed" data-diagram="shr-14">
                     <iframe
-                      src="img/diagrams/diagram-shr14-privacy-barrier-v4.html"
+                      src="img/diagrams/diagram-shr14-privacy-barrier-v6.html?v=2026-05-22"
                       loading="lazy"
                       scrolling="no"
                       title="Privacy barrier — identity exposure, recipient view unknown, trust gap"
@@ -305,69 +291,61 @@
                     ></iframe>
                 </div>
 
-                <!-- Subsection: Custom share sheet -->
-                <h3>Custom Share Sheet</h3>
+                <!-- §8a — Redesigning the share sheet -->
+                <h3>Redesigning the share sheet</h3>
 
                 <p>I replaced the iOS default&mdash;a text list users scrolled through blindly&mdash;with a <strong>visual icon grid</strong> that surfaced each user&rsquo;s most-used channels first. The grid reordered dynamically based on sharing history, with considerations for the cold-start default and the threshold for promoting a channel.</p>
 
-                <div class="case-img-full">
-                    <div class="img-placeholder">Custom share sheet v1 &mdash; visual grid with personalized channel order (before: text list / after: icon grid)</div>
+                <div class="case-img-full diagram-embed" data-diagram="shr-08">
+                    <iframe
+                      src="img/diagrams/diagram-shr08-custom-share-sheet-v6.html?v=2026-05-22"
+                      loading="lazy"
+                      scrolling="no"
+                      title="Custom share sheet — V1 standardized hierarchy versus V2 with preview + privacy disclosure"
+                      style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
+                    ></iframe>
                 </div>
 
-                <!-- Subsection: Share preview and privacy -->
-                <h3>What V1 Didn&rsquo;t Solve</h3>
+                <!-- §8b — Closing the trust gap (no diagram) -->
+                <h3>Closing the trust gap</h3>
 
                 <p>The redesigned share sheet shipped&mdash;and <strong>users still hesitated</strong>. Research showed the barrier wasn&rsquo;t speed&mdash;it was that users on a pseudonymous platform couldn&rsquo;t tell what information would travel with the share. I added a live preview of exactly what the recipient would see, plus an explicit privacy disclosure confirming the sender&rsquo;s username wouldn&rsquo;t be exposed&mdash;the preview became the trust mechanism.</p>
 
+                <!-- §8c — Privacy on the profile (NEW Phase 2c section) -->
+                <h3>Privacy on the profile</h3>
+
+                <p>The trust lens extended past sharing. Working with the Profile team, I pulled privacy controls onto the profile itself &mdash; a single surface where a user could see what others saw of them, and remove anything they didn&rsquo;t want public. Privacy stopped being something users had to hunt for; it lived where they already were.</p>
+
+                <!-- SHR-16 — pending Figma mock from Della -->
                 <div class="case-img-full">
-                    <div class="img-placeholder">Custom share sheet v2 &mdash; live preview + privacy disclosure added above the channel grid</div>
-                </div>
-
-                <!-- Subsection: Embedding tools for publishers -->
-                <h3>Embedding Tools for Publishers</h3>
-
-                <p>Publishers were already embedding Reddit content commercially&mdash;we weren&rsquo;t giving them proper tools to do it well. I worked directly with publishers to build an embedding tool that made the attributed, well-formatted path easier than screenshotting.</p>
-
-                <div class="case-img-full">
-                    <div class="img-placeholder">Embed tool &mdash; publisher-facing interface for embedding Reddit content with proper attribution</div>
+                    <div class="img-placeholder">SHR-16 &mdash; profile privacy (profile view with privacy controls surfaced inline) &mdash; pending Figma mock</div>
                 </div>
 
 
                 <!-- ═══════════════════════════════════════════ -->
-                <!-- RESULT                                     -->
+                <!-- §9 (merged §9 + §10) — The growth loop in -->
+                <!--                          motion           -->
                 <!-- ═══════════════════════════════════════════ -->
 
-                <h2>The Result</h2>
+                <h2>The growth loop in motion</h2>
 
                 <p>Reddit went from zero sharing infrastructure to optimized, branded experiences across every major channel. <strong>Inbound traffic from shared content increased</strong>, attributed content appeared more frequently off-platform, and the preview component system became the foundation for a public embed API. The privacy-as-growth-lever framework shaped how growth teams across Reddit approached user control as a distribution strategy.</p>
 
+                <p>The preview component system also extended to publishers &mdash; a public embed API that built on the same work, making the attributed path easier than screenshotting.</p>
+
                 <div class="case-img-full diagram-embed" data-diagram="shr-e1">
                     <iframe
-                      src="img/diagrams/diagram-shre1-feedback-engine-v4.html"
+                      src="img/diagrams/diagram-shre1-result-cycle-v6.html?v=2026-05-22"
                       loading="lazy"
                       scrolling="no"
-                      title="The feedback engine — share, engage, trust cycle"
+                      title="Result cycle — Share, Engage, Trust with trust fueling more sharing"
                       style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
                     ></iframe>
                 </div>
 
-                <div class="case-img-full diagram-embed diagram-pair" data-diagram="shr-fw">
-                    <iframe
-                      class="desktop-variant"
-                      src="img/diagrams/diagram-shrfw-flywheel-v4.html"
-                      loading="lazy"
-                      scrolling="no"
-                      title="Share, Engage, Trust flywheel — the growth loop"
-                      style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-                    ></iframe>
-                    <iframe
-                      class="mobile-variant"
-                      src="img/diagrams/diagram-shrfw-flywheel-v4-mobile.html"
-                      loading="lazy"
-                      scrolling="no"
-                      title="Share, Engage, Trust flywheel (mobile) — vertical loop with return path"
-                      style="width: 100%; border: none; border-radius: 12px; overflow: hidden;"
-                    ></iframe>
+                <!-- SHR-15 — outcomes panel; pending Della's design -->
+                <div class="case-img-full">
+                    <div class="img-placeholder">SHR-15 &mdash; outcomes panel (sister NOT-08 + NOT-14 v2 closing pattern) &mdash; pending design</div>
                 </div>
 
                 <div class="metrics-callout">

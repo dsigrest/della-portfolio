@@ -1,8 +1,26 @@
 # Build Log — Della Sigrest Portfolio
 
 **Started:** March 12, 2026
-**Last updated:** May 15, 2026
+**Last updated:** May 26, 2026
 **Status:** Active
+
+## 2026-05-26 PM — DoorDash R1 Phase 5c: Reddit Answers RA1 reorder + dark-mode density pass
+
+Fresh thread executed against Phase 5c kickoff at `sessions/resume-prompt-doordash-phase-5c.md`. Two scopes, both done, ~1 hr.
+
+**RA1 reorder shipped, refined to canonical.** 16 slides at positions 56-71 in `JoHHpWYiNFThasXRAjApzC` reordered from non-linear order (Outcome before Strategy, Overview after Tension) to Caroline-arc sequence per Phase 3b audit § RA1. Della then found the original case-study sequence and applied two tweaks on top of the audit suggestion: **Strategy ↔ Reframe swap (slides 58↔60)** so Strategy precedes the Reframe moment, and **restructured 63-68** to Exploration → Source layer → Voice → Fidelity → Evaluation → Feedback pattern (outside-in design → structural → voice refinement → governance → process artifact → cross-team adoption). **Canonical order (pos 56 → 71):** Cover → Overview → Strategy → Tension → Reframe → Architecture → Principles → Exploration → Source layer → Voice → Fidelity → Evaluation → Feedback pattern → Graceful degradation → Shipped → Outcome. Single SLIDE_ROW (`1:53`) holds all 19 slides at positions 53-71; reorder = sequential `row.insertChild(targetIdx, slide)` for the 16 children at indices 3-18; Della's tweaks applied directly in Figma Slides. Final overview screenshot at `working/phase-3-deck-audit/screenshots/reddit-answers-canonical-order-overview.png`.
+
+**Dark-mode density pass: NO-OP.** Same 5-point checklist from Block 3 (eyebrow teal `#7FB5B0`, muted text opacity, hairlines ≥ 1px ≥ 0.08 opacity, chip borders ≥ 1px ≥ 0.15 opacity, phone bg matches deck navy) scanned across all 16 slides. Programmatic flags raised: 9 eyebrow "fails" all resolved to false positives (iOS status bar `9:41`/`100%` inside phone mockups; matrix column color labels like `GOOGLEBOT`/`CHARACTER`/`TOOL`/`NO IDENTITY`); 16 chip-border-opacity "fails" all resolved to false positives (skeleton placeholder bars inside phone mockups, intentional opacity 0.04-0.07 to read as content placement not real text). Spot-checked 6 hero slides visually (56 cover, 57 Overview, 61 Architecture, 67 Fidelity, 69 Graceful degradation, 71 Outcome) — all section eyebrows render teal, hierarchy clean, hierarchy intact. Reddit Answers case was built to the same density bar Notifications hit in Block 3 — the lesson didn't have to be re-applied. **0 nodes edited.** Full tracker at `working/planning-docs/reddit-answers-density-tracker-2026-05-26.md`.
+
+**Speaker notes BRIDGE → re-walked against canonical order — 1 break only.** After Della's tweaks landed, 15 of 16 bridges flow into the new next slide correctly (the original speaker notes were written against this canonical sequence, so most cues fit naturally). Sole remaining break: slide 67 Evaluation → next 68 Feedback pattern (current bridge "the same quality signals also told us when not to show synthesis at all" skips ahead to Graceful degradation at 69, missing Feedback pattern). Flagged at `working/planning-docs/reddit-answers-bridge-flags-2026-05-26.md` with suggested rewrite. Per Phase 5c rule, did NOT auto-edit — Della's voice is too specific.
+
+**Phase 3b audit doc updated** with ✓ RA1 SHIPPED, ✓ RA2 density NO-OP, ⚠ RA3 bridge flags stamps. Audit doc lives at `working/planning-docs/completed-audits/phase-3b-reddit-answers-audit-2026-05-24.md`.
+
+**Lessons:** No new Figma plugin gotchas surfaced — `row.insertChild(targetIdx, slide)` worked first try for slide reordering when called sequentially in target-index order. Worth noting in `Skills/html-to-figma/references/plugin-api-gotchas.md` if a future thread reorders SLIDE_ROW children: insertChild handles re-parenting cleanly, each call shifts indices automatically, but the row stays consistent if you walk target indices low → high.
+
+**Open items for Della:** (1) walk slides 56-71 in presenter mode and confirm new order reads correctly end-to-end; (2) fix the 4 BRIDGE → breaks (and optionally 3 soft mismatches) per the flagging doc; (3) verify 15M WAU metric on slide 71 against `verified-facts-registry.md` (Phase 3b § RA4 carry-forward); (4) optional RA5-RA7 polish items still queued from Phase 3b audit.
+
+**No git activity from sandbox** — all writes are workspace-local markdown + Figma plugin mutations. Portfolio repo dirty tree on `restructure/case-sharing-v2` (case-sharing.html + ~25 untracked shr* diagram files) remains untouched per Della's session-start call ("leave as-is — parallel scope").
 
 ## 2026-05-15 — case-ai polish: feedback iteration + figma-to-html v2.12.0
 

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="figma-source" content="node:1490:6985 page:29:41 file:TArUrZsBUocaAsqetjXq7V">
+<title>SHR-01 — Before & After: Share Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --accent-15: rgba(127,181,176,0.15);
+    --red: #C47878;
+    --red-dim: rgba(196,120,120,0.12);
+    --red-15: rgba(196,120,120,0.15);
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--canvas);
+    display: flex;
+    justify-content: center;
+    padding: 16px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .diagram {
+    width: 100%;
+    max-width: 760px;
+    background: transparent;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    padding: 24px 0;
+  }
+
+  .comparison-wrap { padding: 0 24px; }
+  .comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: stretch;
+  }
+  .col {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .col-body {
+    display: flex;
+    gap: 16px;
+    align-items: stretch;
+    width: 100%;
+    flex: 1;
+  }
+  .col-body .annotations,
+  .col-body .screenshot { flex: 1 0 0; min-width: 0; }
+
+  .annotations {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    /* Anchor labels to the top of each column body — keeps BEFORE and AFTER
+       labels at the same vertical position even when annotation copy lengths differ */
+    justify-content: flex-start;
+  }
+  .col-header {
+    display: flex;
+    align-items: center;
+    padding-left: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .col.before .col-header { color: var(--red); }
+  .col.after  .col-header { color: var(--accent); }
+
+  .annotation {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px 0;
+    border-radius: 10px;
+  }
+  .annotation .ann-icon {
+    width: 16px; height: 16px;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .annotation .ann-content {
+    display: flex; flex-direction: column; gap: 1px;
+    min-width: 0; flex: 1 0 0;
+  }
+  .annotation .ann-title {
+    font-size: 11px; font-weight: 600; line-height: 1.25;
+    color: var(--text-pri);
+  }
+  .annotation .ann-desc {
+    font-size: 10px; font-weight: 400; line-height: 1.4;
+  }
+  .col.before .annotation .ann-desc { color: var(--text-sec); }
+  .col.after  .annotation .ann-desc { color: var(--text-ter); }
+  .annotation.problem  .ann-icon { color: var(--red); }
+  .annotation.solution .ann-icon { color: var(--accent); }
+
+  .screenshot {
+    display: flex;
+    /* Anchor the mock to the top of its half so it lines up with the column label */
+    align-items: flex-start;
+    justify-content: center;
+  }
+  .mock {
+    position: relative;
+    width: 100%;
+    /* Lock mock to a phone aspect so BEFORE and AFTER columns
+       are always the same height regardless of annotation length */
+    aspect-ratio: 1170 / 2532;
+    border-radius: 11px;
+    overflow: hidden;
+    /* Transparent so the phone PNG's natural corners blend into the canvas
+       instead of revealing a light fill through the transparent corner pixels */
+    background: transparent;
+    box-shadow:
+      0 1px 3px rgba(0,0,0,0.3),
+      0 8px 24px rgba(0,0,0,0.25);
+  }
+  .mock img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+  /* Fallback while exports are pending — fills the mock's locked aspect-ratio */
+  .mock .placeholder-fallback {
+    width: 100%;
+    height: 100%;
+    background:
+      repeating-linear-gradient(
+        45deg,
+        rgba(20,20,20,0.04),
+        rgba(20,20,20,0.04) 10px,
+        rgba(20,20,20,0.015) 10px,
+        rgba(20,20,20,0.015) 20px
+      );
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 20px;
+    text-align: center;
+    color: #2a2a2a;
+  }
+  .placeholder-label { font-family: 'Inter', sans-serif; font-size: 11px; line-height: 1.4; }
+  .placeholder-path { font-family: 'JetBrains Mono', monospace; font-size: 9px; line-height: 1.5; opacity: 0.6; word-break: break-all; }
+
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .col.before { animation: fadeSlideIn 0.5s ease-out 80ms forwards; opacity: 0; }
+  .col.after  { animation: fadeSlideIn 0.5s ease-out 160ms forwards; opacity: 0; }
+
+  @media (max-width: 768px) {
+    .comparison-wrap { padding: 0 16px; }
+    .comparison { gap: 16px; }
+    .col-body { gap: 12px; }
+  }
+  /* Mobile: stack columns into 2 rows, each row keeps annotations + phone side-by-side.
+     Row 1: BEFORE text | BEFORE screen
+     Row 2: AFTER  screen | AFTER text */
+  @media (max-width: 600px) {
+    .comparison-wrap { padding: 0 16px; }
+    .comparison {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .col-body { gap: 16px; }
+    .annotation { padding: 6px 0; }
+  }
+
+  body.embedded { padding: 0; background: transparent; min-height: auto; display: block; overflow: hidden; }
+  body.embedded .diagram { width: 100%; max-width: none; border-radius: 0; }
+</style>
+</head>
+<body>
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+<div class="diagram" data-diagram-id="shr01">
+
+  <div class="comparison-wrap">
+    <div class="comparison">
+
+      <!-- ── BEFORE column: annotations | phone ── -->
+      <div class="col before">
+        <div class="col-body">
+          <div class="annotations">
+            <div class="col-header">Before</div>
+
+            <div class="annotation problem">
+              <div class="ann-icon">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+                  <path d="M5.25 5.25L10.75 10.75M10.75 5.25L5.25 10.75" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="ann-content">
+                <div class="ann-title">Raw URL, no preview</div>
+                <div class="ann-desc">Recipients see a cryptic reddit.com link with no title, image, or context. No reason to tap.</div>
+              </div>
+            </div>
+
+            <div class="annotation problem">
+              <div class="ann-icon">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+                  <path d="M5.25 5.25L10.75 10.75M10.75 5.25L5.25 10.75" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="ann-content">
+                <div class="ann-title">Zero brand presence</div>
+                <div class="ann-desc">Generic system sheet &mdash; no Reddit logo, no visual identity. Content leaves the platform with no attribution.</div>
+              </div>
+            </div>
+
+            <div class="annotation problem">
+              <div class="ann-icon">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+                  <path d="M5.25 5.25L10.75 10.75M10.75 5.25L5.25 10.75" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="ann-content">
+                <div class="ann-title">No sharing intelligence</div>
+                <div class="ann-desc">Same generic action list for every post type. No contextual suggestions, no engagement data, no smart ordering.</div>
+              </div>
+            </div>
+
+            <div class="annotation problem">
+              <div class="ann-icon">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+                  <path d="M5.25 5.25L10.75 10.75M10.75 5.25L5.25 10.75" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="ann-content">
+                <div class="ann-title">Screenshot workaround</div>
+                <div class="ann-desc">Users screenshotted posts instead of sharing &mdash; stripping context, engagement data, and platform links entirely.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="screenshot">
+            <div class="mock" aria-label="iOS default share sheet — raw reddit.com URL with no preview">
+              <img src="assets/shr01-ios-share-sheet.png" alt="iOS default share sheet showing raw reddit.com URL with no title, preview, or branding" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="placeholder-fallback" style="display:none;">
+                <div class="placeholder-label">iOS default share sheet<br>(BEFORE)</div>
+                <div class="placeholder-path">assets/shr01-ios-share-sheet.png</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── AFTER column: phone | annotations ── -->
+      <div class="col after">
+        <div class="col-body">
+          <div class="screenshot">
+            <div class="mock" aria-label="Reddit custom share sheet — rich preview, privacy disclosure, branded channel grid">
+              <img src="assets/shr-share-sheet-custom.png" alt="Reddit custom share sheet with post preview, privacy disclosure, and branded channel grid" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="placeholder-fallback" style="display:none;">
+                <div class="placeholder-label">Reddit custom share sheet<br>(AFTER)</div>
+                <div class="placeholder-path">assets/shr-share-sheet-custom.png</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="annotations">
+            <div class="col-header">After</div>
+
+            <div class="annotation solution">
+              <div class="ann-icon">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+                  <path d="M4.75 8.5L7 10.75L11.25 5.75" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="ann-content">
+                <div class="ann-title">Rich preview with context</div>
+                <div class="ann-desc">Recipients see the post title, subreddit, upvotes, and comment count before tapping. Social proof and platform education in every share.</div>
+              </div>
+            </div>
+
+            <div class="annotation solution">
+              <div class="ann-icon">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+                  <path d="M4.75 8.5L7 10.75L11.25 5.75" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="ann-content">
+                <div class="ann-title">Privacy as growth lever</div>
+                <div class="ann-desc">Explicit disclosure that username won&rsquo;t be exposed. On a pseudonymous platform, trust unlocked the volume that speed and aesthetics couldn&rsquo;t.</div>
+              </div>
+            </div>
+
+            <div class="annotation solution">
+              <div class="ann-icon">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+                  <path d="M4.75 8.5L7 10.75L11.25 5.75" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="ann-content">
+                <div class="ann-title">Personalized channel grid</div>
+                <div class="ann-desc">Visual icon grid replaces text list. Reorders dynamically based on sharing history &mdash; most-used channels surface first.</div>
+              </div>
+            </div>
+
+            <div class="annotation solution">
+              <div class="ann-icon">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+                  <path d="M4.75 8.5L7 10.75L11.25 5.75" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="ann-content">
+                <div class="ann-title">Brand travels with content</div>
+                <div class="ann-desc">Reddit logo, subreddit name, and engagement signals anchor recognition. Every share becomes a brand moment &mdash; not a raw URL.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- diagram-height-poster v1 -->
+<script>
+(function () {
+  function compute() {
+    var d = document.querySelector('.diagram');
+    if (d) {
+      var rect = d.getBoundingClientRect();
+      if (rect.height > 0) return Math.ceil(rect.height);
+    }
+    return Math.max(
+      document.documentElement ? document.documentElement.scrollHeight : 0,
+      document.body ? document.body.scrollHeight : 0
+    );
+  }
+  function send() {
+    if (!window.parent || window.parent === window) return;
+    var h = compute();
+    if (h > 0) window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', send);
+  else send();
+  window.addEventListener('load', send);
+  setTimeout(send, 50); setTimeout(send, 250); setTimeout(send, 1000);
+  if (window.ResizeObserver) {
+    var ro = new ResizeObserver(send);
+    var d = document.querySelector('.diagram');
+    if (d) ro.observe(d);
+    if (document.body) ro.observe(document.body);
+  }
+  window.addEventListener('resize', function () {
+    requestAnimationFrame(send);
+    setTimeout(send, 50);
+  });
+  window.addEventListener('message', function (e) {
+    if (e && e.data && e.data.type === 'request-diagram-height') {
+      requestAnimationFrame(send);
+    }
+  });
+})();
+</script>
+</body>
+</html>

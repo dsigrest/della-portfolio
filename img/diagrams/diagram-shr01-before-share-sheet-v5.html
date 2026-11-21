@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="figma-source" content="node:233:2 page:29:41 file:TArUrZsBUocaAsqetjXq7V">
+<title>SHR-01 — Before: Default Share Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --red: #C47878;
+    --red-dim: rgba(196,120,120,0.12);
+    --casual: #D4A574;
+    --casual-dim: rgba(212,165,116,0.12);
+    --new-seg: #8A9EC4;
+    --new-seg-dim: rgba(138,158,196,0.12);
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    color: var(--text-pri);
+  }
+  .diagram {
+    width: 100%;
+    max-width: 760px;
+    min-width: 0;
+    background: var(--canvas);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ── Main layout: phone image + annotations ── */
+  .content-area {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    padding: 36px 48px 40px;
+    position: relative;
+    align-items: start;
+  }
+  .content-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 240px 280px at 25% 50%, rgba(196,120,120,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── iOS share sheet image (replaces v4's phone-placeholder + hotspot overlays) ── */
+  .phone-image-wrap {
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    animation: fadeUp 600ms cubic-bezier(0.34, 1.56, 0.64, 1) 350ms forwards;
+  }
+  .phone-image {
+    width: 100%;
+    aspect-ratio: 1170 / 2532;
+    border-radius: 16px;
+    display: block;
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  /* ── Annotations ── */
+  .annotations {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .annotation {
+    background: rgba(224,223,228,0.03);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-highlight);
+    border-radius: 10px;
+    padding: 14px 16px;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  .annotation:nth-child(1) { animation: fadeUp 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 450ms forwards; }
+  .annotation:nth-child(2) { animation: fadeUp 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 530ms forwards; }
+  .annotation:nth-child(3) { animation: fadeUp 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 610ms forwards; }
+  .annotation:nth-child(4) { animation: fadeUp 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 690ms forwards; }
+  .annotation::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 2px;
+    background: var(--red);
+  }
+  .annotation-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+  }
+  .annotation-num {
+    font-size: 9px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--red);
+    width: 18px; height: 18px;
+    border-radius: 4px;
+    background: var(--red-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .annotation-label {
+    font-size: 11px; font-weight: 600;
+    color: var(--text-pri);
+    letter-spacing: -0.01em;
+  }
+  .annotation-text {
+    font-size: 11px;
+    color: var(--text-sec);
+    line-height: 1.45;
+    padding-left: 26px;
+  }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Stat bar ── */
+  .stat-bar-wrapper {
+    padding: 0 48px 48px;
+  }
+  .stat-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border-normal);
+    border-radius: 10px;
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeUp 600ms cubic-bezier(0.34, 1.56, 0.64, 1) 800ms forwards;
+  }
+  .stat-item {
+    background: var(--card);
+    padding: 16px;
+    text-align: center;
+  }
+  .stat-value {
+    font-size: 22px; font-weight: 700;
+    color: var(--red);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-desc {
+    font-size: 10px;
+    color: var(--text-ter);
+    line-height: 1.35;
+  }
+
+  /* ── Mobile (≤480px): stack image over annotations, single-col stats ── */
+  @media (max-width: 480px) {
+    body { padding: 20px; }
+    .content-area {
+      grid-template-columns: 1fr;
+      padding: 28px 24px 32px;
+      gap: 24px;
+    }
+    .phone-image-wrap {
+      display: flex;
+      justify-content: center;
+    }
+    .phone-image {
+      max-width: 240px;
+    }
+    .stat-bar-wrapper { padding: 0 24px 32px; }
+    .stat-bar { grid-template-columns: 1fr; }
+    .stat-item { padding: 14px; }
+  }
+
+  /* Very narrow viewports (≤360px): further tighten padding */
+  @media (max-width: 360px) {
+    body { padding: 16px; }
+    .content-area { padding: 24px 20px 28px; }
+    .stat-bar-wrapper { padding: 0 20px 24px; }
+  }
+
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="content-area">
+      <div class="phone-image-wrap">
+        <img class="phone-image"
+             src="assets/shr01-ios-share-sheet.png"
+             alt="Default iOS share sheet — Reddit thread shared as plain reddit.com link with no preview, no branding, generic system action sheet">
+      </div>
+
+      <div class="annotations">
+        <div class="annotation">
+          <div class="annotation-header">
+            <div class="annotation-num">1</div>
+            <span class="annotation-label">Raw URL, no preview</span>
+          </div>
+          <p class="annotation-text">Recipients see a cryptic reddit.com link with no title, image, or context. No reason to tap.</p>
+        </div>
+
+        <div class="annotation">
+          <div class="annotation-header">
+            <div class="annotation-num">2</div>
+            <span class="annotation-label">Zero brand presence</span>
+          </div>
+          <p class="annotation-text">Generic system sheet &mdash; no Reddit logo, no visual identity. Content leaves the platform with no attribution.</p>
+        </div>
+
+        <div class="annotation">
+          <div class="annotation-header">
+            <div class="annotation-num">3</div>
+            <span class="annotation-label">No sharing intelligence</span>
+          </div>
+          <p class="annotation-text">Same generic action list for every post type. No contextual suggestions, no engagement data, no smart ordering.</p>
+        </div>
+
+        <div class="annotation">
+          <div class="annotation-header">
+            <div class="annotation-num">
+              <svg viewBox="0 0 10 10" fill="none" style="width:10px;height:10px"><path d="M2 5h6" stroke="var(--red)" stroke-width="1.3" stroke-linecap="round"/></svg>
+            </div>
+            <span class="annotation-label">Screenshot workaround</span>
+          </div>
+          <p class="annotation-text">Users screenshotted posts instead of sharing &mdash; stripping context, engagement data, and platform links entirely.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-bar-wrapper">
+      <div class="stat-bar">
+        <div class="stat-item">
+          <div class="stat-value">0</div>
+          <div class="stat-desc">Share entry points in feed</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">0</div>
+          <div class="stat-desc">Preview infrastructure</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">0</div>
+          <div class="stat-desc">Brand presence off-platform</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+
+<!-- diagram-height-poster v1 -->
+<script>
+(function () {
+  function compute() {
+    var d = document.querySelector('.diagram');
+    if (!d) return 0;
+    return Math.max(
+      d.scrollHeight, d.offsetHeight,
+      document.documentElement ? document.documentElement.scrollHeight : 0,
+      document.body ? document.body.scrollHeight : 0
+    );
+  }
+  function send() {
+    if (!window.parent || window.parent === window) return;
+    var h = compute();
+    if (h > 0) {
+      window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', send);
+  } else {
+    send();
+  }
+  window.addEventListener('load', send);
+  // Re-send to catch font swaps, image loads, animations.
+  setTimeout(send, 50);
+  setTimeout(send, 250);
+  setTimeout(send, 1000);
+  if (window.ResizeObserver) {
+    var ro = new ResizeObserver(send);
+    var d = document.querySelector('.diagram');
+    if (d) ro.observe(d);
+    if (document.body) ro.observe(document.body);
+  }
+  window.addEventListener('resize', send);
+})();
+</script>
+</body>
+</html>

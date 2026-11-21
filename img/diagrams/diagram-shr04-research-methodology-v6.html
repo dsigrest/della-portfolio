@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="figma-source" content="node:1514:729 page:29:41 file:TArUrZsBUocaAsqetjXq7V">
+<title>SHR-04 — Research Methodology</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #0A0C16;
+    --card: #10121C;
+    --elevated: #151722;
+    --highest: #1A1C28;
+    --text-pri: #E0DFE4;
+    --text-sec: rgba(224,223,228,0.6);
+    --text-ter: rgba(224,223,228,0.4);
+    --text-dim: rgba(224,223,228,0.2);
+    --border-normal: rgba(224,223,228,0.07);
+    --accent: #7FB5B0;
+    --accent-dim: rgba(127,181,176,0.12);
+    --red: #C47878;
+    --red-dim: rgba(196,120,120,0.12);
+    --new-seg: #8A9EC4;
+    --new-seg-dim: rgba(138,158,196,0.12);
+    --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+    --glass-border: rgba(224,223,228,0.08);
+    --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #08090F;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    color: var(--text-pri);
+  }
+  .diagram {
+    width: 100%;
+    max-width: 760px;
+    background: transparent;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    padding: 24px 0;
+  }
+
+  /* Framework area */
+  .framework-area {
+    padding: 0 48px;
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+  }
+  .findings-row {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    flex: 1;
+    min-width: 0;
+  }
+  .findings-col {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* Column headers */
+  .col-header {
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeUp 500ms var(--spring) 100ms forwards;
+  }
+  .findings-col.senders .col-header { color: var(--accent); }
+  .findings-col.recipients .col-header { color: var(--new-seg); }
+  .findings-col.recipients .col-header { animation-delay: 370ms; }
+
+  /* Quote cards */
+  .finding-card {
+    padding: 14px 16px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 100%;
+    opacity: 0; transform: translateY(12px);
+  }
+
+  /* Stagger — inherits v4 cascade: 100ms stagger within column, 150ms inter-column gap.
+     :nth-of-type counts all div siblings, so .col-header is type(1) and cards start at type(2). */
+  .findings-col.senders    .finding-card:nth-of-type(2) { animation: fadeUp 500ms var(--spring) 200ms forwards; }
+  .findings-col.senders    .finding-card:nth-of-type(3) { animation: fadeUp 500ms var(--spring) 300ms forwards; }
+  .findings-col.senders    .finding-card:nth-of-type(4) { animation: fadeUp 500ms var(--spring) 400ms forwards; }
+  .findings-col.recipients .finding-card:nth-of-type(2) { animation: fadeUp 500ms var(--spring) 470ms forwards; }
+  .findings-col.recipients .finding-card:nth-of-type(3) { animation: fadeUp 500ms var(--spring) 570ms forwards; }
+  .findings-col.recipients .finding-card:nth-of-type(4) { animation: fadeUp 500ms var(--spring) 670ms forwards; }
+
+  .finding-quote {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--text-pri);
+  }
+  .finding-caption {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 15px;
+    color: var(--text-ter);
+  }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Mobile: stack columns at 480px (project default per breakpoint-conventions) */
+  @media (max-width: 480px) {
+    .diagram { padding: 20px 0; }
+    .framework-area { padding: 0 24px; }
+    .findings-row { flex-direction: column; gap: 28px; }
+  }
+
+  /* Embed mode: strip body chrome when loaded in iframe */
+  body.embedded {
+    padding: 0;
+    min-height: auto;
+    display: block;
+    background: transparent;
+    overflow: hidden;
+    align-items: initial;
+  }
+  body.embedded .diagram {
+    width: 100%;
+    border-radius: 0;
+  }
+</style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="framework-area">
+      <div class="findings-row">
+
+        <!-- Senders column (Redditors) -->
+        <div class="findings-col senders">
+          <div class="col-header">Senders&rsquo; perceptions of sharing</div>
+
+          <div class="finding-card">
+            <div class="finding-quote">&ldquo;They&rsquo;re not on Reddit&rdquo;</div>
+            <div class="finding-caption">Many users reported that friends weren&rsquo;t on Reddit, and didn&rsquo;t believe they&rsquo;d visit to see content.</div>
+          </div>
+
+          <div class="finding-card">
+            <div class="finding-quote">&ldquo;They won&rsquo;t get it&rdquo;</div>
+            <div class="finding-caption">Users didn&rsquo;t believe sharing flows gave enough context for non-Redditors to appreciate the content.</div>
+          </div>
+
+          <div class="finding-card">
+            <div class="finding-quote">&ldquo;A screenshot will work&rdquo;</div>
+            <div class="finding-caption">Users believed taking a screenshot captured context most quickly for sharing.</div>
+          </div>
+        </div>
+
+        <!-- Recipients column (Non-Redditors) -->
+        <div class="findings-col recipients">
+          <div class="col-header">Recipients&rsquo; perceptions of receiving</div>
+
+          <div class="finding-card">
+            <div class="finding-quote">&ldquo;I&rsquo;m not a Redditor&rdquo;</div>
+            <div class="finding-caption">Non-Redditors who received shared content didn&rsquo;t care to engage with the platform.</div>
+          </div>
+
+          <div class="finding-card">
+            <div class="finding-quote">&ldquo;I won&rsquo;t click this&rdquo;</div>
+            <div class="finding-caption">Users who received Reddit links were unsure what they were looking at and felt distrustful.</div>
+          </div>
+
+          <div class="finding-card">
+            <div class="finding-quote">&ldquo;Where am I?&rdquo;</div>
+            <div class="finding-caption">Users unfamiliar with Reddit who received shared content felt overwhelmed landing on the platform.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+<!-- diagram-height-poster v1 -->
+<script>
+(function () {
+  function compute() {
+    var d = document.querySelector('.diagram');
+    if (d) {
+      var rect = d.getBoundingClientRect();
+      if (rect.height > 0) return Math.ceil(rect.height);
+    }
+    return Math.max(
+      document.documentElement ? document.documentElement.scrollHeight : 0,
+      document.body ? document.body.scrollHeight : 0
+    );
+  }
+  function send() {
+    if (!window.parent || window.parent === window) return;
+    var h = compute();
+    if (h > 0) window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', send);
+  else send();
+  window.addEventListener('load', send);
+  setTimeout(send, 50); setTimeout(send, 250); setTimeout(send, 1000);
+  if (window.ResizeObserver) {
+    var ro = new ResizeObserver(send);
+    var d = document.querySelector('.diagram');
+    if (d) ro.observe(d);
+    if (document.body) ro.observe(document.body);
+  }
+  window.addEventListener('resize', function () {
+    requestAnimationFrame(send);
+    setTimeout(send, 50);
+  });
+  window.addEventListener('message', function (e) {
+    if (e && e.data && e.data.type === 'request-diagram-height') {
+      requestAnimationFrame(send);
+    }
+  });
+})();
+</script>
+</body>
+</html>

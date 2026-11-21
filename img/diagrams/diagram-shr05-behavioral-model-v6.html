@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="figma-source" content="node:1490:7731 page:29:41 file:TArUrZsBUocaAsqetjXq7V">
+  <title>SHR-05 — Behavioral Model</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --canvas: #0A0C16;
+      --card: #10121C;
+      --elevated: #151722;
+      --highest: #1A1C28;
+      --text-pri: #E0DFE4;
+      --text-sec: rgba(224,223,228,0.6);
+      --text-ter: rgba(224,223,228,0.4);
+      --text-dim: rgba(224,223,228,0.2);
+      --border-normal: rgba(224,223,228,0.07);
+      --accent: #7FB5B0;
+      --accent-dim: rgba(127,181,176,0.12);
+      --red: #C47878;
+      --red-dim: rgba(196,120,120,0.12);
+      --casual: #C4B078;
+      --casual-dim: rgba(196,176,120,0.12);
+      --new-seg: #8A9EC4;
+      --new-seg-dim: rgba(138,158,196,0.12);
+      --glass-bg: linear-gradient(135deg, rgba(224,223,228,0.05) 0%, rgba(224,223,228,0.015) 100%);
+      --glass-border: rgba(224,223,228,0.08);
+      --glass-highlight: inset 0 1px 0 rgba(224,223,228,0.06);
+      --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    body {
+      background: #08090F;
+      display: flex;
+      justify-content: center;
+      padding: 40px 20px;
+      font-family: 'Inter', -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      color: var(--text-pri);
+    }
+
+    .diagram {
+      max-width: 760px;
+      width: 100%;
+      background: transparent;
+      border-radius: 16px;
+      overflow: hidden;
+      padding: 24px 48px;
+    }
+
+    .verticals {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+      width: 100%;
+    }
+
+    .vertical {
+      flex: 1;
+      min-width: 0;
+      padding: 0 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    .vertical.v1 { animation: fadeUp 600ms var(--spring) 200ms forwards; }
+    .vertical.v2 { animation: fadeUp 600ms var(--spring) 350ms forwards; }
+    .vertical.v3 { animation: fadeUp 600ms var(--spring) 500ms forwards; }
+
+    .icon-block {
+      width: 96px;
+      height: 96px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 4px;
+    }
+    .vertical.v3 .icon-block { width: 100px; height: 100px; }
+    .icon-block svg { width: 100%; height: 100%; display: block; overflow: visible; }
+
+    .vertical.v1 .icon-block { color: var(--accent); }
+    .vertical.v2 .icon-block { color: var(--red); }
+    .vertical.v3 .icon-block { color: var(--new-seg); }
+
+    .vertical-title {
+      font-family: 'Inter', -apple-system, sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      color: var(--text-pri);
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .vertical-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-width: 165px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .vertical-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      font-family: 'Inter', -apple-system, sans-serif;
+      font-size: 11px;
+      font-weight: 400;
+      line-height: 1.4;
+      color: var(--text-sec);
+      text-align: left;
+    }
+    .vertical-list li::before {
+      content: '';
+      flex-shrink: 0;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.6;
+      margin-top: 6px;
+    }
+
+    /* Pulse animation on identity bullseye middle ring (continuous) — matches SHR-14 */
+    .pulse-ring {
+      transform-origin: center;
+      animation: pulse 2.8s ease-in-out 1s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.55; transform: scale(1); }
+      50%      { opacity: 0.25; transform: scale(1.08); }
+    }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Mobile: keep 3 columns (matches Figma mobile pattern from SHR-14) — tighten padding */
+    @media (max-width: 480px) {
+      .diagram { padding: 20px 16px; }
+      .verticals { gap: 12px; }
+      .vertical { padding: 0 4px; }
+      .icon-block { width: 72px; height: 72px; }
+      .vertical.v3 .icon-block { width: 76px; height: 76px; }
+      .vertical-title { font-size: 13px; }
+      .vertical-list li { font-size: 10.5px; }
+    }
+
+    /* Embed mode: strip body chrome when loaded in iframe */
+    body.embedded {
+      padding: 0;
+      min-height: auto;
+      display: block;
+      background: transparent;
+      overflow: hidden;
+      align-items: initial;
+    }
+    body.embedded .diagram {
+      width: 100%;
+      border-radius: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="diagram">
+    <div class="verticals">
+
+      <!-- Motivators (bullseye, teal) -->
+      <div class="vertical v1">
+        <div class="icon-block">
+          <svg viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="48" cy="48" r="26" stroke="currentColor" stroke-width="1" opacity="0.25"/>
+            <circle class="pulse-ring" cx="48" cy="48" r="17" stroke="currentColor" stroke-width="1.25" opacity="0.55"/>
+            <circle cx="48" cy="48" r="5" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="vertical-title">Motivators</div>
+        <ul class="vertical-list">
+          <li>Sharing content that reflects identity or taste</li>
+          <li>Sparking conversation with friends or groups</li>
+          <li>Saving or bookmarking for later reference</li>
+        </ul>
+      </div>
+
+      <!-- Inhibitors (three lines + dot, red) -->
+      <div class="vertical v2">
+        <div class="icon-block">
+          <svg viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <line x1="22" y1="40" x2="74" y2="40" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+            <line x1="22" y1="52" x2="74" y2="52" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+            <line x1="22" y1="64" x2="74" y2="64" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+            <circle cx="56" cy="52" r="3.5" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="vertical-title">Inhibitors</div>
+        <ul class="vertical-list">
+          <li>Fear of exposing pseudonymous identity</li>
+          <li>Uncertainty about what info travels with the share</li>
+          <li>Raw URLs look untrustworthy to recipients</li>
+        </ul>
+      </div>
+
+      <!-- User perception (three ?? marks, blue) -->
+      <div class="vertical v3">
+        <div class="icon-block">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <text x="20" y="58" font-family="Inter, sans-serif" font-weight="700" font-size="10" fill="currentColor" opacity="0.6">?</text>
+            <text x="42" y="62" font-family="Inter, sans-serif" font-weight="700" font-size="26" fill="currentColor">?</text>
+            <text x="71" y="61" font-family="Inter, sans-serif" font-weight="700" font-size="14" fill="currentColor" opacity="0.6">?</text>
+          </svg>
+        </div>
+        <div class="vertical-title">User perception</div>
+        <ul class="vertical-list">
+          <li>Reddit URLs perceived as unfamiliar or sketchy</li>
+          <li>No context about what to expect after tapping</li>
+          <li>Screenshots more trusted than links</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+<script>if(window!==window.parent)document.body.classList.add('embedded');</script>
+<!-- diagram-height-poster v1 -->
+<script>
+(function () {
+  function compute() {
+    var d = document.querySelector('.diagram');
+    if (d) {
+      var rect = d.getBoundingClientRect();
+      if (rect.height > 0) return Math.ceil(rect.height);
+    }
+    return Math.max(
+      document.documentElement ? document.documentElement.scrollHeight : 0,
+      document.body ? document.body.scrollHeight : 0
+    );
+  }
+  function send() {
+    if (!window.parent || window.parent === window) return;
+    var h = compute();
+    if (h > 0) window.parent.postMessage({ type: 'diagram-height', height: h }, '*');
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', send);
+  else send();
+  window.addEventListener('load', send);
+  setTimeout(send, 50); setTimeout(send, 250); setTimeout(send, 1000);
+  if (window.ResizeObserver) {
+    var ro = new ResizeObserver(send);
+    var d = document.querySelector('.diagram');
+    if (d) ro.observe(d);
+    if (document.body) ro.observe(document.body);
+  }
+  window.addEventListener('resize', function () {
+    requestAnimationFrame(send);
+    setTimeout(send, 50);
+  });
+  window.addEventListener('message', function (e) {
+    if (e && e.data && e.data.type === 'request-diagram-height') {
+      requestAnimationFrame(send);
+    }
+  });
+})();
+</script>
+</body>
+</html>
